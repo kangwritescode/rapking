@@ -79,7 +79,7 @@ const GlobalStyles = (theme: Theme) => {
         width: '100%',
         zIndex: 2000,
         position: 'fixed',
-        backgroundColor: theme.palette.primary.main
+        backgroundColor: theme.palette.secondary.main
       }
     }
   }

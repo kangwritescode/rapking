@@ -2,6 +2,9 @@
 import { Palette } from '@mui/material'
 import { Skin, ThemeColor } from 'src/@core/layouts/types'
 
+// BG Color: #2A2D34
+// Slighty Lighter BG Color: #30343c
+
 const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColor): Palette => {
   // ** Vars
   const whiteColor = '#FFF'
@@ -32,7 +35,7 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
       return '#312D4B'
     } else if (mode === 'light') {
       return '#F4F5FA'
-    } else return '#28243D'
+    } else return '#181818'
   }
 
   return {
@@ -54,15 +57,15 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
       white: whiteColor
     },
     primary: {
-      light: '#9E69FD',
-      main: '#9155FD',
-      dark: '#804BDF',
+      light: '#472e6c',
+      main: '#442c68',
+      dark: '#3f2960',
       contrastText: whiteColor
     },
     secondary: {
-      light: '#9C9FA4',
-      main: '#8A8D93',
-      dark: '#777B82',
+      light: '#e0b805',
+      main: '#e0b805',
+      dark: '#e0b805',
       contrastText: whiteColor
     },
     error: {
@@ -112,7 +115,7 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
     },
     divider: `rgba(${mainColor}, 0.12)`,
     background: {
-      paper: mode === 'light' ? whiteColor : '#312D4B',
+      paper: mode === 'light' ? whiteColor : '#242424',
       default: defaultBgColor()
     },
     action: {
