@@ -38,47 +38,11 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
     callbacks: {
-        async signIn({ user }) {
-            // Check if the user already exists in the database
-            const existingUser = await prisma.user.findUnique({
-                where: { email: user.email || '' },
-            });
-
-            // If the user already exists, return true to continue the sign-in process
-            if (existingUser) {
-                console.log('user already exists');
-
-                return true;
-            }
-
-            // If the user doesn't exist, create a new user in the database
-            const newUser = await prisma.user.create({
-                data: {
-                    name: user.name,
-                    email: user.email,
-                    image: user.image,
-
-                    // Add any other user properties here
-                },
-            });
-
-
-            return false;
-        },
-        async session({ session, user }) {
-            // Fetch user data from the database
-            const dbUser = await prisma.user.findUnique({
-                where: {
-                    id: user.id,
-                },
-            });
-            console.log({ dbUser })
+        session({ session, user }) {
             if (session.user) {
-                // assign the user's ID to the session object
                 session.user.id = user.id;
 
-                // Check if the user exists in the database. If not, create them.
-
+                // session.user.role = user.role; <-- put other properties on the session here
             }
 
             return session;
