@@ -77,12 +77,12 @@ const App: any = (props: ExtendedAppProps) => {
   return (
       <>
       <Head>
-        <title>{`${themeConfig.templateName} - Material Design React Admin Template`}</title>
+        <title>{`${themeConfig.templateName}`}</title>
         <meta
           name='description'
-          content={`${themeConfig.templateName} – Material Design React Admin Dashboard Template – is the most developer friendly & highly customizable Admin Dashboard Template based on MUI v5.`}
+          content={`${themeConfig.templateName} meta content`}
         />
-        <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
+        <meta name='keywords' content='RapKing, Share Raps, Write Raps, Get Ranked' />
         <meta name='viewport' content='initial-scale=1, width=device-width' />
       </Head>
       <SessionProvider session={session}>
