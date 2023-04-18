@@ -15,4 +15,17 @@ export const profileRouter = createTRPCRouter({
                 },
             })
         }),
+    usernameIsAvailable: publicProcedure
+        .input(z.object({ text: z.string() }))
+        .query(async ({ input, ctx }) => {
+            const profile = await ctx.prisma.profile.findUnique({
+                where: {
+                    username: input.text,
+                },
+            })
+            
+            return {
+                isAvailable: profile === null,
+            };
+        }),
 });
