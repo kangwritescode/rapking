@@ -7,10 +7,7 @@ import CardContent from '@mui/material/CardContent'
 
 const Home = () => {
   return (
-    <Grid container spacing={6}>
-      <Grid item xs={12}>
-      </Grid>
-      <Grid item xs={12}>
+    <Grid item xs={12}>
         <Card>
           <CardHeader title='ACL and JWT 🔒'></CardHeader>
           <CardContent>
@@ -21,7 +18,6 @@ const Home = () => {
           </CardContent>
         </Card>
       </Grid>
-    </Grid>
   )
 }
 

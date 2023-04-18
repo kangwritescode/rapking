@@ -43,6 +43,7 @@ import 'src/iconify-bundle/icons-bundle-react'
 
 // ** Global css styles
 import '../../styles/globals.css'
+import { api } from 'src/utils/api';
 
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
@@ -107,4 +108,4 @@ const App: any = (props: ExtendedAppProps) => {
   )
 }
 
-export default App;
+export default api.withTRPC(App);
