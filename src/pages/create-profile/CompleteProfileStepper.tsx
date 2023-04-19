@@ -38,14 +38,15 @@ const steps = [
   }
 ]
 
-const StepperVerticalWithoutNumbers = () => {
+const CompleteProfileStepper = () => {
+
   // ** States
   const [activeStep, setActiveStep] = useState<number>(0)
 
   // Handle Stepper
-  const handleBack = () => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1)
-  }
+//   const handleBack = () => {
+//     setActiveStep(prevActiveStep => prevActiveStep - 1)
+//   }
   const handleNext = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1)
     if (activeStep === steps.length - 1) {
@@ -73,7 +74,7 @@ const StepperVerticalWithoutNumbers = () => {
                       </div>
                     </div>
                   </StepLabel>
-                 {activeStep === 0 && <UsernameStep handleNext={handleNext} />}
+                 {activeStep === 0 && <UsernameStep  handleNext={handleNext} />}
                 </Step>
               )
             })}
@@ -92,4 +93,4 @@ const StepperVerticalWithoutNumbers = () => {
   )
 }
 
-export default StepperVerticalWithoutNumbers
+export default CompleteProfileStepper

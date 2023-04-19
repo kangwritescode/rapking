@@ -1,10 +1,11 @@
-import { Box, Button, FormControl, StepContent, TextField } from '@mui/material'
+import { Box, Button, CircularProgress, FormControl, StepContent, TextField } from '@mui/material'
 import * as yup from 'yup'
 import React, { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { api } from 'src/utils/api'
 import { useDebounce } from './utils';
+import { Icon } from '@iconify/react'
 
 // ** Icon Imports
 // import Icon from 'src/@core/components/icon'
@@ -24,10 +25,14 @@ const usernameSchema = yup.object().shape({
 
 function UsernameStep({ handleNext }: UsernameStepProps) {
 
+    // state
     const [value, setValue] = React.useState<string>('');
+    const [controlledIsAvailable, setControlledIsAvailable] = React.useState<boolean | undefined>(undefined);
+
+    // queries
     const debouncedValue = useDebounce(value, 500);
-    const [controlledIsAvailable, setControlledIsAvailable] = React.useState<boolean>(false);
     const { data, status } = api.profile.usernameIsAvailable.useQuery({ text: debouncedValue }, { enabled: debouncedValue.length > 2 })
+    const profileMutation = api.profile.updateProfile.useMutation();
 
     const {
         control: usernameControl,
@@ -44,9 +49,25 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
         }
     }, [data])
 
+    const updateUsername = async (updatedUsername: string) => {
+        try {
+            const updatedProfile = await profileMutation.mutateAsync({
+                username: updatedUsername
+            })
+            if (updatedProfile) {
+                handleNext()
+            }
+            else {
+                throw new Error('Failed to update username')
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     return (
         <StepContent>
-            <form key={0} onSubmit={handleUsernameSubmit(handleNext)}>
+            <form key={0} onSubmit={handleUsernameSubmit(() => updateUsername(debouncedValue))}>
                 <FormControl>
                     <Controller
                         name='username'
@@ -64,7 +85,7 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
                                                     .replace(/[^a-zA-Z0-9_]/g, '')  // remove non-alphanumeric characters
                                                     .toLowerCase();                 // convert to lowercase
                                                 setValue(sanitizedInput)
-                                                setControlledIsAvailable(false)
+                                                setControlledIsAvailable(undefined)
                                                 onChange(sanitizedInput)
                                             }}
                                             size='small'
@@ -73,12 +94,21 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
                                             inputProps={{ maxLength: 20 }}
                                             sx={{ mr: 3 }}
                                         />
-                                        {(status === 'loading' && value.length > 2) ? <span>Loading...</span> : undefined}
-                                        {status === 'error' && <span>Error: {data?.isAvailable}</span>}
-                                        {status === 'success' && (
-                                            <span>{data.isAvailable}</span>
+                                        {(status === 'loading' && value.length > 2 && controlledIsAvailable === undefined) ? (
+                                            <CircularProgress color='secondary' size={24} />
+                                        ) : undefined}
+                                        {controlledIsAvailable && (
+                                            <Icon color='green' icon="material-symbols:check-circle-rounded" width={24} />
+                                        )}
+                                        {controlledIsAvailable === false && (
+                                            <Icon color='red' icon="ph:x-circle" width={24} />
                                         )}
                                     </Box>
+                                    {status === 'error' && (
+                                        <Box sx={{ color: 'error.main' }}>
+                                            <span>Error: {data?.isAvailable}</span>
+                                        </Box>
+                                    )}
                                     {usernameErrors.username && (
                                         <Box sx={{ color: 'error.main' }}>
                                             <span>{usernameErrors.username.message}</span>
