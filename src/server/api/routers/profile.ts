@@ -55,7 +55,7 @@ export const profileRouter = createTRPCRouter({
 
             // creates profile if it doesn't exist
             if (!existingProfile) {
-                ctx.prisma.profile.create({
+                await ctx.prisma.profile.create({
                     data: {
                         userId: ctx.session.user.id,
                     },
