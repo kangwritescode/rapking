@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, FormControl, StepContent, TextField } from '@mui/material'
+import { Box, Button, CircularProgress, FormHelperText, StepContent, TextField } from '@mui/material'
 import * as yup from 'yup'
 import React, { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
@@ -37,7 +37,7 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
     const {
         control: usernameControl,
         handleSubmit: handleUsernameSubmit,
-        formState: { errors: usernameErrors }
+        formState: { errors: errors }
     } = useForm({
         defaultValues: { username: '' },
         resolver: yupResolver(usernameSchema)
@@ -68,56 +68,49 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
     return (
         <StepContent>
             <form key={0} onSubmit={handleUsernameSubmit(() => updateUsername(debouncedValue))}>
-                <FormControl>
-                    <Controller
-                        name='username'
-                        control={usernameControl}
-                        render={({ field: { value, onChange } }) => {
-                            return (
-                                <>
-                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <TextField
-                                            value={value}
-                                            label='Username'
-                                            onChange={({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-                                                const sanitizedInput = value
-                                                    .replace(/ /g, '_')             // replace spaces with underscores
-                                                    .replace(/[^a-zA-Z0-9_]/g, '')  // remove non-alphanumeric characters
-                                                    .toLowerCase();                 // convert to lowercase
-                                                setValue(sanitizedInput)
-                                                setControlledIsAvailable(undefined)
-                                                onChange(sanitizedInput)
-                                            }}
-                                            size='small'
-                                            error={Boolean(usernameErrors.username)}
-                                            aria-describedby='stepper-username'
-                                            inputProps={{ maxLength: 20 }}
-                                            sx={{ mr: 3 }}
-                                        />
-                                        {(status === 'loading' && value.length > 2 && controlledIsAvailable === undefined) ? (
-                                            <CircularProgress color='secondary' size={24} />
-                                        ) : undefined}
-                                        {controlledIsAvailable && (
-                                            <Icon color='green' icon="material-symbols:check-circle-rounded" width={24} />
-                                        )}
-                                        {controlledIsAvailable === false && (
-                                            <Icon color='red' icon="ph:x-circle" width={24} />
-                                        )}
-                                    </Box>
-                                    {status === 'error' && (
-                                        <Box sx={{ color: 'error.main' }}>
-                                            <span>Error: {data?.isAvailable}</span>
-                                        </Box>
+                <Controller
+                    name='username'
+                    control={usernameControl}
+                    render={({ field: { value, onChange } }) => {
+                        return (
+                            <>
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <TextField
+                                        value={value}
+                                        label='Username'
+                                        onChange={({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+                                            const sanitizedInput = value
+                                                .replace(/ /g, '_')             // replace spaces with underscores
+                                                .replace(/[^a-zA-Z0-9_]/g, '')  // remove non-alphanumeric characters
+                                                .toLowerCase();                 // convert to lowercase
+                                            setValue(sanitizedInput)
+                                            setControlledIsAvailable(undefined)
+                                            onChange(sanitizedInput)
+                                        }}
+                                        size='small'
+                                        error={Boolean(errors.username)}
+                                        aria-describedby='stepper-username'
+                                        inputProps={{ maxLength: 20 }}
+                                        sx={{ mr: 3 }}
+                                    />
+                                    {(status === 'loading' && value.length > 2 && controlledIsAvailable === undefined) ? (
+                                        <CircularProgress color='secondary' size={24} />
+                                    ) : undefined}
+                                    {controlledIsAvailable && (
+                                        <Icon color='green' icon="material-symbols:check-circle-rounded" width={24} />
                                     )}
-                                    {usernameErrors.username && (
-                                        <Box sx={{ color: 'error.main' }}>
-                                            <span>{usernameErrors.username.message}</span>
-                                        </Box>
+                                    {controlledIsAvailable === false && (
+                                        <Icon color='red' icon="ph:x-circle" width={24} />
                                     )}
-                                </>
-                            )
-                        }} />
-                </FormControl>
+                                </Box>
+                                {errors.username && (
+                                    <FormHelperText sx={{color: 'error.main' }} id='validation-basic-dob'>
+                                        {errors.username.message}
+                                    </FormHelperText>
+                                )}
+                            </>
+                        )
+                    }} />
                 <div className='button-wrapper'>
                     <Button
                         disabled={!value || !controlledIsAvailable}

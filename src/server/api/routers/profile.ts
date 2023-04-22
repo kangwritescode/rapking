@@ -45,6 +45,7 @@ export const profileRouter = createTRPCRouter({
         .input(z.object({
             username: z.string().optional(),
             sex: z.string().optional(),
+            dob: z.date().optional()
         }))
         .mutation(async ({ input, ctx }) => {
 
@@ -67,7 +68,7 @@ export const profileRouter = createTRPCRouter({
                 const profileWithUsername = await ctx.prisma.profile.findUnique({
                     where: { username: input.username },
                 });
-                if (profileWithUsername) {
+                if (profileWithUsername && profileWithUsername.userId !== ctx.session.user.id) {
                     throw new TRPCError({
                         code: "UNPROCESSABLE_CONTENT",
                         message: "Username already taken",
@@ -83,6 +84,7 @@ export const profileRouter = createTRPCRouter({
                 data: {
                     ...(input.username ? { username: input.username } : {}),
                     ...(input.sex ? { sex: input.sex } : {}),
+                    ...(input.dob ? { dob: input.dob } : {}),
                 },
             });
 

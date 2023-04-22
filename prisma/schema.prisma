@@ -62,6 +62,7 @@ model Profile {
     id            String @id @default(cuid())
     username      String? @unique
     sex           String?
+    dob           DateTime?
     user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId        String @unique
 }
