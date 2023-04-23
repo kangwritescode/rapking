@@ -19,7 +19,7 @@ function LocationStep({ handleNext }: LocationStepProps) {
 
     // queries
     const profileMutation = api.profile.updateProfile.useMutation();
-    const { data } = api.geoDB.getLocationsByZip.useQuery({ zipCode: '94612' })
+    const { data: locationsData } = api.geoDB.getLocationsByZip.useQuery({ zipCode: '94612' })
 
     const {
         control: countryControl,
@@ -67,7 +67,7 @@ function LocationStep({ handleNext }: LocationStepProps) {
                         />
                     )}
                 />
-                {data ? JSON.stringify(data) : undefined}
+                {locationsData ? JSON.stringify(locationsData) : undefined}
                 {errors.country && (
                     <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-dob'>
                         {errors.country.message}
