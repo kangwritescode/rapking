@@ -7,9 +7,6 @@ import { api } from 'src/utils/api'
 import { useDebounce } from './utils';
 import { Icon } from '@iconify/react'
 
-// ** Icon Imports
-// import Icon from 'src/@core/components/icon'
-
 export type UsernameStepProps = {
     handleNext: () => void
 }

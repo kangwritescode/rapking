@@ -23,10 +23,11 @@ import StepperCustomDot from './StepperCustomDot'
 import StepperWrapper from 'src/@core/styles/mui/stepper'
 import UsernameStep from './UsernameStep'
 import PersonalStep from './SexAgeStep'
+import LocationStep from './LocationStep'
 
 const steps = [
   {
-    title: 'Create username',
+    title: 'Choose a username',
     subtitle: 'Pick a username for your new account. You can always change it later.',
   },
   {
@@ -34,15 +35,15 @@ const steps = [
     subtitle: 'Add this info to be ranked among other wordsmiths in the same categories.',
   },
   {
-    title: 'Social Links',
-    subtitle: 'Add Social Links',
+    title: 'Location',
+    subtitle: 'Add your location, or the place you want to represent.',
   }
 ]
 
 const CompleteProfilePage = () => {
 
   // ** States
-  const [activeStep, setActiveStep] = useState<number>(1)
+  const [activeStep, setActiveStep] = useState<number>(2)
 
   // Handle Stepper
   const handleBack = () => {
@@ -75,8 +76,9 @@ const CompleteProfilePage = () => {
                       </div>
                     </div>
                   </StepLabel>
-                 {activeStep === 0 && <UsernameStep  handleNext={handleNext} />}
-                 {activeStep === 1 && <PersonalStep handleBack={handleBack}  handleNext={handleNext} />}
+                 {activeStep === 0 && <UsernameStep handleNext={handleNext} />}
+                 {activeStep === 1 && <PersonalStep handleBack={handleBack} handleNext={handleNext} />}
+                 {activeStep === 2 && <LocationStep handleNext={handleNext} />}
                 </Step>
               )
             })}

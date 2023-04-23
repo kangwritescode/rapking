@@ -1,5 +1,6 @@
 import { createTRPCRouter } from "src/server/api/trpc";
 import { profileRouter } from "src/server/api/routers/profile";
+import { geoDBRouter } from "./routers/geoDB";
 
 /**
  * This is the primary router for your server.
@@ -8,6 +9,7 @@ import { profileRouter } from "src/server/api/routers/profile";
  */
 export const appRouter = createTRPCRouter({
     profile: profileRouter,
+    geoDB: geoDBRouter
 });
 
 // export type definition of API

@@ -84,14 +84,13 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
                     name="sex"
                     control={control}
                     rules={{ required: true }}
-                    render={({ field }) => (
+                    render={({field}) => (
                         <Stack marginTop={2}>
                             <FormLabel sx={{ marginBottom: -1 }}>Sex</FormLabel>
                             <RadioGroup
                                 row
                                 aria-label="sex"
                                 {...field}
-                                onChange={(e) => field.onChange(e.target.value)}
                             >
                                 <FormControlLabel value="male" control={<Radio />} label="Male" />
                                 <FormControlLabel value="female" control={<Radio />} label="Female" />
