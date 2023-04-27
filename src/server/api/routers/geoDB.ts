@@ -14,9 +14,14 @@ type ZipCodeResult = {
     state: string;
 }
 
+export type getLocationsResult = {
+    city: string;
+    state: string;
+}
+
 export const geoDBRouter = createTRPCRouter({
     getLocationsByZip: protectedProcedure
-        .input(z.object({ zipCode: z.string().length(5) }))
+        .input(z.object({ zipCode: z.string() }))
         .query(async ({ input }) => {
             try {
                 const response = await axios.get(`https://redline-redline-zipcode.p.rapidapi.com/rest/radius.json/${input.zipCode}/5/mile`, {

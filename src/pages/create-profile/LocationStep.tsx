@@ -1,80 +1,121 @@
-import { Autocomplete, Button, FormHelperText, StepContent, TextField } from '@mui/material'
+import { Autocomplete, Box, Button, Grid, StepContent, TextField, Typography } from '@mui/material'
 import * as yup from 'yup'
-import React from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import React, { useEffect } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { api } from 'src/utils/api'
+import { getLocationsResult } from 'src/server/api/routers/geoDB'
 
 export type LocationStepProps = {
     handleNext: () => void
 }
 
-const formSchema = yup.object().shape({
-    country: yup
-        .string()
-        .required()
-})
+
+
+interface Option {
+    label: string;
+    state: string;
+    city: string
+}
+
+interface FormValues {
+    location: Option | null
+}
+
 
 function LocationStep({ handleNext }: LocationStepProps) {
+    const [inputValue, setInputValue] = React.useState('');
+    const [options, setOptions] = React.useState<Option[]>([]);
 
     // queries
-    const profileMutation = api.profile.updateProfile.useMutation();
-    const { data: locationsData } = api.geoDB.getLocationsByZip.useQuery({ zipCode: '94612' })
+    const { data: locationsData } = api.geoDB.getLocationsByZip.useQuery({ zipCode: inputValue }, { enabled: inputValue.length === 5 })
 
+    const formSchema = yup.object().shape({
+        location: yup
+            .object()
+            .required()
+    })
+    
     const {
-        control: countryControl,
+        control: formControl,
         handleSubmit: handleUsernameSubmit,
-        formState: { errors: errors }
+        formState: { errors: errors, isValid }
     } = useForm({
-        defaultValues: { country: '' },
-        resolver: yupResolver(formSchema)
+        resolver: yupResolver(formSchema),
+        defaultValues: {
+            location: null
+        }
     })
 
+    const profileMutation = api.profile.updateProfile.useMutation();
 
-    const updateProfile = async (country: string) => {
+    useEffect(() => {
+        if (locationsData && locationsData.length > 0) {
+            setOptions(locationsData.map((location: getLocationsResult) => ({ state: location.state, city: location.city })))
+        } else {
+            setOptions([])
+        }
+    }, [locationsData, inputValue])
+
+    const updateProfile = async (formValues: FormValues) => {
         try {
             const updatedProfile = await profileMutation.mutateAsync({
-                country
+                state: formValues.location?.state,
+                city: formValues.location?.city,
+                country: 'US'
             })
             if (updatedProfile) {
                 handleNext()
             }
             else {
-                throw new Error('Failed to update country')
+                throw new Error('Failed to update location')
             }
         } catch (error) {
             console.error(error)
         }
     }
 
+    console.log(options)
 
     return (
         <StepContent>
-            <form key={0} onSubmit={handleUsernameSubmit((formValues) => updateProfile(formValues.country))}>
-                <Controller
-                    control={countryControl}
-                    name='country'
-                    render={({ field }) => (
+            <form key={0} onSubmit={handleUsernameSubmit(updateProfile)}>
+                <TextField name='country' value='United States' disabled sx={{ marginBottom: 4 }} />
+                <Controller control={formControl} name='location' render={({ field: { onChange, value } }) => {
+                    return (
                         <Autocomplete
-                            options={[{ label: 'United States' }]}
-                            getOptionLabel={(option) => option.label}
+                            options={options}
+                            noOptionsText="No locations"
+                            onInputChange={(_, newInputValue) => {
+                                setInputValue(newInputValue);
+                            }}
+                            getOptionLabel={(option) => `${option.city}, ${option.state}`}
+                            filterOptions={x => x}
                             renderInput={(params) => (
-                                <TextField {...params} label="Zip Code" variant="outlined" />
+                                <TextField {...params} placeholder='Enter ZIP Code' />
                             )}
-                            onInputChange={() => undefined}
-                            onChange={(event, value) => field.onChange(value)}
-                            value={field.value}
+                            onChange={(_, newValue) => {
+                                console.log(newValue)
+                                onChange(newValue)
+                            }}
+                            value={value}
+                            renderOption={(props, option) => (
+                                <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                                    <Grid container alignItems="center" spacing={2}>
+                                        <Grid item>
+                                            <Typography sx={{ display: 'inline', fontWeight: 500, fontSize: 16 }} noWrap>
+                                                {`${option.city}, ${option.state}`}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
+                            )}
                         />
-                    )}
-                />
-                {locationsData ? JSON.stringify(locationsData) : undefined}
-                {errors.country && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-dob'>
-                        {errors.country.message}
-                    </FormHelperText>
-                )}
+                    )
+                }} />
                 <div className='button-wrapper'>
                     <Button
+                        disabled={!isValid}
                         type='submit'
                         size='small'
                         variant='contained'>

@@ -15,6 +15,10 @@ export type PersonalStepProps = {
 }
 
 export type DateType = Date | null | undefined
+type FormValues = {
+    sex: string,
+    dob: string
+}
 
 const formSchema = yup.object().shape({
     sex: yup
@@ -46,7 +50,8 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
 
     const profileMutation = api.profile.updateProfile.useMutation();
 
-    const updateProfile = async (sex: string, dob: string) => {
+
+    const updateProfile = async ({sex, dob}: FormValues) => {
         try {
             const updatedProfile = await profileMutation.mutateAsync({
                 sex,
@@ -63,7 +68,7 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
 
     return (
         <StepContent>
-            <form key={1} onSubmit={handleUsernameSubmit((formValues) => updateProfile(formValues.sex, formValues.dob))}>
+            <form key={1} onSubmit={handleUsernameSubmit((formValues) => updateProfile(formValues))}>
                 <Controller
                     name='dob'
                     control={control}

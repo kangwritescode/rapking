@@ -64,6 +64,8 @@ model Profile {
     sex           String?
     dob           DateTime?
     country       String?
+    city          String?
+    state         String?
     user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId        String @unique
 }

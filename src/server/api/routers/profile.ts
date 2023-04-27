@@ -46,7 +46,9 @@ export const profileRouter = createTRPCRouter({
             username: z.string().optional(),
             sex: z.string().optional(),
             dob: z.date().optional(),
-            country: z.string().optional()
+            country: z.string().optional(),
+            state: z.string().optional(),
+            city: z.string().optional(),
         }))
         .mutation(async ({ input, ctx }) => {
 
