@@ -22,13 +22,20 @@ const usernameSchema = yup.object().shape({
 
 function UsernameStep({ handleNext }: UsernameStepProps) {
 
+    // queries
+    const { data: profileData } = api.profile.getProfile.useQuery();
+    
     // state
-    const [value, setValue] = React.useState<string>('');
+    const [value, setValue] = React.useState<string>(profileData?.username || '');
     const [controlledIsAvailable, setControlledIsAvailable] = React.useState<boolean | undefined>(undefined);
 
     // queries
     const debouncedValue = useDebounce(value, 500);
-    const { data, status } = api.profile.usernameIsAvailable.useQuery({ text: debouncedValue }, { enabled: debouncedValue.length > 2 })
+    const { data, status } = api.profile.usernameIsAvailable.useQuery({ 
+        text: debouncedValue 
+    }, { enabled: debouncedValue.length > 2 })
+
+    
     const profileMutation = api.profile.updateProfile.useMutation();
 
     const {
@@ -36,7 +43,7 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
         handleSubmit: handleUsernameSubmit,
         formState: { errors: errors }
     } = useForm({
-        defaultValues: { username: '' },
+        defaultValues: { username: profileData?.username || '' },
         resolver: yupResolver(usernameSchema)
     })
 
@@ -52,7 +59,7 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
                 username: updatedUsername
             })
             if (updatedProfile) {
-                handleNext()
+                return handleNext()
             }
             else {
                 throw new Error('Failed to update username')
@@ -90,7 +97,7 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
                                         inputProps={{ maxLength: 20 }}
                                         sx={{ mr: 3 }}
                                     />
-                                    {(status === 'loading' && value.length > 2 && controlledIsAvailable === undefined) ? (
+                                    {(status === 'loading' && value && value.length > 2 && controlledIsAvailable === undefined) ? (
                                         <CircularProgress color='secondary' size={24} />
                                     ) : undefined}
                                     {controlledIsAvailable && (

@@ -16,6 +16,14 @@ export const profileRouter = createTRPCRouter({
                 },
             })
         }),
+    getProfile: protectedProcedure
+        .query(({ ctx }) => {
+            return ctx.prisma.profile.findUnique({
+                where: {
+                    userId: ctx.session.user.id,
+                },
+            })
+        }),
     usernameIsAvailable: protectedProcedure
         .input(z.object({
             text: z.string()
@@ -89,6 +97,8 @@ export const profileRouter = createTRPCRouter({
                     ...(input.sex ? { sex: input.sex } : {}),
                     ...(input.dob ? { dob: input.dob } : {}),
                     ...(input.country ? { country: input.country } : {}),
+                    ...(input.state ? { state: input.state } : {}),
+                    ...(input.city ? { city: input.city } : {}),
                 },
             });
 

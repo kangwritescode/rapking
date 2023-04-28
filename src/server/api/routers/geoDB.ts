@@ -43,7 +43,9 @@ export const geoDBRouter = createTRPCRouter({
                     }, []);
 
                     return uniqueCities;
-                }
+                } 
+                
+                return [];
             } catch (error) {
                 console.log(error);
             }

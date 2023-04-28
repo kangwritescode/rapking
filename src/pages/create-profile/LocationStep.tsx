@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, Grid, StepContent, TextField, Typography } from '@mui/material'
+import { Autocomplete, Box, Button, StepContent, TextField } from '@mui/material'
 import * as yup from 'yup'
 import React, { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -7,10 +7,9 @@ import { api } from 'src/utils/api'
 import { getLocationsResult } from 'src/server/api/routers/geoDB'
 
 export type LocationStepProps = {
+    handleBack: () => void,
     handleNext: () => void
 }
-
-
 
 interface Option {
     label: string;
@@ -19,35 +18,24 @@ interface Option {
 }
 
 interface FormValues {
-    location: Option | null
+    location: Option | null,
+    country: string
 }
 
+function LocationStep({ handleBack, handleNext }: LocationStepProps) {
 
-function LocationStep({ handleNext }: LocationStepProps) {
+    // state
     const [inputValue, setInputValue] = React.useState('');
     const [options, setOptions] = React.useState<Option[]>([]);
 
     // queries
     const { data: locationsData } = api.geoDB.getLocationsByZip.useQuery({ zipCode: inputValue }, { enabled: inputValue.length === 5 })
-
-    const formSchema = yup.object().shape({
-        location: yup
-            .object()
-            .required()
-    })
-    
-    const {
-        control: formControl,
-        handleSubmit: handleUsernameSubmit,
-        formState: { errors: errors, isValid }
-    } = useForm({
-        resolver: yupResolver(formSchema),
-        defaultValues: {
-            location: null
-        }
-    })
-
+    const { data: profileData } = api.profile.getProfile.useQuery();
     const profileMutation = api.profile.updateProfile.useMutation();
+
+    // initial values
+    const initialLocation: Option | null = profileData?.state && profileData?.city ?
+        { state: profileData?.state, city: profileData?.city, label: `${profileData?.city}, ${profileData?.state}` } : null
 
     useEffect(() => {
         if (locationsData && locationsData.length > 0) {
@@ -62,7 +50,7 @@ function LocationStep({ handleNext }: LocationStepProps) {
             const updatedProfile = await profileMutation.mutateAsync({
                 state: formValues.location?.state,
                 city: formValues.location?.city,
-                country: 'US'
+                country: formValues.country
             })
             if (updatedProfile) {
                 handleNext()
@@ -75,12 +63,44 @@ function LocationStep({ handleNext }: LocationStepProps) {
         }
     }
 
-    console.log(options)
+    // form schema
+    const formSchema = yup.object().shape({
+        location: yup
+            .object()
+            .required(),
+        country: yup
+            .string()
+            .required()
+    })
+
+    // form control
+    const {
+        control: formControl,
+        handleSubmit: handleUsernameSubmit,
+        formState: { isValid }
+    } = useForm({
+        resolver: yupResolver(formSchema),
+        defaultValues: {
+            location: initialLocation,
+            country: 'United States'
+        }
+    })
 
     return (
         <StepContent>
             <form key={0} onSubmit={handleUsernameSubmit(updateProfile)}>
-                <TextField name='country' value='United States' disabled sx={{ marginBottom: 4 }} />
+                <Controller
+                    control={formControl}
+                    name='country'
+                    render={({ field: { onChange, value } }) => (
+                        <TextField
+                            disabled
+                            sx={{ marginBottom: 4, width: '100%' }}
+                            onChange={onChange}
+                            size='small'
+                            value={value} />
+                    )}
+                />
                 <Controller control={formControl} name='location' render={({ field: { onChange, value } }) => {
                     return (
                         <Autocomplete
@@ -92,22 +112,13 @@ function LocationStep({ handleNext }: LocationStepProps) {
                             getOptionLabel={(option) => `${option.city}, ${option.state}`}
                             filterOptions={x => x}
                             renderInput={(params) => (
-                                <TextField {...params} placeholder='Enter ZIP Code' />
+                                <TextField {...params} sx={{ width: '100%' }} placeholder='Enter ZIP Code' size='small' />
                             )}
-                            onChange={(_, newValue) => {
-                                console.log(newValue)
-                                onChange(newValue)
-                            }}
+                            onChange={(_, newValue) => onChange(newValue)}
                             value={value}
                             renderOption={(props, option) => (
-                                <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                                    <Grid container alignItems="center" spacing={2}>
-                                        <Grid item>
-                                            <Typography sx={{ display: 'inline', fontWeight: 500, fontSize: 16 }} noWrap>
-                                                {`${option.city}, ${option.state}`}
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
+                                <Box component="li" {...props}>
+                                    {`${option.city}, ${option.state}`}
                                 </Box>
                             )}
                         />
@@ -115,11 +126,19 @@ function LocationStep({ handleNext }: LocationStepProps) {
                 }} />
                 <div className='button-wrapper'>
                     <Button
+                        size='small'
+                        variant='outlined'
+                        color='primary'
+                        onClick={handleBack}>
+                        Back
+                    </Button>
+                    <Button
                         disabled={!isValid}
                         type='submit'
+                        sx={{ ml: 4 }}
                         size='small'
                         variant='contained'>
-                        Next
+                        Complete Profile
                     </Button>
                 </div>
             </form>

@@ -4,7 +4,8 @@ import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { api } from 'src/utils/api'
-import { DatePicker } from '@mui/x-date-pickers'
+import { DateField } from '@mui/x-date-pickers'
+import dayjs, { Dayjs } from 'dayjs'
 
 // ** Icon Imports
 // import Icon from 'src/@core/components/icon'
@@ -17,7 +18,7 @@ export type PersonalStepProps = {
 export type DateType = Date | null | undefined
 type FormValues = {
     sex: string,
-    dob: string
+    dob: string | Dayjs
 }
 
 const formSchema = yup.object().shape({
@@ -39,28 +40,37 @@ const formSchema = yup.object().shape({
 
 function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
 
+    // queries
+    const { data: profileData } = api.profile.getProfile.useQuery();
+
+    // initialValues
+    const initialValues: FormValues = {
+        sex: profileData?.sex || '',
+        dob: profileData && profileData.dob ? dayjs(profileData.dob.toUTCString()) : ''
+    }
+
     const {
+        // getValues,
         control: control,
         handleSubmit: handleUsernameSubmit,
-        formState: { errors: errors, isValid }
+        formState: { errors: errors, isValid },
     } = useForm({
-        defaultValues: { sex: 'male', dob: '' },
+        defaultValues: initialValues,
         resolver: yupResolver(formSchema)
     })
 
     const profileMutation = api.profile.updateProfile.useMutation();
 
-
-    const updateProfile = async ({sex, dob}: FormValues) => {
+    const updateProfile = async ({ sex, dob }: FormValues) => {
         try {
             const updatedProfile = await profileMutation.mutateAsync({
                 sex,
-                dob: new Date(dob)
+                dob: new Date(dob as string)
             })
             if (updatedProfile) {
                 return handleNext()
             }
-             throw new Error('Failed to update username')
+            throw new Error('Failed to update username')
         } catch (error) {
             console.error(error)
         }
@@ -76,7 +86,7 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
                     render={({ field: { value, onChange } }) => (
                         <Stack marginBottom={3}>
                             <FormLabel sx={{ marginBottom: 1 }}>Date of Birth</FormLabel>
-                            <DatePicker format="MM-DD-YYYY" value={value} onChange={onChange} />
+                            <DateField format="MM-DD-YYYY" value={value} onChange={onChange} size='small' />
                         </Stack>
                     )}
                 />
@@ -89,7 +99,7 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
                     name="sex"
                     control={control}
                     rules={{ required: true }}
-                    render={({field}) => (
+                    render={({ field }) => (
                         <Stack marginTop={2}>
                             <FormLabel sx={{ marginBottom: -1 }}>Sex</FormLabel>
                             <RadioGroup
