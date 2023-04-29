@@ -1,6 +1,9 @@
 // ** React Imports
 import { useState } from 'react'
 
+// ** Next Imports
+import { useRouter } from 'next/router'
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -54,9 +57,6 @@ const CompleteProfilePage = () => {
     }
     const handleNext = () => {
         setActiveStep(prevActiveStep => prevActiveStep + 1)
-        if (activeStep === steps.length - 1) {
-            toast.success('Completed All Steps!!')
-        }
     }
     const handleReset = () => {
         setActiveStep(0)
@@ -112,7 +112,6 @@ import { GetServerSidePropsContext } from 'next';
 import { appRouter } from 'src/server/api/root';
 import superjson from 'superjson';
 import { createTRPCContext } from 'src/server/api/trpc'
-import { useRouter } from 'next/router'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
 

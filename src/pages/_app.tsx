@@ -49,6 +49,8 @@ import 'src/iconify-bundle/icons-bundle-react'
 // ** Global css styles
 import '../../styles/globals.css'
 import { api } from 'src/utils/api';
+import CreateProfileGuard from 'src/@core/components/auth/CreateProfileGuard';
+import FallbackSpinner from 'src/@core/components/spinner';
 
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
@@ -99,7 +101,11 @@ const App: any = (props: ExtendedAppProps) => {
                                 <ThemeComponent settings={settings}>
                                     <AclGuard aclAbilities={aclAbilities}>
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            {getLayout(<Component {...pageProps} />)}
+                                            <CreateProfileGuard fallback={
+                                                <FallbackSpinner />
+                                            }>
+                                                {getLayout(<Component {...pageProps} />)}
+                                            </CreateProfileGuard>
                                         </ LocalizationProvider>
                                     </AclGuard>
                                     <ReactHotToast>
