@@ -24,28 +24,17 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
 
     // queries
     const { data: profileData } = api.profile.getProfile.useQuery();
-    
+
     // state
+    const profileMutation = api.profile.updateProfile.useMutation();
     const [value, setValue] = React.useState<string>(profileData?.username || '');
     const [controlledIsAvailable, setControlledIsAvailable] = React.useState<boolean | undefined>(undefined);
+    const debouncedValue = useDebounce(value, 500);
 
     // queries
-    const debouncedValue = useDebounce(value, 500);
-    const { data, status } = api.profile.usernameIsAvailable.useQuery({ 
-        text: debouncedValue 
+    const { data, status } = api.profile.usernameIsAvailable.useQuery({
+        text: debouncedValue
     }, { enabled: debouncedValue.length > 2 })
-
-    
-    const profileMutation = api.profile.updateProfile.useMutation();
-
-    const {
-        control: usernameControl,
-        handleSubmit: handleUsernameSubmit,
-        formState: { errors: errors }
-    } = useForm({
-        defaultValues: { username: profileData?.username || '' },
-        resolver: yupResolver(usernameSchema)
-    })
 
     useEffect(() => {
         if (data) {
@@ -68,6 +57,16 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
             console.error(error)
         }
     }
+
+    // form state
+    const {
+        control: usernameControl,
+        handleSubmit: handleUsernameSubmit,
+        formState: { errors: errors }
+    } = useForm({
+        defaultValues: { username: profileData?.username || '' },
+        resolver: yupResolver(usernameSchema)
+    })
 
     return (
         <StepContent>
@@ -108,7 +107,7 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
                                     )}
                                 </Box>
                                 {errors.username && (
-                                    <FormHelperText sx={{color: 'error.main' }} id='validation-basic-dob'>
+                                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-dob'>
                                         {errors.username.message}
                                     </FormHelperText>
                                 )}

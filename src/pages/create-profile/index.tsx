@@ -42,8 +42,11 @@ const steps = [
 
 const CompleteProfilePage = () => {
 
+    // ** Router
+    const router = useRouter()
+
     // ** States
-    const [activeStep, setActiveStep] = useState<number>(1)
+    const [activeStep, setActiveStep] = useState<number>(0)
 
     // Handle Stepper
     const handleBack = () => {
@@ -57,6 +60,11 @@ const CompleteProfilePage = () => {
     }
     const handleReset = () => {
         setActiveStep(0)
+    }
+
+    const handleCreateProfile = () => {
+        toast.success('Profile created successfully!')
+        router.push('/')
     }
 
     return (
@@ -78,7 +86,7 @@ const CompleteProfilePage = () => {
                                     </StepLabel>
                                     {activeStep === 0 && <UsernameStep handleNext={handleNext} />}
                                     {activeStep === 1 && <PersonalStep handleBack={handleBack} handleNext={handleNext} />}
-                                    {activeStep === 2 && <LocationStep handleBack={handleBack} handleNext={handleNext} />}
+                                    {activeStep === 2 && <LocationStep handleBack={handleBack} handleCreateProfile={handleCreateProfile} />}
                                 </Step>
                             )
                         })}
@@ -104,6 +112,7 @@ import { GetServerSidePropsContext } from 'next';
 import { appRouter } from 'src/server/api/root';
 import superjson from 'superjson';
 import { createTRPCContext } from 'src/server/api/trpc'
+import { useRouter } from 'next/router'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
 

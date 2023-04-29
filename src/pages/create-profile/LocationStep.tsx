@@ -8,7 +8,7 @@ import { getLocationsResult } from 'src/server/api/routers/geoDB'
 
 export type LocationStepProps = {
     handleBack: () => void,
-    handleNext: () => void
+    handleCreateProfile: () => void
 }
 
 interface Option {
@@ -22,8 +22,7 @@ interface FormValues {
     country: string
 }
 
-function LocationStep({ handleBack, handleNext }: LocationStepProps) {
-
+function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
     // state
     const [inputValue, setInputValue] = React.useState('');
     const [options, setOptions] = React.useState<Option[]>([]);
@@ -52,8 +51,10 @@ function LocationStep({ handleBack, handleNext }: LocationStepProps) {
                 city: formValues.location?.city,
                 country: formValues.country
             })
+            
+            // on successful update
             if (updatedProfile) {
-                handleNext()
+                handleCreateProfile()
             }
             else {
                 throw new Error('Failed to update location')
@@ -117,8 +118,8 @@ function LocationStep({ handleBack, handleNext }: LocationStepProps) {
                             onChange={(_, newValue) => onChange(newValue)}
                             value={value}
                             renderOption={(props, option) => (
-                                <Box component="li" {...props}>
-                                    {`${option.city}, ${option.state}`}
+                                <Box component="li" {...props} tabIndex={0}>
+                                    <span>{`${option.city}, ${option.state}`}</span>
                                 </Box>
                             )}
                         />
