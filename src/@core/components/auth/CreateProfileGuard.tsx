@@ -32,11 +32,15 @@ const CreateProfileGuard = (props: CreateProfileGuardProps) => {
     }
     if (status === 'authenticated' && profileIsIncomplete && router.asPath !== '/create-profile/') {
         router.replace('/create-profile/')
+
+        return <></>
     }
     if (status === 'authenticated' && !profileIsIncomplete && router.asPath === '/create-profile/') {
         router.replace('/')
-    }
 
+        return <></>
+    }
+    
     return <>{children}</>
 }
 
