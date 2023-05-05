@@ -85,8 +85,8 @@ const AppBarContent = (props: Props) => {
             {status === 'unauthenticated' && <Button variant='contained' onClick={() => void signIn()}>Sign In</Button>}
             {status === 'authenticated' && (
                 <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
-                <ModeToggler settings={settings} saveSettings={saveSettings} />
-                <NotificationDropdown settings={settings} notifications={notifications} />
+                {/* <ModeToggler settings={settings} saveSettings={saveSettings} /> */}
+                {/* <NotificationDropdown settings={settings} notifications={notifications} /> */}
                 <UserDropdown settings={settings} />
             </Box>
             )}

@@ -4,27 +4,25 @@ import { VerticalNavItemsType } from 'src/@core/layouts/types'
 const navigation = (): VerticalNavItemsType => {
     return [
         {
+            title: 'Home',
+            path: '/',
+            icon: 'mdi:home-outline',
+        },
+        {
             title: 'Profile',
             path: '/user-profile/profile',
             icon: 'gg:profile',
         },
         {
-            title: 'Home',
-            path: '/home',
-            icon: 'mdi:home-outline',
+            title: 'Explore',
+            path: '/explore',
+            icon: 'mdi:earth',
         },
         {
-            title: 'Second Page',
-            path: '/second-page',
-            icon: 'mdi:email-outline',
+            title: 'Write',
+            path: '/write',
+            icon: 'ph:note-pencil-bold',
         },
-        {
-            path: '/acl',
-            action: 'read',
-            subject: 'acl-page',
-            title: 'Access Control',
-            icon: 'mdi:shield-outline',
-        }
     ]
 }
 
