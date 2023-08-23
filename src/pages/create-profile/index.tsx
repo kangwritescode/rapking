@@ -29,80 +29,80 @@ import PersonalStep from './SexAgeStep'
 import LocationStep from './LocationStep'
 
 const steps = [
-    {
-        title: 'Choose a username',
-        subtitle: 'Pick a username for your new account. You can always change it later.',
-    },
-    {
-        title: 'Personal Info',
-        subtitle: 'Add this info to be ranked among other wordsmiths in the same categories.',
-    },
-    {
-        title: 'Location',
-        subtitle: 'Add your location, or the place you want to represent.',
-    }
+  {
+    title: 'Choose a username',
+    subtitle: 'Pick a username for your new account. You can always change it later.',
+  },
+  {
+    title: 'Personal Info',
+    subtitle: 'Add this info to be ranked among other wordsmiths in the same categories.',
+  },
+  {
+    title: 'Location',
+    subtitle: 'Add your location, or the place you want to represent.',
+  }
 ]
 
 const CompleteProfilePage = () => {
 
-    // ** Router
-    const router = useRouter()
+  // ** Router
+  const router = useRouter()
 
-    // ** States
-    const [activeStep, setActiveStep] = useState<number>(0)
+  // ** States
+  const [activeStep, setActiveStep] = useState<number>(0)
 
-    // Handle Stepper
-    const handleBack = () => {
-        setActiveStep(prevActiveStep => prevActiveStep - 1)
-    }
-    const handleNext = () => {
-        setActiveStep(prevActiveStep => prevActiveStep + 1)
-    }
-    const handleReset = () => {
-        setActiveStep(0)
-    }
+  // Handle Stepper
+  const handleBack = () => {
+    setActiveStep(prevActiveStep => prevActiveStep - 1)
+  }
+  const handleNext = () => {
+    setActiveStep(prevActiveStep => prevActiveStep + 1)
+  }
+  const handleReset = () => {
+    setActiveStep(0)
+  }
 
-    const handleCreateProfile = () => {
-        toast.success('Profile created successfully!')
-        router.push('/')
-    }
+  const handleCreateProfile = () => {
+    toast.success('Profile created successfully!')
+    router.push('/')
+  }
 
-    return (
-        <Card>
-            <CardHeader title='Create Your Profile' />
-            <CardContent>
-                <StepperWrapper>
-                    <Stepper activeStep={activeStep} orientation='vertical'>
-                        {steps.map((step, index) => {
-                            return (
-                                <Step key={index} className={clsx({ active: activeStep === index })}>
-                                    <StepLabel StepIconComponent={StepperCustomDot}>
-                                        <div className='step-label'>
-                                            <div>
-                                                <Typography className='step-title'>{step.title}</Typography>
-                                                <Typography className='step-subtitle'>{step.subtitle}</Typography>
-                                            </div>
-                                        </div>
-                                    </StepLabel>
-                                    {activeStep === 0 && <UsernameStep handleNext={handleNext} />}
-                                    {activeStep === 1 && <PersonalStep handleBack={handleBack} handleNext={handleNext} />}
-                                    {activeStep === 2 && <LocationStep handleBack={handleBack} handleCreateProfile={handleCreateProfile} />}
-                                </Step>
-                            )
-                        })}
-                    </Stepper>
-                </StepperWrapper>
-                {activeStep === steps.length && (
-                    <Box sx={{ mt: 4 }}>
-                        <Typography>All steps are completed!</Typography>
-                        <Button size='small' sx={{ mt: 2 }} variant='contained' onClick={handleReset}>
-                            Reset
-                        </Button>
-                    </Box>
-                )}
-            </CardContent>
-        </Card>
-    )
+  return (
+    <Card>
+      <CardHeader title='Create Your Profile' />
+      <CardContent>
+        <StepperWrapper>
+          <Stepper activeStep={activeStep} orientation='vertical'>
+            {steps.map((step, index) => {
+              return (
+                <Step key={index} className={clsx({ active: activeStep === index })}>
+                  <StepLabel StepIconComponent={StepperCustomDot}>
+                    <div className='step-label'>
+                      <div>
+                        <Typography className='step-title'>{step.title}</Typography>
+                        <Typography className='step-subtitle'>{step.subtitle}</Typography>
+                      </div>
+                    </div>
+                  </StepLabel>
+                  {activeStep === 0 && <UsernameStep handleNext={handleNext} />}
+                  {activeStep === 1 && <PersonalStep handleBack={handleBack} handleNext={handleNext} />}
+                  {activeStep === 2 && <LocationStep handleBack={handleBack} handleCreateProfile={handleCreateProfile} />}
+                </Step>
+              )
+            })}
+          </Stepper>
+        </StepperWrapper>
+        {activeStep === steps.length && (
+          <Box sx={{ mt: 4 }}>
+            <Typography>All steps are completed!</Typography>
+            <Button size='small' sx={{ mt: 2 }} variant='contained' onClick={handleReset}>
+              Reset
+            </Button>
+          </Box>
+        )}
+      </CardContent>
+    </Card>
+  )
 }
 
 export default CompleteProfilePage
@@ -115,16 +115,16 @@ import { createTRPCContext } from 'src/server/api/trpc'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
 
-    const helpers = createServerSideHelpers({
-        router: appRouter,
-        ctx: await createTRPCContext(context),
-        transformer: superjson,
-    });
-    await helpers.profile.getProfile.prefetch()
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    ctx: await createTRPCContext(context),
+    transformer: superjson,
+  });
+  await helpers.profile.getProfile.prefetch()
 
-    return {
-        props: {
-            trpcState: helpers.dehydrate(),
-        }
+  return {
+    props: {
+      trpcState: helpers.dehydrate(),
     }
+  }
 }

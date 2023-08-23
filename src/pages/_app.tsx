@@ -54,71 +54,76 @@ import FallbackSpinner from 'src/@core/components/spinner';
 
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
-    Component: NextPage
+  Component: NextPage
 }
 
 // ** Pace Loader
 if (themeConfig.routingLoader) {
-    Router.events.on('routeChangeStart', () => {
-        NProgress.start()
-    })
-    Router.events.on('routeChangeError', () => {
-        NProgress.done()
-    })
-    Router.events.on('routeChangeComplete', () => {
-        NProgress.done()
-    })
+  Router.events.on('routeChangeStart', () => {
+    NProgress.start()
+  })
+  Router.events.on('routeChangeError', () => {
+    NProgress.done()
+  })
+  Router.events.on('routeChangeComplete', () => {
+    NProgress.done()
+  })
 }
 
 // ** Configure JSS & ClassName
 const App: any = (props: ExtendedAppProps) => {
-    const { Component, pageProps: {
-        session, ...pageProps
-    } } = props
+  const { Component, pageProps: {
+    session, ...pageProps
+  } } = props
 
-    // Variables
-    const contentHeightFixed = Component.contentHeightFixed ?? false
-    const getLayout = Component.getLayout ?? (page => <UserLayout contentHeightFixed={contentHeightFixed}>{page}</UserLayout>)
-    const setConfig = Component.setConfig ?? undefined
-    const aclAbilities = Component.acl ?? defaultACLObj
+  // Variables
+  const contentHeightFixed = Component.contentHeightFixed ?? false
+  const getLayout = Component.getLayout ?? (page => <UserLayout contentHeightFixed={contentHeightFixed}>{page}</UserLayout>)
+  const setConfig = Component.setConfig ?? undefined
+  const aclAbilities = Component.acl ?? defaultACLObj
 
-    return (
-        <>
-            <Head>
-                <title>{`${themeConfig.templateName}`}</title>
-                <meta
-                    name='description'
-                    content={`${themeConfig.templateName} meta content`}
-                />
-                <meta name='keywords' content='RapKing, Share Raps, Write Raps, Get Ranked' />
-                <meta name='viewport' content='initial-scale=1, width=device-width' />
-            </Head>
-            <SessionProvider session={session}>
-                <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
-                    <SettingsConsumer>
-                        {({ settings }) => {
-                            return (
-                                <ThemeComponent settings={settings}>
-                                    <AclGuard aclAbilities={aclAbilities}>
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <CreateProfileGuard fallback={
-                                                <FallbackSpinner />
-                                            }>
-                                                {getLayout(<Component {...pageProps} />)}
-                                            </CreateProfileGuard>
-                                        </ LocalizationProvider>
-                                    </AclGuard>
-                                    <ReactHotToast>
-                                        <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
-                                    </ReactHotToast>
-                                </ThemeComponent>
-                            )
-                        }}
-                    </SettingsConsumer>
-                </SettingsProvider>
-            </SessionProvider>
-        </>
-    )
+  return (
+    <>
+      <Head>
+        <title>{`${themeConfig.templateName}`}</title>
+        <meta
+          name='description'
+          content={`${themeConfig.templateName} meta content`}
+        />
+        <meta
+          name='keywords'
+          content='RapKing, Share Raps, Write Raps, Get Ranked' />
+        <meta
+          name='viewport'
+          content='initial-scale=1, width=device-width'
+        />
+      </Head>
+      <SessionProvider session={session}>
+        <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
+          <SettingsConsumer>
+            {({ settings }) => {
+              return (
+                <ThemeComponent settings={settings}>
+                  <AclGuard aclAbilities={aclAbilities}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <CreateProfileGuard fallback={
+                        <FallbackSpinner />
+                      }>
+                        {getLayout(<Component {...pageProps} />)}
+                      </CreateProfileGuard>
+                    </ LocalizationProvider>
+                  </AclGuard>
+                  <ReactHotToast>
+                    <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
+                  </ReactHotToast>
+                </ThemeComponent>
+              )
+            }}
+          </SettingsConsumer>
+        </SettingsProvider>
+      </SessionProvider>
+    </>
+  )
 }
 
 export default api.withTRPC(App);

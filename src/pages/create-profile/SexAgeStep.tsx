@@ -11,134 +11,133 @@ import dayjs, { Dayjs } from 'dayjs'
 // import Icon from 'src/@core/components/icon'
 
 export type PersonalStepProps = {
-    handleBack: () => void,
-    handleNext: () => void
+  handleBack: () => void,
+  handleNext: () => void
 }
 
 export type DateType = Date | null | undefined
 type FormValues = {
-    sex: string,
-    dob: string | Dayjs
+  sex: string,
+  dob: string | Dayjs
 }
 
 const formSchema = yup.object().shape({
-    sex: yup
-        .string()
-        .required(),
-    dob: yup
-        .string()
-        .required()
-        .test('invalid-dob', 'Invalid Date of Birth', value => value !== 'Invalid Date')
-        .test('invalid-age', 'Age should be at least 10 years old', function (value) {
-            const dateOfBirth = new Date(value);
-            const now = new Date();
-            const diffInYears = now.getFullYear() - dateOfBirth.getFullYear();
+  sex: yup
+    .string()
+    .required(),
+  dob: yup
+    .string()
+    .required()
+    .test('invalid-dob', 'Invalid Date of Birth', value => value !== 'Invalid Date')
+    .test('invalid-age', 'Age should be at least 10 years old', function (value) {
+      const dateOfBirth = new Date(value);
+      const now = new Date();
+      const diffInYears = now.getFullYear() - dateOfBirth.getFullYear();
 
-            return diffInYears > 10 && diffInYears < 90;
-        })
+      return diffInYears > 10 && diffInYears < 90;
+    })
 })
 
 function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
 
-    // queries
-    const { data: profileData } = api.profile.getProfile.useQuery();
+  // queries
+  const { data: profileData } = api.profile.getProfile.useQuery();
 
-    // initialValues
-    const initialValues: FormValues = {
-        sex: profileData?.sex || '',
-        dob: profileData && profileData.dob ? dayjs(profileData.dob.toUTCString()) : ''
+  // initialValues
+  const initialValues: FormValues = {
+    sex: profileData?.sex || '',
+    dob: profileData && profileData.dob ? dayjs(profileData.dob.toUTCString()) : ''
+  }
+
+  const {
+    control: control,
+    handleSubmit: handleUsernameSubmit,
+    formState: { errors: errors, isValid },
+  } = useForm({
+    defaultValues: initialValues,
+    resolver: yupResolver(formSchema)
+  })
+
+  const profileMutation = api.profile.updateProfile.useMutation();
+
+  const updateProfile = async ({ sex, dob }: FormValues) => {
+    try {
+      const updatedProfile = await profileMutation.mutateAsync({
+        sex,
+        dob: new Date(dob as string)
+      })
+      if (updatedProfile) {
+        return handleNext()
+      }
+      throw new Error('Failed to update username')
+    } catch (error) {
+      console.error(error)
     }
+  }
 
-    const {
-        // getValues,
-        control: control,
-        handleSubmit: handleUsernameSubmit,
-        formState: { errors: errors, isValid },
-    } = useForm({
-        defaultValues: initialValues,
-        resolver: yupResolver(formSchema)
-    })
+  return (
+    <StepContent>
+      <form key={1} onSubmit={handleUsernameSubmit((formValues) => updateProfile(formValues))}>
+        <Controller
+          name='dob'
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { value, onChange } }) => (
+            <Stack marginBottom={3}>
+              <FormLabel sx={{ marginBottom: 1 }}>Date of Birth</FormLabel>
+              <DateField format="MM-DD-YYYY" value={value} onChange={onChange} size='small' />
+            </Stack>
+          )}
+        />
+        {errors.dob && (
+          <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-dob'>
+            {errors.dob.message}
+          </FormHelperText>
+        )}
+        <Controller
+          name="sex"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <Stack marginTop={2}>
+              <FormLabel sx={{ marginBottom: -1 }}>Sex</FormLabel>
+              <RadioGroup
+                row
+                aria-label="sex"
+                {...field}
+              >
+                <FormControlLabel value="male" control={<Radio />} label="Male" />
+                <FormControlLabel value="female" control={<Radio />} label="Female" />
+              </RadioGroup>
+            </Stack>
+          )}
+        />
+        {errors.sex && (
+          <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-dob'>
+            {errors.sex.message}
+          </FormHelperText>
+        )}
+        <div className='button-wrapper'>
+          <Button
+            size='small'
+            variant='outlined'
+            color='primary'
+            onClick={handleBack}>
+            Back
+          </Button>
+          <Button
+            disabled={!!errors.sex || !!errors.dob || !isValid}
+            type='submit'
+            size='small'
+            sx={{ ml: 4 }}
+            variant='contained'>
+            Next
+          </Button>
+        </div>
+      </form>
 
-    const profileMutation = api.profile.updateProfile.useMutation();
-
-    const updateProfile = async ({ sex, dob }: FormValues) => {
-        try {
-            const updatedProfile = await profileMutation.mutateAsync({
-                sex,
-                dob: new Date(dob as string)
-            })
-            if (updatedProfile) {
-                return handleNext()
-            }
-            throw new Error('Failed to update username')
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    return (
-        <StepContent>
-            <form key={1} onSubmit={handleUsernameSubmit((formValues) => updateProfile(formValues))}>
-                <Controller
-                    name='dob'
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                        <Stack marginBottom={3}>
-                            <FormLabel sx={{ marginBottom: 1 }}>Date of Birth</FormLabel>
-                            <DateField format="MM-DD-YYYY" value={value} onChange={onChange} size='small' />
-                        </Stack>
-                    )}
-                />
-                {errors.dob && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-dob'>
-                        {errors.dob.message}
-                    </FormHelperText>
-                )}
-                <Controller
-                    name="sex"
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field }) => (
-                        <Stack marginTop={2}>
-                            <FormLabel sx={{ marginBottom: -1 }}>Sex</FormLabel>
-                            <RadioGroup
-                                row
-                                aria-label="sex"
-                                {...field}
-                            >
-                                <FormControlLabel value="male" control={<Radio />} label="Male" />
-                                <FormControlLabel value="female" control={<Radio />} label="Female" />
-                            </RadioGroup>
-                        </Stack>
-                    )}
-                />
-                {errors.sex && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-dob'>
-                        {errors.sex.message}
-                    </FormHelperText>
-                )}
-                <div className='button-wrapper'>
-                    <Button
-                        size='small'
-                        variant='outlined'
-                        color='primary'
-                        onClick={handleBack}>
-                        Back
-                    </Button>
-                    <Button
-                        disabled={!!errors.sex || !!errors.dob || !isValid}
-                        type='submit'
-                        size='small'
-                        sx={{ ml: 4 }}
-                        variant='contained'>
-                        Next
-                    </Button>
-                </div>
-            </form>
-
-        </StepContent>
-    )
+    </StepContent>
+  )
 }
 
 export default PersonalStep
