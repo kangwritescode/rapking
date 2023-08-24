@@ -31,6 +31,7 @@ export default function TextEditor() {
           background: theme.palette.background.default,
           color: theme.palette.text.primary,
           width: '100%',
+          minHeight: '15rem'
         },
         toolbar: {
           background: theme.palette.background.paper,

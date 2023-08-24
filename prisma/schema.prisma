@@ -53,7 +53,7 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
-    profile       Profile?  
+    profile       Profile?
     accounts      Account[]
     sessions      Session[]
 }
@@ -69,6 +69,7 @@ model Profile {
     user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId        String @unique
 }
+
 
 model VerificationToken {
     identifier String
