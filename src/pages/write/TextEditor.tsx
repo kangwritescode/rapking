@@ -26,7 +26,6 @@ export default function TextEditor() {
   return (
     <RichTextEditor
       editor={editor}
-      onChange={(event) => console.log(event)}
       styles={{
         content: {
           background: theme.palette.background.default,
