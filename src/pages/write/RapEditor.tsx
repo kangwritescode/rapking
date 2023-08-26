@@ -2,7 +2,7 @@ import { styled } from '@mui/material/styles'
 import TextEditor from './TextEditor';
 import TitleSettingsBar from './TitleSettingsBar';
 import { useState } from 'react';
-import { Rap } from '@prisma/client';
+import { RapCreate } from 'src/shared/types';
 
 const EditorContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -17,7 +17,7 @@ const EditorContainer = styled('div')(({ theme }) => ({
 }))
 
 interface RapEditorProps {
-  handleSubmit: (rap: Partial<Rap>) => void;
+  handleSubmit: (rap: RapCreate) => void;
 }
 
 export default function RapEditor({ handleSubmit }: RapEditorProps) {

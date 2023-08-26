@@ -1,6 +1,4 @@
-export type Rap = {
-  id: string;
+export type RapCreate = {
   title: string;
   content: string;
-  profileId: string;
 };

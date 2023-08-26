@@ -6,9 +6,6 @@ import {
 } from "src/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
-// import { env } from "src/env.mjs";
-// import axios from "axios";
-
 export const rapRouter = createTRPCRouter({
   createRap: protectedProcedure
     .input(z.object({ title: z.string(), content: z.string() }))
@@ -25,6 +22,11 @@ export const rapRouter = createTRPCRouter({
             message: "Profile not found",
           });
         }
+
+        // check if a rap with the same title already exists
+        const existingRap = await ctx.prisma.rap.findUnique({
+          where: { title: input.title },
+        });
 
         if (existingProfile) {
           return await ctx.prisma.rap.create({
