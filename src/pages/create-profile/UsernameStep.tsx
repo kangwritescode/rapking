@@ -23,16 +23,16 @@ const usernameSchema = yup.object().shape({
 function UsernameStep({ handleNext }: UsernameStepProps) {
 
   // queries
-  const { data: profileData } = api.profile.getProfile.useQuery();
+  const { data: userData } = api.user.getUser.useQuery();
 
   // state
-  const profileMutation = api.profile.updateProfile.useMutation();
-  const [value, setValue] = React.useState<string>(profileData?.username || '');
+  const userMutation = api.user.updateUser.useMutation();
+  const [value, setValue] = React.useState<string>(userData?.username || '');
   const [controlledIsAvailable, setControlledIsAvailable] = React.useState<boolean | undefined>(undefined);
   const debouncedValue = useDebounce(value, 500);
 
   // queries
-  const { data, status } = api.profile.usernameIsAvailable.useQuery({
+  const { data, status } = api.user.usernameIsAvailable.useQuery({
     text: debouncedValue
   }, { enabled: debouncedValue.length > 2 })
 
@@ -44,9 +44,10 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
 
   const updateUsername = async (updatedUsername: string) => {
     try {
-      const updatedProfile = await profileMutation.mutateAsync({
+      const updatedProfile = await userMutation.mutateAsync({
         username: updatedUsername
       })
+      console.log(updatedProfile)
       if (updatedProfile) {
         return handleNext()
       }
@@ -64,7 +65,7 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
     handleSubmit: handleUsernameSubmit,
     formState: { errors: errors }
   } = useForm({
-    defaultValues: { username: profileData?.username || '' },
+    defaultValues: { username: userData?.username || '' },
     resolver: yupResolver(usernameSchema)
   })
 

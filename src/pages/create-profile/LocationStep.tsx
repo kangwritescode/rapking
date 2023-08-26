@@ -29,12 +29,12 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
 
   // queries
   const { data: locationsData } = api.geoDB.getLocationsByZip.useQuery({ zipCode: inputValue }, { enabled: inputValue.length === 5 })
-  const { data: profileData } = api.profile.getProfile.useQuery();
-  const profileMutation = api.profile.updateProfile.useMutation();
+  const { data: userData } = api.user.getUser.useQuery();
+  const profileMutation = api.user.updateUser.useMutation();
 
   // initial values
-  const initialLocation: Option | null = profileData?.state && profileData?.city ?
-    { state: profileData?.state, city: profileData?.city, label: `${profileData?.city}, ${profileData?.state}` } : null
+  const initialLocation: Option | null = userData?.state && userData?.city ?
+    { state: userData?.state, city: userData?.city, label: `${userData?.city}, ${userData?.state}` } : null
 
   useEffect(() => {
     if (locationsData && locationsData.length > 0) {
@@ -44,7 +44,7 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
     }
   }, [locationsData, inputValue])
 
-  const updateProfile = async (formValues: FormValues) => {
+  const updateUser = async (formValues: FormValues) => {
     try {
       const updatedProfile = await profileMutation.mutateAsync({
         state: formValues.location?.state,
@@ -89,7 +89,7 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
 
   return (
     <StepContent>
-      <form key={0} onSubmit={handleUsernameSubmit(updateProfile)}>
+      <form key={0} onSubmit={handleUsernameSubmit(updateUser)}>
         <Controller
           control={formControl}
           name='country'

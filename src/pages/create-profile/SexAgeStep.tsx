@@ -41,7 +41,7 @@ const formSchema = yup.object().shape({
 function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
 
   // queries
-  const { data: profileData } = api.profile.getProfile.useQuery();
+  const { data: profileData } = api.user.getUser.useQuery();
 
   // initialValues
   const initialValues: FormValues = {
@@ -58,9 +58,9 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
     resolver: yupResolver(formSchema)
   })
 
-  const profileMutation = api.profile.updateProfile.useMutation();
+  const profileMutation = api.user.updateUser.useMutation();
 
-  const updateProfile = async ({ sex, dob }: FormValues) => {
+  const updateUser = async ({ sex, dob }: FormValues) => {
     try {
       const updatedProfile = await profileMutation.mutateAsync({
         sex,
@@ -77,7 +77,7 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
 
   return (
     <StepContent>
-      <form key={1} onSubmit={handleUsernameSubmit((formValues) => updateProfile(formValues))}>
+      <form key={1} onSubmit={handleUsernameSubmit((formValues) => updateUser(formValues))}>
         <Controller
           name='dob'
           control={control}

@@ -47,30 +47,23 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-  profile       Profile?
+  username      String?   @unique
+  sex           String?
+  dob           DateTime?
+  country       String?
+  city          String?
+  state         String?
+  raps          Rap[]
   accounts      Account[]
   sessions      Session[]
 }
 
-model Profile {
-  id       String    @id @default(cuid())
-  username String?   @unique
-  sex      String?
-  dob      DateTime?
-  country  String?
-  city     String?
-  state    String?
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId   String    @unique
-  raps     Rap[]
-}
-
 model Rap {
-  id        String  @id @default(cuid())
-  title     String
-  content   String
-  Profile   Profile @relation(fields: [profileId], references: [id])
-  profileId String
+  id      String  @id @default(cuid())
+  title   String
+  content String
+  User    User?   @relation(fields: [userId], references: [id])
+  userId  String?
 }
 
 model VerificationToken {

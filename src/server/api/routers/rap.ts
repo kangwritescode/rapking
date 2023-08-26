@@ -12,8 +12,8 @@ export const rapRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       try {
 
-        const existingProfile = await ctx.prisma.profile.findUnique({
-          where: { userId: ctx.session.user.id },
+        const existingProfile = await ctx.prisma.user.findUnique({
+          where: { id: ctx.session.user.id },
         });
 
         if (!existingProfile) {

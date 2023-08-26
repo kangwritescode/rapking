@@ -6,21 +6,21 @@ import {
 } from "src/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
-export const profileRouter = createTRPCRouter({
+export const userRouter = createTRPCRouter({
   findByUsername: protectedProcedure
     .input(z.object({ text: z.string() }))
     .query(({ input, ctx }) => {
-      return ctx.prisma.profile.findUnique({
+      return ctx.prisma.user.findUnique({
         where: {
           username: input.text,
         },
       })
     }),
-  getProfile: protectedProcedure
+  getUser: protectedProcedure
     .query(({ ctx }) => {
-      return ctx.prisma.profile.findUnique({
+      return ctx.prisma.user.findUnique({
         where: {
-          userId: ctx.session.user.id,
+          id: ctx.session.user.id,
         },
       })
     }),
@@ -30,26 +30,17 @@ export const profileRouter = createTRPCRouter({
     }))
     .query(async ({ input, ctx }) => {
 
-      const profileWithUsername = await ctx.prisma.profile.findUnique({
+      const userWithUsername = await ctx.prisma.user.findUnique({
         where: {
           username: input.text,
         },
       })
 
       return {
-        isAvailable: profileWithUsername === null || profileWithUsername.userId === ctx.session.user.id,
+        isAvailable: userWithUsername === null || userWithUsername.id === ctx.session.user.id,
       };
     }),
-  createProfile: protectedProcedure
-    .mutation(async ({ ctx }) => {
-      return ctx.prisma.profile.create({
-        data: {
-          userId: ctx.session.user.id,
-        },
-      });
-    }
-    ),
-  updateProfile: protectedProcedure
+  updateUser: protectedProcedure
     .input(z.object({
       username: z.string().optional(),
       sex: z.string().optional(),
@@ -60,26 +51,26 @@ export const profileRouter = createTRPCRouter({
     }))
     .mutation(async ({ input, ctx }) => {
 
-      // checks if profile exists
-      const existingProfile = await ctx.prisma.profile.findUnique({
-        where: { userId: ctx.session.user.id },
+      // checks if user exists
+      const existingUser = await ctx.prisma.user.findUnique({
+        where: { id: ctx.session.user.id },
       });
 
-      // creates profile if it doesn't exist
-      if (!existingProfile) {
-        await ctx.prisma.profile.create({
+      // creates user if it doesn't exist
+      if (!existingUser) {
+        await ctx.prisma.user.create({
           data: {
-            userId: ctx.session.user.id,
+            id: ctx.session.user.id,
           },
         });
       }
 
       // checks if username is already taken
       if (input.username) {
-        const profileWithUsername = await ctx.prisma.profile.findUnique({
+        const userWithUsername = await ctx.prisma.user.findUnique({
           where: { username: input.username },
         });
-        if (profileWithUsername && profileWithUsername.userId !== ctx.session.user.id) {
+        if (userWithUsername && userWithUsername.id !== ctx.session.user.id) {
           throw new TRPCError({
             code: "UNPROCESSABLE_CONTENT",
             message: "Username already taken",
@@ -87,10 +78,10 @@ export const profileRouter = createTRPCRouter({
         }
       }
 
-      // updates profile
-      const updatedProfile = await ctx.prisma.profile.update({
+      // updates user
+      const updatedUser = await ctx.prisma.user.update({
         where: {
-          userId: ctx.session.user.id,
+          id: ctx.session.user.id,
         },
         data: {
           ...(input.username ? { username: input.username } : {}),
@@ -102,7 +93,7 @@ export const profileRouter = createTRPCRouter({
         },
       });
 
-      return updatedProfile;
+      return updatedUser;
     })
 
 });

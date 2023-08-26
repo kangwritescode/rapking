@@ -17,15 +17,15 @@ const CreateProfileGuard = (props: CreateProfileGuardProps) => {
     const router = useRouter()
 
     // queries
-    const { data: profileData } = api.profile.getProfile.useQuery();
+    const { data: userData } = api.user.getUser.useQuery();
 
-    const profileIsIncomplete = profileData === null
-        || profileData?.username === null
-        || profileData?.dob === null
-        || profileData?.state === null
-        || profileData?.city === null
-        || profileData?.country === null
-        || profileData?.sex === null
+    const profileIsIncomplete = userData === null
+        || userData?.username === null
+        || userData?.dob === null
+        || userData?.state === null
+        || userData?.city === null
+        || userData?.country === null
+        || userData?.sex === null
 
     if (status === 'loading') {
         return fallback
@@ -40,7 +40,7 @@ const CreateProfileGuard = (props: CreateProfileGuardProps) => {
 
         return <></>
     }
-    
+
     return <>{children}</>
 }
 
