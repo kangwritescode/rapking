@@ -67,8 +67,8 @@ model Profile {
 
 model Rap {
   id        String  @id @default(cuid())
-  title     String?
-  content   String?
+  title     String
+  content   String
   Profile   Profile @relation(fields: [profileId], references: [id])
   profileId String
 }

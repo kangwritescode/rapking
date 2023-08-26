@@ -11,7 +11,12 @@ import { useTheme } from '@mui/material';
 
 const content = '';
 
-export default function TextEditor() {
+interface TextEditorProps {
+  onChange: (content: string) => void;
+}
+
+
+export default function TextEditor({ onChange }: TextEditorProps) {
 
   const editor = useEditor({
     extensions: [
@@ -19,6 +24,10 @@ export default function TextEditor() {
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
     ],
     content,
+    onUpdate({ editor }) {
+      onChange(editor.getHTML());
+    }
+
   });
 
   const theme = useTheme()

@@ -1,14 +1,24 @@
 import { Box, Button, FormLabel, Stack, SxProps, TextField, useTheme } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Icon from 'src/@core/components/icon';
 
 interface TitleSettingsBarProps {
   sx?: SxProps
+  onClick?: () => void
+  onTitleChange?: (title: string) => void
 }
 
-function TitleSettingsBar({ sx }: TitleSettingsBarProps) {
+function TitleSettingsBar({ sx, onClick, onTitleChange }: TitleSettingsBarProps) {
 
   const theme = useTheme();
+
+  const [title, setTitle] = useState('')
+
+  useEffect(() => {
+    if (onTitleChange) {
+      onTitleChange(title)
+    }
+  }, [title, onTitleChange])
 
   return (
     <Box
@@ -26,7 +36,8 @@ function TitleSettingsBar({ sx }: TitleSettingsBarProps) {
         <TextField
           size='small'
           fullWidth
-          value='Pidgeons' />
+          onChange={(e) => setTitle(e.target.value)}
+          value={title} />
       </Stack>
       <Stack pl='1rem'>
         <FormLabel>
@@ -35,6 +46,7 @@ function TitleSettingsBar({ sx }: TitleSettingsBarProps) {
         <Stack
           direction='row'>
           <Button
+            onClick={onClick}
             size='medium'
             variant='contained'>
             Save
