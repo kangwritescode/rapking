@@ -5,6 +5,7 @@ import RapEditor from './RapEditor';
 import { RapCreate } from 'src/shared/types';
 import { api } from 'src/utils/api';
 import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/router';
 
 const PageContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
@@ -18,9 +19,10 @@ const PageContainer = styled(Container)(({ theme }) => ({
 
 function WritePage() {
 
+  const router = useRouter();
   const profileMutation = api.rap.createRap.useMutation();
 
-  const onSubmitHandler = async (rap: RapCreate) => {
+  const createRap = async (rap: RapCreate) => {
 
     try {
       const createdRap = await profileMutation.mutateAsync(rap, {
@@ -37,7 +39,7 @@ function WritePage() {
         toast.success('Rap Created Successfully!', {
           position: 'bottom-left',
         })
-        console.log(createdRap)
+        router.push(`/write/${createdRap.id}`)
       }
       else {
         throw new Error('Failed to update location')
@@ -49,7 +51,7 @@ function WritePage() {
 
   return (
     <PageContainer>
-      <RapEditor handleSubmit={onSubmitHandler} />
+      <RapEditor handleSubmit={createRap} />
     </PageContainer>
   )
 }

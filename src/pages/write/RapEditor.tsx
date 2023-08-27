@@ -18,12 +18,14 @@ const EditorContainer = styled('div')(({ theme }) => ({
 
 interface RapEditorProps {
   handleSubmit: (rap: RapCreate) => void;
+  defaultTitle?: string;
+  defaultContent?: string;
 }
 
-export default function RapEditor({ handleSubmit }: RapEditorProps) {
+export default function RapEditor({ handleSubmit, defaultTitle = '', defaultContent = '' }: RapEditorProps) {
 
-  const [content, setContent] = useState('')
-  const [title, setTitle] = useState('');
+  const [content, setContent] = useState(defaultContent)
+  const [title, setTitle] = useState(defaultTitle);
 
   const onSubmitHandler = () => {
     handleSubmit({
@@ -37,9 +39,11 @@ export default function RapEditor({ handleSubmit }: RapEditorProps) {
       <TitleSettingsBar
         sx={{ mb: '2rem' }}
         onClick={onSubmitHandler}
+        defaultTitle={defaultTitle}
         onTitleChange={(title: string) => setTitle(title)}
       />
       <TextEditor
+        defaultContent={defaultContent}
         onChange={(content: string) => setContent(content)} />
     </EditorContainer>
   );

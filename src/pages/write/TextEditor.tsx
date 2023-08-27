@@ -4,26 +4,21 @@ import StarterKit from '@tiptap/starter-kit';
 import TextAlign from '@tiptap/extension-text-align';
 import { useTheme } from '@mui/material';
 
-// interface TextEditorProps {
-//     // contentMinHeight: number;
-//     // contentWidth: number;
-// }
-
-const content = '';
 
 interface TextEditorProps {
   onChange: (content: string) => void;
+  defaultContent?: string;
 }
 
 
-export default function TextEditor({ onChange }: TextEditorProps) {
+export default function TextEditor({ onChange, defaultContent }: TextEditorProps) {
 
   const editor = useEditor({
     extensions: [
       StarterKit,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
     ],
-    content,
+    content: defaultContent || '',
     onUpdate({ editor }) {
       onChange(editor.getHTML());
     }

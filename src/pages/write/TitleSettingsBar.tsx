@@ -6,13 +6,14 @@ interface TitleSettingsBarProps {
   sx?: SxProps
   onClick?: () => void
   onTitleChange?: (title: string) => void
+  defaultTitle?: string
 }
 
-function TitleSettingsBar({ sx, onClick, onTitleChange }: TitleSettingsBarProps) {
+function TitleSettingsBar({ sx, onClick, onTitleChange, defaultTitle }: TitleSettingsBarProps) {
 
   const theme = useTheme();
 
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState(defaultTitle || '')
 
   useEffect(() => {
     if (onTitleChange) {
@@ -34,6 +35,7 @@ function TitleSettingsBar({ sx, onClick, onTitleChange }: TitleSettingsBarProps)
           Title
         </FormLabel>
         <TextField
+          defaultValue={title}
           size='small'
           fullWidth
           onChange={(e) => setTitle(e.target.value)}
