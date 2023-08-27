@@ -5,12 +5,26 @@ import {
   protectedProcedure,
 } from "src/server/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { Rap } from "src/shared/schemas";
+import { Rap, rapCreateInputSchema } from "src/shared/schemas";
 
 export const rapRouter = createTRPCRouter({
   createRap: protectedProcedure
-    .input(z.object({ title: z.string(), content: z.string() }))
+    .input(rapCreateInputSchema)
     .mutation(async ({ input, ctx }) => {
+
+      if (input.title.length < 3) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Title must be at least 3 characters.",
+        });
+      }
+
+      if (input.content.length < 100) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Rap is too short.",
+        });
+      }
 
       // check if a rap with the same title already exists
       const existingRap = await ctx.prisma.rap.findFirst({

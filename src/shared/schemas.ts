@@ -8,3 +8,8 @@ export const rapSchema = z.object({
 });
 
 export type Rap = z.infer<typeof rapSchema>;
+
+export const rapCreateInputSchema = z.object({
+  title: z.string(),
+  content: z.string(),
+});

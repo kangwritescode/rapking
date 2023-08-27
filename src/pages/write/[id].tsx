@@ -11,8 +11,8 @@ const ExistingRap = () => {
   const { data } = api.rap.getRap.useQuery({ id: id as string });
   const updateRapMutation = api.rap.updateRap.useMutation();
 
-  const updateRap = async (rap: RapMutatePayload) => {
-    updateRapMutation.mutateAsync({
+  const updateRap = (rap: RapMutatePayload) => {
+    updateRapMutation.mutate({
       id: id as string,
       ...rap
     }, {

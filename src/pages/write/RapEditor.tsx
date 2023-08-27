@@ -3,6 +3,9 @@ import TextEditor from './TextEditor';
 import TitleSettingsBar from './TitleSettingsBar';
 import { useState } from 'react';
 import { RapMutatePayload } from 'src/shared/types';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 const EditorContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -18,17 +21,31 @@ const EditorContainer = styled('div')(({ theme }) => ({
 
 
 interface RapEditorProps {
-  handleSubmit: (rap: RapMutatePayload) => Promise<void>;
+  handleSubmit: (rap: RapMutatePayload) => void;
   defaultTitle?: string;
   defaultContent?: string;
 }
 
+const rapEditorFormSchema = z.object({
+  title: z.string().min(3).max(20),
+})
+
+export type RapEditorFormValues = z.infer<typeof rapEditorFormSchema>
+
 export default function RapEditor({ handleSubmit, defaultTitle = '', defaultContent = '' }: RapEditorProps) {
 
   const [content, setContent] = useState(defaultContent)
-  const [title, setTitle] = useState(defaultTitle);
+
+  const {
+    register,
+    getValues,
+  } = useForm({
+    defaultValues: { title: defaultTitle },
+    resolver: zodResolver(rapEditorFormSchema)
+  })
 
   const onSubmitHandler = () => {
+    const { title } = getValues();
     handleSubmit({
       content,
       title
@@ -40,11 +57,10 @@ export default function RapEditor({ handleSubmit, defaultTitle = '', defaultCont
       <TitleSettingsBar
         sx={{ mb: '2rem' }}
         onClick={onSubmitHandler}
-        defaultTitle={defaultTitle}
-        onTitleChange={(title: string) => setTitle(title)}
+        register={register}
       />
       <TextEditor
-        defaultContent={defaultContent}
+        content={content}
         onChange={(content: string) => setContent(content)} />
     </EditorContainer>
   );

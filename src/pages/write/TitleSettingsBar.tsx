@@ -1,25 +1,25 @@
 import { Box, Button, FormLabel, Stack, SxProps, TextField, useTheme } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { UseFormRegister } from 'react-hook-form';
 import Icon from 'src/@core/components/icon';
+import { RapEditorFormValues } from './RapEditor';
 
 interface TitleSettingsBarProps {
   sx?: SxProps
   onClick?: () => void
-  onTitleChange?: (title: string) => void
-  defaultTitle?: string
+  register?: UseFormRegister<RapEditorFormValues>
 }
 
-function TitleSettingsBar({ sx, onClick, onTitleChange, defaultTitle }: TitleSettingsBarProps) {
+function TitleSettingsBar(props: TitleSettingsBarProps) {
+
+  const {
+    sx,
+    onClick,
+    register,
+  } = props
 
   const theme = useTheme();
 
-  const [title, setTitle] = useState(defaultTitle || '')
-
-  useEffect(() => {
-    if (onTitleChange) {
-      onTitleChange(title)
-    }
-  }, [title, onTitleChange])
 
   return (
     <Box
@@ -35,11 +35,9 @@ function TitleSettingsBar({ sx, onClick, onTitleChange, defaultTitle }: TitleSet
           Title
         </FormLabel>
         <TextField
-          defaultValue={title}
+          {...register?.('title')}
           size='small'
-          fullWidth
-          onChange={(e) => setTitle(e.target.value)}
-          value={title} />
+          fullWidth />
       </Stack>
       <Stack pl='1rem'>
         <FormLabel>

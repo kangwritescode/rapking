@@ -7,22 +7,21 @@ import { useTheme } from '@mui/material';
 
 interface TextEditorProps {
   onChange: (content: string) => void;
-  defaultContent?: string;
+  content: string;
 }
 
 
-export default function TextEditor({ onChange, defaultContent }: TextEditorProps) {
+export default function TextEditor({ onChange, content }: TextEditorProps) {
 
   const editor = useEditor({
     extensions: [
       StarterKit,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
     ],
-    content: defaultContent || '',
+    content,
     onUpdate({ editor }) {
       onChange(editor.getHTML());
     }
-
   });
 
   const theme = useTheme()

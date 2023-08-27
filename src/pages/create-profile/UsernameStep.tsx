@@ -1,24 +1,24 @@
 import { Box, Button, CircularProgress, FormHelperText, StepContent, TextField } from '@mui/material'
-import * as yup from 'yup'
 import React, { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { api } from 'src/utils/api'
 import { useDebounce } from './utils';
 import { Icon } from '@iconify/react'
+import { z } from 'zod'
 
 export type UsernameStepProps = {
   handleNext: () => void
 }
 
-const usernameSchema = yup.object().shape({
-  username: yup
+const usernameSchema = z.object({
+  username: z
     .string()
-    .required()
     .min(3)
     .max(20)
-    .matches(/^(.*[a-zA-Z]){3}/, 'Must include at least three letters'),
+    .regex(/^(.*[a-zA-Z]){3}/, 'Must include at least three letters')
 })
+
 
 function UsernameStep({ handleNext }: UsernameStepProps) {
 
@@ -65,7 +65,7 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
     formState: { errors: errors }
   } = useForm({
     defaultValues: { username: userData?.username || '' },
-    resolver: yupResolver(usernameSchema)
+    resolver: zodResolver(usernameSchema)
   })
 
   return (

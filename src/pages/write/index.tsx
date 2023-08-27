@@ -23,25 +23,18 @@ function WritePage() {
   const router = useRouter();
   const profileMutation = api.rap.createRap.useMutation();
 
-  const createRap = async (rap: RapMutatePayload) => {
-
-    profileMutation.mutateAsync(rap, {
+  const createRap = (rap: RapMutatePayload) => {
+    profileMutation.mutate(rap, {
       onError: (error) => {
-        console.log(error)
         toast.error(error.message, {
           position: 'bottom-left',
         })
       },
       onSuccess: (data: Rap) => {
-        if (data) {
-          toast.success('Rap Created Successfully!', {
-            position: 'bottom-left',
-          })
-          router.push(`/write/${data.id}`)
-        }
-        else {
-          throw new Error('Failed to update location')
-        }
+        toast.success('Rap Created Successfully!', {
+          position: 'bottom-left',
+        })
+        router.push(`/write/${data.id}`)
       }
     })
   }
