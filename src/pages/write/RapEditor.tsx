@@ -70,15 +70,17 @@ export default function RapEditor(props: RapEditorProps) {
         direction='row'
         pb='1rem'
         justifyContent='flex-end'>
-        <Button
-          sx={{
-            marginRight: '1rem',
-            whiteSpace: 'nowrap'
-          }}
-          size='medium'
-          variant='outlined'>
-          <Icon icon='ic:baseline-settings' fontSize={20} />
-        </Button>
+        {rapData && (
+          <Button
+            sx={{
+              marginRight: '1rem',
+              whiteSpace: 'nowrap'
+            }}
+            size='medium'
+            variant='outlined'>
+            <Icon icon='ic:baseline-settings' fontSize={20} />
+          </Button>
+        )}
         <Button
           onClick={onSubmitHandler}
           size='medium'
