@@ -23,7 +23,14 @@ function WritePage() {
   const onSubmitHandler = async (rap: RapCreate) => {
 
     try {
-      const createdRap = await profileMutation.mutateAsync(rap)
+      const createdRap = await profileMutation.mutateAsync(rap, {
+        onError: (error) => {
+          console.log(error)
+          toast.error(error.message, {
+            position: 'bottom-left',
+          })
+        }
+      })
 
       // on successful update
       if (createdRap) {

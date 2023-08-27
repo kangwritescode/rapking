@@ -62,8 +62,8 @@ model Rap {
   id      String  @id @default(cuid())
   title   String
   content String
-  User    User?   @relation(fields: [userId], references: [id])
-  userId  String?
+  User    User   @relation(fields: [userId], references: [id])
+  userId  String
 }
 
 model VerificationToken {

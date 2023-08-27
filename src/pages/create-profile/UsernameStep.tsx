@@ -47,7 +47,6 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
       const updatedProfile = await userMutation.mutateAsync({
         username: updatedUsername
       })
-      console.log(updatedProfile)
       if (updatedProfile) {
         return handleNext()
       }
