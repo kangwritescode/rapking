@@ -59,13 +59,13 @@ model User {
 }
 
 model Rap {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
   content     String
-  User        User    @relation(fields: [userId], references: [id])
+  User        User      @relation(fields: [userId], references: [id])
   userId      String
-  status      String   @default("DRAFT")
-  dateCreated DateTime @default(now())
+  status      RapStatus @default(DRAFT)
+  dateCreated DateTime  @default(now())
 }
 
 model VerificationToken {
@@ -74,4 +74,9 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum RapStatus {
+  DRAFT
+  PUBLISHED
 }

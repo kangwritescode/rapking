@@ -9,10 +9,10 @@ const ExistingRap = () => {
   const { id } = router.query;
 
   const { data: rapData } = api.rap.getRap.useQuery({ id: id as string });
-  const updateRapMutation = api.rap.updateRap.useMutation();
+  const { mutate: updateRap } = api.rap.updateRap.useMutation();
 
-  const updateRap = (rap: RapMutatePayload) => {
-    updateRapMutation.mutate({
+  const submitHandler = (rap: RapMutatePayload) => {
+    updateRap({
       id: id as string,
       ...rap
     }, {
@@ -31,7 +31,7 @@ const ExistingRap = () => {
 
   return (
     <RapEditor
-      handleSubmit={updateRap}
+      handleSubmit={submitHandler}
       rapData={rapData}
     />
   );

@@ -8,7 +8,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Rap } from '@prisma/client';
 import { Button, Stack } from '@mui/material';
-import StatusPill from './StatusPill';
+import { Icon } from '@iconify/react';
+import StatusChanger from './StatusChanger';
 
 // import Icon from 'src/@core/components/icon'
 
@@ -70,22 +71,28 @@ export default function RapEditor(props: RapEditorProps) {
         pb='1rem'
         justifyContent='flex-end'>
         <Button
+          sx={{
+            marginRight: '1rem',
+            whiteSpace: 'nowrap'
+          }}
+          size='medium'
+          variant='outlined'>
+          <Icon icon='ic:baseline-settings' fontSize={20} />
+        </Button>
+        <Button
           onClick={onSubmitHandler}
           size='medium'
           variant='contained'>
           Create
         </Button>
-        {/* <Button
-            sx={{
-              marginLeft: '1rem',
-              whiteSpace: 'nowrap'
-            }}
-            size='medium'
-            variant='contained'>
-            <Icon icon='ic:baseline-settings' fontSize={20} />
-          </Button> */}
+
       </Stack>
-      <StatusPill status='DRAFT' sx={{mb: '1rem'}} />
+      {rapData && (
+        <StatusChanger
+          rapId={rapData.id}
+          status={rapData.status}
+          sx={{ mb: '1rem' }} />
+      )}
       <TitleBar
         sx={{ mb: '2rem' }}
         onClick={onSubmitHandler}

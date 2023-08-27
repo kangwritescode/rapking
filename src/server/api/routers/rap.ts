@@ -51,7 +51,12 @@ export const rapRouter = createTRPCRouter({
 
     }),
   updateRap: protectedProcedure
-    .input(z.object({ id: z.string(), title: z.string(), content: z.string() }))
+    .input(z.object({
+      id: z.string(),
+      title: z.string().optional(),
+      content: z.string().optional(),
+      status: z.enum(["DRAFT", "PUBLISHED"]).optional(),
+    }))
     .mutation(async ({ input, ctx }) => {
 
       // check if a rap with the same title already exists
@@ -73,8 +78,9 @@ export const rapRouter = createTRPCRouter({
           id: input.id,
         },
         data: {
-          title: input.title,
-          content: input.content,
+          ...(input.title && { title: input.title }),
+          ...(input.content && { content: input.content }),
+          ...(input.status && { status: input.status })
         },
       })
 
