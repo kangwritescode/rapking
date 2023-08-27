@@ -11,8 +11,6 @@ import { Button, Stack } from '@mui/material';
 import { Icon } from '@iconify/react';
 import StatusChanger from './StatusChanger';
 
-// import Icon from 'src/@core/components/icon'
-
 const EditorContainer = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -29,7 +27,6 @@ const EditorContainer = styled('div')(({ theme }) => ({
 interface RapEditorProps {
   handleSubmit: (rap: RapMutatePayload) => void;
   rapData?: Rap | null;
-  submitButtonText?: string;
 }
 
 const rapEditorFormSchema = z.object({
@@ -43,7 +40,6 @@ export default function RapEditor(props: RapEditorProps) {
   const {
     handleSubmit,
     rapData,
-    submitButtonText
   } = props;
 
   const [content, setContent] = useState(rapData?.content || '')
@@ -85,7 +81,7 @@ export default function RapEditor(props: RapEditorProps) {
           onClick={onSubmitHandler}
           size='medium'
           variant='contained'>
-          Create
+          {rapData ? 'Update' : 'Create'}
         </Button>
 
       </Stack>
@@ -99,8 +95,6 @@ export default function RapEditor(props: RapEditorProps) {
         sx={{ mb: '2rem' }}
         onClick={onSubmitHandler}
         register={register}
-        submitButtonText={submitButtonText}
-        isEditMode={!!rapData}
       />
       <TextEditor
         content={content}

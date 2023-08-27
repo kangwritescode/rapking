@@ -7,8 +7,6 @@ interface TitleBarProps {
   sx?: SxProps
   onClick?: () => void
   register?: UseFormRegister<RapEditorFormValues>
-  submitButtonText?: string;
-  isEditMode?: boolean;
 }
 
 function TitleBar(props: TitleBarProps) {
@@ -16,14 +14,11 @@ function TitleBar(props: TitleBarProps) {
   const {
     sx,
     register,
-
-    // isEditMode
   } = props
 
   const theme = useTheme();
 
-
-  return (
+return (
     <Box
       display='flex'
       p='1rem 1rem 2rem'
