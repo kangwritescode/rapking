@@ -6,6 +6,7 @@ import { RapMutatePayload } from 'src/shared/types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import StatusPill from './StatusPill';
 
 const EditorContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -54,6 +55,7 @@ export default function RapEditor({ handleSubmit, defaultTitle = '', defaultCont
 
   return (
     <EditorContainer>
+      <StatusPill status='DRAFT' sx={{marginBottom: '1rem'}} />
       <TitleSettingsBar
         sx={{ mb: '2rem' }}
         onClick={onSubmitHandler}
