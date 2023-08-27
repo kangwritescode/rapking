@@ -1,12 +1,16 @@
 import { styled } from '@mui/material/styles'
 import TextEditor from './TextEditor';
-import TitleSettingsBar from './TitleSettingsBar';
+import TitleBar from './TitleBar';
 import { useState } from 'react';
 import { RapMutatePayload } from 'src/shared/types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { Rap } from '@prisma/client';
+import { Button, Stack } from '@mui/material';
 import StatusPill from './StatusPill';
+
+// import Icon from 'src/@core/components/icon'
 
 const EditorContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -23,8 +27,8 @@ const EditorContainer = styled('div')(({ theme }) => ({
 
 interface RapEditorProps {
   handleSubmit: (rap: RapMutatePayload) => void;
-  defaultTitle?: string;
-  defaultContent?: string;
+  rapData?: Rap | null;
+  submitButtonText?: string;
 }
 
 const rapEditorFormSchema = z.object({
@@ -33,15 +37,21 @@ const rapEditorFormSchema = z.object({
 
 export type RapEditorFormValues = z.infer<typeof rapEditorFormSchema>
 
-export default function RapEditor({ handleSubmit, defaultTitle = '', defaultContent = '' }: RapEditorProps) {
+export default function RapEditor(props: RapEditorProps) {
 
-  const [content, setContent] = useState(defaultContent)
+  const {
+    handleSubmit,
+    rapData,
+    submitButtonText
+  } = props;
+
+  const [content, setContent] = useState(rapData?.content || '')
 
   const {
     register,
     getValues,
   } = useForm({
-    defaultValues: { title: defaultTitle },
+    defaultValues: { title: rapData?.title || '' },
     resolver: zodResolver(rapEditorFormSchema)
   })
 
@@ -55,11 +65,33 @@ export default function RapEditor({ handleSubmit, defaultTitle = '', defaultCont
 
   return (
     <EditorContainer>
-      <StatusPill status='DRAFT' sx={{marginBottom: '1rem'}} />
-      <TitleSettingsBar
+      <Stack
+        direction='row'
+        pb='1rem'
+        justifyContent='flex-end'>
+        <Button
+          onClick={onSubmitHandler}
+          size='medium'
+          variant='contained'>
+          Create
+        </Button>
+        {/* <Button
+            sx={{
+              marginLeft: '1rem',
+              whiteSpace: 'nowrap'
+            }}
+            size='medium'
+            variant='contained'>
+            <Icon icon='ic:baseline-settings' fontSize={20} />
+          </Button> */}
+      </Stack>
+      <StatusPill status='DRAFT' sx={{mb: '1rem'}} />
+      <TitleBar
         sx={{ mb: '2rem' }}
         onClick={onSubmitHandler}
         register={register}
+        submitButtonText={submitButtonText}
+        isEditMode={!!rapData}
       />
       <TextEditor
         content={content}

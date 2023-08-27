@@ -32,8 +32,7 @@ const ExistingRap = () => {
   return (
     <RapEditor
       handleSubmit={updateRap}
-      defaultTitle={rapData?.title}
-      defaultContent={rapData?.content}
+      rapData={rapData}
     />
   );
 }

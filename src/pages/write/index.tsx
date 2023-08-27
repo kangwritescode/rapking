@@ -41,7 +41,7 @@ function WritePage() {
 
   return (
     <PageContainer>
-      <RapEditor handleSubmit={createRap} />
+      <RapEditor submitButtonText='Create' handleSubmit={createRap} />
     </PageContainer>
   )
 }
