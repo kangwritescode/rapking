@@ -5,6 +5,9 @@ export const rapSchema = z.object({
   title: z.string(),
   content: z.string(),
   userId: z.string(),
+  status: z.enum(["DRAFT", "PUBLISHED"]),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
 export type Rap = z.infer<typeof rapSchema>;

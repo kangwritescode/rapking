@@ -64,6 +64,9 @@ model Rap {
   content String
   User    User   @relation(fields: [userId], references: [id])
   userId  String
+  status String @default("draft")
+  dateCreated DateTime @default(now())
+  dateUpdated DateTime @updatedAt
 }
 
 model VerificationToken {

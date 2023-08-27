@@ -10,7 +10,6 @@ interface TextEditorProps {
   content: string;
 }
 
-
 export default function TextEditor({ onChange, content }: TextEditorProps) {
 
   const editor = useEditor({

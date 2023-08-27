@@ -16,7 +16,7 @@ const ExistingRap = () => {
       id: id as string,
       ...rap
     }, {
-      onError: (error) => {
+      onError: (error: any) => {
         toast.error(error.message, {
           position: 'bottom-left',
         })

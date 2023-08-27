@@ -6,7 +6,7 @@ import { RapMutatePayload } from 'src/shared/types';
 import { api } from 'src/utils/api';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/router';
-import { Rap } from 'src/shared/schemas';
+import { Rap } from '@prisma/client';
 
 const PageContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
