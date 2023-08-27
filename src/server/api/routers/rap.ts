@@ -5,6 +5,7 @@ import {
   protectedProcedure,
 } from "src/server/api/trpc";
 import { TRPCError } from "@trpc/server";
+import { Rap } from "src/shared/schemas";
 
 export const rapRouter = createTRPCRouter({
   createRap: protectedProcedure
@@ -72,7 +73,7 @@ export const rapRouter = createTRPCRouter({
           id: input.id,
           userId: ctx.session.user.id,
         }
-      })
+      }) as Rap;
     }),
 });
 

@@ -13,7 +13,7 @@ const ExistingRap = () => {
 
   const updateRap = async (rap: RapMutatePayload) => {
     updateRapMutation.mutateAsync({
-      id: String(id),
+      id: id as string,
       ...rap
     }, {
       onError: (error) => {

@@ -6,6 +6,7 @@ import { RapMutatePayload } from 'src/shared/types';
 import { api } from 'src/utils/api';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/router';
+import { Rap } from 'src/shared/schemas';
 
 const PageContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
@@ -24,29 +25,25 @@ function WritePage() {
 
   const createRap = async (rap: RapMutatePayload) => {
 
-    try {
-      const createdRap = await profileMutation.mutateAsync(rap, {
-        onError: (error) => {
-          console.log(error)
-          toast.error(error.message, {
-            position: 'bottom-left',
-          })
-        }
-      })
-
-      // on successful update
-      if (createdRap) {
-        toast.success('Rap Created Successfully!', {
+    profileMutation.mutateAsync(rap, {
+      onError: (error) => {
+        console.log(error)
+        toast.error(error.message, {
           position: 'bottom-left',
         })
-        router.push(`/write/${createdRap.id}`)
+      },
+      onSuccess: (data: Rap) => {
+        if (data) {
+          toast.success('Rap Created Successfully!', {
+            position: 'bottom-left',
+          })
+          router.push(`/write/${data.id}`)
+        }
+        else {
+          throw new Error('Failed to update location')
+        }
       }
-      else {
-        throw new Error('Failed to update location')
-      }
-    } catch (error) {
-      console.error(error)
-    }
+    })
   }
 
   return (
