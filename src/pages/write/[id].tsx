@@ -1,21 +1,40 @@
 import { useRouter } from "next/router";
 import { api } from "src/utils/api";
 import RapEditor from "./RapEditor";
+import { toast } from "react-hot-toast";
+import { RapMutatePayload } from "src/shared/types";
 
 const ExistingRap = () => {
   const router = useRouter();
   const { id } = router.query;
+
   const { data } = api.rap.getRap.useQuery({ id: id as string });
+  const updateRapMutation = api.rap.updateRap.useMutation();
 
-  console.log({data})
-
-
-  const updateRap = async (rap: any) => {
-    console.log(rap)
+  const updateRap = async (rap: RapMutatePayload) => {
+    updateRapMutation.mutateAsync({
+      id: String(id),
+      ...rap
+    }, {
+      onError: (error) => {
+        toast.error(error.message, {
+          position: 'bottom-left',
+        })
+      },
+      onSuccess: () => {
+        toast.success('Updated Rap!', {
+          position: 'bottom-left',
+        })
+      }
+    })
   }
 
   return (
-    <RapEditor handleSubmit={updateRap} defaultTitle={data?.title} defaultContent={data?.content} />
+    <RapEditor
+      handleSubmit={updateRap}
+      defaultTitle={data?.title}
+      defaultContent={data?.content}
+    />
   );
 }
 
@@ -27,6 +46,7 @@ import { appRouter } from 'src/server/api/root';
 import superjson from 'superjson';
 import { createTRPCContext } from 'src/server/api/trpc'
 
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const helpers = createServerSideHelpers({
@@ -34,7 +54,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     ctx: await createTRPCContext(context),
     transformer: superjson,
   });
-  await helpers.rap.getRap.prefetch({id: context.params?.id as string})
+  await helpers.rap.getRap.prefetch({ id: context.params?.id as string })
 
   return {
     props: {

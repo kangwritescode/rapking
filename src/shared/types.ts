@@ -1,4 +1,4 @@
-export type RapCreate = {
+export type RapMutatePayload = {
   title: string;
   content: string;
 };

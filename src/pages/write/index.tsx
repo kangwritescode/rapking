@@ -2,7 +2,7 @@ import { Container } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import React from 'react'
 import RapEditor from './RapEditor';
-import { RapCreate } from 'src/shared/types';
+import { RapMutatePayload } from 'src/shared/types';
 import { api } from 'src/utils/api';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/router';
@@ -22,7 +22,7 @@ function WritePage() {
   const router = useRouter();
   const profileMutation = api.rap.createRap.useMutation();
 
-  const createRap = async (rap: RapCreate) => {
+  const createRap = async (rap: RapMutatePayload) => {
 
     try {
       const createdRap = await profileMutation.mutateAsync(rap, {

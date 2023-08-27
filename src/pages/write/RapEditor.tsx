@@ -2,7 +2,7 @@ import { styled } from '@mui/material/styles'
 import TextEditor from './TextEditor';
 import TitleSettingsBar from './TitleSettingsBar';
 import { useState } from 'react';
-import { RapCreate } from 'src/shared/types';
+import { RapMutatePayload } from 'src/shared/types';
 
 const EditorContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -16,8 +16,9 @@ const EditorContainer = styled('div')(({ theme }) => ({
   }
 }))
 
+
 interface RapEditorProps {
-  handleSubmit: (rap: RapCreate) => void;
+  handleSubmit: (rap: RapMutatePayload) => Promise<void>;
   defaultTitle?: string;
   defaultContent?: string;
 }
