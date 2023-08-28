@@ -6,12 +6,12 @@ import { z } from 'zod'
  */
 const server = z.object({
   DATABASE_URL: z.string().url(),
-  REDLINE_API_KEY: z.string(),
+  ZIPCODE_API_KEY: z.string(),
 
   NODE_ENV: z.enum(['development', 'test', 'production']),
   NEXTAUTH_SECRET: process.env.NODE_ENV === 'production' ? z.string().min(1) : z.string().min(1).optional(),
   NEXTAUTH_URL: z.preprocess(
-    
+
     // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
     // Since NextAuth.js automatically uses the VERCEL_URL if present.
     str => process.env.VERCEL_URL ?? str,
@@ -46,7 +46,7 @@ const processEnv = {
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
   DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
-  REDLINE_API_KEY: process.env.REDLINE_API_KEY,
+  ZIPCODE_API_KEY: process.env.ZIPCODE_API_KEY,
 
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 }

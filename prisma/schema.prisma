@@ -53,6 +53,7 @@ model User {
   country       String?
   city          String?
   state         String?
+  createdAt     DateTime  @default(now())
   raps          Rap[]
   accounts      Account[]
   sessions      Session[]

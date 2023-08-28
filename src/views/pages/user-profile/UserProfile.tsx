@@ -117,7 +117,7 @@ const UserProfile = ({ tab, data }: { tab: string; data: UserProfileActiveTab })
                       </Box>
                     }
                   />
-                  <Tab
+                  {/* <Tab
                     value='teams'
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
@@ -143,7 +143,7 @@ const UserProfile = ({ tab, data }: { tab: string; data: UserProfileActiveTab })
                         {!hideText && 'Connections'}
                       </Box>
                     }
-                  />
+                  /> */}
                 </TabList>
               </Grid>
               <Grid item xs={12} sx={{ pt: theme => `${theme.spacing(4)} !important` }}>

@@ -24,13 +24,11 @@ export const geoDBRouter = createTRPCRouter({
     .input(z.object({ zipCode: z.string() }))
     .query(async ({ input }) => {
       try {
-        const response = await axios.get(`https://redline-redline-zipcode.p.rapidapi.com/rest/radius.json/${input.zipCode}/5/mile`, {
-          headers: {
-            'x-rapidapi-host': 'redline-redline-zipcode.p.rapidapi.com',
-            'x-rapidapi-key': env.REDLINE_API_KEY,
-          },
-        });
+        console.log('12321')
+
+        const response = await axios.get(`https://www.zipcodeapi.com/rest/${env.ZIPCODE_API_KEY}/radius.json/${input.zipCode}/5/mile`);
         const data = response.data;
+
         if (data && data.zip_codes) {
           data.zip_codes.sort((a: ZipCodeResult, b: ZipCodeResult) => a.distance - b.distance)
           const filteredData = data.zip_codes.map(({ city, state }: ZipCodeResult) => ({ city, state }))
