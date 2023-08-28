@@ -1,6 +1,3 @@
-// ** React Imports
-import { useState, useEffect } from 'react'
-
 // ** MUI Components
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -11,11 +8,11 @@ import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 
 // ** Third Party Imports
-import axios from 'axios'
+
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-import { api } from 'src/utils/api'
+import { User } from '@prisma/client'
 
 const ProfilePicture = styled('img')(({ theme }) => ({
   width: 120,
@@ -27,16 +24,18 @@ const ProfilePicture = styled('img')(({ theme }) => ({
   }
 }))
 
-const UserProfileHeader = () => {
+interface UserProfileHeaderProps {
+  userData?: User | null;
+}
 
-  const { data } = api.user.getUser.useQuery();
+const UserProfileHeader = ({ userData }: UserProfileHeaderProps) => {
 
-  return data !== null ? (
+  return userData !== null ? (
     <Card>
       <CardMedia
         component='img'
         alt='profile-header'
-        image={''}
+        image={'https://rapking.b-cdn.net/turntable-background.jpg'}
         sx={{
           height: { xs: 150, md: 250 }
         }}
@@ -51,7 +50,7 @@ const UserProfileHeader = () => {
           justifyContent: { xs: 'center', md: 'flex-start' }
         }}
       >
-        <ProfilePicture src={data.profileImg} alt='profile-picture' />
+        <ProfilePicture src={userData?.profileImage || 'https://rapking.b-cdn.net/profile-male-default.jpg'} alt='profile-picture' />
         <Box
           sx={{
             width: '100%',
@@ -64,7 +63,7 @@ const UserProfileHeader = () => {
         >
           <Box sx={{ mb: [6, 0], display: 'flex', flexDirection: 'column', alignItems: ['center', 'flex-start'] }}>
             <Typography variant='h5' sx={{ mb: 4 }}>
-              {data.fullName}
+              {userData?.username}
             </Typography>
             <Box
               sx={{
@@ -75,12 +74,12 @@ const UserProfileHeader = () => {
             >
               <Box sx={{ mr: 5, display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
                 <Icon icon='mdi:map-marker-outline' />
-                <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>{data.location}</Typography>
+                <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>{userData?.city + ', ' + userData?.state}</Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
                 <Icon icon='mdi:calendar-blank' />
                 <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>
-                  Joined {data.joiningDate}
+                  Joined {userData?.createdAt && userData.createdAt.toLocaleDateString()}
                 </Typography>
               </Box>
             </Box>

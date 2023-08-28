@@ -10,11 +10,11 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import Layout from 'src/@core/layouts/Layout'
 
 // ** Navigation Imports
-import VerticalNavItems from 'src/navigation/vertical'
 import VerticalAppBarContent from './components/vertical/AppBarContent'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
+import { api } from 'src/utils/api'
 
 interface Props {
   children: ReactNode
@@ -22,7 +22,8 @@ interface Props {
 }
 
 const UserLayout = ({ children, contentHeightFixed }: Props) => {
-  // ** Hooks
+
+  const { data: userData } = api.user.getUser.useQuery();
   const { settings, saveSettings } = useSettings()
 
   /**
@@ -39,6 +40,32 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
     settings.layout = 'vertical'
   }
 
+  const navItems = [
+    {
+      title: 'Home',
+      path: '/',
+      icon: 'mdi:home-outline',
+    },
+    {
+      title: 'Explore',
+      path: '/explore',
+      icon: 'mdi:earth',
+    },
+    {
+      title: 'Write',
+      path: '/write',
+      icon: 'ph:note-pencil-bold',
+    },
+  ]
+
+  if (userData) {
+    navItems.splice(1, 0, {
+      title: 'Profile',
+      path: `/u/${userData.username}/raps`,
+      icon: 'gg:profile'
+    })
+  }
+
   return (
     <Layout
       hidden={hidden}
@@ -47,7 +74,7 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       contentHeightFixed={contentHeightFixed}
       verticalLayoutProps={{
         navMenu: {
-          navItems: VerticalNavItems()
+          navItems
         },
         appBar: {
           content: props => (
@@ -62,7 +89,6 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       }}
     >
       {children}
-      
     </Layout>
   )
 }

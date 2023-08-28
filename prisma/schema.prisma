@@ -54,6 +54,7 @@ model User {
   city          String?
   state         String?
   createdAt     DateTime  @default(now())
+  profileImage  String?
   raps          Rap[]
   accounts      Account[]
   sessions      Session[]
