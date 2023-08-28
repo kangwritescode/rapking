@@ -5,8 +5,14 @@ import { z } from 'zod'
  * built with invalid env vars.
  */
 const server = z.object({
+
   DATABASE_URL: z.string().url(),
   ZIPCODE_API_KEY: z.string(),
+
+  AWS_ACCESS_KEY_ID: z.string(),
+  AWS_SECRET_ACCESS_KEY: z.string(),
+  AWS_REGION: z.string(),
+  BUCKET_NAME: z.string(),
 
   NODE_ENV: z.enum(['development', 'test', 'production']),
   NEXTAUTH_SECRET: process.env.NODE_ENV === 'production' ? z.string().min(1) : z.string().min(1).optional(),
@@ -47,6 +53,11 @@ const processEnv = {
   DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
   DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
   ZIPCODE_API_KEY: process.env.ZIPCODE_API_KEY,
+
+  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
+  AWS_REGION: process.env.AWS_REGION,
+  BUCKET_NAME: process.env.BUCKET_NAME,
 
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 }

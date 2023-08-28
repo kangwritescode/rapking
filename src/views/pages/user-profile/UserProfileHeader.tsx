@@ -15,9 +15,7 @@ import axios from 'axios'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-
-// ** Types
-import { ProfileHeaderType } from 'src/@fake-db/types'
+import { api } from 'src/utils/api'
 
 const ProfilePicture = styled('img')(({ theme }) => ({
   width: 120,
@@ -30,21 +28,15 @@ const ProfilePicture = styled('img')(({ theme }) => ({
 }))
 
 const UserProfileHeader = () => {
-  // ** State
-  const [data, setData] = useState<ProfileHeaderType | null>(null)
 
-  useEffect(() => {
-    axios.get('/pages/profile-header').then(response => {
-      setData(response.data)
-    })
-  }, [])
+  const { data } = api.user.getUser.useQuery();
 
   return data !== null ? (
     <Card>
       <CardMedia
         component='img'
         alt='profile-header'
-        image={data.coverImg}
+        image={''}
         sx={{
           height: { xs: 150, md: 250 }
         }}
