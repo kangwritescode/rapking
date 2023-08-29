@@ -3,7 +3,6 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
-import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 
@@ -13,12 +12,15 @@ import CardContent from '@mui/material/CardContent'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import { User } from '@prisma/client'
+import EditableBanner from './EditableBanner'
+import { bucketPATH } from 'src/shared/constants'
 
 const ProfilePicture = styled('img')(({ theme }) => ({
   width: 120,
   height: 120,
   borderRadius: '100px',
   border: `5px solid ${theme.palette.common.white}`,
+  position: 'relative',
   [theme.breakpoints.down('md')]: {
     marginBottom: theme.spacing(4)
   }
@@ -26,20 +28,14 @@ const ProfilePicture = styled('img')(({ theme }) => ({
 
 interface UserProfileHeaderProps {
   userData?: User | null;
+  isCurrentUser?: boolean;
 }
 
-const UserProfileHeader = ({ userData }: UserProfileHeaderProps) => {
+const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) => {
 
   return userData !== null ? (
     <Card>
-      <CardMedia
-        component='img'
-        alt='profile-header'
-        image={'https://rapking.b-cdn.net/turntable-background.jpg'}
-        sx={{
-          height: { xs: 150, md: 250 }
-        }}
-      />
+      <EditableBanner isEditable={isCurrentUser} userId={userData?.id} />
       <CardContent
         sx={{
           pt: 0,
@@ -50,7 +46,10 @@ const UserProfileHeader = ({ userData }: UserProfileHeaderProps) => {
           justifyContent: { xs: 'center', md: 'flex-start' }
         }}
       >
-        <ProfilePicture src={userData?.profileImage || 'https://rapking.b-cdn.net/profile-male-default.jpg'} alt='profile-picture' />
+        <ProfilePicture
+          src={userData?.profileImage || bucketPATH + '/default/profile-male-default.jpg'}
+          alt='profile-picture'
+        />
         <Box
           sx={{
             width: '100%',
@@ -84,9 +83,15 @@ const UserProfileHeader = ({ userData }: UserProfileHeaderProps) => {
               </Box>
             </Box>
           </Box>
-          <Button variant='contained' startIcon={<Icon icon='mdi:pencil' fontSize={20} />}>
-            Edit Profile
-          </Button>
+          {isCurrentUser ? (
+            <Button
+              variant='contained'
+              startIcon={
+                <Icon icon='mdi:pencil' fontSize={20} />
+              }>
+              Edit Profile
+            </Button>
+          ) : undefined}
         </Box>
       </CardContent>
     </Card>

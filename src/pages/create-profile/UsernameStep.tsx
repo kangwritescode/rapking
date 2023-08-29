@@ -23,7 +23,7 @@ const usernameSchema = z.object({
 function UsernameStep({ handleNext }: UsernameStepProps) {
 
   // queries
-  const { data: userData } = api.user.getUser.useQuery();
+  const { data: userData } = api.user.getCurrentUser.useQuery();
 
   // state
   const userMutation = api.user.updateUser.useMutation();

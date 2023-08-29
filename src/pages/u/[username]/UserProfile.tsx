@@ -28,9 +28,9 @@ import {
 import Icon from 'src/@core/components/icon'
 
 // ** Demo Components
-import Teams from './teams/index'
-import Profile from './profile/index'
-import Projects from './projects/index'
+import Teams from '../../../views/pages/user-profile/teams/index'
+import Profile from '../../../views/pages/user-profile/profile/index'
+import Projects from '../../../views/pages/user-profile/projects/index'
 import UserProfileHeader from './UserProfileHeader'
 
 const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({

@@ -17,7 +17,7 @@ const CreateProfileGuard = (props: CreateProfileGuardProps) => {
     const router = useRouter()
 
     // queries
-    const { data: userData } = api.user.getUser.useQuery();
+    const { data: userData } = api.user.getCurrentUser.useQuery();
 
     const profileIsIncomplete = userData === null
         || userData?.username === null

@@ -29,7 +29,7 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
 
   // queries
   const { data: locationsData } = api.geoDB.getLocationsByZip.useQuery({ zipCode: inputValue }, { enabled: inputValue.length === 5 })
-  const { data: userData } = api.user.getUser.useQuery();
+  const { data: userData } = api.user.getCurrentUser.useQuery();
   const profileMutation = api.user.updateUser.useMutation();
 
   // initial values

@@ -23,7 +23,7 @@ interface Props {
 
 const UserLayout = ({ children, contentHeightFixed }: Props) => {
 
-  const { data: userData } = api.user.getUser.useQuery();
+  const { data: userData } = api.user.getCurrentUser.useQuery();
   const { settings, saveSettings } = useSettings()
 
   /**

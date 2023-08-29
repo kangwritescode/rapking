@@ -16,11 +16,20 @@ export const userRouter = createTRPCRouter({
         },
       })
     }),
-  getUser: protectedProcedure
+  getCurrentUser: protectedProcedure
     .query(({ ctx }) => {
       return ctx.prisma.user.findUnique({
         where: {
           id: ctx.session.user.id,
+        },
+      })
+    }),
+  findById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ input, ctx }) => {
+      return ctx.prisma.user.findUnique({
+        where: {
+          id: input.id,
         },
       })
     }),

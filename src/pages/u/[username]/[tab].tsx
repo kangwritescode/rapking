@@ -18,11 +18,11 @@ import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-import UserProfileHeader from 'src/views/pages/user-profile/UserProfileHeader'
 
 // ** Components
 import { api } from 'src/utils/api'
 import RapsTab from './RapsTab'
+import UserProfileHeader from './UserProfileHeader'
 
 const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
   '& .MuiTabs-indicator': {
@@ -52,12 +52,17 @@ const UserProfile = () => {
 
   const { username, tab } = router.query;
 
+  // ** Queries
   const { data: userData } = api.user.findByUsername.useQuery({ text: String(username) });
   const { data: rapsData } = api.rap.getRaps.useQuery({ userId: userData?.id || '' });
+  const { data: currentUser } = api.user.getCurrentUser.useQuery();
 
   // ** State
   const [activeTab, setActiveTab] = useState<string>(String(tab))
   const [isLoading, setIsLoading] = useState<boolean>(true)
+
+  // ** Vars
+  const isCurrentUser = currentUser?.id === userData?.id;
 
   const handleChange = (event: SyntheticEvent, value: string) => {
     setIsLoading(true)
@@ -90,7 +95,7 @@ const UserProfile = () => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
-        <UserProfileHeader userData={userData} />
+        <UserProfileHeader userData={userData} isCurrentUser={isCurrentUser} />
       </Grid>
       {activeTab === undefined ? null : (
         <Grid item xs={12}>

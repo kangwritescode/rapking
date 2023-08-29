@@ -41,7 +41,7 @@ const formSchema = yup.object().shape({
 function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
 
   // queries
-  const { data: profileData } = api.user.getUser.useQuery();
+  const { data: profileData } = api.user.getCurrentUser.useQuery();
 
   // initialValues
   const initialValues: FormValues = {
