@@ -3,6 +3,7 @@ import { Box, CardMedia, CircularProgress, IconButton } from '@mui/material'
 import { User } from '@prisma/client';
 import { set } from 'nprogress';
 import React, { useEffect, useRef, useState } from 'react'
+import { toast } from 'react-hot-toast';
 
 // import { toast } from 'react-hot-toast';
 import { uploadFile } from 'src/gcloud/clientMethods';
@@ -51,6 +52,7 @@ function EditableBanner({ isEditable = true, userData }: EditableBannerProps) {
             await updateUser({ bannerVersion: nextBannerVersion });
             setFile(null);
             invalidateUser();
+            toast.success('Updated Banner!')
           }
           setIsUploading(false);
         } catch (error) {
@@ -59,7 +61,8 @@ function EditableBanner({ isEditable = true, userData }: EditableBannerProps) {
       }
       uploadBanner()
     }
-  }, [presignedUrl, file, updateUser, nextBannerVersion, invalidateUser])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [presignedUrl, file, nextBannerVersion])
 
   return (
     <>
@@ -77,7 +80,6 @@ function EditableBanner({ isEditable = true, userData }: EditableBannerProps) {
       />
       <Box
         sx={{
-          ...(isEditable && { cursor: 'pointer' }),
           position: 'relative',
           zIndex: 0,
         }}>
@@ -110,7 +112,7 @@ function EditableBanner({ isEditable = true, userData }: EditableBannerProps) {
               }
             })}
           >
-            <Icon icon='mdi:camera-plus-outline' width={24} height={24} />
+            <Icon icon='mdi:camera-plus-outline'/>
           </IconButton>
         </Box>
 

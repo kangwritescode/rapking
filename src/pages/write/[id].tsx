@@ -17,14 +17,10 @@ const ExistingRap = () => {
       ...rap
     }, {
       onError: (error: any) => {
-        toast.error(error.message, {
-          position: 'bottom-left',
-        })
+        toast.error(error.message)
       },
       onSuccess: () => {
-        toast.success('Updated Rap!', {
-          position: 'bottom-left',
-        })
+        toast.success('Updated Rap!')
       }
     })
   }

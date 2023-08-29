@@ -26,14 +26,10 @@ function WritePage() {
   const createRap = (rap: RapMutatePayload) => {
     profileMutation.mutate(rap, {
       onError: (error) => {
-        toast.error(error.message, {
-          position: 'bottom-left',
-        })
+        toast.error(error.message)
       },
       onSuccess: (data: Rap) => {
-        toast.success('Rap Created Successfully!', {
-          position: 'bottom-left',
-        })
+        toast.success('Rap Created Successfully!')
         router.push(`/write/${data.id}`)
       }
     })
