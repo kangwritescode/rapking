@@ -9,11 +9,6 @@ const server = z.object({
   DATABASE_URL: z.string().url(),
   ZIPCODE_API_KEY: z.string(),
 
-  AWS_ACCESS_KEY_ID: z.string(),
-  AWS_SECRET_ACCESS_KEY: z.string(),
-  AWS_REGION: z.string(),
-  BUCKET_NAME: z.string(),
-
   NODE_ENV: z.enum(['development', 'test', 'production']),
   NEXTAUTH_SECRET: process.env.NODE_ENV === 'production' ? z.string().min(1) : z.string().min(1).optional(),
   NEXTAUTH_URL: z.preprocess(
@@ -28,7 +23,11 @@ const server = z.object({
 
   // Add `.min(1) on ID and SECRET if you want to make sure they're not empty
   DISCORD_CLIENT_ID: z.string(),
-  DISCORD_CLIENT_SECRET: z.string()
+  DISCORD_CLIENT_SECRET: z.string(),
+
+  GCLOUD_PRIVATE_KEY: z.string(),
+  GCLOUD_CLIENT_EMAIL: z.string(),
+  GCLOUD_CLIENT_ID: z.string(),
 })
 
 /**
@@ -54,10 +53,9 @@ const processEnv = {
   DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
   ZIPCODE_API_KEY: process.env.ZIPCODE_API_KEY,
 
-  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
-  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
-  AWS_REGION: process.env.AWS_REGION,
-  BUCKET_NAME: process.env.BUCKET_NAME,
+  GCLOUD_PRIVATE_KEY: process.env.GCLOUD_PRIVATE_KEY,
+  GCLOUD_CLIENT_EMAIL: process.env.GCLOUD_CLIENT_EMAIL,
+  GCLOUD_CLIENT_ID: process.env.GCLOUD_CLIENT_ID,
 
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 }
