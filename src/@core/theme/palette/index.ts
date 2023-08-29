@@ -9,7 +9,7 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
   // ** Vars
   const whiteColor = '#FFF'
   const lightColor = '58, 53, 65'
-  const darkColor = '231, 227, 252'
+  const darkColor = '255, 255, 255'
   const mainColor = mode === 'light' ? lightColor : darkColor
 
   const primaryGradient = () => {
@@ -44,7 +44,7 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
       main: mainColor,
       light: lightColor,
       primaryGradient: primaryGradient(),
-      bodyBg: mode === 'light' ? '#F4F5FA' : '#28243D', 
+      bodyBg: mode === 'light' ? '#F4F5FA' : '#28243D',
       trackBg: mode === 'light' ? '#F0F2F8' : '#474360',
       avatarBg: mode === 'light' ? '#F0EFF0' : '#3F3B59',
       darkBg: skin === 'bordered' ? '#312D4B' : '#28243D',
