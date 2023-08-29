@@ -33,9 +33,9 @@ interface UserProfileHeaderProps {
 
 const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) => {
 
-  return userData !== null ? (
+  return userData ? (
     <Card>
-      <EditableBanner isEditable={isCurrentUser} userId={userData?.id} />
+      <EditableBanner isEditable={isCurrentUser} userData={userData} />
       <CardContent
         sx={{
           pt: 0,
@@ -95,7 +95,7 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
         </Box>
       </CardContent>
     </Card>
-  ) : null
+  ): undefined
 }
 
 export default UserProfileHeader

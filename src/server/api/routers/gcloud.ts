@@ -4,7 +4,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "src/server/api/trpc";
-import { generateV4UploadSignedUrl } from "src/gcloud/gcloud";
+import { generateV4UploadSignedUrl } from "src/gcloud/serverMethods";
 
 export const gcloudRouter = createTRPCRouter({
   generatePresignedUrl: protectedProcedure

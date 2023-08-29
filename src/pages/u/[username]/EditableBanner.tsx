@@ -1,40 +1,65 @@
 import { Icon } from '@iconify/react';
-import { Box, CardMedia, IconButton } from '@mui/material'
-import axios from 'axios';
-import React, { useEffect, useRef } from 'react'
+import { Box, CardMedia, CircularProgress, IconButton } from '@mui/material'
+import { User } from '@prisma/client';
+import { set } from 'nprogress';
+import React, { useEffect, useRef, useState } from 'react'
+
+// import { toast } from 'react-hot-toast';
+import { uploadFile } from 'src/gcloud/clientMethods';
 import { bucketPATH } from 'src/shared/constants';
 import { api } from 'src/utils/api';
 
 interface EditableBannerProps {
   isEditable?: boolean;
-  userId?: string;
+  userData: User;
 }
 
-function EditableBanner({ isEditable = true, userId }: EditableBannerProps) {
+function EditableBanner({ isEditable = true, userData }: EditableBannerProps) {
+
+  const { id, bannerVersion } = userData;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const currentFiles = fileInputRef?.current?.files
-  const file = currentFiles && currentFiles[0];
-  const fileExtension = file?.name.split('.').pop();
+  // State
+  const [file, setFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
-  const { data: presignedUrl } = api.gcloud.generatePresignedUrl.useQuery({ fileName: `users/${userId}/banner.${fileExtension}` || '' }, {
-    enabled: !!fileExtension && !!userId
+  // File upload
+  const fileExtension = file?.name.split('.').pop();
+  const nextBannerVersion = bannerVersion + 1;
+  const newFileName = `users/${id}/banner-${nextBannerVersion}.${fileExtension}`;
+
+  // Queries
+  const { data: presignedUrl } = api.gcloud.generatePresignedUrl.useQuery({ fileName: newFileName }, {
+    enabled: !!file
   });
 
-  console.log(presignedUrl)
+  // Mutations
+  const { mutateAsync: updateUser } = api.user.updateUser.useMutation();
 
+  // Invalidaters
+  const { invalidate: invalidateUser } = api.useContext().user.findByUsername;
+
+  // Uploads file to GCloud when presignedUrl is generated and file is selected
   useEffect(() => {
-    if (presignedUrl && file) {
-      axios.put(presignedUrl, file, {
-      }).then(() => {
-        console.log('success')
-      }).catch((err) => {
-        console.log(err)
-      })
-
+    if (presignedUrl && file && nextBannerVersion) {
+      const uploadBanner = async () => {
+        setIsUploading(true);
+        try {
+          const { status } = await uploadFile(presignedUrl, file);
+          if (status === 200) {
+            await updateUser({ bannerVersion: nextBannerVersion });
+            setFile(null);
+            invalidateUser();
+          }
+          setIsUploading(false);
+        } catch (error) {
+          setIsUploading(false);
+        }
+      }
+      uploadBanner()
     }
-  }, [presignedUrl, file])
+  }, [presignedUrl, file, updateUser, nextBannerVersion, invalidateUser])
 
   return (
     <>
@@ -43,6 +68,11 @@ function EditableBanner({ isEditable = true, userId }: EditableBannerProps) {
         id="image-button-file"
         type="file"
         ref={fileInputRef}
+        onChange={(e) => {
+          if (e.target.files) {
+            setFile(e.target.files[0])
+          }
+        }}
         hidden
       />
       <Box
@@ -52,20 +82,44 @@ function EditableBanner({ isEditable = true, userId }: EditableBannerProps) {
           zIndex: 0,
         }}>
 
-        <IconButton
-          onClick={() => fileInputRef?.current?.click()}
-          sx={{
-            position: 'absolute',
-            right: '1rem',
-            bottom: '1rem',
-          }}
-        >
-          <Icon icon='mdi:camera-plus-outline' width={24} height={24} />
-        </IconButton>
+        {isUploading && (
+          <CircularProgress
+            sx={{
+              marginRight: '1rem',
+              color: 'white',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translateY(-50%) translateX(-50%)'
+            }} />
+        )}
+
+        <Box
+          position='absolute'
+          right='1rem'
+          bottom='1rem'
+          display='flex'>
+          <IconButton
+            onClick={() => fileInputRef?.current?.click()}
+            sx={(theme) => ({
+              background: theme.palette.background.paper,
+              opacity: 0.6,
+              ':hover': {
+                background: theme.palette.background.paper,
+                opacity: 1
+              }
+            })}
+          >
+            <Icon icon='mdi:camera-plus-outline' width={24} height={24} />
+          </IconButton>
+        </Box>
+
         <CardMedia
           component='img'
           alt='profile-header'
-          image={bucketPATH + '/default/turntable-background.jpg'}
+          image={bannerVersion ?
+            `${bucketPATH}/users/${id}/banner-${bannerVersion}.jpg` :
+            `${bucketPATH}/default/profile-banner.jpg`}
           sx={{
             height: { xs: 150, md: 250 }
           }}
