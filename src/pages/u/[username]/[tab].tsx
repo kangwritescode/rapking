@@ -21,8 +21,8 @@ import Icon from 'src/@core/components/icon'
 import UserProfileHeader from 'src/views/pages/user-profile/UserProfileHeader'
 
 // ** Components
-import Profile from 'src/views/pages/user-profile/profile/index';
 import { api } from 'src/utils/api'
+import RapsTab from './RapsTab'
 
 const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
   '& .MuiTabs-indicator': {
@@ -53,6 +53,7 @@ const UserProfile = () => {
   const { username, tab } = router.query;
 
   const { data: userData } = api.user.findByUsername.useQuery({ text: String(username) });
+  const { data: rapsData } = api.rap.getRaps.useQuery({ userId: userData?.id || '' });
 
   // ** State
   const [activeTab, setActiveTab] = useState<string>(String(tab))
@@ -83,10 +84,7 @@ const UserProfile = () => {
   }, [tab])
 
   const tabContentList: { [key: string]: ReactElement } = {
-    raps: <Profile data={userData as any} />,
-
-    // teams: <Teams data={data as TeamsTabType[]} />,
-    // projects: <Projects data={data as ProjectsTabType[]} />,
+    raps: <RapsTab raps={rapsData} />,
   }
 
   return (
