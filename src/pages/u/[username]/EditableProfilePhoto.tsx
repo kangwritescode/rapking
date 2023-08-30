@@ -1,23 +1,32 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Icon } from '@iconify/react';
-import { Box, CardMedia, CircularProgress, IconButton } from '@mui/material'
+import { Box, CircularProgress, IconButton, styled } from '@mui/material'
 import { User } from '@prisma/client';
 import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-hot-toast';
+import { deleteFile, uploadFile } from 'src/gcloud/clientMethods';
+import { CDN_URL } from 'src/shared/constants'
+import { api } from 'src/utils/api';
 import { v4 } from 'uuid';
 
-import { deleteFile, uploadFile } from 'src/gcloud/clientMethods';
-import { CDN_URL } from 'src/shared/constants';
-import { api } from 'src/utils/api';
+const ProfilePicture = styled('img')(({ theme }) => ({
+  width: 120,
+  height: 120,
+  borderRadius: '100px',
+  border: `5px solid ${theme.palette.common.white}`,
+  position: 'relative',
+  [theme.breakpoints.down('md')]: {
+    marginBottom: theme.spacing(4)
+  }
+}))
 
-interface EditableBannerProps {
-  isEditable?: boolean;
+interface EditableProfilePhotoProps {
   userData: User;
+  isEditable?: boolean;
 }
 
-function EditableBanner({ isEditable, userData }: EditableBannerProps) {
+function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProps) {
 
-  const { id, bannerUrl } = userData;
+  const { id, profileImageUrl } = userData;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,8 +46,8 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
   const { data: deleteUrl } = api
     .gcloud
     .generateDeleteUrl
-    .useQuery({ fileName: bannerUrl || '' }, {
-      enabled: !!newFilename && !!bannerUrl
+    .useQuery({ fileName: profileImageUrl || '' }, {
+      enabled: !!newFilename && !!profileImageUrl
     });
 
   // Mutations
@@ -51,7 +60,7 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
   useEffect(() => {
     if (file) {
       const fileExtension = file?.name.split('.').pop();
-      const newFileName = `users/${id}/banner-${v4()}.${fileExtension}`;
+      const newFileName = `users/${id}/profile-img-${v4()}.${fileExtension}`;
       setNewFilename(newFileName);
     }
   }, [file])
@@ -59,30 +68,31 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
   // Uploads file to GCloud when presignedUrl is generated and file is selected
   useEffect(() => {
     if (writeUrl && file && newFilename) {
-      const uploadBanner = async () => {
+      const uploadProfilePhoto = async () => {
         setIsUploading(true);
         try {
           await uploadFile(writeUrl, file);
           if (deleteUrl) {
             await deleteFile(deleteUrl);
           }
-          await updateUser({ bannerUrl: newFilename });
+          await updateUser({ profileImageUrl: newFilename });
           invalidateUserQuery();
 
           setFile(null);
           setNewFilename('');
           setIsUploading(false);
 
-          toast.success('Updated Banner!')
+          toast.success('Updated Profile Image!')
         } catch (error) {
           setIsUploading(false);
         }
       }
 
-      uploadBanner()
+      uploadProfilePhoto()
     }
 
   }, [writeUrl])
+
 
   return (
     <>
@@ -98,29 +108,32 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
         }}
         hidden
       />
-      <Box
-        sx={{
-          position: 'relative',
-        }}>
-
-        {isUploading && (
-          <CircularProgress
-            sx={{
-              marginRight: '1rem',
-              color: 'white',
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              translate: '-50% -50%',
-            }} />
-        )}
-
+      <Box position='relative'>
+        <Box position='relative'>
+          {isUploading && (
+            <CircularProgress
+              sx={{
+                marginRight: '1rem',
+                color: 'white',
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                translate: '-50% -50%',
+                zIndex: 1
+              }} />
+          )}
+          <ProfilePicture
+            src={`${CDN_URL}/${profileImageUrl}` || CDN_URL + '/default/profile-male-default.jpg'}
+            alt='profile-picture'
+          />
+        </Box>
         {isEditable && (
           <Box
             position='absolute'
-            right='1rem'
-            bottom='1rem'>
+            right='0'
+            bottom='0'>
             <IconButton
+
               onClick={() => fileInputRef?.current?.click()}
               sx={(theme) => ({
                 background: theme.palette.background.paper,
@@ -136,18 +149,9 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
             </IconButton>
           </Box>
         )}
-
-        <CardMedia
-          component='img'
-          alt='profile-header'
-          image={bannerUrl ? `${CDN_URL}/${bannerUrl}` : `${CDN_URL}/default/profile-banner.jpg`}
-          sx={{
-            height: { xs: 150, md: 250 }
-          }}
-        />
       </Box>
     </>
   )
 }
 
-export default EditableBanner
+export default EditableProfilePhoto

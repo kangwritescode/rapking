@@ -14,17 +14,7 @@ import Icon from 'src/@core/components/icon'
 import { User } from '@prisma/client'
 import EditableBanner from './EditableBanner'
 import { CDN_URL } from 'src/shared/constants'
-
-const ProfilePicture = styled('img')(({ theme }) => ({
-  width: 120,
-  height: 120,
-  borderRadius: '100px',
-  border: `5px solid ${theme.palette.common.white}`,
-  position: 'relative',
-  [theme.breakpoints.down('md')]: {
-    marginBottom: theme.spacing(4)
-  }
-}))
+import EditableProfilePhoto from './EditableProfilePhoto'
 
 interface UserProfileHeaderProps {
   userData?: User | null;
@@ -46,10 +36,7 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
           justifyContent: { xs: 'center', md: 'flex-start' }
         }}
       >
-        <ProfilePicture
-          src={userData?.profileImageUrl || CDN_URL + '/default/profile-male-default.jpg'}
-          alt='profile-picture'
-        />
+        <EditableProfilePhoto isEditable={isCurrentUser} userData={userData} />
         <Box
           sx={{
             width: '100%',
@@ -95,7 +82,7 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
         </Box>
       </CardContent>
     </Card>
-  ): null
+  ) : null
 }
 
 export default UserProfileHeader
