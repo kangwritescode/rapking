@@ -47,7 +47,7 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
         }}
       >
         <ProfilePicture
-          src={userData?.profileImage || CDN_URL + '/default/profile-male-default.jpg'}
+          src={userData?.profileImageUrl || CDN_URL + '/default/profile-male-default.jpg'}
           alt='profile-picture'
         />
         <Box

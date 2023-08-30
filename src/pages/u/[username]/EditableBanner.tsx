@@ -27,18 +27,18 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
   // Queries
-  const { data: presignedWriteUrl } = api
+  const { data: writeUrl } = api
     .gcloud
     .generateWriteUrl
     .useQuery({ fileName: newFilename }, {
       enabled: !!newFilename
     });
 
-  const { data: presignedDeleteUrl } = api
+  const { data: deleteUrl } = api
     .gcloud
     .generateDeleteUrl
     .useQuery({ fileName: bannerUrl || '' }, {
-      enabled: !!bannerUrl
+      enabled: !!newFilename && !!bannerUrl
     });
 
   // Mutations
@@ -58,13 +58,13 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
 
   // Uploads file to GCloud when presignedUrl is generated and file is selected
   useEffect(() => {
-    if (presignedWriteUrl && file && newFilename) {
+    if (writeUrl && file && newFilename) {
       const uploadBanner = async () => {
         setIsUploading(true);
         try {
-          await uploadFile(presignedWriteUrl, file);
-          if (presignedDeleteUrl) {
-            await deleteFile(presignedDeleteUrl);
+          await uploadFile(writeUrl, file);
+          if (deleteUrl) {
+            await deleteFile(deleteUrl);
           }
           await updateUser({ bannerUrl: newFilename });
           invalidateUserQuery();
@@ -82,7 +82,7 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
       uploadBanner()
     }
 
-  }, [presignedWriteUrl])
+  }, [writeUrl])
 
   return (
     <>
