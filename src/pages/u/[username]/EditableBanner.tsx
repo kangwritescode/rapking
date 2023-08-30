@@ -1,13 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Icon } from '@iconify/react';
 import { Box, CardMedia, CircularProgress, IconButton } from '@mui/material'
 import { User } from '@prisma/client';
-import { set } from 'nprogress';
 import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-hot-toast';
+import { v4 } from 'uuid';
 
 // import { toast } from 'react-hot-toast';
 import { uploadFile } from 'src/gcloud/clientMethods';
-import { bucketPATH } from 'src/shared/constants';
+import { CDN_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
 
 interface EditableBannerProps {
@@ -15,24 +16,28 @@ interface EditableBannerProps {
   userData: User;
 }
 
-function EditableBanner({ isEditable = true, userData }: EditableBannerProps) {
+function EditableBanner({ isEditable, userData }: EditableBannerProps) {
 
-  const { id, bannerVersion } = userData;
+  const { id, bannerUrl } = userData;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // State
   const [file, setFile] = useState<File | null>(null);
+  const [newFilename, setNewFilename] = useState('');
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
-  // File upload
-  const fileExtension = file?.name.split('.').pop();
-  const nextBannerVersion = bannerVersion + 1;
-  const newFileName = `users/${id}/banner-${nextBannerVersion}.${fileExtension}`;
+  useEffect(() => {
+    if (file) {
+      const fileExtension = file?.name.split('.').pop();
+      const newFileName = `users/${id}/banner-${v4()}.${fileExtension}`;
+      setNewFilename(newFileName);
+    }
+  }, [file])
 
   // Queries
-  const { data: presignedUrl } = api.gcloud.generatePresignedUrl.useQuery({ fileName: newFileName }, {
-    enabled: !!file
+  const { data: presignedUrl } = api.gcloud.generatePresignedUrl.useQuery({ fileName: newFilename }, {
+    enabled: !!newFilename
   });
 
   // Mutations
@@ -43,15 +48,17 @@ function EditableBanner({ isEditable = true, userData }: EditableBannerProps) {
 
   // Uploads file to GCloud when presignedUrl is generated and file is selected
   useEffect(() => {
-    if (presignedUrl && file && nextBannerVersion) {
+    if (presignedUrl && file && newFilename) {
+
       const uploadBanner = async () => {
         setIsUploading(true);
         try {
           const { status } = await uploadFile(presignedUrl, file);
           if (status === 200) {
-            await updateUser({ bannerVersion: nextBannerVersion });
-            setFile(null);
+            await updateUser({ bannerUrl: newFilename });
             invalidateUser();
+            setFile(null);
+            setNewFilename('');
             toast.success('Updated Banner!')
           }
           setIsUploading(false);
@@ -59,10 +66,11 @@ function EditableBanner({ isEditable = true, userData }: EditableBannerProps) {
           setIsUploading(false);
         }
       }
+
       uploadBanner()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [presignedUrl, file, nextBannerVersion])
+
+  }, [presignedUrl, file, newFilename])
 
   return (
     <>
@@ -96,32 +104,32 @@ function EditableBanner({ isEditable = true, userData }: EditableBannerProps) {
             }} />
         )}
 
-        <Box
-          position='absolute'
-          right='1rem'
-          bottom='1rem'
-          display='flex'>
-          <IconButton
-            onClick={() => fileInputRef?.current?.click()}
-            sx={(theme) => ({
-              background: theme.palette.background.paper,
-              opacity: 0.6,
-              ':hover': {
+        {isEditable && (
+          <Box
+            position='absolute'
+            right='1rem'
+            bottom='1rem'
+            display='flex'>
+            <IconButton
+              onClick={() => fileInputRef?.current?.click()}
+              sx={(theme) => ({
                 background: theme.palette.background.paper,
-                opacity: 1
-              }
-            })}
-          >
-            <Icon icon='mdi:camera-plus-outline'/>
-          </IconButton>
-        </Box>
+                opacity: 0.6,
+                ':hover': {
+                  background: theme.palette.background.paper,
+                  opacity: 1
+                }
+              })}
+            >
+              <Icon icon='mdi:camera-plus-outline' />
+            </IconButton>
+          </Box>
+        )}
 
         <CardMedia
           component='img'
           alt='profile-header'
-          image={bannerVersion ?
-            `${bucketPATH}/users/${id}/banner-${bannerVersion}.jpg` :
-            `${bucketPATH}/default/profile-banner.jpg`}
+          image={bannerUrl ? `${CDN_URL}/${bannerUrl}` : `${CDN_URL}/default/profile-banner.jpg`}
           sx={{
             height: { xs: 150, md: 250 }
           }}

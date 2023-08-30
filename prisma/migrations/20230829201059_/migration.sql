@@ -6,4 +6,4 @@
 */
 -- AlterTable
 ALTER TABLE "User" DROP COLUMN "profileImage",
-ADD COLUMN     "bannerVersion" INTEGER;
+ADD COLUMN     "bannerUrl" INTEGER;

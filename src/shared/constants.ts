@@ -1,5 +1,5 @@
-export const bucketPATH = 'http://34.36.116.199'
+export const CDN_URL = 'http://34.36.116.199'
 
 export const generateAssetUrl = (fileName: string) => {
-  return `${bucketPATH}/${fileName}`
+  return `${CDN_URL}/${fileName}`
 }

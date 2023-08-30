@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE "User" ALTER COLUMN "bannerVersion" SET DEFAULT 0;
+ALTER TABLE "User" ALTER COLUMN "bannerUrl" SET DEFAULT 0;

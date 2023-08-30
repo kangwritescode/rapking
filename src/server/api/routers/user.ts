@@ -57,7 +57,7 @@ export const userRouter = createTRPCRouter({
       country: z.string().optional(),
       state: z.string().optional(),
       city: z.string().optional(),
-      bannerVersion: z.number().optional(),
+      bannerUrl: z.string().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
 
@@ -100,7 +100,7 @@ export const userRouter = createTRPCRouter({
           ...(input.country ? { country: input.country } : {}),
           ...(input.state ? { state: input.state } : {}),
           ...(input.city ? { city: input.city } : {}),
-          ...(input.bannerVersion ? { bannerVersion: input.bannerVersion } : {}),
+          ...(input.bannerUrl ? { bannerUrl: input.bannerUrl } : {}),
         },
       });
 
