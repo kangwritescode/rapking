@@ -5,24 +5,19 @@ import {
   protectedProcedure,
 } from "src/server/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { rapCreateInputSchema } from "src/shared/schemas";
 
 export const rapRouter = createTRPCRouter({
   createRap: protectedProcedure
-    .input(rapCreateInputSchema)
+    .input(z.object({
+      title: z.string(),
+      content: z.string(),
+    }))
     .mutation(async ({ input, ctx }) => {
 
       if (input.title.length < 3) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Title must be at least 3 characters.",
-        });
-      }
-
-      if (input.content.length < 100) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Rap is too short.",
         });
       }
 

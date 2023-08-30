@@ -82,13 +82,13 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
                     value={value}
                     label='Username'
                     onChange={({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-                      const sanitizedInput = value
+                      const formattedInput = value
                         .replace(/ /g, '_')             // replace spaces with underscores
                         .replace(/[^a-zA-Z0-9_]/g, '')  // remove non-alphanumeric characters
                         .toLowerCase();                 // convert to lowercase
-                      setValue(sanitizedInput)
+                      setValue(formattedInput)
                       setControlledIsAvailable(undefined)
-                      onChange(sanitizedInput)
+                      onChange(formattedInput)
                     }}
                     size='small'
                     error={Boolean(errors.username)}

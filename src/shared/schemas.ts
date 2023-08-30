@@ -15,8 +15,3 @@ export const rapSchema = z.object({
 export type Rap = z.infer<typeof rapSchema>;
 
 export type RapStatus = z.infer<typeof rapStatusSchema>;
-
-export const rapCreateInputSchema = z.object({
-  title: z.string(),
-  content: z.string(),
-});

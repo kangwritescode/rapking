@@ -24,6 +24,8 @@ interface EditableProfilePhotoProps {
   isEditable?: boolean;
 }
 
+const DEFAULT_PROFILE_IMAGE_URL = '/default/profile-male-default.jpg';
+
 function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProps) {
 
   const { id, profileImageUrl } = userData;
@@ -125,7 +127,7 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
               }} />
           )}
           <ProfilePicture
-            src={`${CDN_URL}/${profileImageUrl}` || CDN_URL + '/default/profile-male-default.jpg'}
+            src={`${CDN_URL}/${profileImageUrl}` || CDN_URL + DEFAULT_PROFILE_IMAGE_URL}
             alt='profile-picture'
           />
         </Box>

@@ -6,7 +6,7 @@ import { useTheme } from '@mui/material';
 
 
 interface TextEditorProps {
-  onChange: (content: string) => void;
+  onChange: (contentHTML: string) => void;
   content: string;
 }
 
