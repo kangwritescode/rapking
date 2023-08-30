@@ -63,6 +63,7 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
       const newFileName = `users/${id}/profile-img-${v4()}.${fileExtension}`;
       setNewFilename(newFileName);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [file])
 
   // Uploads file to GCloud when presignedUrl is generated and file is selected
@@ -91,6 +92,7 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
       uploadProfilePhoto()
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [writeUrl])
 
 
@@ -119,7 +121,7 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
                 top: '50%',
                 left: '50%',
                 translate: '-50% -50%',
-                zIndex: 1
+                zIndex: 1,
               }} />
           )}
           <ProfilePicture
@@ -131,9 +133,13 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
           <Box
             position='absolute'
             right='0'
-            bottom='0'>
+            bottom='0'
+            sx={(theme) => ({
+              [theme.breakpoints.down('md')]: {
+                bottom: '1rem',
+              },
+            })}>
             <IconButton
-
               onClick={() => fileInputRef?.current?.click()}
               sx={(theme) => ({
                 background: theme.palette.background.paper,
