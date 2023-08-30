@@ -10,7 +10,6 @@ import { Rap } from '@prisma/client';
 import { Button, Stack } from '@mui/material';
 import { Icon } from '@iconify/react';
 import StatusChanger from './StatusChanger';
-import { convert as convertHTMLtoText } from 'html-to-text';
 
 const EditorContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -31,7 +30,7 @@ interface RapEditorProps {
 }
 
 const rapEditorFormSchema = z.object({
-  title: z.string().min(3).max(20).regex(/^[a-zA-Z0-9 ]*$/, 'Must only include letters and numbers'),
+  title: z.string().min(3).max(50).regex(/^[a-zA-Z0-9 ]*$/, 'Must only include letters and numbers'),
 })
 
 export type RapEditorFormValues = z.infer<typeof rapEditorFormSchema>
@@ -44,7 +43,6 @@ export default function RapEditor(props: RapEditorProps) {
   } = props;
 
   const [content, setContent] = useState(rapData?.content || '')
-  const contentLength = convertHTMLtoText(content).length;
 
   const {
     register,
@@ -86,7 +84,7 @@ export default function RapEditor(props: RapEditorProps) {
           onClick={onSubmitHandler}
           size='medium'
           variant='contained'
-          disabled={!isValid || contentLength < 1}>
+          disabled={!isValid}>
           {rapData ? 'Update' : 'Create'}
         </Button>
 
