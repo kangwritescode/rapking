@@ -13,7 +13,7 @@ import CardContent from '@mui/material/CardContent'
 import Icon from 'src/@core/components/icon'
 import { User } from '@prisma/client'
 import EditableBanner from './EditableBanner'
-import { bucketPATH } from 'src/shared/constants'
+import { CDN_URL } from 'src/shared/constants'
 
 const ProfilePicture = styled('img')(({ theme }) => ({
   width: 120,
@@ -47,7 +47,7 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
         }}
       >
         <ProfilePicture
-          src={userData?.profileImage || bucketPATH + '/default/profile-male-default.jpg'}
+          src={userData?.profileImage || CDN_URL + '/default/profile-male-default.jpg'}
           alt='profile-picture'
         />
         <Box
@@ -95,7 +95,7 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
         </Box>
       </CardContent>
     </Card>
-  ): undefined
+  ): null
 }
 
 export default UserProfileHeader

@@ -6,8 +6,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-hot-toast';
 import { v4 } from 'uuid';
 
-// import { toast } from 'react-hot-toast';
-import { uploadFile } from 'src/gcloud/clientMethods';
+import { deleteFile, uploadFile } from 'src/gcloud/clientMethods';
 import { CDN_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
 
@@ -27,6 +26,28 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
   const [newFilename, setNewFilename] = useState('');
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
+  // Queries
+  const { data: presignedWriteUrl } = api
+    .gcloud
+    .generateWriteUrl
+    .useQuery({ fileName: newFilename }, {
+      enabled: !!newFilename
+    });
+
+  const { data: presignedDeleteUrl } = api
+    .gcloud
+    .generateDeleteUrl
+    .useQuery({ fileName: bannerUrl || '' }, {
+      enabled: !!bannerUrl
+    });
+
+  // Mutations
+  const { mutateAsync: updateUser } = api.user.updateUser.useMutation();
+
+  // Invalidaters
+  const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
+
+  // Generates new filename when file is selected
   useEffect(() => {
     if (file) {
       const fileExtension = file?.name.split('.').pop();
@@ -35,33 +56,24 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
     }
   }, [file])
 
-  // Queries
-  const { data: presignedUrl } = api.gcloud.generatePresignedUrl.useQuery({ fileName: newFilename }, {
-    enabled: !!newFilename
-  });
-
-  // Mutations
-  const { mutateAsync: updateUser } = api.user.updateUser.useMutation();
-
-  // Invalidaters
-  const { invalidate: invalidateUser } = api.useContext().user.findByUsername;
-
   // Uploads file to GCloud when presignedUrl is generated and file is selected
   useEffect(() => {
-    if (presignedUrl && file && newFilename) {
-
+    if (presignedWriteUrl && file && newFilename) {
       const uploadBanner = async () => {
         setIsUploading(true);
         try {
-          const { status } = await uploadFile(presignedUrl, file);
-          if (status === 200) {
-            await updateUser({ bannerUrl: newFilename });
-            invalidateUser();
-            setFile(null);
-            setNewFilename('');
-            toast.success('Updated Banner!')
+          await uploadFile(presignedWriteUrl, file);
+          if (presignedDeleteUrl) {
+            await deleteFile(presignedDeleteUrl);
           }
+          await updateUser({ bannerUrl: newFilename });
+          invalidateUserQuery();
+
+          setFile(null);
+          setNewFilename('');
           setIsUploading(false);
+
+          toast.success('Updated Banner!')
         } catch (error) {
           setIsUploading(false);
         }
@@ -70,7 +82,7 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
       uploadBanner()
     }
 
-  }, [presignedUrl, file, newFilename])
+  }, [presignedWriteUrl])
 
   return (
     <>

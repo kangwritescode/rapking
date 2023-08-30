@@ -1,12 +1,12 @@
 import { GetSignedUrlConfig } from '@google-cloud/storage';
 import { gcloudStorage } from './storage';
 
-export async function generateV4UploadSignedUrl(fileName: string) {
+export async function generateV4UploadSignedUrl(fileName: string, action: 'read' | 'write' | 'delete', contentType?: string) {
   const options = {
     version: 'v4',
-    action: 'write',
+    action: action,
     expires: Date.now() + 15 * 60 * 1000, // 15 minutes
-    contentType: 'application/octet-stream',
+    ...(contentType && { contentType })
   } as GetSignedUrlConfig;
 
   const [url] = await gcloudStorage

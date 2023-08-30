@@ -7,13 +7,23 @@ import {
 import { generateV4UploadSignedUrl } from "src/gcloud/serverMethods";
 
 export const gcloudRouter = createTRPCRouter({
-  generatePresignedUrl: protectedProcedure
+  generateWriteUrl: protectedProcedure
     .input(z.object({
       fileName: z.string(),
     }))
     .query(async ({ input }) => {
       const { fileName } = input;
-      const signedUrl = await generateV4UploadSignedUrl(fileName).catch((err) => console.log(err));
+      const signedUrl = await generateV4UploadSignedUrl(fileName, 'write', 'application/octet-stream').catch((err) => console.log(err));
+
+      return signedUrl
+    }),
+  generateDeleteUrl: protectedProcedure
+    .input(z.object({
+      fileName: z.string(),
+    }))
+    .query(async ({ input }) => {
+      const { fileName } = input;
+      const signedUrl = await generateV4UploadSignedUrl(fileName, 'delete').catch((err) => console.log(err));
 
       return signedUrl
     }),
