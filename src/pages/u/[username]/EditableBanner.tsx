@@ -29,9 +29,8 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
   const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
 
   const { isUploading } = useGCloudUpload({
-    entityID: id,
-    directory: 'user',
-    namePrefix: 'banner',
+    path: `user/${id}`,
+    filename: 'banner',
     currFileUrl: bannerUrl,
     file,
     onUploadSuccess: async (url) => {

@@ -4,11 +4,10 @@ import { api } from 'src/utils/api';
 import { v4 } from 'uuid';
 
 type UseGCloudUploadProps = {
-  directory?: string;
-  entityID?: string;
+  path: string;
   currFileUrl: string | null;
   file?: File | null;
-  namePrefix?: string;
+  filename: string;
   onUploadSuccess?: (url: string) => void;
 };
 
@@ -18,11 +17,10 @@ type UseGCloudUploadReturn = {
 };
 
 export const useGCloudUpload = ({
-  entityID,
+  path,
   currFileUrl,
-  directory,
   file,
-  namePrefix,
+  filename,
   onUploadSuccess
 }: UseGCloudUploadProps): UseGCloudUploadReturn => {
 
@@ -30,14 +28,14 @@ export const useGCloudUpload = ({
   const [newFileUrl, setNewFileUrl] = useState('');
 
   useEffect(() => {
-    if (file && entityID && directory && namePrefix) {
+    if (file && filename ) {
       const fileExtension = file.name.split('.').pop();
-      setNewFileUrl(`${directory}/${entityID}/${namePrefix}-${v4()}.${fileExtension}`);
+      setNewFileUrl(`${path}/${filename}-${v4()}.${fileExtension}`);
     }
     else if (!file) {
       setNewFileUrl('');
     }
-  }, [file, entityID, directory, namePrefix]);
+  }, [file, filename, path]);
 
   // Queries and Mutations
   const { data: presignedWriteUrl } = api.gcloud.generateWriteUrl.useQuery({ fileName: newFileUrl }, { enabled: !!newFileUrl });

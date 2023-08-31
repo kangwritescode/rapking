@@ -40,9 +40,8 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
   const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
 
   const { isUploading } = useGCloudUpload({
-    entityID: id,
-    directory: 'user',
-    namePrefix: 'profile-img',
+    path: `user/${id}`,
+    filename: 'profile-img',
     currFileUrl: profileImageUrl,
     file,
     onUploadSuccess: async (url) => {

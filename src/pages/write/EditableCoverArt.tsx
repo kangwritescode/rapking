@@ -26,9 +26,8 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
   const { invalidate: invalidateRapQuery } = api.useContext().rap.getRap;
 
   const { isUploading } = useGCloudUpload({
-    entityID: id,
-    directory: 'rap',
-    namePrefix: 'cover-art',
+    path: `rap/${id}`,
+    filename: 'cover-art',
     currFileUrl: coverArtUrl,
     file,
     onUploadSuccess: async (url) => {

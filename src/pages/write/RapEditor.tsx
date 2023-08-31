@@ -100,7 +100,7 @@ export default function RapEditor(props: RapEditorProps) {
           size='medium'
           variant='contained'
           disabled={!isValid || isSubmitting}>
-          {rapData ? 'Update' : 'Create'}
+          {rapData ? 'Update Rap' : 'Create Rap'}
         </Button>
 
       </EditorHeader>
