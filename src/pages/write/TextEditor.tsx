@@ -43,7 +43,7 @@ export default function TextEditor({ onChange, content }: TextEditorProps) {
           background: theme.palette.background.paper,
         },
       }}>
-      <RichTextEditor.Toolbar sticky stickyOffset={60}>
+      <RichTextEditor.Toolbar>
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold />
           <RichTextEditor.Italic />
