@@ -16,7 +16,7 @@ function RapsTab({ raps }: RapsTabProps) {
 
   return (
     <Box width='100%'>
-      <Flex wrap='wrap' direction='row'>
+      <Flex wrap='wrap' direction='row' gap={10}>
         {raps.map((rap) => {
           return (
             <RapCard key={rap.id} rap={rap} />

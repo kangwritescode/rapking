@@ -10,8 +10,7 @@ function RapCard({ rap }: { rap: Rap }) {
     <Paper
       sx={{
         padding: '1rem',
-        marginRight: '1rem',
-        minWidth: '10rem',
+        maxWidth: '24rem',
         '&:hover': {
           cursor: 'pointer',
           backgroundColor: theme.palette.grey[800]
