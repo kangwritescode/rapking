@@ -1,12 +1,10 @@
 import { Icon } from '@iconify/react';
 import { Box, CircularProgress, IconButton, styled } from '@mui/material'
 import { User } from '@prisma/client';
-import React, { useEffect, useRef, useState } from 'react'
-import { toast } from 'react-hot-toast';
-import { deleteFile, uploadFile } from 'src/gcloud/clientMethods';
+import React, { useRef, useState } from 'react'
 import { CDN_URL } from 'src/shared/constants'
+import { useGCloudUpload } from 'src/shared/useGCloudUpload';
 import { api } from 'src/utils/api';
-import { v4 } from 'uuid';
 
 const ProfilePicture = styled('img')(({ theme }) => ({
   width: 120,
@@ -34,23 +32,6 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
 
   // State
   const [file, setFile] = useState<File | null>(null);
-  const [newFilename, setNewFilename] = useState('');
-  const [isUploading, setIsUploading] = useState<boolean>(false);
-
-  // Queries
-  const { data: writeUrl } = api
-    .gcloud
-    .generateWriteUrl
-    .useQuery({ fileName: newFilename }, {
-      enabled: !!newFilename
-    });
-
-  const { data: deleteUrl } = api
-    .gcloud
-    .generateDeleteUrl
-    .useQuery({ fileName: profileImageUrl || '' }, {
-      enabled: !!newFilename && !!profileImageUrl
-    });
 
   // Mutations
   const { mutateAsync: updateUser } = api.user.updateUser.useMutation();
@@ -58,45 +39,18 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
   // Invalidaters
   const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
 
-  // Generates new filename when file is selected
-  useEffect(() => {
-    if (file) {
-      const fileExtension = file?.name.split('.').pop();
-      const newFileName = `users/${id}/profile-img-${v4()}.${fileExtension}`;
-      setNewFilename(newFileName);
+  const { isUploading } = useGCloudUpload({
+    entityID: id,
+    directory: 'user',
+    namePrefix: 'profile-img',
+    currFileUrl: profileImageUrl,
+    file,
+    onUploadSuccess: async (url) => {
+      await updateUser({ profileImageUrl: url });
+      invalidateUserQuery();
+      setFile(null);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [file])
-
-  // Uploads file to GCloud when presignedUrl is generated and file is selected
-  useEffect(() => {
-    if (writeUrl && file && newFilename) {
-      const uploadProfilePhoto = async () => {
-        setIsUploading(true);
-        try {
-          await uploadFile(writeUrl, file);
-          if (deleteUrl) {
-            await deleteFile(deleteUrl);
-          }
-          await updateUser({ profileImageUrl: newFilename });
-          invalidateUserQuery();
-
-          setFile(null);
-          setNewFilename('');
-          setIsUploading(false);
-
-          toast.success('Updated Profile Image!')
-        } catch (error) {
-          setIsUploading(false);
-        }
-      }
-
-      uploadProfilePhoto()
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [writeUrl])
-
+  })
 
   return (
     <>

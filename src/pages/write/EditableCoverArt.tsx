@@ -1,8 +1,8 @@
-import { Icon } from '@iconify/react';
-import { Box, CardMedia, IconButton } from '@mui/material'
+import { Box, Button, CardMedia, CircularProgress } from '@mui/material'
 import { Rap } from '@prisma/client';
 import React, { useRef, useState } from 'react'
 import { CDN_URL } from 'src/shared/constants'
+import { useGCloudUpload } from 'src/shared/useGCloudUpload';
 import { api } from 'src/utils/api';
 
 interface EditableCoverArtProps {
@@ -25,7 +25,18 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
   // Invalidaters
   const { invalidate: invalidateRapQuery } = api.useContext().rap.getRap;
 
-  console.log(`${CDN_URL}/default/cover-art.jpg`)
+  const { isUploading } = useGCloudUpload({
+    entityID: id,
+    directory: 'rap',
+    namePrefix: 'cover-art',
+    currFileUrl: coverArtUrl,
+    file,
+    onUploadSuccess: async (url) => {
+      await updateRap({ id, coverArtUrl: url });
+      invalidateRapQuery();
+      setFile(null);
+    }
+  })
 
   return (
 
@@ -47,7 +58,7 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
           position: 'relative',
         }}>
 
-        {/* {isUploading && (
+        {isUploading && (
           <CircularProgress
             sx={{
               marginRight: '1rem',
@@ -57,18 +68,19 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
               left: '50%',
               translate: '-50% -50%',
             }} />
-        )} */}
+        )}
 
         {isEditable && (
           <Box
-
             position='absolute'
             right='1rem'
-            bottom='1rem'>
-            <IconButton
+            bottom='1rem'
+            zIndex={1}>
+            <Button
               onClick={() => fileInputRef?.current?.click()}
               sx={(theme) => ({
                 background: theme.palette.background.paper,
+                borderRadius: '10rem',
                 color: theme.palette.text.primary,
                 opacity: 0.6,
                 ':hover': {
@@ -77,8 +89,8 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
                 }
               })}
             >
-              <Icon icon='mdi:camera-plus-outline' />
-            </IconButton>
+              Update Cover
+            </Button>
           </Box>
         )}
 
@@ -88,7 +100,7 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
             alt='rap-cover-art'
             image={
               coverArtUrl ?
-                `${CDN_URL}/rap/cover-art.jpg` :
+                `${CDN_URL}/${coverArtUrl}` :
                 `${CDN_URL}/default/cover-art.jpg`
             }
             sx={(theme) => ({
