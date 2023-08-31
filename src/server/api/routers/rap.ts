@@ -6,13 +6,11 @@ import {
 } from "src/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
+// Schemas
 const createRapPayloadSchema = z.object({
   title: z.string(),
   content: z.string(),
 });
-
-export type CreateRapPayload = z.infer<typeof createRapPayloadSchema>;
-
 const updateRapPayloadSchema = z.object({
   id: z.string(),
   title: z.string().optional(),
@@ -21,6 +19,8 @@ const updateRapPayloadSchema = z.object({
   coverArtUrl: z.string().optional().nullable(),
 });
 
+// Types
+export type CreateRapPayload = z.infer<typeof createRapPayloadSchema>;
 export type UpdateRapPayload = z.infer<typeof updateRapPayloadSchema>;
 
 export const rapRouter = createTRPCRouter({
