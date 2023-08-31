@@ -22,7 +22,6 @@ return (
     <Box
       display='flex'
       p='1rem 1rem 2rem'
-      borderRadius={1}
       sx={{
         border: `1px solid ${theme.palette.divider}`,
         ...sx
