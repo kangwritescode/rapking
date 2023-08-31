@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { deleteFile, uploadFile } from 'src/gcloud/clientMethods';
 import { api } from 'src/utils/api';
 import { v4 } from 'uuid';
@@ -6,26 +6,38 @@ import { v4 } from 'uuid';
 type UseGCloudUploadProps = {
   directory?: string;
   entityID?: string;
-  currFileUrl?: string;
+  currFileUrl: string | null;
   file?: File | null;
   namePrefix?: string;
+  onUploadSuccess?: (url: string) => void;
 };
 
 type UseGCloudUploadReturn = {
   newFileUrl: string | null;
-  status: 'idle' | 'uploading' | 'success' | 'error';
+  isUploading: boolean;
 };
 
-export const useGCloudUpload = ({ entityID, currFileUrl, directory, file, namePrefix }: UseGCloudUploadProps): UseGCloudUploadReturn => {
+export const useGCloudUpload = ({
+  entityID,
+  currFileUrl,
+  directory,
+  file,
+  namePrefix,
+  onUploadSuccess
+}: UseGCloudUploadProps): UseGCloudUploadReturn => {
 
-  const [status, setStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
+  const [isUploading, setIsUploading] = useState(false);
+  const [newFileUrl, setNewFileUrl] = useState('');
 
-  let newFileUrl = '';
-
-  if (file && entityID && directory && namePrefix) {
-    const fileExtension = file.name.split('.').pop();
-    newFileUrl = `${directory}/${entityID}/${namePrefix}-${v4()}.${fileExtension}`;
-  }
+  useEffect(() => {
+    if (file && entityID && directory && namePrefix) {
+      const fileExtension = file.name.split('.').pop();
+      setNewFileUrl(`${directory}/${entityID}/${namePrefix}-${v4()}.${fileExtension}`);
+    }
+    else if (!file) {
+      setNewFileUrl('');
+    }
+  }, [file, entityID, directory, namePrefix]);
 
   // Queries and Mutations
   const { data: presignedWriteUrl } = api.gcloud.generateWriteUrl.useQuery({ fileName: newFileUrl }, { enabled: !!newFileUrl });
@@ -33,26 +45,29 @@ export const useGCloudUpload = ({ entityID, currFileUrl, directory, file, namePr
 
   useEffect(() => {
     if (presignedWriteUrl && file && newFileUrl) {
-      setStatus('uploading');
       const upload = async () => {
+        setIsUploading(true);
         try {
           await uploadFile(presignedWriteUrl, file);
-          setStatus('success');
+          setIsUploading(false);
+          if (onUploadSuccess) {
+            onUploadSuccess(newFileUrl);
+          }
           if (presignedDeleteUrl) {
             await deleteFile(presignedDeleteUrl);
           }
         } catch (error) {
-          setStatus('error');
+          setIsUploading(false);
           console.error(error);
         }
       };
-
       upload();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [presignedWriteUrl, file, newFileUrl, presignedDeleteUrl]);
 
   return {
-    status,
+    isUploading,
     newFileUrl,
   };
 };

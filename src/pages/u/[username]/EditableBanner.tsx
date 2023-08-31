@@ -2,13 +2,11 @@
 import { Icon } from '@iconify/react';
 import { Box, CardMedia, CircularProgress, IconButton } from '@mui/material'
 import { User } from '@prisma/client';
-import React, { useEffect, useRef, useState } from 'react'
-import { toast } from 'react-hot-toast';
-import { v4 } from 'uuid';
+import React, { useRef, useState } from 'react'
 
-import { deleteFile, uploadFile } from 'src/gcloud/clientMethods';
 import { CDN_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
+import { useGCloudUpload } from 'src/shared/useGCloudUpload';
 
 interface EditableBannerProps {
   isEditable?: boolean;
@@ -23,23 +21,6 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
 
   // State
   const [file, setFile] = useState<File | null>(null);
-  const [newFilename, setNewFilename] = useState('');
-  const [isUploading, setIsUploading] = useState<boolean>(false);
-
-  // Queries
-  const { data: writeUrl } = api
-    .gcloud
-    .generateWriteUrl
-    .useQuery({ fileName: newFilename }, {
-      enabled: !!newFilename
-    });
-
-  const { data: deleteUrl } = api
-    .gcloud
-    .generateDeleteUrl
-    .useQuery({ fileName: bannerUrl || '' }, {
-      enabled: !!newFilename && !!bannerUrl
-    });
 
   // Mutations
   const { mutateAsync: updateUser } = api.user.updateUser.useMutation();
@@ -47,42 +28,18 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
   // Invalidaters
   const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
 
-  // Generates new filename when file is selected
-  useEffect(() => {
-    if (file) {
-      const fileExtension = file?.name.split('.').pop();
-      const newFileName = `users/${id}/banner-${v4()}.${fileExtension}`;
-      setNewFilename(newFileName);
+  const { isUploading } = useGCloudUpload({
+    entityID: id,
+    directory: 'user',
+    namePrefix: 'banner',
+    currFileUrl: bannerUrl,
+    file,
+    onUploadSuccess: async (url) => {
+      await updateUser({ bannerUrl: url });
+      invalidateUserQuery();
+      setFile(null);
     }
-  }, [file])
-
-  // Uploads file to GCloud when presignedUrl is generated and file is selected
-  useEffect(() => {
-    if (writeUrl && file && newFilename) {
-      const uploadBanner = async () => {
-        setIsUploading(true);
-        try {
-          await uploadFile(writeUrl, file);
-          if (deleteUrl) {
-            await deleteFile(deleteUrl);
-          }
-          await updateUser({ bannerUrl: newFilename });
-          invalidateUserQuery();
-
-          setFile(null);
-          setNewFilename('');
-          setIsUploading(false);
-
-          toast.success('Updated Banner!')
-        } catch (error) {
-          setIsUploading(false);
-        }
-      }
-
-      uploadBanner()
-    }
-
-  }, [writeUrl])
+  })
 
   return (
     <>
