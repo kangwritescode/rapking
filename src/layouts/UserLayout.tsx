@@ -42,11 +42,6 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
 
   const navItems = [
     {
-      title: 'Home',
-      path: '/',
-      icon: 'mdi:home-outline',
-    },
-    {
       title: 'Explore',
       path: '/explore',
       icon: 'mdi:earth',
@@ -59,7 +54,7 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
   ]
 
   if (userData) {
-    navItems.splice(1, 0, {
+    navItems.splice(0, 0, {
       title: 'Profile',
       path: `/u/${userData.username}/raps`,
       icon: 'gg:profile'

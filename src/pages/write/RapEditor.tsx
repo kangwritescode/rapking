@@ -2,14 +2,15 @@ import { styled } from '@mui/material/styles'
 import TextEditor from './TextEditor';
 import TitleBar from './TitleBar';
 import { useState } from 'react';
-import { RapMutatePayload } from 'src/shared/types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Rap } from '@prisma/client';
-import { Button, Stack } from '@mui/material';
+import { Box, Button, Grid, Stack } from '@mui/material';
 import { Icon } from '@iconify/react';
 import StatusChanger from './StatusChanger';
+import EditableRapBanner from './EditableCoverArt';
+import { RapMutatePayload } from 'src/shared/types';
 
 const EditorContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -23,6 +24,11 @@ const EditorContainer = styled('div')(({ theme }) => ({
   }
 }))
 
+const EditorHeader = styled(Stack)(() => ({
+  flexDirection: 'row',
+  justifyContent: 'flex-end',
+  paddingBottom: '1rem',
+}))
 
 interface RapEditorProps {
   handleSubmit: (rap: RapMutatePayload) => void;
@@ -48,7 +54,8 @@ export default function RapEditor(props: RapEditorProps) {
     register,
     getValues,
     formState: {
-      isValid
+      isValid,
+      isSubmitting
     }
   } = useForm({
     defaultValues: { title: rapData?.title || '' },
@@ -65,10 +72,7 @@ export default function RapEditor(props: RapEditorProps) {
 
   return (
     <EditorContainer>
-      <Stack
-        direction='row'
-        pb='1rem'
-        justifyContent='flex-end'>
+      <EditorHeader>
         {rapData && (
           <Button
             sx={{
@@ -84,25 +88,34 @@ export default function RapEditor(props: RapEditorProps) {
           onClick={onSubmitHandler}
           size='medium'
           variant='contained'
-          disabled={!isValid}>
+          disabled={!isValid || isSubmitting}>
           {rapData ? 'Update' : 'Create'}
         </Button>
 
-      </Stack>
-      {rapData && (
-        <StatusChanger
-          rapId={rapData.id}
-          status={rapData.status}
-          sx={{ mb: '1rem' }} />
-      )}
-      <TitleBar
-        sx={{ mb: '2rem' }}
-        onClick={onSubmitHandler}
-        register={register}
-      />
-      <TextEditor
-        content={content}
-        onChange={(content: string) => setContent(content)} />
+      </EditorHeader>
+      <Grid container wrap='nowrap' gap={6}>
+        <Grid item xs={7}>
+          <Box>
+            {rapData && (
+              <StatusChanger
+                rapId={rapData.id}
+                status={rapData.status}
+                sx={{ mb: '1rem' }} />
+            )}
+            <TitleBar
+              sx={{ mb: '2rem' }}
+              onClick={onSubmitHandler}
+              register={register}
+            />
+            <TextEditor
+              content={content}
+              onChange={(content: string) => setContent(content)} />
+          </Box>
+        </Grid>
+        <Grid item xs={5} pt={10}>
+          <EditableRapBanner />
+        </Grid>
+      </Grid>
     </EditorContainer>
   );
 }

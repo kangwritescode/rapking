@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { api } from "src/utils/api";
 import RapEditor from "./RapEditor";
 import { toast } from "react-hot-toast";
-import { RapMutatePayload } from "src/shared/types";
 
 const ExistingRap = () => {
   const router = useRouter();
@@ -40,6 +39,7 @@ import { GetServerSidePropsContext } from 'next';
 import { appRouter } from 'src/server/api/root';
 import superjson from 'superjson';
 import { createTRPCContext } from 'src/server/api/trpc'
+import { RapMutatePayload } from "src/shared/types";
 
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {

@@ -2,11 +2,11 @@ import { Container } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import React from 'react'
 import RapEditor from './RapEditor';
-import { RapMutatePayload } from 'src/shared/types';
 import { api } from 'src/utils/api';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import { Rap } from '@prisma/client';
+import { RapMutatePayload } from 'src/shared/types';
 
 const PageContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
@@ -37,7 +37,7 @@ function WritePage() {
 
   return (
     <PageContainer>
-      <RapEditor submitButtonText='Create' handleSubmit={createRap} />
+      <RapEditor handleSubmit={createRap} />
     </PageContainer>
   )
 }
