@@ -3,6 +3,7 @@ import { Box, CircularProgress, IconButton, styled } from '@mui/material'
 import { User } from '@prisma/client';
 import React, { useRef, useState } from 'react'
 import { CDN_URL } from 'src/shared/constants'
+import { useGCloudDelete } from 'src/shared/useGCloudDelete';
 import { useGCloudUpload } from 'src/shared/useGCloudUpload';
 import { api } from 'src/utils/api';
 
@@ -39,15 +40,17 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
   // Invalidaters
   const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
 
+  const { deleteFile } = useGCloudDelete({ url: profileImageUrl || '' })
+
   const { isUploading } = useGCloudUpload({
     path: `user/${id}`,
     filename: 'profile-img',
-    currFileUrl: profileImageUrl,
     file,
     onUploadSuccess: async (url) => {
       await updateUser({ profileImageUrl: url });
       invalidateUserQuery();
       setFile(null);
+      deleteFile();
     }
   })
 

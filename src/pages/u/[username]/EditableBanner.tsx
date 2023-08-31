@@ -7,6 +7,7 @@ import React, { useRef, useState } from 'react'
 import { CDN_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
 import { useGCloudUpload } from 'src/shared/useGCloudUpload';
+import { useGCloudDelete } from 'src/shared/useGCloudDelete';
 
 interface EditableBannerProps {
   isEditable?: boolean;
@@ -28,15 +29,19 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
   // Invalidaters
   const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
 
+  const { deleteFile } = useGCloudDelete({
+    url: bannerUrl || '',
+  })
+
   const { isUploading } = useGCloudUpload({
     path: `user/${id}`,
     filename: 'banner',
-    currFileUrl: bannerUrl,
     file,
     onUploadSuccess: async (url) => {
       await updateUser({ bannerUrl: url });
       invalidateUserQuery();
       setFile(null);
+      deleteFile();
     }
   })
 

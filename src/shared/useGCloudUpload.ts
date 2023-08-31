@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { deleteFile, uploadFile } from 'src/gcloud/clientMethods';
+import { uploadToGCloud } from 'src/gcloud/clientMethods';
 import { api } from 'src/utils/api';
 import { v4 } from 'uuid';
 
 type UseGCloudUploadProps = {
   path: string;
-  currFileUrl: string | null;
   file?: File | null;
   filename: string;
   onUploadSuccess?: (url: string) => void;
@@ -18,7 +17,6 @@ type UseGCloudUploadReturn = {
 
 export const useGCloudUpload = ({
   path,
-  currFileUrl,
   file,
   filename,
   onUploadSuccess
@@ -39,20 +37,16 @@ export const useGCloudUpload = ({
 
   // Queries and Mutations
   const { data: presignedWriteUrl } = api.gcloud.generateWriteUrl.useQuery({ fileName: newFileUrl }, { enabled: !!newFileUrl });
-  const { data: presignedDeleteUrl } = api.gcloud.generateDeleteUrl.useQuery({ fileName: currFileUrl || '' }, { enabled: !!newFileUrl && !!currFileUrl });
 
   useEffect(() => {
     if (presignedWriteUrl && file && newFileUrl) {
       const upload = async () => {
         setIsUploading(true);
         try {
-          await uploadFile(presignedWriteUrl, file);
+          await uploadToGCloud(presignedWriteUrl, file);
           setIsUploading(false);
           if (onUploadSuccess) {
             onUploadSuccess(newFileUrl);
-          }
-          if (presignedDeleteUrl) {
-            await deleteFile(presignedDeleteUrl);
           }
         } catch (error) {
           setIsUploading(false);
@@ -62,7 +56,7 @@ export const useGCloudUpload = ({
       upload();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [presignedWriteUrl, file, newFileUrl, presignedDeleteUrl]);
+  }, [presignedWriteUrl, file, newFileUrl]);
 
   return {
     isUploading,

@@ -2,6 +2,7 @@ import { Box, Button, CardMedia, CircularProgress } from '@mui/material'
 import { Rap } from '@prisma/client';
 import React, { useRef, useState } from 'react'
 import { CDN_URL } from 'src/shared/constants'
+import { useGCloudDelete } from 'src/shared/useGCloudDelete';
 import { useGCloudUpload } from 'src/shared/useGCloudUpload';
 import { api } from 'src/utils/api';
 
@@ -25,15 +26,17 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
   // Invalidaters
   const { invalidate: invalidateRapQuery } = api.useContext().rap.getRap;
 
+  const { deleteFile } = useGCloudDelete({ url: coverArtUrl || '' })
+
   const { isUploading } = useGCloudUpload({
     path: `rap/${id}`,
     filename: 'cover-art',
-    currFileUrl: coverArtUrl,
     file,
     onUploadSuccess: async (url) => {
       await updateRap({ id, coverArtUrl: url });
       invalidateRapQuery();
       setFile(null);
+      deleteFile();
     }
   })
 
