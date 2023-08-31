@@ -97,7 +97,11 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
         <CardMedia
           component='img'
           alt='profile-header'
-          image={bannerUrl ? `${CDN_URL}/${bannerUrl}` : `${CDN_URL}/default/profile-banner.jpg`}
+          image={
+            bannerUrl ?
+              `${CDN_URL}/${bannerUrl}` :
+              `${CDN_URL}/default/profile-banner.jpg`
+          }
           sx={{
             height: { xs: 150, md: 250 }
           }}

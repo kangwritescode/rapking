@@ -51,6 +51,7 @@ export const rapRouter = createTRPCRouter({
       title: z.string().optional(),
       content: z.string().optional(),
       status: z.enum(["DRAFT", "PUBLISHED"]).optional(),
+      coverArtUrl: z.string().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
 
@@ -75,7 +76,8 @@ export const rapRouter = createTRPCRouter({
         data: {
           ...(input.title && { title: input.title }),
           ...(input.content && { content: input.content }),
-          ...(input.status && { status: input.status })
+          ...(input.status && { status: input.status }),
+          ...(input.coverArtUrl && { coverArtUrl: input.coverArtUrl })
         },
       })
 

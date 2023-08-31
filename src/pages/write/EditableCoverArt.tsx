@@ -1,16 +1,36 @@
+import { Icon } from '@iconify/react';
 import { Box, CardMedia, IconButton } from '@mui/material'
-import React from 'react'
+import { Rap } from '@prisma/client';
+import React, { useRef, useState } from 'react'
 import { CDN_URL } from 'src/shared/constants'
+import { api } from 'src/utils/api';
 
 interface EditableCoverArtProps {
-
+  isEditable?: boolean;
+  rapData: Rap;
 }
 
-function EditableCoverArt(props: EditableRapBannerProps) {
+function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
+
+  const { id, coverArtUrl } = rapData;
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // State
+  const [file, setFile] = useState<File | null>(null);
+
+  // Mutations
+  const { mutateAsync: updateRap } = api.rap.updateRap.useMutation();
+
+  // Invalidaters
+  const { invalidate: invalidateRapQuery } = api.useContext().rap.getRap;
+
+  console.log(`${CDN_URL}/default/cover-art.jpg`)
+
   return (
 
     <>
-      {/* <input
+      <input
         accept="image/jpeg, image/png"
         id="image-button-file"
         type="file"
@@ -21,7 +41,7 @@ function EditableCoverArt(props: EditableRapBannerProps) {
           }
         }}
         hidden
-      /> */}
+      />
       <Box
         sx={{
           position: 'relative',
@@ -39,8 +59,9 @@ function EditableCoverArt(props: EditableRapBannerProps) {
             }} />
         )} */}
 
-        {/* {isEditable && (
+        {isEditable && (
           <Box
+
             position='absolute'
             right='1rem'
             bottom='1rem'>
@@ -59,20 +80,35 @@ function EditableCoverArt(props: EditableRapBannerProps) {
               <Icon icon='mdi:camera-plus-outline' />
             </IconButton>
           </Box>
-        )} */}
+        )}
 
-        <CardMedia
-          component='img'
-          alt='rap-banner'
-          image={`${CDN_URL}/default/profile-banner.jpg`}
-          sx={(theme) => ({
-            border: `1px solid ${theme.palette.grey[700]}`,
-            height: {
-              xs: 150,
-              md: 250
+        <Box>
+          <CardMedia
+            component='img'
+            alt='rap-cover-art'
+            image={
+              coverArtUrl ?
+                `${CDN_URL}/rap/cover-art.jpg` :
+                `${CDN_URL}/default/cover-art.jpg`
             }
-          })}
-        />
+            sx={(theme) => ({
+              border: `1px solid ${theme.palette.grey[700]}`,
+              height: {
+                xs: 150,
+                md: 200
+              }
+            })}
+          />
+          <Box
+            top={0}
+            position='absolute'
+            height='100%'
+            width='100%'
+            bgcolor='black'
+            sx={{
+              opacity: 0.2,
+            }} />
+        </Box>
       </Box>
     </>
 

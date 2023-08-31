@@ -94,7 +94,7 @@ export default function RapEditor(props: RapEditorProps) {
 
       </EditorHeader>
       <Grid container wrap='nowrap' gap={6}>
-        <Grid item xs={7}>
+        <Grid item xs={rapData ? 7 : 12}>
           <Box>
             {rapData && (
               <StatusChanger
@@ -112,9 +112,11 @@ export default function RapEditor(props: RapEditorProps) {
               onChange={(content: string) => setContent(content)} />
           </Box>
         </Grid>
-        <Grid item xs={5} pt={10}>
-          <EditableRapBanner />
-        </Grid>
+        {rapData && (
+          <Grid item xs={5} pt={10}>
+            <EditableRapBanner rapData={rapData} isEditable />
+          </Grid>
+        )}
       </Grid>
     </EditorContainer>
   );
