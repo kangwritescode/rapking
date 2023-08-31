@@ -10,10 +10,9 @@ const ExistingRap = () => {
   const { data: rapData } = api.rap.getRap.useQuery({ id: id as string });
   const { mutate: updateRap } = api.rap.updateRap.useMutation();
 
-  const submitHandler = (rap: RapMutatePayload) => {
+  const submitHandler = (payload: UpdateRapPayload) => {
     updateRap({
-      id: id as string,
-      ...rap
+      ...payload,
     }, {
       onError: (error: any) => {
         toast.error(error.message)
@@ -26,7 +25,7 @@ const ExistingRap = () => {
 
   return (
     <RapEditor
-      handleSubmit={submitHandler}
+      handleUpdate={submitHandler}
       rapData={rapData}
     />
   );
@@ -39,7 +38,7 @@ import { GetServerSidePropsContext } from 'next';
 import { appRouter } from 'src/server/api/root';
 import superjson from 'superjson';
 import { createTRPCContext } from 'src/server/api/trpc'
-import { RapMutatePayload } from "src/shared/types";
+import { UpdateRapPayload } from "src/server/api/routers/rap";
 
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {

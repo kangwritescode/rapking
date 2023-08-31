@@ -6,12 +6,26 @@ import {
 } from "src/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
+const createRapPayloadSchema = z.object({
+  title: z.string(),
+  content: z.string(),
+});
+
+export type CreateRapPayload = z.infer<typeof createRapPayloadSchema>;
+
+const updateRapPayloadSchema = z.object({
+  id: z.string(),
+  title: z.string().optional(),
+  content: z.string().optional(),
+  status: z.enum(["DRAFT", "PUBLISHED"]).optional(),
+  coverArtUrl: z.string().optional().nullable(),
+});
+
+export type UpdateRapPayload = z.infer<typeof updateRapPayloadSchema>;
+
 export const rapRouter = createTRPCRouter({
   createRap: protectedProcedure
-    .input(z.object({
-      title: z.string(),
-      content: z.string(),
-    }))
+    .input(createRapPayloadSchema)
     .mutation(async ({ input, ctx }) => {
 
       if (input.title.length < 3) {
@@ -46,13 +60,7 @@ export const rapRouter = createTRPCRouter({
 
     }),
   updateRap: protectedProcedure
-    .input(z.object({
-      id: z.string(),
-      title: z.string().optional(),
-      content: z.string().optional(),
-      status: z.enum(["DRAFT", "PUBLISHED"]).optional(),
-      coverArtUrl: z.string().optional(),
-    }))
+    .input(updateRapPayloadSchema)
     .mutation(async ({ input, ctx }) => {
 
       // check if a rap with the same title already exists

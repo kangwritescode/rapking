@@ -6,7 +6,7 @@ import { api } from 'src/utils/api';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import { Rap } from '@prisma/client';
-import { RapMutatePayload } from 'src/shared/types';
+import { CreateRapPayload } from 'src/server/api/routers/rap';
 
 const PageContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
@@ -23,7 +23,7 @@ function WritePage() {
   const router = useRouter();
   const profileMutation = api.rap.createRap.useMutation();
 
-  const createRap = (rap: RapMutatePayload) => {
+  const submitHandler = (rap: CreateRapPayload) => {
     profileMutation.mutate(rap, {
       onError: (error) => {
         toast.error(error.message)
@@ -37,7 +37,7 @@ function WritePage() {
 
   return (
     <PageContainer>
-      <RapEditor handleSubmit={createRap} />
+      <RapEditor handleCreate={submitHandler} />
     </PageContainer>
   )
 }

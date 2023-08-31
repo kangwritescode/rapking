@@ -10,7 +10,7 @@ import { Box, Button, Grid, Stack } from '@mui/material';
 import { Icon } from '@iconify/react';
 import StatusChanger from './StatusChanger';
 import EditableRapBanner from './EditableCoverArt';
-import { RapMutatePayload } from 'src/shared/types';
+import { CreateRapPayload, UpdateRapPayload } from 'src/server/api/routers/rap';
 
 const EditorContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -31,7 +31,8 @@ const EditorHeader = styled(Stack)(() => ({
 }))
 
 interface RapEditorProps {
-  handleSubmit: (rap: RapMutatePayload) => void;
+  handleUpdate?: (rap: UpdateRapPayload) => void;
+  handleCreate?: (rap: CreateRapPayload) => void;
   rapData?: Rap | null;
 }
 
@@ -44,7 +45,8 @@ export type RapEditorFormValues = z.infer<typeof rapEditorFormSchema>
 export default function RapEditor(props: RapEditorProps) {
 
   const {
-    handleSubmit,
+    handleUpdate,
+    handleCreate,
     rapData,
   } = props;
 
@@ -64,10 +66,19 @@ export default function RapEditor(props: RapEditorProps) {
 
   const onSubmitHandler = () => {
     const { title } = getValues();
-    handleSubmit({
-      content,
-      title
-    })
+    if (handleCreate) {
+      return handleCreate({
+        title,
+        content
+      })
+    }
+    if (handleUpdate && rapData) {
+      return handleUpdate({
+        id: rapData?.id || '',
+        title,
+        content
+      })
+    }
   }
 
   return (
