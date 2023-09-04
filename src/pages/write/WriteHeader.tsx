@@ -6,7 +6,7 @@ import React from 'react'
 interface WriteHeaderProps {
   disabled: boolean;
   onClickHandler: () => void;
-  rapData?: Rap;
+  rapData?: Rap | null;
 }
 
 function WriteHeader({

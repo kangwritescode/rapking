@@ -2,6 +2,18 @@ import { useRouter } from "next/router";
 import { api } from "src/utils/api";
 import RapEditor from "./RapEditor";
 import { toast } from "react-hot-toast";
+import { useCallback, useState } from "react";
+import { UpdateRapPayload } from "src/server/api/routers/rap";
+import { Container, styled } from "@mui/material";
+import WriteHeader from "./WriteHeader";
+
+const PageContainer = styled(Container)(() => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'top',
+  flexDirection: 'column',
+}))
+
 
 const ExistingRap = () => {
   const router = useRouter();
@@ -10,49 +22,43 @@ const ExistingRap = () => {
   const { data: rapData } = api.rap.getRap.useQuery({ id: id as string });
   const { mutate: updateRap } = api.rap.updateRap.useMutation();
 
-  const submitHandler = (payload: UpdateRapPayload) => {
-    updateRap({
-      ...payload,
-    }, {
-      onError: (error: any) => {
-        toast.error(error.message)
-      },
-      onSuccess: () => {
-        toast.success('Updated Rap!')
-      }
-    })
+  const [updateRapPayload, setUpdateRapPayload] = useState<UpdateRapPayload | null>(null);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+
+  const submitHandler = () => {
+    if (updateRapPayload) {
+      updateRap(updateRapPayload, {
+        onError: (error) => {
+          toast.error(error.message)
+        },
+        onSuccess: () => {
+          toast.success('Rap Updated Successfully!')
+        }
+      })
+    }
   }
 
+  const onRapChangeHandler = useCallback((rapPayload: UpdateRapPayload) => {
+    setUpdateRapPayload(rapPayload)
+  }, [])
+
   return (
-    <RapEditor
-      handleUpdate={submitHandler}
-      rapData={rapData}
-    />
+    <PageContainer>
+      <WriteHeader
+        disabled={buttonDisabled}
+        onClickHandler={submitHandler}
+        rapData={rapData}
+      />
+      {rapData && (
+        <RapEditor
+          handleUpdate={submitHandler}
+          rapData={rapData}
+          onRapChange={onRapChangeHandler}
+          onDisabledStateChanged={(isDisabled: boolean) => setButtonDisabled(isDisabled)}
+        />
+      )}
+    </PageContainer>
   );
 }
 
 export default ExistingRap;
-
-import { createServerSideHelpers } from '@trpc/react-query/server';
-import { GetServerSidePropsContext } from 'next';
-import { appRouter } from 'src/server/api/root';
-import superjson from 'superjson';
-import { createTRPCContext } from 'src/server/api/trpc'
-import { UpdateRapPayload } from "src/server/api/routers/rap";
-
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-
-  const helpers = createServerSideHelpers({
-    router: appRouter,
-    ctx: await createTRPCContext(context),
-    transformer: superjson,
-  });
-  await helpers.rap.getRap.prefetch({ id: context.params?.id as string })
-
-  return {
-    props: {
-      trpcState: helpers.dehydrate(),
-    }
-  }
-}

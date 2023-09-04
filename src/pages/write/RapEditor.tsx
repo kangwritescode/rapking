@@ -28,7 +28,7 @@ interface RapEditorProps {
   handleCreate?: (rap: CreateRapPayload) => void;
   rapData?: Rap | null;
   onDisabledStateChanged?: (isDisabled: boolean) => void;
-  onRapChange?: (rap: CreateRapPayload) => void | ((rap: UpdateRapPayload) => void);
+  onRapChange?: (payload: any) => void;
 }
 
 const rapEditorFormSchema = z.object({
