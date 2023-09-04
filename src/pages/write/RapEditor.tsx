@@ -1,13 +1,12 @@
 import { styled } from '@mui/material/styles'
 import TextEditor from './TextEditor';
 import TitleBar from './TitleBar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Rap } from '@prisma/client';
-import { Box, Button, Grid, Stack } from '@mui/material';
-import { Icon } from '@iconify/react';
+import { Box, Grid } from '@mui/material';
 import StatusChanger from './StatusChanger';
 import EditableRapBanner from './EditableCoverArt';
 import { CreateRapPayload, UpdateRapPayload } from 'src/server/api/routers/rap';
@@ -24,16 +23,12 @@ const EditorContainer = styled('div')(({ theme }) => ({
   }
 }))
 
-const EditorHeader = styled(Stack)(() => ({
-  flexDirection: 'row',
-  justifyContent: 'flex-end',
-  paddingBottom: '1rem',
-}))
-
 interface RapEditorProps {
   handleUpdate?: (rap: UpdateRapPayload) => void;
   handleCreate?: (rap: CreateRapPayload) => void;
   rapData?: Rap | null;
+  onDisabledStateChanged?: (isDisabled: boolean) => void;
+  onRapChange?: (rap: CreateRapPayload) => void | ((rap: UpdateRapPayload) => void);
 }
 
 const rapEditorFormSchema = z.object({
@@ -45,65 +40,45 @@ export type RapEditorFormValues = z.infer<typeof rapEditorFormSchema>
 export default function RapEditor(props: RapEditorProps) {
 
   const {
-    handleUpdate,
-    handleCreate,
     rapData,
+    onDisabledStateChanged,
+    onRapChange
   } = props;
 
   const [content, setContent] = useState(rapData?.content || '')
 
   const {
     register,
-    getValues,
     formState: {
       isValid,
       isSubmitting
-    }
+    },
+    watch
   } = useForm({
     defaultValues: { title: rapData?.title || '' },
     resolver: zodResolver(rapEditorFormSchema)
   })
 
-  const onSubmitHandler = () => {
-    const { title } = getValues();
-    if (handleCreate) {
-      return handleCreate({
-        title,
-        content
+  const { title } = watch();
+
+  useEffect(() => {
+    if (onRapChange) {
+      onRapChange({
+        ...rapData,
+        content,
+        title
       })
     }
-    if (handleUpdate && rapData) {
-      return handleUpdate({
-        id: rapData?.id || '',
-        title,
-        content
-      })
+  }, [onRapChange, title, content, rapData])
+
+  useEffect(() => {
+    if (onDisabledStateChanged) {
+      onDisabledStateChanged(!isValid || isSubmitting)
     }
-  }
+  }, [isValid, isSubmitting, onDisabledStateChanged])
 
   return (
     <EditorContainer>
-      <EditorHeader>
-        {rapData && (
-          <Button
-            sx={{
-              marginRight: '1rem',
-              whiteSpace: 'nowrap'
-            }}
-            size='medium'
-            variant='outlined'>
-            <Icon icon='ic:baseline-settings' fontSize={20} />
-          </Button>
-        )}
-        <Button
-          onClick={onSubmitHandler}
-          size='medium'
-          variant='contained'
-          disabled={!isValid || isSubmitting}>
-          {rapData ? 'Update Rap' : 'Create Rap'}
-        </Button>
-
-      </EditorHeader>
       <Grid container wrap='nowrap' gap={6}>
         <Grid item xs={rapData ? 7 : 12}>
           <Box>
@@ -115,7 +90,6 @@ export default function RapEditor(props: RapEditorProps) {
             )}
             <TitleBar
               sx={{ mb: '2rem' }}
-              onClick={onSubmitHandler}
               register={register}
             />
             <TextEditor
