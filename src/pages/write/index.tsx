@@ -19,6 +19,7 @@ const PageContainer = styled(Container)(() => ({
 function WritePage() {
 
   const router = useRouter();
+
   const { mutate: createProfile } = api.rap.createRap.useMutation();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [rap, setRap] = useState<CreateRapPayload | null>(null);
@@ -56,4 +57,4 @@ function WritePage() {
   )
 }
 
-export default WritePage
+export default WritePage;
