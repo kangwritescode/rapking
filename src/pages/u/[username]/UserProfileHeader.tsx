@@ -56,6 +56,12 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
                 justifyContent: ['center', 'flex-start']
               }}
             >
+              <Box sx={{ mr: 4, display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
+                <Icon icon='material-symbols:male' />
+                <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>
+                  Male
+                </Typography>
+              </Box>
               <Box sx={{ mr: 5, display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
                 <Icon icon='mdi:map-marker-outline' />
                 <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>{userData?.city + ', ' + userData?.state}</Typography>
@@ -84,3 +90,4 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
 }
 
 export default UserProfileHeader
+
