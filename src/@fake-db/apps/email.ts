@@ -2,9 +2,8 @@
 import mock from 'src/@fake-db/mock'
 
 // ** Types
-import { MailType } from 'src/types/apps/emailTypes'
 
-const data: { emails: MailType[] } = {
+const data: { emails: any[] } = {
   emails: [
     {
       id: 1,
@@ -1049,7 +1048,7 @@ const data: { emails: MailType[] } = {
   ]
 }
 
-let paramsFilteredMails: MailType[] = []
+let paramsFilteredMails: any[] = []
 
 // ------------------------------------------------
 // GET: Return Emails
@@ -1064,7 +1063,7 @@ mock.onGet('/apps/email/emails').reply(config => {
 
   const queryLowered = q.toLowerCase()
 
-  function isInFolder(email: MailType) {
+  function isInFolder(email: any) {
     if (folder === 'trash') return email.folder === 'trash'
     if (folder === 'starred') return email.isStarred && email.folder !== 'trash'
 
@@ -1072,7 +1071,7 @@ mock.onGet('/apps/email/emails').reply(config => {
   }
 
   const filteredData = data.emails.filter(
-    (email: MailType) =>
+    (email: any) =>
       (email.from.name.toLowerCase().includes(queryLowered) ||
         email.subject.toLowerCase().includes(queryLowered) ||
         email.message.toLowerCase().includes(queryLowered)) &&
@@ -1086,9 +1085,9 @@ mock.onGet('/apps/email/emails').reply(config => {
   // Email Meta
   // ------------------------------------------------
   const emailsMeta = {
-    inbox: data.emails.filter((email: MailType) => !email.isRead && email.folder === 'inbox').length,
-    draft: data.emails.filter((email: MailType) => email.folder === 'draft').length,
-    spam: data.emails.filter((email: MailType) => !email.isRead && email.folder === 'spam').length
+    inbox: data.emails.filter((email: any) => !email.isRead && email.folder === 'inbox').length,
+    draft: data.emails.filter((email: any) => email.folder === 'draft').length,
+    spam: data.emails.filter((email: any) => !email.isRead && email.folder === 'spam').length
   }
 
   return [
@@ -1106,14 +1105,14 @@ mock.onGet('/apps/email/emails').reply(config => {
 mock.onPost('/apps/email/update-emails-label').reply(config => {
   const { emailIds, label } = JSON.parse(config.data).data
 
-  function updateMailLabels(email: MailType) {
+  function updateMailLabels(email: any) {
     const labelIndex = email.labels.indexOf(label)
 
     if (labelIndex === -1) email.labels.push(label)
     else email.labels.splice(labelIndex, 1)
   }
 
-  data.emails.forEach((email: MailType) => {
+  data.emails.forEach((email: any) => {
     if (emailIds.includes(email.id)) updateMailLabels(email)
   })
 
@@ -1128,9 +1127,9 @@ mock.onGet('/apps/email/get-email').reply(config => {
 
   const emailId = Number(id)
 
-  const mail = paramsFilteredMails.find((i: MailType) => i.id === emailId)
+  const mail = paramsFilteredMails.find((i: any) => i.id === emailId)
   if (mail) {
-    const mailIndex = paramsFilteredMails.findIndex((i: MailType) => i.id === mail.id)
+    const mailIndex = paramsFilteredMails.findIndex((i: any) => i.id === mail.id)
     mailIndex > 0 ? (mail.hasPreviousMail = true) : (mail.hasPreviousMail = false)
     mailIndex < paramsFilteredMails.length - 1 ? (mail.hasNextMail = true) : (mail.hasNextMail = false)
   }
@@ -1144,11 +1143,11 @@ mock.onGet('/apps/email/get-email').reply(config => {
 mock.onPost('/apps/email/update-emails').reply(config => {
   const { emailIds, dataToUpdate } = JSON.parse(config.data).data
 
-  function updateMailData(email: MailType) {
+  function updateMailData(email: any) {
     Object.assign(email, dataToUpdate)
   }
 
-  data.emails.forEach((email: MailType) => {
+  data.emails.forEach((email: any) => {
     if (emailIds.includes(email.id)) updateMailData(email)
   })
 
@@ -1160,13 +1159,13 @@ mock.onPost('/apps/email/update-emails').reply(config => {
 // ------------------------------------------------
 mock.onGet('/apps/email/paginate-email').reply(config => {
   const { dir, emailId } = config.params
-  const currentEmailIndex = paramsFilteredMails.findIndex((e: MailType) => e.id === emailId)
+  const currentEmailIndex = paramsFilteredMails.findIndex((e: any) => e.id === emailId)
   const newEmailIndex = dir === 'previous' ? currentEmailIndex - 1 : currentEmailIndex + 1
 
   const newEmail = paramsFilteredMails[newEmailIndex]
 
   if (newEmail) {
-    const mailIndex = paramsFilteredMails.findIndex((i: MailType) => i.id === newEmail.id)
+    const mailIndex = paramsFilteredMails.findIndex((i: any) => i.id === newEmail.id)
     mailIndex > 0 ? (newEmail.hasPreviousMail = true) : (newEmail.hasPreviousMail = false)
     mailIndex < paramsFilteredMails.length - 1 ? (newEmail.hasNextMail = true) : (newEmail.hasNextMail = false)
   }
