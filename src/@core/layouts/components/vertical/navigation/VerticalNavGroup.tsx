@@ -33,7 +33,6 @@ import { NavGroup, LayoutProps } from 'src/@core/layouts/types'
 import VerticalNavItems from './VerticalNavItems'
 import UserIcon from 'src/layouts/components/UserIcon'
 import Translations from 'src/layouts/components/Translations'
-import CanViewNavGroup from 'src/layouts/components/acl/CanViewNavGroup'
 
 interface Props {
   item: NavGroup
@@ -180,7 +179,6 @@ const VerticalNavGroup = (props: Props) => {
   const menuGroupCollapsedStyles = navCollapsed && !navHover ? { opacity: 0 } : { opacity: 1 }
 
   return (
-    <CanViewNavGroup navGroup={item}>
       <Fragment>
         <ListItem
           disablePadding
@@ -286,7 +284,6 @@ const VerticalNavGroup = (props: Props) => {
           </Collapse>
         </ListItem>
       </Fragment>
-    </CanViewNavGroup>
   )
 }
 

@@ -11,18 +11,13 @@ import { SessionProvider } from "next-auth/react";
 import NProgress from 'nprogress'
 
 // ** Config Imports
-import { defaultACLObj } from 'src/configs/acl'
 import themeConfig from 'src/configs/themeConfig'
-
-// ** Fake-DB Import
-import 'src/@fake-db'
 
 // ** Third Party Import
 import { Toaster } from 'react-hot-toast'
 
 // ** Component Imports
 import UserLayout from 'src/layouts/UserLayout'
-import AclGuard from 'src/@core/components/auth/AclGuard'
 import ThemeComponent from 'src/@core/theme/ThemeComponent'
 
 import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsContext'
@@ -80,7 +75,6 @@ const App: any = (props: ExtendedAppProps) => {
   const contentHeightFixed = Component.contentHeightFixed ?? false
   const getLayout = Component.getLayout ?? (page => <UserLayout contentHeightFixed={contentHeightFixed}>{page}</UserLayout>)
   const setConfig = Component.setConfig ?? undefined
-  const aclAbilities = Component.acl ?? defaultACLObj
 
   return (
     <>
@@ -104,7 +98,6 @@ const App: any = (props: ExtendedAppProps) => {
             {({ settings }) => {
               return (
                 <ThemeComponent settings={settings}>
-                  <AclGuard aclAbilities={aclAbilities}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <CreateProfileGuard fallback={
                         <FallbackSpinner />
@@ -112,7 +105,6 @@ const App: any = (props: ExtendedAppProps) => {
                         {getLayout(<Component {...pageProps} />)}
                       </CreateProfileGuard>
                     </ LocalizationProvider>
-                  </AclGuard>
                   <ReactHotToast>
                     <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
                   </ReactHotToast>
