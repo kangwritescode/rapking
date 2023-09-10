@@ -1,11 +1,11 @@
 import { Icon } from '@iconify/react';
-import { Box, CardMedia, IconButton, Paper, useTheme } from '@mui/material'
+import { Box, CardMedia, IconButton, Paper, SxProps, useTheme } from '@mui/material'
 import { Rap } from '@prisma/client'
 import { useRouter } from 'next/router';
 import React from 'react'
 import { CDN_URL } from 'src/shared/constants';
 
-function RapCard({ rap }: { rap: Rap }) {
+function RapCard({ rap, sx }: { rap: Rap, sx?: SxProps }) {
 
   const theme = useTheme();
   const router = useRouter();
@@ -15,12 +15,11 @@ function RapCard({ rap }: { rap: Rap }) {
   return (
     <Paper
       sx={{
-        minWidth: '12rem',
-        maxWidth: '24rem',
         position: 'relative',
         '&:hover': {
           cursor: 'pointer',
-        }
+        },
+        ...sx
       }}
       key={id}>
       <CardMedia
