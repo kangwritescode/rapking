@@ -7,7 +7,7 @@ import { styled } from '@mui/material/styles'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
-  color: theme.palette.primary.main
+  color: theme.palette.grey[400],
 }))
 
 const FooterContent = () => {
