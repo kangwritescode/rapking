@@ -2,7 +2,7 @@
 import IconButton from '@mui/material/IconButton'
 
 // ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import { Icon } from '@iconify/react'
 
 // ** Types Import
 import { Mode } from 'src/@core/layouts/types'

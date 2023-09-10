@@ -14,7 +14,7 @@ import CardContent from '@mui/material/CardContent'
 import LinearProgress from '@mui/material/LinearProgress'
 
 // ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import { Icon } from '@iconify/react'
 
 // ** Types
 import { ProjectsTabType } from 'src/@fake-db/types'

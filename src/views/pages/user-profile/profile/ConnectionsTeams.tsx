@@ -12,7 +12,7 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 
 // ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import { Icon } from '@iconify/react'
 
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'

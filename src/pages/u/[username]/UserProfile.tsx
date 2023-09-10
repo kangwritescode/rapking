@@ -25,7 +25,7 @@ import {
 } from 'src/@fake-db/types'
 
 // ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import { Icon } from '@iconify/react'
 
 // ** Demo Components
 import Teams from '../../../views/pages/user-profile/teams/index'

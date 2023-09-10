@@ -15,7 +15,7 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 
 // ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import { Icon } from '@iconify/react'
 
 // ** Type Imports
 import { Settings } from 'src/@core/context/settingsContext'

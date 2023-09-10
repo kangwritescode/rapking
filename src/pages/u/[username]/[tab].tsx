@@ -17,7 +17,7 @@ import MuiTabList, { TabListProps } from '@mui/lab/TabList'
 import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import { Icon } from '@iconify/react'
 
 // ** Components
 import { api } from 'src/utils/api'

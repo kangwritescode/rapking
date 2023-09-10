@@ -8,7 +8,7 @@ import { DateField } from '@mui/x-date-pickers'
 import dayjs, { Dayjs } from 'dayjs'
 
 // ** Icon Imports
-// import Icon from 'src/@core/components/icon'
+// import { Icon } from '@iconify/react'
 
 export type PersonalStepProps = {
   handleBack: () => void,

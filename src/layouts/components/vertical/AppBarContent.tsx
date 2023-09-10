@@ -1,17 +1,14 @@
 // ** MUI Imports
+import { Icon } from '@iconify/react'
 import { Button } from '@mui/material'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import { signIn, useSession } from 'next-auth/react'
 
-// ** Icon Imports
-import Icon from 'src/@core/components/icon'
-
 // ** Type Import
 import { Settings } from 'src/@core/context/settingsContext'
 
 // ** Components
-import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
 import NotificationDropdown, { NotificationsType } from 'src/@core/layouts/components/shared-components/NotificationDropdown'
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
 
@@ -69,7 +66,7 @@ const notifications: NotificationsType[] = [
 
 const AppBarContent = (props: Props) => {
     // ** Props
-    const { hidden, settings, saveSettings, toggleNavVisibility } = props
+    const { hidden, settings, toggleNavVisibility } = props
 
     const { status } = useSession();
 
@@ -85,8 +82,7 @@ const AppBarContent = (props: Props) => {
             {status === 'unauthenticated' && <Button variant='contained' onClick={() => void signIn()}>Sign In</Button>}
             {status === 'authenticated' && (
                 <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
-                {/* <ModeToggler settings={settings} saveSettings={saveSettings} /> */}
-                {/* <NotificationDropdown settings={settings} notifications={notifications} /> */}
+                <NotificationDropdown settings={settings} notifications={notifications} />
                 <UserDropdown settings={settings} />
             </Box>
             )}

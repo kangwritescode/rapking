@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 
 // ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import { Icon } from '@iconify/react'
 
 // ** Type Imports
 import { OptionType, OptionsMenuType, OptionMenuItemType } from './types'

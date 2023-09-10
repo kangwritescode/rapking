@@ -13,7 +13,7 @@ import AvatarGroup from '@mui/material/AvatarGroup'
 import CardContent from '@mui/material/CardContent'
 
 // ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import { Icon } from '@iconify/react'
 
 // ** Types
 import { TeamsTabType } from 'src/@fake-db/types'

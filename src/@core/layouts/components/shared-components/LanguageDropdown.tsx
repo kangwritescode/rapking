@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 
 // ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import { Icon } from '@iconify/react'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'

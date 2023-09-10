@@ -4,7 +4,7 @@ import { StepIconProps } from '@mui/material/StepIcon'
 import { styled, useTheme } from '@mui/material/styles'
 
 // ** Custom Icon Import
-import Icon from 'src/@core/components/icon'
+import { Icon } from '@iconify/react'
 
 // ** Hooks Imports
 import useBgColor, { UseBgColorType } from 'src/@core/hooks/useBgColor'

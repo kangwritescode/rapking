@@ -11,7 +11,7 @@ import Typography, { TypographyProps } from '@mui/material/Typography'
 import { LayoutProps } from 'src/@core/layouts/types'
 
 // ** Custom Icon Import
-import Icon from 'src/@core/components/icon'
+import { Icon } from '@iconify/react'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'

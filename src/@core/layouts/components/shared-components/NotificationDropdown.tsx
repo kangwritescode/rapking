@@ -13,7 +13,7 @@ import MuiMenuItem, { MenuItemProps } from '@mui/material/MenuItem'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 
 // ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import { Icon } from '@iconify/react'
 
 // ** Third Party Components
 import PerfectScrollbarComponent from 'react-perfect-scrollbar'

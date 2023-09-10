@@ -21,7 +21,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 
 // ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import { Icon } from '@iconify/react'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'

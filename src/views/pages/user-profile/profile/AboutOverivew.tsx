@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 
 // ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import { Icon } from '@iconify/react'
 
 // ** Types
 import { ProfileTeamsType, ProfileTabCommonType } from 'src/@fake-db/types'
