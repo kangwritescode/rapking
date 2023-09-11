@@ -78,9 +78,9 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
             <Button
               variant='contained'
               startIcon={
-                <Icon icon='mdi:pencil' fontSize={20} />
+                <Icon icon='fluent-mdl2:add-friend' />
               }>
-              Edit Profile
+              Connect
             </Button>
           ) : undefined}
         </Box>
