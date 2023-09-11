@@ -1,14 +1,19 @@
 import { Icon } from '@iconify/react';
 import { Box, CardMedia, IconButton, Paper, SxProps, useTheme } from '@mui/material'
 import { Rap } from '@prisma/client'
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 import React from 'react'
 import { CDN_URL } from 'src/shared/constants';
 
-function RapCard({ rap, sx }: { rap: Rap, sx?: SxProps }) {
+interface RapCardProps {
+  rap: Rap;
+  sx?: SxProps;
+  onClick?: () => void;
+}
+
+function RapCard({ rap, sx, onClick }: RapCardProps) {
 
   const theme = useTheme();
-  const router = useRouter();
 
   const { id, title, dateCreated, coverArtUrl } = rap;
 
@@ -21,7 +26,8 @@ function RapCard({ rap, sx }: { rap: Rap, sx?: SxProps }) {
         },
         ...sx
       }}
-      key={id}>
+      onClick={onClick}
+    >
       <CardMedia
         component='img'
         alt='rap-cover-art'
@@ -39,9 +45,15 @@ function RapCard({ rap, sx }: { rap: Rap, sx?: SxProps }) {
       <Box p={4}>
         <Box fontSize='12pt' fontWeight='bold'>{title}</Box>
         <Box fontSize='10pt' color={theme.palette.grey[500]}>{dateCreated.toLocaleDateString()}</Box>
-        <IconButton sx={{ position: 'absolute', bottom: 0, right: 0 }} onClick={() => router.push(`/write/${id}`)}>
-          <Icon fontSize={16} icon='ph:pencil' />
-        </IconButton>
+        <Link href={`/write/${id}`}>
+          <IconButton
+            sx={{ position: 'absolute', bottom: 0, right: 0 }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}>
+            <Icon fontSize={16} icon='ph:pencil' />
+          </IconButton>
+        </Link>
       </Box>
     </Paper>
   )
