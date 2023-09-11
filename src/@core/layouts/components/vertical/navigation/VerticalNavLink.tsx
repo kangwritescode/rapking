@@ -90,7 +90,7 @@ const VerticalNavLink = ({
   const icon = parent && !item.icon ? themeConfig.navSubItemIcon : item.icon
 
   const isNavLinkActive = () => {
-    if (router.pathname === item.path || handleURLQueries(router, item.path)) {
+    if (router.pathname === item.path || handleURLQueries(router, item.path) || item.path?.includes('username')) {
       return true
     } else {
       return false

@@ -109,6 +109,15 @@ const UserProfile = () => {
                   aria-label='customized tabs example'
                 >
                   <Tab
+                    value='profile'
+                    label={
+                      <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
+                        <Icon fontSize={20} icon='material-symbols:post' />
+                        {!hideText && 'Profile'}
+                      </Box>
+                    }
+                  />
+                  <Tab
                     value='raps'
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
