@@ -1,9 +1,9 @@
-import { CardMedia, Divider, Stack, Typography, styled, useTheme } from '@mui/material';
+import { CardMedia, Divider, Link, Stack, Typography, styled, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import React from 'react'
 import { CDN_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
-import { convert } from 'html-to-text';
+import RapContent from './RapContent';
 
 const ProfilePicture = styled('img')(({ theme }) => ({
   width: 50,
@@ -11,6 +11,7 @@ const ProfilePicture = styled('img')(({ theme }) => ({
   borderRadius: '100px',
   position: 'relative',
   marginRight: theme.spacing(2),
+  cursor: 'pointer',
   [theme.breakpoints.down('md')]: {
     marginBottom: theme.spacing(4)
   }
@@ -24,11 +25,9 @@ function RapPage() {
   const { data: rapData } = api.rap.getRap.useQuery({ id: id as string });
   const { data: userData } = api.user.findById.useQuery({ id: rapData?.userId || '' }, { enabled: !!(rapData?.userId) })
 
-  console.log(rapData?.content)
-
   return (
     <Stack direction='column' alignItems='center'>
-      <Stack maxWidth='40rem'>
+      <Stack width={{ xs: '100%', md: '40rem' }}>
         <CardMedia
           component='img'
           alt='profile-header'
@@ -49,24 +48,21 @@ function RapPage() {
           <ProfilePicture
             src={userData ? `${CDN_URL}/${userData.profileImageUrl}` : `${CDN_URL}/default/profile-male-default.jpg`}
             alt='profile-picture'
+            onClick={() => router.push(`/u/${userData?.username}/raps`)}
           />
           <Stack>
-            <Typography fontWeight='bold'>
-              {userData?.username}
-            </Typography>
+            <Link>
+              <Typography fontWeight='bold'>
+                {userData?.username}
+              </Typography>
+            </Link>
             <Typography>
               {rapData?.dateCreated.toLocaleDateString()}
             </Typography>
           </Stack>
         </Stack>
         <Divider />
-        <Typography
-          mt={theme.spacing(8)}
-          variant='body1'
-          sx={{ wordWrap: 'break-word' }}
-        >
-          {convert(rapData?.content || '')}
-        </Typography>
+        {rapData?.content && <RapContent sx={{ marginTop: theme.spacing(8) }} content={rapData.content} />}
       </Stack>
     </Stack>
   )
