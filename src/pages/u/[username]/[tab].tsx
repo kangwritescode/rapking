@@ -23,6 +23,7 @@ import { Icon } from '@iconify/react'
 import { api } from 'src/utils/api'
 import RapsTab from './RapsTab'
 import UserProfileHeader from './UserProfileHeader'
+import ProfileTab from './ProfileTab'
 
 const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
   '& .MuiTabs-indicator': {
@@ -90,6 +91,7 @@ const UserProfile = () => {
 
   const tabContentList: { [key: string]: ReactElement } = {
     raps: <RapsTab raps={rapsData} />,
+    profile: <ProfileTab userData={userData} />
   }
 
   return (

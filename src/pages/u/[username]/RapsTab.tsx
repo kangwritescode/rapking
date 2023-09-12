@@ -18,7 +18,11 @@ function RapsTab({ raps }: RapsTabProps) {
     >
       {raps?.map((rap) => {
         return (
-          <Link href={`/rap/${rap.id}`} key={rap.id} style={{ textDecoration: 'none' }}>
+          <Link
+            href={`/rap/${rap.id}`}
+            key={rap.id}
+            style={{ textDecoration: 'none' }}
+          >
             <RapCard
               key={rap.id}
               rap={rap}
