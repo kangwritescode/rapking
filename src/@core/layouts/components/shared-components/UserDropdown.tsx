@@ -20,6 +20,8 @@ import { Icon } from '@iconify/react'
 // ** Type Imports
 import { Settings } from 'src/@core/context/settingsContext'
 import { signOut } from 'next-auth/react'
+import { api } from 'src/utils/api'
+import { CDN_URL } from 'src/shared/constants'
 
 interface Props {
   settings: Settings
@@ -46,6 +48,10 @@ const UserDropdown = (props: Props) => {
 
   // ** Vars
   const { direction } = settings
+
+  // ** Query
+
+  const { data: userData } = api.user.getCurrentUser.useQuery();
 
   const handleDropdownOpen = (event: SyntheticEvent) => {
     setAnchorEl(event.currentTarget)
@@ -91,10 +97,10 @@ const UserDropdown = (props: Props) => {
         }}
       >
         <Avatar
-          alt='John Doe'
+          alt='User Name'
           onClick={handleDropdownOpen}
           sx={{ width: 40, height: 40 }}
-          src='/images/avatars/1.png'
+          src={`${CDN_URL}/${userData?.profileImageUrl}` || '/images/avatars/1.png'}
         />
       </Badge>
       <Menu
@@ -115,23 +121,16 @@ const UserDropdown = (props: Props) => {
                 horizontal: 'right'
               }}
             >
-              <Avatar alt='John Doe' src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
+              <Avatar alt='Profile avatar */' src={`${CDN_URL}/${userData?.profileImageUrl}` || '/images/avatars/1.png'} sx={{ width: '2.5rem', height: '2.5rem' }} />
             </Badge>
             <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 600 }}>John Doe</Typography>
-              <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
-                Admin
+              <Typography sx={{ fontWeight: 600 }}>
+                {userData?.username || ''}
               </Typography>
             </Box>
           </Box>
         </Box>
-        <Divider sx={{ mt: '0 !important' }} />
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose()}>
-          <Box sx={styles}>
-            <Icon icon='mdi:account-outline' />
-            Profile
-          </Box>
-        </MenuItem>
+        <Divider sx={{mb: 1}} />
         <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose()}>
           <Box sx={styles}>
             <Icon icon='mdi:message-outline' />

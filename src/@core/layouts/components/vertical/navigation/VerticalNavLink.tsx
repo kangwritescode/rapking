@@ -27,6 +27,8 @@ import Translations from 'src/layouts/components/Translations'
 
 // ** Util Import
 import { handleURLQueries } from 'src/@core/layouts/utils'
+import { api } from 'src/utils/api'
+import { CDN_URL } from 'src/shared/constants'
 
 interface Props {
   parent?: boolean
@@ -70,6 +72,13 @@ const MenuItemTextMetaWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   ...(themeConfig.menuTextTruncate && { overflow: 'hidden' })
 }))
 
+const ProfilePicture = styled('img')(() => ({
+  width: 26,
+  height: 26,
+  borderRadius: '100px',
+  position: 'relative',
+}))
+
 const VerticalNavLink = ({
   item,
   parent,
@@ -86,6 +95,11 @@ const VerticalNavLink = ({
 
   // ** Vars
   const { navCollapsed } = settings
+
+  // logic for profile icon
+  const isUserPage = item.path?.includes('profile');
+  const { data: userData } = api.user.getCurrentUser.useQuery();
+  const showProfileIcon = isUserPage && userData?.profileImageUrl;
 
   const icon = parent && !item.icon ? themeConfig.navSubItemIcon : item.icon
 
@@ -140,7 +154,9 @@ const VerticalNavLink = ({
               }
             }}
           >
-            <UserIcon icon={icon as string} />
+            {showProfileIcon ?
+              <ProfilePicture src={`${CDN_URL}/${userData.profileImageUrl}` || ''} /> :
+              <UserIcon icon={icon as string} />}
           </ListItemIcon>
         )}
 
