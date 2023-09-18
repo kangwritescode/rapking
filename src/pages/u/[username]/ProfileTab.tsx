@@ -12,12 +12,13 @@ function ProfileTab({ userData }: ProfileTabProps) {
   return (
     <Box
       display='grid'
-      gridTemplateColumns={['1fr 1fr 1fr']}
+      gridTemplateColumns={['1fr 1fr 1fr 1fr 1fr 1fr']}
       gap={4}
     >
       <Card
         sx={{
           p: theme.spacing(5),
+          gridColumn: '1 / 3',
         }}>
         <Typography
           variant='body1'
@@ -32,12 +33,13 @@ function ProfileTab({ userData }: ProfileTabProps) {
           variant='body1'
           color='text.secondary'
         >
-          {userData?.bio || "Add a bio to your yourself."}
+          {userData?.bio || "Add a bio."}
         </Typography>
       </Card>
       <Card
         sx={{
           p: theme.spacing(5),
+          gridRow: '2',
         }}>
         <Stack direction='row'>
           <Box pr={theme.spacing(4)}>

@@ -1,6 +1,6 @@
 import { Rap } from '@prisma/client'
 import React from 'react'
-import RapCard from './RapCard';
+import ProfileRapCard from './ProfileRapCard';
 import { Box } from '@mui/material';
 import Link from 'next/link';
 
@@ -23,7 +23,7 @@ function RapsTab({ raps }: RapsTabProps) {
             key={rap.id}
             style={{ textDecoration: 'none' }}
           >
-            <RapCard
+            <ProfileRapCard
               key={rap.id}
               rap={rap}
               sx={{

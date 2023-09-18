@@ -5,13 +5,13 @@ import Link from 'next/link';
 import React from 'react'
 import { CDN_URL } from 'src/shared/constants';
 
-interface RapCardProps {
+interface ProfileRapCardProps {
   rap: Rap;
   sx?: SxProps;
   onClick?: () => void;
 }
 
-function RapCard({ rap, sx, onClick }: RapCardProps) {
+function ProfileRapCard({ rap, sx, onClick }: ProfileRapCardProps) {
 
   const theme = useTheme();
 
@@ -59,4 +59,4 @@ function RapCard({ rap, sx, onClick }: RapCardProps) {
   )
 }
 
-export default RapCard
+export default ProfileRapCard

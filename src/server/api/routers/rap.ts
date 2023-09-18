@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   createTRPCRouter,
   protectedProcedure,
+  publicProcedure,
 } from "src/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
@@ -108,6 +109,11 @@ export const rapRouter = createTRPCRouter({
           userId: input.userId
         }
       });
+    }),
+  getAllRaps: publicProcedure
+    .query(async ({ ctx }) => {
+
+      return await ctx.prisma.rap.findMany();
     }),
 });
 

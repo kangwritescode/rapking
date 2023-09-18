@@ -66,7 +66,7 @@ model Rap {
   id          String    @id @default(cuid())
   title       String
   content     String
-  User        User      @relation(fields: [userId], references: [id])
+  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   coverArtUrl String?
   status      RapStatus @default(DRAFT)

@@ -50,7 +50,6 @@ const UserDropdown = (props: Props) => {
   const { direction } = settings
 
   // ** Query
-
   const { data: userData } = api.user.getCurrentUser.useQuery();
 
   const handleDropdownOpen = (event: SyntheticEvent) => {
@@ -130,15 +129,24 @@ const UserDropdown = (props: Props) => {
             </Box>
           </Box>
         </Box>
-        <Divider sx={{mb: 1}} />
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose()}>
+        <Divider sx={{ mb: 1 }} />
+        <MenuItem
+          sx={{ p: 0 }}
+          onClick={() => handleDropdownClose()}
+        >
           <Box sx={styles}>
             <Icon icon='mdi:message-outline' />
             Chat
           </Box>
         </MenuItem>
         <Divider />
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose()}>
+        <MenuItem
+          sx={{ p: 0 }}
+          onClick={() => {
+            handleDropdownClose()
+            router.push('/settings')
+          }}
+        >
           <Box sx={styles}>
             <Icon icon='mdi:cog-outline' />
             Settings
