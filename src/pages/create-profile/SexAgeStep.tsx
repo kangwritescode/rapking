@@ -51,7 +51,7 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
 
   const {
     control: control,
-    handleSubmit: handleUsernameSubmit,
+    handleSubmit,
     formState: { errors: errors, isValid },
   } = useForm({
     defaultValues: initialValues,
@@ -77,7 +77,7 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
 
   return (
     <StepContent>
-      <form key={1} onSubmit={handleUsernameSubmit((formValues) => updateUser(formValues))}>
+      <form key={1} onSubmit={handleSubmit((formValues) => updateUser(formValues))}>
         <Controller
           name='dob'
           control={control}

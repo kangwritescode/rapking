@@ -42,24 +42,25 @@ model Session {
 }
 
 model User {
-  id              String    @id @default(cuid())
+  id              String           @id @default(cuid())
   name            String?
-  email           String?   @unique
+  email           String?          @unique
   emailVerified   DateTime?
   image           String?
-  username        String?   @unique
+  username        String?          @unique
   sex             String?
   dob             DateTime?
   country         String?
   city            String?
   state           String?
-  createdAt       DateTime  @default(now())
+  createdAt       DateTime         @default(now())
   bannerUrl       String?
   profileImageUrl String?
   bio             String?
   raps            Rap[]
   accounts        Account[]
   sessions        Session[]
+  socialLinks     SocialLink[]
 }
 
 model Rap {
@@ -73,6 +74,16 @@ model Rap {
   dateCreated DateTime  @default(now())
 }
 
+model SocialLink {
+  id          String         @id @default(cuid())
+  userId      String
+  platform    SocialPlatform
+  link        String
+  displayText String?
+
+  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -84,4 +95,15 @@ model VerificationToken {
 enum RapStatus {
   DRAFT
   PUBLISHED
+}
+
+enum SocialPlatform {
+  TWITTER
+  INSTAGRAM
+  FACEBOOK
+  YOUTUBE
+  SOUNDCLOUD
+  SPOTIFY
+  TIKTOK
+  CUSTOM
 }

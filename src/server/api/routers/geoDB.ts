@@ -24,7 +24,6 @@ export const geoDBRouter = createTRPCRouter({
     .input(z.object({ zipCode: z.string() }))
     .query(async ({ input }) => {
       try {
-        console.log('12321')
 
         const response = await axios.get(`https://www.zipcodeapi.com/rest/${env.ZIPCODE_API_KEY}/radius.json/${input.zipCode}/5/mile`);
         const data = response.data;

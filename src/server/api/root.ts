@@ -3,6 +3,7 @@ import { userRouter } from "src/server/api/routers/user";
 import { geoDBRouter } from "./routers/geoDB";
 import { rapRouter } from "./routers/rap";
 import { gcloudRouter } from "./routers/gcloud";
+import { socialLinkRouter } from "./routers/socialLink";
 
 /**
  * This is the primary router for your server.
@@ -13,7 +14,8 @@ export const appRouter = createTRPCRouter({
   user: userRouter,
   geoDB: geoDBRouter,
   rap: rapRouter,
-  gcloud: gcloudRouter
+  gcloud: gcloudRouter,
+  socialLink: socialLinkRouter,
 });
 
 // export type definition of API
