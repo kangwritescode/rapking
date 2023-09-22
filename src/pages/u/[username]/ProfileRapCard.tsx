@@ -1,6 +1,7 @@
 import { Icon } from '@iconify/react';
 import { Box, CardMedia, IconButton, Paper, SxProps, useTheme } from '@mui/material'
 import { Rap } from '@prisma/client'
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React from 'react'
 import { CDN_URL } from 'src/shared/constants';
@@ -14,8 +15,10 @@ interface ProfileRapCardProps {
 function ProfileRapCard({ rap, sx, onClick }: ProfileRapCardProps) {
 
   const theme = useTheme();
+  const { data } = useSession();
 
-  const { id, title, dateCreated, coverArtUrl } = rap;
+  const { id, title, dateCreated, coverArtUrl, userId } = rap;
+  const isCurrentUser = data?.user?.id === userId;
 
   return (
     <Paper
@@ -45,15 +48,17 @@ function ProfileRapCard({ rap, sx, onClick }: ProfileRapCardProps) {
       <Box p={4}>
         <Box fontSize='12pt' fontWeight='bold'>{title}</Box>
         <Box fontSize='10pt' color={theme.palette.grey[500]}>{dateCreated.toLocaleDateString()}</Box>
-        <Link href={`/write/${id}`}>
-          <IconButton
-            sx={{ position: 'absolute', bottom: 0, right: 0 }}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}>
-            <Icon fontSize={16} icon='ph:pencil' />
-          </IconButton>
-        </Link>
+        {isCurrentUser && (
+          <Link href={`/write/${id}`}>
+            <IconButton
+              sx={{ position: 'absolute', bottom: 0, right: 0 }}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}>
+              <Icon fontSize={16} icon='ph:pencil' />
+            </IconButton>
+          </Link>
+        )}
       </Box>
     </Paper>
   )

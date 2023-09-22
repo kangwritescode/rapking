@@ -14,12 +14,13 @@ function AddSocialDialog({ isOpen, onCloseHandler }: AddSocialDialogProps) {
 
   const theme = useTheme();
 
-  const [selectedSocial, setSelectedSocial] = useState<SocialPlatform | undefined>("CUSTOM");
+  const [selectedSocial, setSelectedSocial] = useState<SocialPlatform | undefined>();
   const [isValid, setIsValid] = useState(false);
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
-  const handleClose = () => {
+  const handleClose = (_: any, reason: string) => {
+    if (reason === 'backdropClick') return;
     setSelectedSocial(undefined);
     onCloseHandler();
   }
@@ -55,7 +56,7 @@ function AddSocialDialog({ isOpen, onCloseHandler }: AddSocialDialogProps) {
         )}
         {!selectedSocial && (
           <IconButton
-            onClick={handleClose}
+            onClick={() => handleClose(undefined, "")}
             sx={{
               position: 'absolute',
               right: theme.spacing(1),
@@ -68,13 +69,13 @@ function AddSocialDialog({ isOpen, onCloseHandler }: AddSocialDialogProps) {
       <Divider />
       <DialogContent
         sx={{
-          width: selectedSocial ? "400px" : "300px",
+          minWidth: selectedSocial ? "400px" : "300px",
         }}>
         {selectedSocial === "CUSTOM" ?
           <CustomUrlForm
             isValidChangedHandler={(isValid) => setIsValid(isValid)}
             submitButtonRef={submitButtonRef}
-            onSuccess={handleClose}
+            onSuccess={() => handleClose(undefined, "")}
           /> :
           <CustomUrlButton onClickHandler={() => setSelectedSocial("CUSTOM")} />}
       </DialogContent>

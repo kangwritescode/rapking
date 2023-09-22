@@ -8,11 +8,11 @@ import { TRPCError } from "@trpc/server";
 
 export const userRouter = createTRPCRouter({
   findByUsername: protectedProcedure
-    .input(z.object({ text: z.string() }))
+    .input(z.object({ username: z.string() }))
     .query(({ input, ctx }) => {
       return ctx.prisma.user.findUnique({
         where: {
-          username: input.text,
+          username: input.username,
         },
       })
     }),
@@ -60,6 +60,7 @@ export const userRouter = createTRPCRouter({
       city: z.string().optional(),
       bannerUrl: z.string().optional(),
       profileImageUrl: z.string().optional(),
+      bio: z.string().max(200).optional(),
     }))
     .mutation(async ({ input, ctx }) => {
 
@@ -104,6 +105,7 @@ export const userRouter = createTRPCRouter({
           ...(input.city ? { city: input.city } : {}),
           ...(input.bannerUrl ? { bannerUrl: input.bannerUrl } : {}),
           ...(input.profileImageUrl ? { profileImageUrl: input.profileImageUrl } : {}),
+          ...(input.bio ? { bio: input.bio } : {}),
         },
       });
 

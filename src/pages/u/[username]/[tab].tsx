@@ -54,7 +54,7 @@ const UserProfile = () => {
   const { username, tab } = router.query;
 
   // ** Queries
-  const { data: userData } = api.user.findByUsername.useQuery({ text: String(username) });
+  const { data: userData } = api.user.findByUsername.useQuery({ username: String(username) });
   const { data: rapsData } = api.rap.getRaps.useQuery({ userId: userData?.id || '' });
   const { data: currentUser } = api.user.getCurrentUser.useQuery();
 
@@ -151,3 +151,27 @@ const UserProfile = () => {
 }
 
 export default UserProfile
+
+import { createServerSideHelpers } from '@trpc/react-query/server';
+import { GetServerSidePropsContext } from 'next';
+import { appRouter } from 'src/server/api/root';
+import superjson from 'superjson';
+import { createTRPCContext } from 'src/server/api/trpc'
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+
+  const { username } = context.query;
+
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    ctx: await createTRPCContext(context),
+    transformer: superjson,
+  });
+  await helpers.user.findByUsername.prefetch({username})
+
+  return {
+    props: {
+      trpcState: helpers.dehydrate(),
+    }
+  }
+}

@@ -46,7 +46,7 @@ function RapPage() {
         </Typography>
         <Stack direction='row' mt={theme.spacing(4)} mb={theme.spacing(4)}>
           <ProfilePicture
-            src={userData ? `${CDN_URL}/${userData.profileImageUrl}` : `${CDN_URL}/default/profile-male-default.jpg`}
+            src={userData?.profileImageUrl ? `${CDN_URL}/${userData.profileImageUrl}` : `${CDN_URL}/default/profile-male-default.jpg`}
             alt='profile-picture'
             onClick={() => router.push(`/u/${userData?.username}/raps`)}
           />
@@ -62,7 +62,7 @@ function RapPage() {
           </Stack>
         </Stack>
         <Divider />
-        {rapData?.content && <RapContent sx={{ marginTop: theme.spacing(8) }} content={rapData.content} />}
+        {rapData?.content && <RapContent sx={{ marginTop: theme.spacing(2) }} content={rapData.content} />}
       </Stack>
     </Stack>
   )

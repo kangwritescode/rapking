@@ -83,11 +83,8 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
               Edit Profile
             </Button>
           ) : <Button
-            variant='contained'
-            startIcon={
-              <Icon icon='fluent-mdl2:add-friend' />
-            }>
-            Connect
+            variant='contained'>
+            Follow
           </Button>}
         </Box>
       </CardContent>
