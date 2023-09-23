@@ -1,11 +1,10 @@
-import { Box, Button, CircularProgress, FormHelperText, StepContent, TextField } from '@mui/material'
-import React, { useEffect } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { Button, StepContent } from '@mui/material'
+import React from 'react'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { api } from 'src/utils/api'
-import { useDebounce } from './utils';
-import { Icon } from '@iconify/react'
 import { z } from 'zod'
+import UsernameAvailabilityField from 'src/components/UsernameAvailabilityField'
 
 export type UsernameStepProps = {
   handleNext: () => void
@@ -27,20 +26,7 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
 
   // state
   const userMutation = api.user.updateUser.useMutation();
-  const [value, setValue] = React.useState<string>(userData?.username || '');
-  const [controlledIsAvailable, setControlledIsAvailable] = React.useState<boolean | undefined>(undefined);
-  const debouncedValue = useDebounce(value, 500);
-
-  // queries
-  const { data, status } = api.user.usernameIsAvailable.useQuery({
-    text: debouncedValue
-  }, { enabled: debouncedValue.length > 2 })
-
-  useEffect(() => {
-    if (data) {
-      setControlledIsAvailable(data.isAvailable)
-    }
-  }, [data])
+  const [usernameIsAvailable, setUsernameIsAvailable] = React.useState<boolean | undefined>(undefined);
 
   const updateUsername = async (updatedUsername: string) => {
     try {
@@ -62,7 +48,7 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
   const {
     control: usernameControl,
     handleSubmit: handleUsernameSubmit,
-    formState: { errors: errors }
+    formState: { errors: errors, isValid }
   } = useForm({
     defaultValues: { username: userData?.username || '' },
     resolver: zodResolver(usernameSchema)
@@ -70,53 +56,16 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
 
   return (
     <StepContent>
-      <form key={0} onSubmit={handleUsernameSubmit(() => updateUsername(debouncedValue))}>
-        <Controller
-          name='username'
-          control={usernameControl}
-          render={({ field: { value, onChange } }) => {
-            return (
-              <>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <TextField
-                    value={value}
-                    label='Username'
-                    onChange={({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-                      const formattedInput = value
-                        .replace(/ /g, '_')             // replace spaces with underscores
-                        .replace(/[^a-zA-Z0-9_]/g, '')  // remove non-alphanumeric characters
-                        .toLowerCase();                 // convert to lowercase
-                      setValue(formattedInput)
-                      setControlledIsAvailable(undefined)
-                      onChange(formattedInput)
-                    }}
-                    size='small'
-                    error={Boolean(errors.username)}
-                    aria-describedby='stepper-username'
-                    inputProps={{ maxLength: 20 }}
-                    sx={{ mr: 3 }}
-                  />
-                  {(status === 'loading' && value && value.length > 2 && controlledIsAvailable === undefined) ? (
-                    <CircularProgress color='secondary' size={24} />
-                  ) : undefined}
-                  {controlledIsAvailable && (
-                    <Icon color='green' icon="material-symbols:check-circle-rounded" width={24} />
-                  )}
-                  {controlledIsAvailable === false && (
-                    <Icon color='red' icon="ph:x-circle" width={24} />
-                  )}
-                </Box>
-                {errors.username && (
-                  <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-dob'>
-                    {errors.username.message}
-                  </FormHelperText>
-                )}
-              </>
-            )
-          }} />
+      <form key={0} onSubmit={handleUsernameSubmit((formValues) => updateUsername(formValues.username))}>
+          <UsernameAvailabilityField
+            control={usernameControl}
+            initialUsername={userData?.username}
+            errors={errors}
+            availabilityChangedHandler={(isAvailable: boolean | undefined) => setUsernameIsAvailable(isAvailable)}
+          />
         <div className='button-wrapper'>
           <Button
-            disabled={!value || !controlledIsAvailable}
+            disabled={!isValid || !usernameIsAvailable}
             type='submit'
             size='small'
             variant='contained'>

@@ -13,6 +13,8 @@ import { Icon } from '@iconify/react'
 import { User } from '@prisma/client'
 import EditableBanner from './EditableBanner'
 import EditableProfilePhoto from './EditableProfilePhoto'
+import EditProfileDialog from './EditProfileDialog'
+import { useState } from 'react'
 
 interface UserProfileHeaderProps {
   userData?: User | null;
@@ -20,77 +22,82 @@ interface UserProfileHeaderProps {
 }
 
 const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) => {
+  const [modalIsOpen, setIsModalIsOpen] = useState<boolean>(true)
 
   return userData ? (
-    <Card>
-      <EditableBanner isEditable={isCurrentUser} userData={userData} />
-      <CardContent
-        sx={{
-          pt: 0,
-          mt: -8,
-          display: 'flex',
-          alignItems: 'flex-end',
-          flexWrap: { xs: 'wrap', md: 'nowrap' },
-          justifyContent: { xs: 'center', md: 'flex-start' }
-        }}
-      >
-        <EditableProfilePhoto isEditable={isCurrentUser} userData={userData} />
-        <Box
+    <>
+    <EditProfileDialog isOpen={modalIsOpen} handleClose={() => setIsModalIsOpen(false)} />
+      <Card>
+        <EditableBanner isEditable={isCurrentUser} userData={userData} />
+        <CardContent
           sx={{
-            width: '100%',
+            pt: 0,
+            mt: -8,
             display: 'flex',
-            ml: { xs: 0, md: 6 },
             alignItems: 'flex-end',
-            flexWrap: ['wrap', 'nowrap'],
-            justifyContent: ['center', 'space-between']
+            flexWrap: { xs: 'wrap', md: 'nowrap' },
+            justifyContent: { xs: 'center', md: 'flex-start' }
           }}
         >
-          <Box sx={{ mb: [6, 0], display: 'flex', flexDirection: 'column', alignItems: ['center', 'flex-start'] }}>
-            <Typography variant='h5' sx={{ mb: 4 }}>
-              {userData?.username}
-            </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: ['center', 'flex-start']
-              }}
-            >
-              <Box sx={{ mr: 4, display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
-                <Icon icon='material-symbols:male' />
-                <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>
-                  Male
-                </Typography>
-              </Box>
-              <Box sx={{ mr: 5, display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
-                <Icon icon='mdi:map-marker-outline' />
-                <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>{userData?.city + ', ' + userData?.state}</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
-                <Icon icon='mdi:calendar-blank' />
-                <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>
-                  Joined {userData?.createdAt && userData.createdAt.toLocaleDateString()}
-                </Typography>
+          <EditableProfilePhoto isEditable={isCurrentUser} userData={userData} />
+          <Box
+            sx={{
+              width: '100%',
+              display: 'flex',
+              ml: { xs: 0, md: 6 },
+              alignItems: 'flex-end',
+              flexWrap: ['wrap', 'nowrap'],
+              justifyContent: ['center', 'space-between']
+            }}
+          >
+            <Box sx={{ mb: [6, 0], display: 'flex', flexDirection: 'column', alignItems: ['center', 'flex-start'] }}>
+              <Typography variant='h5' sx={{ mb: 4 }}>
+                {userData?.username}
+              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  justifyContent: ['center', 'flex-start']
+                }}
+              >
+                <Box sx={{ mr: 4, display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
+                  <Icon icon='material-symbols:male' />
+                  <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>
+                    Male
+                  </Typography>
+                </Box>
+                <Box sx={{ mr: 5, display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
+                  <Icon icon='mdi:map-marker-outline' />
+                  <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>{userData?.city + ', ' + userData?.state}</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
+                  <Icon icon='mdi:calendar-blank' />
+                  <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>
+                    Joined {userData?.createdAt && userData.createdAt.toLocaleDateString()}
+                  </Typography>
+                </Box>
               </Box>
             </Box>
+            {isCurrentUser ? (
+              <Button
+                sx={{ borderRadius: "20px" }}
+                variant='outlined'
+                color="secondary"
+                onClick={() => setIsModalIsOpen(true)}
+                startIcon={
+                  <Icon icon='mdi:pencil-outline' />
+                }>
+                Edit Profile
+              </Button>
+            ) : <Button
+              variant='contained'>
+              Follow
+            </Button>}
           </Box>
-          {isCurrentUser ? (
-            <Button
-              sx={{borderRadius: "20px"}}
-              variant='outlined'
-              color="secondary"
-              startIcon={
-                <Icon icon='mdi:pencil-outline' />
-              }>
-              Edit Profile
-            </Button>
-          ) : <Button
-            variant='contained'>
-            Follow
-          </Button>}
-        </Box>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </>
   ) : null
 }
 
