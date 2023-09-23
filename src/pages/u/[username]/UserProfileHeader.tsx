@@ -76,7 +76,9 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
           </Box>
           {isCurrentUser ? (
             <Button
-              variant='contained'
+              sx={{borderRadius: "20px"}}
+              variant='outlined'
+              color="secondary"
               startIcon={
                 <Icon icon='mdi:pencil-outline' />
               }>
