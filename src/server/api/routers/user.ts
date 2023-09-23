@@ -3,11 +3,12 @@ import { z } from "zod";
 import {
   createTRPCRouter,
   protectedProcedure,
+  publicProcedure,
 } from "src/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
 export const userRouter = createTRPCRouter({
-  findByUsername: protectedProcedure
+  findByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(({ input, ctx }) => {
       return ctx.prisma.user.findUnique({
@@ -25,7 +26,7 @@ export const userRouter = createTRPCRouter({
       })
     }),
 
-  findById: protectedProcedure
+  findById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(({ input, ctx }) => {
       return ctx.prisma.user.findUnique({

@@ -1,4 +1,3 @@
-import { Icon } from '@iconify/react';
 import { Button, Stack } from '@mui/material'
 import { Rap } from '@prisma/client';
 import React from 'react'
@@ -19,17 +18,6 @@ function WriteHeader({
       direction='row'
       justifyContent='flex-end'
       pb='1rem'>
-      {rapData && (
-        <Button
-          sx={{
-            marginRight: '1rem',
-            whiteSpace: 'nowrap'
-          }}
-          size='medium'
-          variant='outlined'>
-          <Icon icon='ic:baseline-settings' fontSize={20} />
-        </Button>
-      )}
       <Button
         onClick={onClickHandler}
         size='medium'

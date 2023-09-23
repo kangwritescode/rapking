@@ -91,7 +91,7 @@ export const rapRouter = createTRPCRouter({
       })
 
     }),
-  getRap: protectedProcedure
+  getRap: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.rap.findFirst({
@@ -116,4 +116,3 @@ export const rapRouter = createTRPCRouter({
       return await ctx.prisma.rap.findMany();
     }),
 });
-

@@ -31,7 +31,7 @@ function RapPage() {
         <CardMedia
           component='img'
           alt='profile-header'
-          image={rapData?.coverArtUrl || `${CDN_URL}/default/profile-banner.jpg`}
+          image={rapData?.coverArtUrl || `${CDN_URL}/default/cover-art.jpg`}
           sx={{
             marginBottom: 10,
             height: {

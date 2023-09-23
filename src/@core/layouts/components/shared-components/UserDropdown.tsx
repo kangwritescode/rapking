@@ -83,6 +83,10 @@ const UserDropdown = (props: Props) => {
     handleDropdownClose()
   }
 
+  const avatarSrc = userData && userData?.profileImageUrl ?
+    `${CDN_URL}/${userData?.profileImageUrl}` :
+    `${CDN_URL}/default/profile-male-default.jpg`
+
   return (
     <Fragment>
       <Badge
@@ -99,7 +103,7 @@ const UserDropdown = (props: Props) => {
           alt='User Name'
           onClick={handleDropdownOpen}
           sx={{ width: 40, height: 40 }}
-          src={`${CDN_URL}/${userData?.profileImageUrl}` || '/images/avatars/1.png'}
+          src={avatarSrc}
         />
       </Badge>
       <Menu
@@ -120,7 +124,10 @@ const UserDropdown = (props: Props) => {
                 horizontal: 'right'
               }}
             >
-              <Avatar alt='Profile avatar */' src={`${CDN_URL}/${userData?.profileImageUrl}` || '/images/avatars/1.png'} sx={{ width: '2.5rem', height: '2.5rem' }} />
+              <Avatar
+                alt='Profile avatar */'
+                src={avatarSrc}
+                sx={{ width: '2.5rem', height: '2.5rem' }} />
             </Badge>
             <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
               <Typography sx={{ fontWeight: 600 }}>
