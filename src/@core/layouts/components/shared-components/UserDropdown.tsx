@@ -139,16 +139,6 @@ const UserDropdown = (props: Props) => {
         <Divider sx={{ mb: 1 }} />
         <MenuItem
           sx={{ p: 0 }}
-          onClick={() => handleDropdownClose()}
-        >
-          <Box sx={styles}>
-            <Icon icon='mdi:message-outline' />
-            Chat
-          </Box>
-        </MenuItem>
-        <Divider />
-        <MenuItem
-          sx={{ p: 0 }}
           onClick={() => {
             handleDropdownClose()
             router.push('/settings')
