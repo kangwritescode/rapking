@@ -22,7 +22,7 @@ interface UserProfileHeaderProps {
 }
 
 const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) => {
-  const [modalIsOpen, setIsModalIsOpen] = useState<boolean>(true)
+  const [modalIsOpen, setIsModalIsOpen] = useState<boolean>(false)
 
   return userData ? (
     <>

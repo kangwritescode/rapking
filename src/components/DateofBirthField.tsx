@@ -23,8 +23,15 @@ function DateofBirthField({
         rules={{ required: true }}
         render={({ field: { value, onChange } }) => (
           <Stack marginBottom={3}>
-            {label && <FormLabel sx={{ marginBottom: -1 }}>{label}</FormLabel>}
-            <DateField format="MM-DD-YYYY" value={value} onChange={onChange} size='small' />
+            {label && <FormLabel sx={{ marginBottom: 1 }}>{label}</FormLabel>}
+            <DateField
+              format="MM-DD-YYYY"
+              minDate={new Date('1900-01-01')}
+              maxDate={new Date()}
+              value={value}
+              onChange={onChange}
+              size='small'
+            />
           </Stack>
         )}
       />

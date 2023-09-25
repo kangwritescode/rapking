@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, StepContent, TextField } from '@mui/material'
+import { Alert, Autocomplete, Box, Button, StepContent, TextField } from '@mui/material'
 import * as yup from 'yup'
 import React, { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -125,6 +125,9 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
             />
           )
         }} />
+        <Alert sx={{ mt: 3 }} severity="error">
+          You can not change your location after creating your profile.
+        </Alert>
         <div className='button-wrapper'>
           <Button
             size='small'
