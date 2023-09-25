@@ -1,24 +1,26 @@
 import { Icon } from '@iconify/react';
-import { Box, CircularProgress, TextField } from '@mui/material';
+import { Box, CircularProgress, SxProps, TextField } from '@mui/material';
 import React, { useEffect } from 'react'
 import { Control, Controller } from 'react-hook-form';
 import { useDebounce } from 'src/pages/create-profile/utils';
 import { api } from 'src/utils/api';
 
 interface UsernameAvailabilityFieldProps {
-  control: Control<{
-    username: string;
-  }>,
+  control: Control<any>,
   initialUsername?: string | null,
-  errors?: { [key: string]: any },
+  errorMessage?: string,
   availabilityChangedHandler?: (isAvailable: boolean | undefined) => void
+  label?: string
+  sx?: SxProps;
 }
 
 function UsernameAvailabilityField({
   control,
   initialUsername,
-  errors,
-  availabilityChangedHandler
+  errorMessage,
+  availabilityChangedHandler,
+  label,
+  sx
 }: UsernameAvailabilityFieldProps) {
 
   const [value, setValue] = React.useState<string>(initialUsername || '');
@@ -49,10 +51,10 @@ function UsernameAvailabilityField({
       control={control}
       render={({ field: { value, onChange } }) => {
         return (
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', ...sx }}>
             <TextField
               value={value}
-              label='Username'
+              {...(label ? { label: label } : undefined)}
               onChange={({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
                 const formattedInput = value
                   .replace(/ /g, '_')             // replace spaces with underscores
@@ -63,7 +65,7 @@ function UsernameAvailabilityField({
                 onChange(formattedInput)
               }}
               size='small'
-              error={Boolean(errors?.username)}
+              error={Boolean(errorMessage)}
               aria-describedby='stepper-username'
               inputProps={{ maxLength: 20 }}
               sx={{ mr: 3 }}

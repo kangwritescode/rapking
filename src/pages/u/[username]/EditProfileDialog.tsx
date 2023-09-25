@@ -1,5 +1,6 @@
-import { Dialog, DialogContent, DialogContentText, DialogTitle, Divider } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Divider } from '@mui/material'
 import React from 'react'
+import EditProfileForm from './EditProfileForm'
 
 interface EditProfileDialogProps {
   isOpen: boolean,
@@ -18,15 +19,10 @@ function EditProfileDialog({ isOpen, handleClose }: EditProfileDialogProps) {
         Edit Profile
       </DialogTitle>
       <Divider />
-      <DialogContent
-        sx={{
-          minWidth: "400px"
-        }}>
-        <DialogContentText id="alert-dialog-description">
-          Content
-        </DialogContentText>
+      <DialogContent sx={{ minWidth: "400px" }}>
+        <EditProfileForm />
       </DialogContent>
-    </Dialog>
+    </Dialog >
   )
 }
 

@@ -40,7 +40,6 @@ function BioCard({ userData, sx }: BioCardProps) {
           variant='body1'
           sx={{
             mb: theme.spacing(1),
-            color: 'text.disabled',
           }}
         >
           Bio
@@ -77,7 +76,6 @@ function BioCard({ userData, sx }: BioCardProps) {
               sx={{
                 mb: theme.spacing(2),
                 mt: theme.spacing(4),
-                color: 'text.disabled',
               }}
             >
               Socials

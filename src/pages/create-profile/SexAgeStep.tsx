@@ -1,14 +1,12 @@
-import { Button, FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup, Stack, StepContent } from '@mui/material'
+import { Button, StepContent } from '@mui/material'
 import * as yup from 'yup'
 import React from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { api } from 'src/utils/api'
-import { DateField } from '@mui/x-date-pickers'
 import dayjs, { Dayjs } from 'dayjs'
-
-// ** Icon Imports
-// import { Icon } from '@iconify/react'
+import DateofBirthField from 'src/components/DateofBirthField'
+import SexField from 'src/components/SexField'
 
 export type PersonalStepProps = {
   handleBack: () => void,
@@ -16,7 +14,8 @@ export type PersonalStepProps = {
 }
 
 export type DateType = Date | null | undefined
-type FormValues = {
+
+export type SexAgeForm = {
   sex: string,
   dob: string | Dayjs
 }
@@ -44,7 +43,7 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
   const { data: profileData } = api.user.getCurrentUser.useQuery();
 
   // initialValues
-  const initialValues: FormValues = {
+  const initialValues: SexAgeForm = {
     sex: profileData?.sex || '',
     dob: profileData && profileData.dob ? dayjs(profileData.dob.toUTCString()) : ''
   }
@@ -60,7 +59,7 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
 
   const profileMutation = api.user.updateUser.useMutation();
 
-  const updateUser = async ({ sex, dob }: FormValues) => {
+  const updateUser = async ({ sex, dob }: SexAgeForm) => {
     try {
       const updatedProfile = await profileMutation.mutateAsync({
         sex,
@@ -78,45 +77,8 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
   return (
     <StepContent>
       <form key={1} onSubmit={handleSubmit((formValues) => updateUser(formValues))}>
-        <Controller
-          name='dob'
-          control={control}
-          rules={{ required: true }}
-          render={({ field: { value, onChange } }) => (
-            <Stack marginBottom={3}>
-              <FormLabel sx={{ marginBottom: 1 }}>Date of Birth</FormLabel>
-              <DateField format="MM-DD-YYYY" value={value} onChange={onChange} size='small' />
-            </Stack>
-          )}
-        />
-        {errors.dob && (
-          <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-dob'>
-            {errors.dob.message}
-          </FormHelperText>
-        )}
-        <Controller
-          name="sex"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <Stack marginTop={2}>
-              <FormLabel sx={{ marginBottom: -1 }}>Sex</FormLabel>
-              <RadioGroup
-                row
-                aria-label="sex"
-                {...field}
-              >
-                <FormControlLabel value="male" control={<Radio />} label="Male" />
-                <FormControlLabel value="female" control={<Radio />} label="Female" />
-              </RadioGroup>
-            </Stack>
-          )}
-        />
-        {errors.sex && (
-          <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-dob'>
-            {errors.sex.message}
-          </FormHelperText>
-        )}
+        <DateofBirthField control={control} errorMessage={errors.dob?.message} label="Date of Birth" />
+        <SexField control={control} errorMessage={errors.sex?.message} label="Sex" />
         <div className='button-wrapper'>
           <Button
             size='small'

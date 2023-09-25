@@ -58,9 +58,10 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
     <StepContent>
       <form key={0} onSubmit={handleUsernameSubmit((formValues) => updateUsername(formValues.username))}>
           <UsernameAvailabilityField
+            label='Username'
             control={usernameControl}
             initialUsername={userData?.username}
-            errors={errors}
+            errorMessage={errors.username?.message}
             availabilityChangedHandler={(isAvailable: boolean | undefined) => setUsernameIsAvailable(isAvailable)}
           />
         <div className='button-wrapper'>
