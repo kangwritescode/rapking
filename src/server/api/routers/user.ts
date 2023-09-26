@@ -6,6 +6,7 @@ import {
   publicProcedure,
 } from "src/server/api/trpc";
 import { TRPCError } from "@trpc/server";
+import { stateToRegionMap } from "src/shared/constants";
 
 export const userRouter = createTRPCRouter({
   findByUsername: publicProcedure
@@ -92,6 +93,8 @@ export const userRouter = createTRPCRouter({
         }
       }
 
+      const region = input.state ? stateToRegionMap[input.state] : null;
+
       // updates user
       const updatedUser = await ctx.prisma.user.update({
         where: {
@@ -102,7 +105,7 @@ export const userRouter = createTRPCRouter({
           ...(input.sex ? { sex: input.sex } : {}),
           ...(input.dob ? { dob: input.dob } : {}),
           ...(input.country ? { country: input.country } : {}),
-          ...(input.state ? { state: input.state } : {}),
+          ...(input.state ? { state: input.state, region } : {}),
           ...(input.city ? { city: input.city } : {}),
           ...(input.bannerUrl ? { bannerUrl: input.bannerUrl } : {}),
           ...(input.profileImageUrl ? { profileImageUrl: input.profileImageUrl } : {}),

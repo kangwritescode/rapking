@@ -1,8 +1,7 @@
 import { Box, CardMedia, Divider, Stack, SxProps, Typography, styled, useTheme } from '@mui/material';
-import { Rap } from '@prisma/client'
+import { Rap, User } from '@prisma/client'
 import React from 'react'
 import { CDN_URL } from 'src/shared/constants';
-import { api } from 'src/utils/api';
 import { convert } from 'html-to-text';
 import { useRouter } from 'next/router';
 
@@ -16,13 +15,13 @@ const ProfilePicture = styled('img')(({ theme }) => ({
 }))
 
 interface FeedRapCardProps {
-  rap: Rap;
+  rap: Rap & { User: User };
   sx?: SxProps;
 }
 
 function FeedRapCard({ rap, sx }: FeedRapCardProps) {
-  const { id, title, dateCreated, coverArtUrl, userId, content } = rap;
-  const { data: userData } = api.user.findById.useQuery({ id: userId }, { enabled: !!userId });
+  const { id, title, dateCreated, coverArtUrl, content, User: userData } = rap;
+
   const theme = useTheme();
   const router = useRouter();
 

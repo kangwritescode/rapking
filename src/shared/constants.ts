@@ -1,1 +1,60 @@
+import { Region } from "@prisma/client";
+
 export const CDN_URL = 'http://34.36.116.199';
+
+interface StateToRegionMap {
+  [stateCode: string]: Region;
+}
+
+export const stateToRegionMap: StateToRegionMap = {
+  AK: "WEST",
+  AZ: "WEST",
+  CA: "WEST",
+  CO: "WEST",
+  HI: "WEST",
+  ID: "WEST",
+  MT: "WEST",
+  NM: "WEST",
+  NV: "WEST",
+  OR: "WEST",
+  UT: "WEST",
+  WA: "WEST",
+  WY: "WEST",
+  IA: "MIDWEST",
+  IL: "MIDWEST",
+  IN: "MIDWEST",
+  KS: "MIDWEST",
+  MI: "MIDWEST",
+  MN: "MIDWEST",
+  MO: "MIDWEST",
+  ND: "MIDWEST",
+  NE: "MIDWEST",
+  OH: "MIDWEST",
+  SD: "MIDWEST",
+  WI: "MIDWEST",
+  CT: "EAST",
+  DE: "EAST",
+  MA: "EAST",
+  MD: "EAST",
+  ME: "EAST",
+  NH: "EAST",
+  NJ: "EAST",
+  NY: "EAST",
+  PA: "EAST",
+  RI: "EAST",
+  VT: "EAST",
+  AL: "SOUTH",
+  AR: "SOUTH",
+  FL: "SOUTH",
+  GA: "SOUTH",
+  KY: "SOUTH",
+  LA: "SOUTH",
+  MS: "SOUTH",
+  NC: "SOUTH",
+  OK: "SOUTH",
+  SC: "SOUTH",
+  TN: "SOUTH",
+  TX: "SOUTH",
+  VA: "SOUTH",
+  WV: "SOUTH"
+};

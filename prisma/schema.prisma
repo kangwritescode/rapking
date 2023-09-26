@@ -42,18 +42,19 @@ model Session {
 }
 
 model User {
-  id              String           @id @default(cuid())
+  id              String       @id @default(cuid())
   name            String?
-  email           String?          @unique
+  email           String?      @unique
   emailVerified   DateTime?
   image           String?
-  username        String?          @unique
+  username        String?      @unique
   sex             String?
   dob             DateTime?
   country         String?
   city            String?
   state           String?
-  createdAt       DateTime         @default(now())
+  region          Region?
+  createdAt       DateTime     @default(now())
   bannerUrl       String?
   profileImageUrl String?
   bio             String?
@@ -95,6 +96,14 @@ model VerificationToken {
 enum RapStatus {
   DRAFT
   PUBLISHED
+}
+
+enum Region {
+  ALL
+  WEST
+  MIDWEST
+  SOUTH
+  EAST
 }
 
 enum SocialPlatform {

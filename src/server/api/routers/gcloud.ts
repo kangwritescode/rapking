@@ -4,7 +4,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "src/server/api/trpc";
-import { generateV4UploadSignedUrl } from "src/gcloud/serverMethods";
+import { generateSignedUrl } from "src/gcloud/serverMethods";
 
 export const gcloudRouter = createTRPCRouter({
   generateWriteUrl: protectedProcedure
@@ -13,7 +13,7 @@ export const gcloudRouter = createTRPCRouter({
     }))
     .query(async ({ input }) => {
       const { fileName } = input;
-      const signedUrl = await generateV4UploadSignedUrl(fileName, 'write', 'application/octet-stream').catch((err) => console.log(err));
+      const signedUrl = await generateSignedUrl(fileName, 'write', 'application/octet-stream').catch((err) => console.log(err));
 
       return signedUrl
     }),
@@ -23,7 +23,7 @@ export const gcloudRouter = createTRPCRouter({
     }))
     .query(async ({ input }) => {
       const { fileName } = input;
-      const signedUrl = await generateV4UploadSignedUrl(fileName, 'delete').catch((err) => console.log(err));
+      const signedUrl = await generateSignedUrl(fileName, 'delete').catch((err) => console.log(err));
 
       return signedUrl
     }),

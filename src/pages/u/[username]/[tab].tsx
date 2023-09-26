@@ -55,7 +55,7 @@ const UserProfile = () => {
 
   // ** Queries
   const { data: userData } = api.user.findByUsername.useQuery({ username: String(username) });
-  const { data: rapsData } = api.rap.getRaps.useQuery({ userId: userData?.id || '' });
+  const { data: rapsData } = api.rap.getRapsByUser.useQuery({ userId: userData?.id || '' });
   const { data: currentUser } = api.user.getCurrentUser.useQuery();
 
   // ** State

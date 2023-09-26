@@ -20,9 +20,17 @@ const updateRapPayloadSchema = z.object({
   coverArtUrl: z.string().optional().nullable(),
 });
 
+const sortBySchema = z.enum(["NEWEST", "TOP"]);
+const timeFilterSchema = z.enum(["ALL", "24HOURS", "7DAYS", "30DAYS", "6MONTHS", "12MONTHS"]);
+const regionFilterSchema = z.enum(["ALL", "WEST", "MIDWEST", "EAST", "SOUTH"]);
+
 // Types
 export type CreateRapPayload = z.infer<typeof createRapPayloadSchema>;
 export type UpdateRapPayload = z.infer<typeof updateRapPayloadSchema>;
+
+export type SortByValue = z.infer<typeof sortBySchema>;
+export type TimeFilter = z.infer<typeof timeFilterSchema>;
+export type RegionFilter = z.infer<typeof regionFilterSchema>;
 
 export const rapRouter = createTRPCRouter({
   createRap: protectedProcedure
@@ -100,7 +108,7 @@ export const rapRouter = createTRPCRouter({
         }
       });
     }),
-  getRaps: protectedProcedure
+  getRapsByUser: protectedProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ ctx, input }) => {
 
@@ -110,9 +118,75 @@ export const rapRouter = createTRPCRouter({
         }
       });
     }),
-  getAllRaps: publicProcedure
-    .query(async ({ ctx }) => {
+  queryRaps: publicProcedure
+    .input(z.object({
+      sortBy: sortBySchema,
+      regionFilter: regionFilterSchema,
+      timeFilter: timeFilterSchema,
+    }))
+    .query(async ({ ctx, input }) => {
 
-      return await ctx.prisma.rap.findMany();
+      const { sortBy, regionFilter, timeFilter } = input;
+
+      let orderBy = {};
+      if (sortBy === 'NEWEST') {
+        orderBy = {
+          dateCreated: 'desc',
+        };
+      } else if (sortBy === 'TOP') {
+        orderBy = {
+          upvotes: 'desc',
+        };
+      }
+
+      let where = {};
+
+      if (regionFilter !== 'ALL') {
+        where = {
+          User: {
+            region: regionFilter
+          }
+        }
+      }
+
+      if (timeFilter !== 'ALL') {
+        const filterDate = new Date();
+
+        switch (timeFilter) {
+          case '24HOURS':
+            filterDate.setDate(filterDate.getDate() - 1);
+            break;
+          case '7DAYS':
+            filterDate.setDate(filterDate.getDate() - 7);
+            break;
+          case '30DAYS':
+            filterDate.setDate(filterDate.getDate() - 30);
+            break;
+          case '6MONTHS':
+            filterDate.setMonth(filterDate.getMonth() - 6);
+            break;
+          case '12MONTHS':
+            filterDate.setMonth(filterDate.getMonth() - 12);
+            break;
+        }
+
+        where = {
+          ...where,
+          dateCreated: {
+            gte: filterDate,
+          }
+        }
+      }
+
+      const raps = await ctx.prisma.rap.findMany({
+        where,
+        orderBy,
+        include: {
+          User: true
+        },
+        take: 30,
+      });
+
+      return raps;
     }),
 });
