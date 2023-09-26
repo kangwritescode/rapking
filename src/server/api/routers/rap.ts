@@ -123,6 +123,7 @@ export const rapRouter = createTRPCRouter({
       sortBy: sortBySchema,
       regionFilter: regionFilterSchema,
       timeFilter: timeFilterSchema,
+      includeUser: z.boolean().optional(),
     }))
     .query(async ({ ctx, input }) => {
 
@@ -182,7 +183,7 @@ export const rapRouter = createTRPCRouter({
         where,
         orderBy,
         include: {
-          User: true
+          User: Boolean(input.includeUser)
         },
         take: 30,
       });

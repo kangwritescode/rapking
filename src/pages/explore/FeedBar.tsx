@@ -60,7 +60,7 @@ function FeedBar({ sx, onSortAndFilterChange }: FeedBarProps) {
         defaultValue="ALL"
         size="small"
         sx={{
-          width: '5rem',
+          width: regionFilter !== 'MIDWEST' ? '5rem' : '5.5rem',
           borderRadius: '20px',
           fontSize: '0.75rem',
           mr: '.5rem'

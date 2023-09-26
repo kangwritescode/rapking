@@ -56,14 +56,11 @@ const UserProfile = () => {
   // ** Queries
   const { data: userData } = api.user.findByUsername.useQuery({ username: String(username) });
   const { data: rapsData } = api.rap.getRapsByUser.useQuery({ userId: userData?.id || '' });
-  const { data: currentUser } = api.user.getCurrentUser.useQuery();
+  const { data: currentUserData } = api.user.getCurrentUser.useQuery();
 
   // ** State
   const [activeTab, setActiveTab] = useState<string>(String(tab))
   const [isLoading, setIsLoading] = useState<boolean>(true)
-
-  // ** Vars
-  const isCurrentUser = currentUser?.id === userData?.id;
 
   const handleChange = (event: SyntheticEvent, value: string) => {
     setIsLoading(true)
@@ -97,7 +94,7 @@ const UserProfile = () => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
-        <UserProfileHeader userData={userData} isCurrentUser={isCurrentUser} />
+        <UserProfileHeader userData={userData} currentUserData={currentUserData} />
       </Grid>
       {activeTab === undefined ? null : (
         <Grid item xs={12}>

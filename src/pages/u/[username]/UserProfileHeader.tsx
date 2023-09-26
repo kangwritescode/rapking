@@ -15,18 +15,53 @@ import EditableBanner from './EditableBanner'
 import EditableProfilePhoto from './EditableProfilePhoto'
 import EditProfileDialog from './EditProfileDialog'
 import { useState } from 'react'
+import { api } from 'src/utils/api'
+import FollowingButton from './FollowingButton'
 
 interface UserProfileHeaderProps {
   userData?: User | null;
-  isCurrentUser?: boolean;
+  currentUserData?: User | null;
 }
 
-const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) => {
+const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps) => {
+
+  // State
   const [modalIsOpen, setIsModalIsOpen] = useState<boolean>(false)
+
+  // Queries
+  const { data: followData } = api.userFollows.getFollow.useQuery({ followerId: currentUserData?.id || '', followedId: userData?.id || '' }, {
+    enabled: !!currentUserData?.id && !!userData?.id
+  })
+
+  // Mutations
+  const { mutate: createFollow } = api.userFollows.createFollow.useMutation();
+  const { mutate: deleteFollow } = api.userFollows.deleteFollow.useMutation();
+
+  // Invalidators
+  const { invalidate: invalidateFollowsQuery } = api.useContext().userFollows
+
+  // Handlers
+  const followButtonClickHandler = () => {
+    createFollow({ followerId: currentUserData?.id || '', followedId: userData?.id || '' }, {
+      onSuccess: () => {
+        invalidateFollowsQuery()
+      }
+    })
+  }
+
+  const unfollowButonClickHandler = () => {
+    deleteFollow({ followerId: currentUserData?.id || '', followedId: userData?.id || '' }, {
+      onSuccess: () => {
+        invalidateFollowsQuery()
+      }
+    })
+  }
+
+  const isCurrentUser = currentUserData?.id === userData?.id;
 
   return userData ? (
     <>
-    <EditProfileDialog isOpen={modalIsOpen} handleClose={() => setIsModalIsOpen(false)} />
+      <EditProfileDialog isOpen={modalIsOpen} handleClose={() => setIsModalIsOpen(false)} />
       <Card>
         <EditableBanner isEditable={isCurrentUser} userData={userData} />
         <CardContent
@@ -90,10 +125,17 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
                 }>
                 Edit Profile
               </Button>
-            ) : <Button
-              variant='contained'>
-              Follow
-            </Button>}
+            ) : followData ?
+              <FollowingButton unfollowClickHandler={unfollowButonClickHandler} />
+              :
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={followButtonClickHandler}
+                startIcon={<Icon icon='mdi:account-plus-outline' />}
+              >
+                {'Follow'}
+              </Button>}
           </Box>
         </CardContent>
       </Card>

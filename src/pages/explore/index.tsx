@@ -1,12 +1,22 @@
 import React from 'react'
 import { api } from 'src/utils/api'
-import { Stack } from '@mui/material';
+import { Box, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import FeedRapCard from './FeedRapCard';
 import FeedBar from './FeedBar';
 import { RegionFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 
 function ExplorePage() {
 
+  const theme = useTheme();
+
+  // Tabs
+  const [tab, setTab] = React.useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTab(newValue);
+  };
+
+  // Feed
   const [sortByValue, setSortByValue] = React.useState<SortByValue>('NEWEST');
   const [regionFilter, setRegionFilter] = React.useState<RegionFilter>('ALL');
   const [timeFilter, setTimeFilter] = React.useState<TimeFilter>('ALL');
@@ -14,7 +24,8 @@ function ExplorePage() {
   const { data: raps } = api.rap.queryRaps.useQuery({
     sortBy: sortByValue,
     regionFilter,
-    timeFilter
+    timeFilter,
+    includeUser: true
   });
 
   return (
@@ -29,27 +40,61 @@ function ExplorePage() {
         maxWidth: '45rem',
         margin: 'auto'
       }}>
-      <FeedBar
-        sx={{ mb: '1rem' }}
-        onSortAndFilterChange={({
-          sortBy,
-          regionFilter,
-          timeFilter
-        }) => {
-          setSortByValue(sortBy);
-          setRegionFilter(regionFilter);
-          setTimeFilter(timeFilter);
-        }
-        }
-      />
-      {raps?.map((rap) => {
-        return (
-          <FeedRapCard
-            key={rap.id}
-            rap={rap}
-          />
-        )
-      })}
+      <Box
+        sx={{
+          borderBottom: 1,
+          borderColor: 'divider',
+          width: '100%',
+          mb: '1rem'
+        }}>
+        <Tabs
+          value={tab}
+          onChange={handleChange}
+          sx={{
+            ['& .Mui-selected']: {
+              color: theme.palette.grey[100] + ' !important'
+            },
+            ['& .MuiTabs-indicator']: {
+              backgroundColor: theme.palette.grey[100]
+            }
+          }}>
+          <Tab label="All" />
+          <Tab label="Following" />
+        </Tabs>
+      </Box>
+      {tab === 0 && (
+        <FeedBar
+          sx={{ mb: '2rem' }}
+          onSortAndFilterChange={({
+            sortBy,
+            regionFilter,
+            timeFilter
+          }) => {
+            setSortByValue(sortBy);
+            setRegionFilter(regionFilter);
+            setTimeFilter(timeFilter);
+          }
+          }
+        />
+      )}
+      {tab === 0 && (
+        raps?.map((rap) => {
+          return (
+            <FeedRapCard
+              key={rap.id}
+              rap={rap}
+              sx={{
+                width: '100%',
+              }}
+            />
+          )
+        })
+      )}
+      {tab === 1 && (
+        <Typography>
+          Coming Soon
+        </Typography>
+      )}
     </Stack>
   )
 }
