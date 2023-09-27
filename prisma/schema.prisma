@@ -64,7 +64,8 @@ model User {
   accounts        Account[]
   sessions        Session[]
   socialLinks     SocialLink[]
-  RapLike         RapLike[]
+  rapVotes        RapVote[]
+  rapComments     RapComment[]
 }
 
 model UserFollows {
@@ -78,25 +79,45 @@ model UserFollows {
 }
 
 model Rap {
-  id          String    @id @default(cuid())
+  id          String       @id @default(cuid())
   title       String
   content     String
-  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   coverArtUrl String?
-  status      RapStatus @default(DRAFT)
-  dateCreated DateTime  @default(now())
-  likes       RapLike[]
+  status      RapStatus    @default(DRAFT)
+  dateCreated DateTime     @default(now())
+  votes        RapVote[]
+  comments     RapComment[]
 }
 
-model RapLike {
-  rap     Rap      @relation(fields: [rapId], references: [id])
-  rapId   String
-  user    User     @relation(fields: [userId], references: [id])
-  userId  String
-  likedAt DateTime @default(now())
+model RapComment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rapId     String
+  rap       Rap      @relation(fields: [rapId], references: [id], onDelete: Cascade)
+  likes     Int      @default(0) // To implement a like/upvote feature for comments if needed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
-  @@id([rapId, userId])
+enum RapVoteType {
+  LIKE
+}
+
+model RapVote {
+  id        Int         @id @default(autoincrement())
+  type      RapVoteType
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rapId     String
+  rap       Rap         @relation(fields: [rapId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([userId, rapId])
 }
 
 model SocialLink {

@@ -100,11 +100,22 @@ export const rapRouter = createTRPCRouter({
 
     }),
   getRap: publicProcedure
-    .input(z.object({ id: z.string() }))
+    .input(
+      z.object({
+        id: z.string(),
+        withLikes: z.boolean().optional(),
+        withComments: z.boolean().optional(),
+        withUser: z.boolean().optional(),
+      }))
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.rap.findFirst({
         where: {
           id: input.id,
+        },
+        include: {
+          votes:input.withLikes,
+          comments: input.withComments,
+          User: input.withUser,
         }
       });
     }),

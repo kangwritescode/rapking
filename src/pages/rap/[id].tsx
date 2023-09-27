@@ -4,6 +4,7 @@ import React from 'react'
 import { CDN_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
 import RapContent from './RapContent';
+import RapBar from './RapBar';
 
 const ProfilePicture = styled('img')(({ theme }) => ({
   width: 50,
@@ -22,11 +23,19 @@ function RapPage() {
   const theme = useTheme();
   const router = useRouter();
   const { id } = router.query;
-  const { data: rapData } = api.rap.getRap.useQuery({ id: id as string });
-  const { data: userData } = api.user.findById.useQuery({ id: rapData?.userId || '' }, { enabled: !!(rapData?.userId) })
+  const { data: rapData } = api.rap.getRap.useQuery({
+    id: id as string,
+    withUser: true,
+    withComments: true,
+    withLikes: true
+  });
+
+  const userData = rapData?.User;
 
   return (
-    <Stack direction='column' alignItems='center'>
+    <Stack
+      direction='column'
+      alignItems='center'>
       <Stack width={{ xs: '100%', md: '40rem' }}>
         <CardMedia
           component='img'
@@ -44,23 +53,28 @@ function RapPage() {
         <Typography variant='h4' fontWeight='bold'>
           {rapData?.title}
         </Typography>
-        <Stack direction='row' mt={theme.spacing(4)} mb={theme.spacing(4)}>
-          <ProfilePicture
-            src={userData?.profileImageUrl ? `${CDN_URL}/${userData.profileImageUrl}` : `${CDN_URL}/default/profile-male-default.jpg`}
-            alt='profile-picture'
-            onClick={() => router.push(`/u/${userData?.username}/raps`)}
-          />
-          <Stack>
-            <Link>
-              <Typography fontWeight='bold'>
-                {userData?.username}
+        <Stack direction='row' mt={theme.spacing(4)} mb={theme.spacing(4)} alignItems="center" justifyContent="space-between">
+          <Stack direction='row'>
+            <ProfilePicture
+              src={userData?.profileImageUrl ? `${CDN_URL}/${userData.profileImageUrl}` : `${CDN_URL}/default/profile-male-default.jpg`}
+              alt='profile-picture'
+              onClick={() => router.push(`/u/${userData?.username}/raps`)}
+              sx={{ mr: theme.spacing(4) }}
+            />
+            <Stack>
+              <Link>
+                <Typography fontWeight='bold'>
+                  {userData?.username}
+                </Typography>
+              </Link>
+              <Typography>
+                {rapData?.dateCreated.toLocaleDateString()}
               </Typography>
-            </Link>
-            <Typography>
-              {rapData?.dateCreated.toLocaleDateString()}
-            </Typography>
+            </Stack>
           </Stack>
         </Stack>
+        <Divider />
+        <RapBar rapData={rapData} />
         <Divider />
         {rapData?.content && <RapContent sx={{ marginTop: theme.spacing(2) }} content={rapData.content} />}
       </Stack>
