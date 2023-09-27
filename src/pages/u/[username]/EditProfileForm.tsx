@@ -31,6 +31,9 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
   const { data: userData } = api.user.getCurrentUser.useQuery();
   const { mutate: updateUser } = api.user.updateUser.useMutation();
 
+  // Invalidaters
+  const { invalidate: invalidateUserQuery } = api.useContext().user.getCurrentUser;
+
   const theme = useTheme();
 
   const [usernameIsAvailable, setUsernameIsAvailable] = React.useState<boolean | undefined>(undefined);
@@ -64,6 +67,7 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
     }, {
       onSuccess: () => {
         closeDialogHandler();
+        invalidateUserQuery();
         router.push(`/u/${username}/profile`)
       }
     })
