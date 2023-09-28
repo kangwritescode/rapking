@@ -5,12 +5,12 @@ import TextAlign from '@tiptap/extension-text-align';
 import { useTheme } from '@mui/material';
 
 
-interface TextEditorProps {
+interface RapTextEditorProps {
   onChange: (contentHTML: string) => void;
   content: string;
 }
 
-export default function TextEditor({ onChange, content }: TextEditorProps) {
+export default function RapTextEditor({ onChange, content }: RapTextEditorProps) {
 
   const editor = useEditor({
     extensions: [
@@ -42,6 +42,11 @@ export default function TextEditor({ onChange, content }: TextEditorProps) {
           color: theme.palette.text.primary,
           background: theme.palette.background.paper,
         },
+        controlsGroup: {
+          '& > *:hover': {
+            background: `rgba(255, 255, 255, 0.2) !important`,
+          }
+        }
       }}>
       <RichTextEditor.Toolbar>
         <RichTextEditor.ControlsGroup>

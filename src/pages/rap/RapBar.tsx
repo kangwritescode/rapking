@@ -3,6 +3,7 @@ import React from 'react'
 import { Icon } from '@iconify/react'
 import { Rap, RapComment, RapVote, User } from '@prisma/client'
 import { api } from 'src/utils/api'
+import RapCommentDrawer from 'src/components/RapCommentDrawer'
 
 interface RapBarProps {
   rapData?: (Rap & {
@@ -17,6 +18,9 @@ function RapBar({ rapData }: RapBarProps) {
   const { votes, comments } = rapData || {};
 
   const theme = useTheme();
+
+  // State
+  const [commentDrawerIsOpen, setCommentDrawerIsOpen] = React.useState<boolean>(false);
 
   // Queries
   const { data: currentUser } = api.user.getCurrentUser.useQuery();
@@ -73,36 +77,45 @@ function RapBar({ rapData }: RapBarProps) {
   }
 
   return (
-    <Box display="flex">
-      <Box
-        display="flex"
-        alignItems="center">
-        <IconButton
-          sx={{
-            paddingRight: 1
-          }}
-          onClick={currentUserLikedRap ? unlikeRap : likeRap}
-        >
-          <Icon
-            {...(currentUserLikedRap ? { color: 'orange' } : {})}
-            icon='mdi:fire'
-          />
-        </IconButton>
-        {likes?.length || 0}
-      </Box>
-      <Box sx={{
-        ml: theme.spacing(5),
-        display: 'flex',
-        alignItems: 'center'
-      }}>
-        <IconButton sx={{
-          pr: 1
+    <>
+      <RapCommentDrawer
+        isOpen={commentDrawerIsOpen}
+        onCloseHandler={() => setCommentDrawerIsOpen(false)}
+        rapComments={comments}
+      />
+      <Box display="flex">
+        <Box
+          display="flex"
+          alignItems="center">
+          <IconButton
+            sx={{
+              paddingRight: 1
+            }}
+            onClick={currentUserLikedRap ? unlikeRap : likeRap}
+          >
+            <Icon
+              {...(currentUserLikedRap ? { color: 'orange' } : {})}
+              icon='mdi:fire'
+            />
+          </IconButton>
+          {likes?.length || 0}
+        </Box>
+        <Box sx={{
+          ml: theme.spacing(5),
+          display: 'flex',
+          alignItems: 'center'
         }}>
-          <Icon icon='prime:comment' />
-        </IconButton>
-        {comments?.length || 0}
+          <IconButton
+            onClick={() => setCommentDrawerIsOpen(true)}
+            sx={{
+              pr: 1
+            }}>
+            <Icon icon='prime:comment' />
+          </IconButton>
+          {comments?.length || 0}
+        </Box>
       </Box>
-    </Box>
+    </>
   )
 }
 

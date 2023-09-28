@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles'
-import TextEditor from './TextEditor';
+import TextEditor from './RapTextEditor';
 import TitleBar from './TitleBar';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
