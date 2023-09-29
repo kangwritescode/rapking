@@ -103,8 +103,6 @@ export const rapRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        withLikes: z.boolean().optional(),
-        withComments: z.boolean().optional(),
         withUser: z.boolean().optional(),
       }))
     .query(async ({ ctx, input }) => {
@@ -112,11 +110,11 @@ export const rapRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
-        include: {
-          votes:input.withLikes,
-          comments: input.withComments,
-          User: input.withUser,
-        }
+        ...(input.withUser && {
+          include: {
+            user: true
+          }
+        }),
       });
     }),
   getRapsByUser: protectedProcedure
@@ -194,7 +192,7 @@ export const rapRouter = createTRPCRouter({
         where,
         orderBy,
         include: {
-          User: Boolean(input.includeUser)
+          user: Boolean(input.includeUser)
         },
         take: 30,
       });

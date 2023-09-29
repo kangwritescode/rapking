@@ -82,23 +82,22 @@ model Rap {
   id          String       @id @default(cuid())
   title       String
   content     String
-  User        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   coverArtUrl String?
   status      RapStatus    @default(DRAFT)
   dateCreated DateTime     @default(now())
-  votes        RapVote[]
-  comments     RapComment[]
+  votes       RapVote[]
+  comments    RapComment[]
 }
 
 model RapComment {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   content   String
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   rapId     String
   rap       Rap      @relation(fields: [rapId], references: [id], onDelete: Cascade)
-  likes     Int      @default(0) // To implement a like/upvote feature for comments if needed
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -108,7 +107,7 @@ enum RapVoteType {
 }
 
 model RapVote {
-  id        Int         @id @default(autoincrement())
+  id          String       @id @default(cuid())
   type      RapVoteType
   userId    String
   user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)

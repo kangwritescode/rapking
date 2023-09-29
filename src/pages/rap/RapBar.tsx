@@ -1,21 +1,17 @@
 import { Box, IconButton, useTheme } from '@mui/material'
 import React from 'react'
 import { Icon } from '@iconify/react'
-import { Rap, RapComment, RapVote, User } from '@prisma/client'
+import { Rap, User } from '@prisma/client'
 import { api } from 'src/utils/api'
 import RapCommentDrawer from 'src/components/RapCommentDrawer'
 
 interface RapBarProps {
   rapData?: (Rap & {
-    User: User;
-    votes: RapVote[];
-    comments: RapComment[];
+    user?: User;
   }) | null;
 }
 
 function RapBar({ rapData }: RapBarProps) {
-
-  const { votes, comments } = rapData || {};
 
   const theme = useTheme();
 
@@ -24,6 +20,12 @@ function RapBar({ rapData }: RapBarProps) {
 
   // Queries
   const { data: currentUser } = api.user.getCurrentUser.useQuery();
+  const { data: rapLikes } = api.vote.getRapLikes.useQuery({ rapId: rapData?.id as string }, {
+    enabled: !!rapData?.id
+  });
+  const { data: rapCommentsCount } = api.rapComment.rapCommentsCount.useQuery({ rapId: rapData?.id as string }, {
+    enabled: !!rapData?.id
+  });
 
   // Mutations
   const { mutate: createVote } = api.vote.createRapVote.useMutation();
@@ -33,10 +35,10 @@ function RapBar({ rapData }: RapBarProps) {
   const { invalidate: invalidateRapQuery } = api.useContext().rap.getRap;
 
   // Like Logic
-  const likes = votes?.filter(vote => vote.type === 'LIKE');
+
   let currentUserLikedRap = false;
   if (currentUser) {
-    currentUserLikedRap = !!votes?.find(vote => vote.userId === currentUser.id && vote.type === 'LIKE');
+    currentUserLikedRap = !!rapLikes?.find(vote => vote.userId === currentUser.id && vote.type === 'LIKE');
   }
 
   const likeRap = () => {
@@ -50,7 +52,7 @@ function RapBar({ rapData }: RapBarProps) {
           invalidateRapQuery(
             {
               id: rapData?.id as string,
-              withUser: true, withComments: true, withLikes: true
+              withUser: true,
             },
           )
         }
@@ -68,7 +70,7 @@ function RapBar({ rapData }: RapBarProps) {
           invalidateRapQuery(
             {
               id: rapData?.id as string,
-              withUser: true, withComments: true, withLikes: true
+              withUser: true,
             },
           )
         }
@@ -81,7 +83,7 @@ function RapBar({ rapData }: RapBarProps) {
       <RapCommentDrawer
         isOpen={commentDrawerIsOpen}
         onCloseHandler={() => setCommentDrawerIsOpen(false)}
-        rapComments={comments}
+        rapId={rapData?.id as string}
       />
       <Box display="flex">
         <Box
@@ -98,7 +100,7 @@ function RapBar({ rapData }: RapBarProps) {
               icon='mdi:fire'
             />
           </IconButton>
-          {likes?.length || 0}
+          {rapLikes?.length || 0}
         </Box>
         <Box sx={{
           ml: theme.spacing(5),
@@ -112,7 +114,7 @@ function RapBar({ rapData }: RapBarProps) {
             }}>
             <Icon icon='prime:comment' />
           </IconButton>
-          {comments?.length || 0}
+          {rapCommentsCount || 0}
         </Box>
       </Box>
     </>

@@ -3,30 +3,26 @@ import { z } from "zod";
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicProcedure,
+  publicProcedure
 } from "src/server/api/trpc";
 import { RapVoteType } from "@prisma/client";
 
 export const vote = createTRPCRouter({
-  getRapVotes: publicProcedure
+  getRapLikes: publicProcedure
     .input(z.object({
-      followerId: z.string(),
-      followedId: z.string(),
+      rapId: z.string(),
     }))
     .query(async ({ input, ctx }) => {
+      const { rapId } = input;
 
-      const { followerId, followedId } = input;
-
-      const follow = await ctx.prisma.userFollows.findUnique({
+      const rapVotes = await ctx.prisma.rapVote.findMany({
         where: {
-          followerId_followedId: {
-            followerId,
-            followedId,
-          },
+          rapId,
+          type: RapVoteType.LIKE,
         },
       });
 
-      return follow;
+      return rapVotes;
     }),
   createRapVote: protectedProcedure
     .input(z.object({

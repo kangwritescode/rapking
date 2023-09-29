@@ -9,9 +9,10 @@ import { Box, Button, useTheme } from '@mui/material';
 interface RapCommentTextEditorProps {
   onChange?: (contentHTML: string) => void;
   content?: string;
+  submitButtonIsDisabled?: boolean;
 }
 
-export default function RapCommentTextEditor({ onChange, content }: RapCommentTextEditorProps) {
+export default function RapCommentTextEditor({ onChange, content, submitButtonIsDisabled }: RapCommentTextEditorProps) {
 
   const editor = useEditor({
     extensions: [
@@ -84,9 +85,11 @@ export default function RapCommentTextEditor({ onChange, content }: RapCommentTe
         </RichTextEditor.ControlsGroup>
         <Box>
           <Button
+            type='submit'
             color='primary'
             variant='contained'
             size="small"
+            disabled={submitButtonIsDisabled}
             sx={{
               borderRadius: '20px',
               textTransform: 'unset',

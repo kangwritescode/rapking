@@ -1,4 +1,4 @@
-import { CardMedia, Divider, Link, Stack, Typography, styled, useTheme } from '@mui/material';
+import { Avatar, CardMedia, Divider, Link, Stack, Typography, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import React from 'react'
 import { CDN_URL } from 'src/shared/constants';
@@ -6,17 +6,6 @@ import { api } from 'src/utils/api';
 import RapContent from './RapContent';
 import RapBar from './RapBar';
 
-const ProfilePicture = styled('img')(({ theme }) => ({
-  width: 50,
-  height: 50,
-  borderRadius: '100px',
-  position: 'relative',
-  marginRight: theme.spacing(2),
-  cursor: 'pointer',
-  [theme.breakpoints.down('md')]: {
-    marginBottom: theme.spacing(4)
-  }
-}))
 
 function RapPage() {
 
@@ -25,12 +14,9 @@ function RapPage() {
   const { id } = router.query;
   const { data: rapData } = api.rap.getRap.useQuery({
     id: id as string,
-    withUser: true,
-    withComments: true,
-    withLikes: true
   });
 
-  const userData = rapData?.User;
+  const userData = rapData?.user;
 
   return (
     <Stack
@@ -55,11 +41,16 @@ function RapPage() {
         </Typography>
         <Stack direction='row' mt={theme.spacing(4)} mb={theme.spacing(4)} alignItems="center" justifyContent="space-between">
           <Stack direction='row'>
-            <ProfilePicture
+            <Avatar
               src={userData?.profileImageUrl ? `${CDN_URL}/${userData.profileImageUrl}` : `${CDN_URL}/default/profile-male-default.jpg`}
               alt='profile-picture'
               onClick={() => router.push(`/u/${userData?.username}/raps`)}
-              sx={{ mr: theme.spacing(4) }}
+              sx={{
+                mr: theme.spacing(4),
+                width: 50,
+                height: 50,
+                cursor: 'pointer',
+              }}
             />
             <Stack>
               <Link>

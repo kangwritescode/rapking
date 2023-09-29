@@ -1,17 +1,28 @@
 import { Icon } from '@iconify/react';
-import { Box, Drawer, IconButton, Typography, useTheme } from '@mui/material'
-import { RapComment } from '@prisma/client';
+import { Box, Divider, Drawer, IconButton, MenuItem, Select, Typography } from '@mui/material'
 import React from 'react'
 import RapCommentComposer from './RapCommentComposer';
+import { api } from 'src/utils/api';
 
 interface RapCommentDrawerProps {
   onCloseHandler: () => void;
   isOpen: boolean;
-  rapComments?: RapComment[];
+  rapId?: string;
 }
 
-function RapCommentDrawer({ onCloseHandler, isOpen, rapComments }: RapCommentDrawerProps) {
-  const theme = useTheme();
+function RapCommentDrawer({
+  onCloseHandler,
+  isOpen,
+  rapId
+}: RapCommentDrawerProps) {
+
+  const {data: rapCommentsCount} = api.rapComment.rapCommentsCount.useQuery({
+    rapId: rapId as string,
+  }, {
+    enabled: !!rapId,
+  });
+
+  const [sortBy, setSortBy] = React.useState<'POPULAR' | 'RECENT'>('POPULAR');
 
   return (
     <Drawer
@@ -22,7 +33,8 @@ function RapCommentDrawer({ onCloseHandler, isOpen, rapComments }: RapCommentDra
       <Box
         width='24rem'
         maxWidth="100%"
-        p={theme.spacing(6)}
+        px={6}
+        pt={6}
       >
         <Box
           display="flex"
@@ -30,14 +42,30 @@ function RapCommentDrawer({ onCloseHandler, isOpen, rapComments }: RapCommentDra
           alignItems="center"
         >
           <Typography variant="h6">
-            Comments {rapComments?.length ? `(${rapComments.length})` : ''}
+            Comments {rapCommentsCount ? `(${rapCommentsCount})` : ''}
           </Typography>
           <IconButton onClick={onCloseHandler}>
             <Icon icon="mdi:close" />
           </IconButton>
         </Box>
-        <RapCommentComposer />
+        <RapCommentComposer rapId={rapId} />
+        <Select
+          defaultValue="ALL"
+          sx={{
+            mt: 12,
+            ml: -2,
+            ".MuiOutlinedInput-notchedOutline": {
+              border: 'none',
+            },
+          }}
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value as 'POPULAR' | 'RECENT')}
+        >
+          <MenuItem value="POPULAR">Most popular</MenuItem>
+          <MenuItem value="RECENT">Most recent</MenuItem>
+        </Select>
       </Box>
+      <Divider />
     </Drawer>
   )
 }

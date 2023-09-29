@@ -1,18 +1,9 @@
-import { Box, CardMedia, Divider, Stack, SxProps, Typography, styled, useTheme } from '@mui/material';
+import { Avatar, Box, CardMedia, Divider, Stack, SxProps, Typography, useTheme } from '@mui/material';
 import { Rap, User } from '@prisma/client'
 import React from 'react'
 import { CDN_URL } from 'src/shared/constants';
 import { convert } from 'html-to-text';
 import { useRouter } from 'next/router';
-
-const ProfilePicture = styled('img')(({ theme }) => ({
-  width: 24,
-  height: 24,
-  borderRadius: '100px',
-  position: 'relative',
-  marginRight: theme.spacing(2),
-  cursor: 'pointer',
-}))
 
 interface FeedRapCardProps {
   rap: Rap & { User: User };
@@ -39,12 +30,20 @@ function FeedRapCard({ rap, sx }: FeedRapCardProps) {
   return (
     <Box sx={sx}>
       <Stack direction='row' alignItems='center' pb={theme.spacing(2)}>
-        <ProfilePicture
+        <Avatar
           onClick={navigateToProfile}
           src={userData?.profileImageUrl ?
             `${CDN_URL}/${userData.profileImageUrl}` :
             `${CDN_URL}/default/profile-male-default.jpg`}
-          alt='profile-picture' />
+          alt='profile-picture'
+          sx={{
+            width: 24,
+            height: 24,
+            cursor: 'pointer',
+            marginRight: theme.spacing(2),
+            position: 'relative',
+          }}
+        />
         <Typography onClick={navigateToProfile} sx={{ cursor: 'pointer' }}> {userData?.username}&nbsp;·&nbsp; </Typography>
         <Typography>{dateCreated?.toLocaleDateString()}</Typography>
       </Stack>

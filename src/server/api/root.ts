@@ -6,6 +6,7 @@ import { gcloudRouter } from "./routers/gcloud";
 import { socialLinkRouter } from "./routers/socialLink";
 import { userFollows } from "./routers/userFollows";
 import { vote } from "./routers/vote";
+import { rapComment } from "./routers/rapComment";
 
 /**
  * This is the primary router for your server.
@@ -20,6 +21,7 @@ export const appRouter = createTRPCRouter({
   socialLink: socialLinkRouter,
   userFollows: userFollows,
   vote: vote,
+  rapComment: rapComment,
 });
 
 // export type definition of API
