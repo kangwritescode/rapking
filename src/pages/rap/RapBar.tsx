@@ -32,7 +32,7 @@ function RapBar({ rapData }: RapBarProps) {
   const { mutate: deleteVote } = api.vote.deleteRapVoteByUser.useMutation();
 
   // Invalidaters
-  const { invalidate: invalidateRapQuery } = api.useContext().rap.getRap;
+  const { invalidate: invalidateRapLikes } = api.useContext().vote.getRapLikes;
 
   // Like Logic
 
@@ -49,10 +49,9 @@ function RapBar({ rapData }: RapBarProps) {
         type: 'LIKE'
       }, {
         onSuccess: () => {
-          invalidateRapQuery(
+          invalidateRapLikes(
             {
-              id: rapData?.id as string,
-              withUser: true,
+              rapId: rapData?.id as string,
             },
           )
         }
@@ -67,10 +66,9 @@ function RapBar({ rapData }: RapBarProps) {
         userId: currentUser.id,
       }, {
         onSuccess: () => {
-          invalidateRapQuery(
+          invalidateRapLikes(
             {
-              id: rapData?.id as string,
-              withUser: true,
+              rapId: rapData?.id as string,
             },
           )
         }

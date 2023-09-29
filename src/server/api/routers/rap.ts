@@ -110,11 +110,9 @@ export const rapRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
-        ...(input.withUser && {
-          include: {
-            user: true
-          }
-        }),
+        include: {
+          user: true
+        },
       });
     }),
   getRapsByUser: protectedProcedure

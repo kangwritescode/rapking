@@ -13,7 +13,7 @@ function RapPage() {
   const router = useRouter();
   const { id } = router.query;
   const { data: rapData } = api.rap.getRap.useQuery({
-    id: id as string,
+    id: id as string
   });
 
   const userData = rapData?.user;
