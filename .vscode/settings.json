@@ -39,5 +39,8 @@
     "markdown.extension.toc.updateOnSave": false,
     "[prisma]": {
         "editor.defaultFormatter": "Prisma.prisma"
+    },
+    "[xml]": {
+        "editor.defaultFormatter": "PrateekMahendrakar.prettyxml"
     }
 }
