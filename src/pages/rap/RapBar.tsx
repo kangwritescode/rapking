@@ -20,10 +20,10 @@ function RapBar({ rapData }: RapBarProps) {
 
   // Queries
   const { data: currentUser } = api.user.getCurrentUser.useQuery();
-  const { data: rapLikes } = api.vote.getRapLikes.useQuery({ rapId: rapData?.id as string }, {
+  const { data: rapCommentsCount } = api.rapComment.rapCommentsCount.useQuery({ rapId: rapData?.id as string }, {
     enabled: !!rapData?.id
   });
-  const { data: rapCommentsCount } = api.rapComment.rapCommentsCount.useQuery({ rapId: rapData?.id as string }, {
+  const { data: rapLikes } = api.vote.getRapLikes.useQuery({ rapId: rapData?.id as string }, {
     enabled: !!rapData?.id
   });
 

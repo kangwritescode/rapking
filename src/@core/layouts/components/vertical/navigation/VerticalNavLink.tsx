@@ -29,6 +29,7 @@ import Translations from 'src/layouts/components/Translations'
 import { handleURLQueries } from 'src/@core/layouts/utils'
 import { api } from 'src/utils/api'
 import { CDN_URL } from 'src/shared/constants'
+import { Avatar } from '@mui/material'
 
 interface Props {
   parent?: boolean
@@ -72,13 +73,6 @@ const MenuItemTextMetaWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   ...(themeConfig.menuTextTruncate && { overflow: 'hidden' })
 }))
 
-const ProfilePicture = styled('img')(() => ({
-  width: 26,
-  height: 26,
-  borderRadius: '100px',
-  position: 'relative',
-}))
-
 const VerticalNavLink = ({
   item,
   parent,
@@ -99,7 +93,7 @@ const VerticalNavLink = ({
   // logic for profile icon
   const isUserPage = item.path?.includes('profile');
   const { data: userData } = api.user.getCurrentUser.useQuery();
-  const showProfileIcon = isUserPage && userData?.profileImageUrl;
+  const showProfileIcon = isUserPage;
 
   const icon = parent && !item.icon ? themeConfig.navSubItemIcon : item.icon
 
@@ -154,9 +148,13 @@ const VerticalNavLink = ({
               }
             }}
           >
-            {showProfileIcon ?
-              <ProfilePicture src={`${CDN_URL}/${userData.profileImageUrl}` || ''} /> :
-              <UserIcon icon={icon as string} />}
+
+           {showProfileIcon ? ( <Avatar sx={{
+              width: 26,
+              height: 26,
+            }}
+            {...(userData?.profileImageUrl ? { src: `${CDN_URL}/${userData?.profileImageUrl}` } : {})}
+            />) : <UserIcon icon={icon as string} />}
           </ListItemIcon>
         )}
 
