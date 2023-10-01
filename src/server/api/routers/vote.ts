@@ -34,7 +34,7 @@ export const vote = createTRPCRouter({
 
       const { userId, rapId, type } = input;
 
-      const follow = await ctx.prisma.rapVote.create({
+      const vote = await ctx.prisma.rapVote.create({
         data: {
           type,
           userId,
@@ -42,7 +42,7 @@ export const vote = createTRPCRouter({
         },
       });
 
-      return follow;
+      return vote;
     }),
   deleteRapVoteByUser: protectedProcedure
     .input(z.object({
@@ -53,7 +53,7 @@ export const vote = createTRPCRouter({
 
       const { userId, rapId } = input;
 
-      const follow = await ctx.prisma.rapVote.delete({
+      const vote = await ctx.prisma.rapVote.delete({
         where: {
           userId_rapId: {
             userId,
@@ -62,6 +62,6 @@ export const vote = createTRPCRouter({
         },
       });
 
-      return follow;
+      return vote;
     }),
 });
