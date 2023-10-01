@@ -51,6 +51,12 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       path: '/write',
       icon: 'ph:note-pencil-bold',
     },
+    {
+      title: 'Standings',
+      path: '/standings',
+      icon: 'ph:crown-bold',
+
+    },
   ]
 
   if (userData) {

@@ -97,18 +97,25 @@ function RapComment({ comment, sx }: RapCommentProps) {
           fontSize: 14,
         }}
       />
-      <IconButton
-        sx={{
-          paddingRight: 1
-        }}
-        onClick={currentUserLikedComment ? unlikeRap : likeRap}
-      >
-        <Icon
-          {...(currentUserLikedComment ? { color: 'orange' } : {})}
-          icon='mdi:fire'
-        />
-      </IconButton>
-      {commentLikes?.length || 0}
+      <Box sx={{
+        ml: -1,
+        display: 'flex',
+      }}>
+        <IconButton
+          sx={{
+            paddingRight: 1,
+            py: 0,
+            pl: 0,
+          }}
+          onClick={currentUserLikedComment ? unlikeRap : likeRap}
+        >
+          <Icon
+            {...(currentUserLikedComment ? { color: 'orange' } : {})}
+            icon='mdi:fire'
+          />
+        </IconButton>
+        {commentLikes?.length || 0}
+      </Box>
     </Box>
   )
 }
