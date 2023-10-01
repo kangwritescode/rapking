@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles'
-import TextEditor from './RapTextEditor';
+import RapTextEditor from './RapTextEditor';
 import TitleBar from './TitleBar';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -51,7 +51,8 @@ export default function RapEditor(props: RapEditorProps) {
     register,
     formState: {
       isValid,
-      isSubmitting
+      isSubmitting,
+      isDirty
     },
     watch
   } = useForm({
@@ -73,9 +74,9 @@ export default function RapEditor(props: RapEditorProps) {
 
   useEffect(() => {
     if (onDisabledStateChanged) {
-      onDisabledStateChanged(!isValid || isSubmitting)
+      onDisabledStateChanged(!isValid || isSubmitting || !isDirty)
     }
-  }, [isValid, isSubmitting, onDisabledStateChanged]);
+  }, [isValid, isSubmitting, onDisabledStateChanged, isDirty]);
 
   return (
     <EditorContainer>
@@ -92,7 +93,7 @@ export default function RapEditor(props: RapEditorProps) {
               sx={{ mb: '2rem' }}
               register={register}
             />
-            <TextEditor
+            <RapTextEditor
               content={content}
               onChange={(content: string) => setContent(content)} />
           </Box>

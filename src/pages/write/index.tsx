@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { Rap } from '@prisma/client';
 import WriteHeader from './WriteHeader';
 import { CreateRapPayload } from 'src/server/api/routers/rap';
+import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
 
 const PageContainer = styled(Container)(() => ({
   display: 'flex',
@@ -26,7 +27,11 @@ function WritePage() {
 
   const submitHandler = () => {
     if (rap) {
-      createProfile(rap, {
+      const editedContent = removeTrailingAndLeadingPElements(rap.content);
+      createProfile({
+        title: rap.title,
+        content: editedContent,
+      }, {
         onError: (error) => {
           toast.error(error.message)
         },

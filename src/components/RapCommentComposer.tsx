@@ -9,6 +9,7 @@ import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useForm } from 'react-hook-form';
+import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
 
 interface RapCommentComposerProps {
   rapId?: string;
@@ -44,10 +45,13 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
 
   const submitFormHandler = (formValues: { content: string }) => {
     if (userData && formValues.content && rapId) {
+
+      const editedContent = removeTrailingAndLeadingPElements(formValues.content);
+
       postComment({
         userId: userData.id,
         rapId,
-        content: formValues.content
+        content: editedContent
       }, {
         onSuccess: () => {
           invalidateRapComments({
