@@ -19,6 +19,8 @@ function RapPage() {
 
   const userData = rapData?.user;
 
+  console.log(rapData?.user?.profileImageUrl)
+
   return (
     <Stack
       direction='column'
@@ -27,7 +29,7 @@ function RapPage() {
         <CardMedia
           component='img'
           alt='profile-header'
-          image={rapData?.coverArtUrl || `${CDN_URL}/default/cover-art.jpg`}
+          image={`${CDN_URL}/${rapData?.coverArtUrl}` || `${CDN_URL}/default/cover-art.jpg`}
           sx={{
             marginBottom: 10,
             height: {

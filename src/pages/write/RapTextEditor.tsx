@@ -1,27 +1,13 @@
 import { RichTextEditor } from '@mantine/tiptap';
-import { useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import TextAlign from '@tiptap/extension-text-align';
+import { Editor } from '@tiptap/react';
 import { useTheme } from '@mui/material';
 
 
 interface RapTextEditorProps {
-  onChange: (contentHTML: string) => void;
-  content: string;
+  editor: Editor | null;
 }
 
-export default function RapTextEditor({ onChange, content }: RapTextEditorProps) {
-
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
-    ],
-    content,
-    onUpdate({ editor }) {
-      onChange(editor.getHTML());
-    }
-  });
+export default function RapTextEditor({ editor }: RapTextEditorProps) {
 
   const theme = useTheme()
 

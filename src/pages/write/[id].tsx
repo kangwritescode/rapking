@@ -19,11 +19,19 @@ const ExistingRap = () => {
   const router = useRouter();
   const { id } = router.query;
 
+  // Queries
   const { data: rapData } = api.rap.getRap.useQuery({ id: id as string });
+
+  // Mutations
   const { mutate: updateRap } = api.rap.updateRap.useMutation();
 
+  // State
   const [updateRapPayload, setUpdateRapPayload] = useState<UpdateRapPayload | null>(null);
   const [buttonDisabled, setButtonDisabled] = useState(true);
+
+  // Invalidaters
+    // Invalidaters
+    const { invalidate: invalidateRapQuery } = api.useContext().rap.getRap;
 
   const submitHandler = () => {
     if (updateRapPayload) {
@@ -33,6 +41,7 @@ const ExistingRap = () => {
         },
         onSuccess: () => {
           toast.success('Rap Updated Successfully!')
+          invalidateRapQuery({ id: id as string });
         }
       })
     }

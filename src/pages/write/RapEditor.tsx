@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles'
 import RapTextEditor from './RapTextEditor';
 import TitleBar from './TitleBar';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -10,6 +10,9 @@ import { Box, Grid } from '@mui/material';
 import StatusChanger from './StatusChanger';
 import EditableRapBanner from './EditableCoverArt';
 import { CreateRapPayload, UpdateRapPayload } from 'src/server/api/routers/rap';
+import { useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import TextAlign from '@tiptap/extension-text-align';
 
 const EditorContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -33,19 +36,16 @@ interface RapEditorProps {
 
 const rapEditorFormSchema = z.object({
   title: z.string().min(3).max(50).regex(/^[a-zA-Z0-9 ]*$/, 'Must only include letters and numbers'),
+  content: z.string().max(3000)
 })
 
 export type RapEditorFormValues = z.infer<typeof rapEditorFormSchema>
 
-export default function RapEditor(props: RapEditorProps) {
-
-  const {
-    rapData,
-    onDisabledStateChanged,
-    onRapChange
-  } = props;
-
-  const [content, setContent] = useState(rapData?.content || '')
+export default function RapEditor({
+  rapData,
+  onDisabledStateChanged,
+  onRapChange
+}: RapEditorProps) {
 
   const {
     register,
@@ -54,13 +54,15 @@ export default function RapEditor(props: RapEditorProps) {
       isSubmitting,
       isDirty
     },
+    reset,
+    setValue,
     watch
   } = useForm({
-    defaultValues: { title: rapData?.title || '' },
+    defaultValues: { title: rapData?.title || '', content: rapData?.content || '' },
     resolver: zodResolver(rapEditorFormSchema)
   })
 
-  const { title } = watch();
+  const { title, content } = watch();
 
   useEffect(() => {
     if (onRapChange) {
@@ -73,10 +75,30 @@ export default function RapEditor(props: RapEditorProps) {
   }, [onRapChange, title, content, rapData])
 
   useEffect(() => {
+    if (rapData?.content && rapData?.title) {
+      reset({
+        title: rapData.title,
+        content: rapData.content
+      })
+    }
+  }, [rapData?.content, rapData?.title, reset])
+
+  useEffect(() => {
     if (onDisabledStateChanged) {
       onDisabledStateChanged(!isValid || isSubmitting || !isDirty)
     }
   }, [isValid, isSubmitting, onDisabledStateChanged, isDirty]);
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+    ],
+    content,
+    onUpdate({ editor }) {
+      setValue('content', editor.getHTML(), { shouldValidate: true, shouldDirty: true })
+    }
+  });
 
   return (
     <EditorContainer>
@@ -94,8 +116,8 @@ export default function RapEditor(props: RapEditorProps) {
               register={register}
             />
             <RapTextEditor
-              content={content}
-              onChange={(content: string) => setContent(content)} />
+              editor={editor}
+            />
           </Box>
         </Grid>
         {rapData && (

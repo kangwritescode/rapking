@@ -164,7 +164,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     ctx: await createTRPCContext(context),
     transformer: superjson,
   });
-  await helpers.user.findByUsername.prefetch({username})
+  await helpers.user.findByUsername.prefetch({ username })
 
   return {
     props: {
