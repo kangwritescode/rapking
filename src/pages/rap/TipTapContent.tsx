@@ -2,12 +2,12 @@ import { Box, SxProps } from '@mui/material';
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 
-interface RapContentProps {
+interface TipTapContentProps {
   content: string;
   sx?: SxProps;
 }
 
-const RapContent = ({ content, sx }: RapContentProps) => {
+const TipTapContent = ({ content, sx }: TipTapContentProps) => {
 
   const editor = useEditor({
     extensions: [
@@ -24,4 +24,4 @@ const RapContent = ({ content, sx }: RapContentProps) => {
   )
 }
 
-export default RapContent;
+export default TipTapContent;

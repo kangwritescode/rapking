@@ -1,32 +1,14 @@
 import { RichTextEditor } from '@mantine/tiptap';
-import { useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import TextAlign from '@tiptap/extension-text-align';
-import Placeholder from '@tiptap/extension-placeholder';
+import { Editor } from '@tiptap/react';
 import { Box, Button, useTheme } from '@mui/material';
 
 
 interface RapCommentTextEditorProps {
-  onChange?: (contentHTML: string) => void;
-  content?: string;
+  editor: Editor | null;
   submitButtonIsDisabled?: boolean;
 }
 
-export default function RapCommentTextEditor({ onChange, content, submitButtonIsDisabled }: RapCommentTextEditorProps) {
-
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
-      Placeholder.configure({
-        placeholder: 'Write a comment...',
-      })
-    ],
-    content,
-    onUpdate({ editor }) {
-      if (onChange) onChange(editor.getHTML());
-    }
-  });
+export default function RapCommentTextEditor({ editor, submitButtonIsDisabled }: RapCommentTextEditorProps) {
 
   const theme = useTheme()
 

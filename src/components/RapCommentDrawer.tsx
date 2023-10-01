@@ -3,6 +3,7 @@ import { Box, Divider, Drawer, IconButton, MenuItem, Select, Typography } from '
 import React from 'react'
 import RapCommentComposer from './RapCommentComposer';
 import { api } from 'src/utils/api';
+import RapComment from './RapComment';
 
 interface RapCommentDrawerProps {
   onCloseHandler: () => void;
@@ -16,13 +17,15 @@ function RapCommentDrawer({
   rapId
 }: RapCommentDrawerProps) {
 
-  const {data: rapCommentsCount} = api.rapComment.rapCommentsCount.useQuery({
+  const [sortBy, setSortBy] = React.useState<'POPULAR' | 'RECENT'>('POPULAR');
+
+  const { data: rapComments } = api.rapComment.getRapComments.useQuery({
     rapId: rapId as string,
+    sortBy,
   }, {
     enabled: !!rapId,
   });
 
-  const [sortBy, setSortBy] = React.useState<'POPULAR' | 'RECENT'>('POPULAR');
 
   return (
     <Drawer
@@ -31,8 +34,9 @@ function RapCommentDrawer({
       onClose={onCloseHandler}
     >
       <Box
+
         width='24rem'
-        maxWidth="100%"
+        maxWidth='24rem'
         px={6}
         pt={6}
       >
@@ -42,7 +46,7 @@ function RapCommentDrawer({
           alignItems="center"
         >
           <Typography variant="h6">
-            Comments {rapCommentsCount ? `(${rapCommentsCount})` : ''}
+            Comments {rapComments?.length ? `(${rapComments?.length})` : ''}
           </Typography>
           <IconButton onClick={onCloseHandler}>
             <Icon icon="mdi:close" />
@@ -65,7 +69,26 @@ function RapCommentDrawer({
           <MenuItem value="RECENT">Most recent</MenuItem>
         </Select>
       </Box>
-      <Divider />
+      <Divider sx={{
+        mb: 4
+      }} />
+      <Box
+        width="24rem"
+        maxWidth='24rem'
+        px={5}>
+        {rapComments?.map((comment) =>
+          <>
+            <RapComment
+              sx={{
+                py: 5
+              }}
+              key={comment.id}
+              comment={comment}
+            />
+            <Divider />
+          </>
+        )}
+      </Box>
     </Drawer>
   )
 }

@@ -66,6 +66,7 @@ model User {
   socialLinks     SocialLink[]
   rapVotes        RapVote[]
   rapComments     RapComment[]
+  commentVotes     CommentVote[]
 }
 
 model UserFollows {
@@ -92,14 +93,15 @@ model Rap {
 }
 
 model RapComment {
-  id        String   @id @default(cuid())
-  content   String
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  rapId     String
-  rap       Rap      @relation(fields: [rapId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String        @id @default(cuid())
+  content     String
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rapId       String
+  rap         Rap           @relation(fields: [rapId], references: [id], onDelete: Cascade)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  commentVotes CommentVote[]
 }
 
 enum RapVoteType {
@@ -107,7 +109,7 @@ enum RapVoteType {
 }
 
 model RapVote {
-  id          String       @id @default(cuid())
+  id        String      @id @default(cuid())
   type      RapVoteType
   userId    String
   user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -117,6 +119,23 @@ model RapVote {
   updatedAt DateTime    @updatedAt
 
   @@unique([userId, rapId])
+}
+
+enum CommentVoteType {
+  LIKE
+}
+
+model CommentVote {
+  id        String      @id @default(cuid())
+  type      CommentVoteType
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  commentId String
+  comment   RapComment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([userId, commentId])
 }
 
 model SocialLink {

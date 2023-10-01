@@ -10,14 +10,28 @@ export const rapComment = createTRPCRouter({
   getRapComments: publicProcedure
     .input(z.object({
       rapId: z.string(),
+      sortBy: z.enum(["POPULAR", "RECENT"]),
     }))
     .query(async ({ input, ctx }) => {
-      const { rapId } = input;
+      const { rapId, sortBy } = input;
+
+      let orderBy = {};
+      if (sortBy === 'RECENT') {
+        orderBy = {
+          createdAt: 'desc',
+        };
+      } else if (sortBy === 'POPULAR') {
+        orderBy = {
+          createdAt: 'asc',
+        };
+      }
+
 
       const rapComments = await ctx.prisma.rapComment.findMany({
         where: {
           rapId,
         },
+        orderBy,
         include: {
           user: true,
         },

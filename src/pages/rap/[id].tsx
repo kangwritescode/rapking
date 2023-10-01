@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React from 'react'
 import { CDN_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
-import RapContent from './RapContent';
+import TipTapContent from './TipTapContent';
 import RapBar from './RapBar';
 
 
@@ -11,6 +11,7 @@ function RapPage() {
 
   const theme = useTheme();
   const router = useRouter();
+
   const { id } = router.query;
   const { data: rapData } = api.rap.getRap.useQuery({
     id: id as string
@@ -67,7 +68,7 @@ function RapPage() {
         <Divider />
         <RapBar rapData={rapData} />
         <Divider />
-        {rapData?.content && <RapContent sx={{ marginTop: theme.spacing(2) }} content={rapData.content} />}
+        {rapData?.content && <TipTapContent sx={{ marginTop: theme.spacing(2) }} content={rapData.content} />}
       </Stack>
     </Stack>
   )

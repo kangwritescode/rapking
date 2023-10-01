@@ -75,7 +75,7 @@ export default function RapEditor(props: RapEditorProps) {
     if (onDisabledStateChanged) {
       onDisabledStateChanged(!isValid || isSubmitting)
     }
-  }, [isValid, isSubmitting, onDisabledStateChanged])
+  }, [isValid, isSubmitting, onDisabledStateChanged]);
 
   return (
     <EditorContainer>

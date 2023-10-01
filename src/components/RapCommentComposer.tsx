@@ -3,9 +3,12 @@ import React from 'react'
 import RapCommentTextEditor from './RapCommentTextEditor'
 import { api } from 'src/utils/api';
 import { CDN_URL } from 'src/shared/constants';
-import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Placeholder from '@tiptap/extension-placeholder';
+import { useForm } from 'react-hook-form';
 
 interface RapCommentComposerProps {
   rapId?: string;
@@ -14,8 +17,30 @@ interface RapCommentComposerProps {
 function RapCommentComposer({ rapId }: RapCommentComposerProps) {
 
   const theme = useTheme();
+
+  // Queries
   const { data: userData } = api.user.getCurrentUser.useQuery();
+
+  // Mutations
   const { mutate: postComment } = api.rapComment.postComment.useMutation();
+
+  // Invalidaters
+  const { invalidate: invalidateRapComments } = api.useContext().rapComment.getRapComments;
+
+  const {
+    setValue,
+    formState: {
+      isValid,
+      isSubmitting
+    },
+    reset,
+    handleSubmit
+  } = useForm({
+    defaultValues: { content: '' },
+    resolver: zodResolver(z.object({
+      content: z.string().min(1).max(500)
+    }))
+  })
 
   const submitFormHandler = (formValues: { content: string }) => {
     if (userData && formValues.content && rapId) {
@@ -25,26 +50,27 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
         content: formValues.content
       }, {
         onSuccess: () => {
-          console.log('success')
+          invalidateRapComments({
+            rapId: rapId as string,
+          })
+          reset();
+          editor?.commands.clearContent();
         }
       })
     }
   }
 
-  const {
-    control,
-    formState: {
-      isValid,
-      isSubmitting
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Placeholder.configure({
+        placeholder: 'Write a comment...',
+      })
+    ],
+    onUpdate({ editor }) {
+      setValue('content', editor.getHTML(), {shouldValidate: true});
     },
-    handleSubmit
-  } = useForm({
-    defaultValues: { content: '' },
-
-    resolver: zodResolver(z.object({
-      content: z.string().min(1).max(500)
-    }))
-  })
+  });
 
   return (
     <Box
@@ -68,16 +94,9 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
         {userData?.username}
       </Box>
       <form onSubmit={handleSubmit(submitFormHandler)}>
-        <Controller
-          name='content'
-          control={control}
-          render={({ field: { value, onChange } }) => (
-            <RapCommentTextEditor
-              onChange={onChange}
-              content={value}
-              submitButtonIsDisabled={!isValid || isSubmitting}
-            />
-          )}
+        <RapCommentTextEditor
+          editor={editor}
+          submitButtonIsDisabled={!isValid || isSubmitting}
         />
       </form>
     </Box>
