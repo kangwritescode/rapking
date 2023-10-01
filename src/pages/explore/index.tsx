@@ -1,6 +1,6 @@
 import React from 'react'
 import { api } from 'src/utils/api'
-import { Box, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { Box, Stack, Tab, Tabs, useTheme } from '@mui/material';
 import FeedRapCard from './FeedRapCard';
 import FeedBar from './FeedBar';
 import { RegionFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
@@ -20,12 +20,14 @@ function ExplorePage() {
   const [sortByValue, setSortByValue] = React.useState<SortByValue>('NEWEST');
   const [regionFilter, setRegionFilter] = React.useState<RegionFilter>('ALL');
   const [timeFilter, setTimeFilter] = React.useState<TimeFilter>('ALL');
+  const followingFilter = tab === 1;
 
   const { data: raps } = api.rap.queryRaps.useQuery({
     sortBy: sortByValue,
     regionFilter,
     timeFilter,
-    includeUser: true
+    followingFilter,
+    includeUser: true,
   });
 
   return (
@@ -62,39 +64,29 @@ function ExplorePage() {
           <Tab label="Following" />
         </Tabs>
       </Box>
-      {tab === 0 && (
-        <FeedBar
-          sx={{ mb: '2rem' }}
-          onSortAndFilterChange={({
-            sortBy,
-            regionFilter,
-            timeFilter
-          }) => {
-            setSortByValue(sortBy);
-            setRegionFilter(regionFilter);
-            setTimeFilter(timeFilter);
-          }
-          }
+      <FeedBar
+        sx={{ mb: '2rem' }}
+        onSortAndFilterChange={({
+          sortBy,
+          regionFilter,
+          timeFilter
+        }) => {
+          setSortByValue(sortBy);
+          setRegionFilter(regionFilter);
+          setTimeFilter(timeFilter);
+        }
+        }
+      />
+      {raps?.map((rap) =>
+        <FeedRapCard
+          key={rap.id}
+          rap={rap}
+          sx={{
+            width: '100%',
+          }}
         />
-      )}
-      {tab === 0 && (
-        raps?.map((rap) => {
-          return (
-            <FeedRapCard
-              key={rap.id}
-              rap={rap}
-              sx={{
-                width: '100%',
-              }}
-            />
-          )
-        })
-      )}
-      {tab === 1 && (
-        <Typography>
-          Coming Soon
-        </Typography>
-      )}
+      )
+      }
     </Stack>
   )
 }
