@@ -20,12 +20,14 @@ function ExplorePage() {
   const [sortByValue, setSortByValue] = React.useState<SortByValue>('NEWEST');
   const [regionFilter, setRegionFilter] = React.useState<RegionFilter>('ALL');
   const [timeFilter, setTimeFilter] = React.useState<TimeFilter>('ALL');
+  const followingFilter = tab === 1;
 
   const { data: raps } = api.rap.queryRaps.useQuery({
     sortBy: sortByValue,
     regionFilter,
     timeFilter,
-    includeUser: true
+    followingFilter,
+    includeUser: true,
   });
 
   return (
@@ -62,21 +64,19 @@ function ExplorePage() {
           <Tab label="Following" />
         </Tabs>
       </Box>
-      {tab === 0 && (
-        <FeedBar
-          sx={{ mb: '2rem' }}
-          onSortAndFilterChange={({
-            sortBy,
-            regionFilter,
-            timeFilter
-          }) => {
-            setSortByValue(sortBy);
-            setRegionFilter(regionFilter);
-            setTimeFilter(timeFilter);
-          }
-          }
-        />
-      )}
+      <FeedBar
+        sx={{ mb: '2rem' }}
+        onSortAndFilterChange={({
+          sortBy,
+          regionFilter,
+          timeFilter
+        }) => {
+          setSortByValue(sortBy);
+          setRegionFilter(regionFilter);
+          setTimeFilter(timeFilter);
+        }
+        }
+      />
       {raps?.map((rap) =>
         <FeedRapCard
           key={rap.id}

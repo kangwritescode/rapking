@@ -32,6 +32,33 @@ export type SortByValue = z.infer<typeof sortBySchema>;
 export type TimeFilter = z.infer<typeof timeFilterSchema>;
 export type RegionFilter = z.infer<typeof regionFilterSchema>;
 
+// Utils
+function getTimeFilterDate(timeFilter: TimeFilter) {
+  const filterDate = new Date();
+
+  switch (timeFilter) {
+    case '24HOURS':
+      filterDate.setDate(filterDate.getDate() - 1);
+      break;
+    case '7DAYS':
+      filterDate.setDate(filterDate.getDate() - 7);
+      break;
+    case '30DAYS':
+      filterDate.setDate(filterDate.getDate() - 30);
+      break;
+    case '6MONTHS':
+      filterDate.setMonth(filterDate.getMonth() - 6);
+      break;
+    case '12MONTHS':
+      filterDate.setMonth(filterDate.getMonth() - 12);
+      break;
+    default:
+      return null;
+  }
+
+  return filterDate;
+}
+
 export const rapRouter = createTRPCRouter({
   createRap: protectedProcedure
     .input(createRapPayloadSchema)
@@ -130,60 +157,54 @@ export const rapRouter = createTRPCRouter({
       sortBy: sortBySchema,
       regionFilter: regionFilterSchema,
       timeFilter: timeFilterSchema,
+      followingFilter: z.boolean().optional(),
       includeUser: z.boolean().optional(),
     }))
     .query(async ({ ctx, input }) => {
 
-      const { sortBy, regionFilter, timeFilter } = input;
+      const { sortBy, regionFilter, timeFilter, followingFilter } = input;
 
-      let orderBy = {};
-      if (sortBy === 'NEWEST') {
-        orderBy = {
-          dateCreated: 'desc',
-        };
-      } else if (sortBy === 'TOP') {
-        orderBy = {
-          upvotes: 'desc',
-        };
+      // Sort logic
+      let orderBy: any;
+      switch (sortBy) {
+        case 'NEWEST':
+          orderBy = { dateCreated: 'desc' };
+          break;
+        case 'TOP':
+          orderBy = { upvotes: 'desc' };
+          break;
+        default:
+          orderBy = {};
       }
 
-      let where = {};
+      // Filter logic
+      const where: any = {};
 
       if (regionFilter !== 'ALL') {
-        where = {
-          user: {
-            region: regionFilter
-          }
-        }
+        where.user = { region: regionFilter };
       }
 
-      if (timeFilter !== 'ALL') {
-        const filterDate = new Date();
+      const filterDate = getTimeFilterDate(timeFilter);
+      if (filterDate) {
+        where.dateCreated = { gte: filterDate };
+      }
 
-        switch (timeFilter) {
-          case '24HOURS':
-            filterDate.setDate(filterDate.getDate() - 1);
-            break;
-          case '7DAYS':
-            filterDate.setDate(filterDate.getDate() - 7);
-            break;
-          case '30DAYS':
-            filterDate.setDate(filterDate.getDate() - 30);
-            break;
-          case '6MONTHS':
-            filterDate.setMonth(filterDate.getMonth() - 6);
-            break;
-          case '12MONTHS':
-            filterDate.setMonth(filterDate.getMonth() - 12);
-            break;
+      if (followingFilter) {
+        // Handle for when user is not logged in
+        if (!ctx.session) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "You must be logged in to use this filter.",
+          });
         }
+        const userId = ctx.session.user.id;
+        const followedUsers = await ctx.prisma.userFollows.findMany({
+          where: { followerId: userId },
+          select: { followedId: true },
+        });
 
-        where = {
-          ...where,
-          dateCreated: {
-            gte: filterDate,
-          }
-        }
+        const followedUserIds = followedUsers.map(follow => follow.followedId);
+        where.userId = { in: followedUserIds };
       }
 
       const raps = await ctx.prisma.rap.findMany({
