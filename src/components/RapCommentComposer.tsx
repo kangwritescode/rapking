@@ -68,7 +68,7 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
       })
     ],
     onUpdate({ editor }) {
-      setValue('content', editor.getHTML(), {shouldValidate: true});
+      setValue('content', editor.getHTML(), { shouldValidate: true });
     },
   });
 
@@ -87,9 +87,9 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
             position: 'relative',
             marginRight: theme.spacing(2),
           }}
-          src={userData?.profileImageUrl ?
-            `${CDN_URL}/${userData.profileImageUrl}` :
-            `${CDN_URL}/default/profile-male-default.jpg`}
+          {...(userData?.profileImageUrl && {
+            src: `${CDN_URL}/${userData.profileImageUrl}`,
+          })}
         />
         {userData?.username}
       </Box>

@@ -6,12 +6,12 @@ import { convert } from 'html-to-text';
 import { useRouter } from 'next/router';
 
 interface FeedRapCardProps {
-  rap: Rap & { User: User };
+  rap: Rap & { user: User };
   sx?: SxProps;
 }
 
 function FeedRapCard({ rap, sx }: FeedRapCardProps) {
-  const { id, title, dateCreated, coverArtUrl, content, User: userData } = rap;
+  const { id, title, dateCreated, coverArtUrl, content, user: userData } = rap;
 
   const theme = useTheme();
   const router = useRouter();
@@ -32,9 +32,9 @@ function FeedRapCard({ rap, sx }: FeedRapCardProps) {
       <Stack direction='row' alignItems='center' pb={theme.spacing(2)}>
         <Avatar
           onClick={navigateToProfile}
-          src={userData?.profileImageUrl ?
-            `${CDN_URL}/${userData.profileImageUrl}` :
-            `${CDN_URL}/default/profile-male-default.jpg`}
+          {...(userData?.profileImageUrl && {
+            src: `${CDN_URL}/${userData.profileImageUrl}`,
+          })}
           alt='profile-picture'
           sx={{
             width: 24,

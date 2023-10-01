@@ -43,7 +43,9 @@ function RapPage() {
         <Stack direction='row' mt={theme.spacing(4)} mb={theme.spacing(4)} alignItems="center" justifyContent="space-between">
           <Stack direction='row'>
             <Avatar
-              src={userData?.profileImageUrl ? `${CDN_URL}/${userData.profileImageUrl}` : `${CDN_URL}/default/profile-male-default.jpg`}
+              {...(userData?.profileImageUrl && {
+                src: `${CDN_URL}/${userData.profileImageUrl}`,
+              })}
               alt='profile-picture'
               onClick={() => router.push(`/u/${userData?.username}/raps`)}
               sx={{

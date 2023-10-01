@@ -1,22 +1,11 @@
 import { Icon } from '@iconify/react';
-import { Box, CircularProgress, IconButton, styled } from '@mui/material'
+import { Avatar, Box, CircularProgress, IconButton, useTheme } from '@mui/material'
 import { User } from '@prisma/client';
 import React, { useRef, useState } from 'react'
 import { CDN_URL } from 'src/shared/constants'
 import { useGCloudDelete } from 'src/shared/useGCloudDelete';
 import { useGCloudUpload } from 'src/shared/useGCloudUpload';
 import { api } from 'src/utils/api';
-
-const ProfilePicture = styled('img')(({ theme }) => ({
-  width: 120,
-  height: 120,
-  borderRadius: '100px',
-  border: `5px solid ${theme.palette.common.white}`,
-  position: 'relative',
-  [theme.breakpoints.down('md')]: {
-    marginBottom: theme.spacing(4)
-  }
-}))
 
 interface EditableProfilePhotoProps {
   userData: User;
@@ -52,6 +41,8 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
     }
   })
 
+  const theme = useTheme();
+
   return (
     <>
       <input
@@ -80,9 +71,18 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
                 zIndex: 1,
               }} />
           )}
-          <ProfilePicture
-            src={profileImageUrl ? `${CDN_URL}/${profileImageUrl}` : `${CDN_URL}/default/profile-male-default.jpg`}
+          <Avatar
+            {...(profileImageUrl && {src: `${CDN_URL}/${profileImageUrl}`})}
             alt='profile-picture'
+            sx={{
+              width: 120,
+              height: 120,
+              border: `5px solid ${theme.palette.common.white}`,
+              position: 'relative',
+              [theme.breakpoints.down('md')]: {
+                marginBottom: theme.spacing(4)
+              }
+            }}
           />
         </Box>
         {isEditable && (
