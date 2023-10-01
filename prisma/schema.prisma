@@ -66,13 +66,13 @@ model User {
   socialLinks     SocialLink[]
   rapVotes        RapVote[]
   rapComments     RapComment[]
-  commentVotes     CommentVote[]
+  commentVotes    CommentVote[]
 }
 
 model UserFollows {
-  followed   User     @relation("FollowedRelation", fields: [followedId], references: [id])
+  followed   User     @relation("FollowedRelation", fields: [followedId], references: [id], onDelete: Cascade)
   followedId String
-  follower   User     @relation("FollowerRelation", fields: [followerId], references: [id])
+  follower   User     @relation("FollowerRelation", fields: [followerId], references: [id], onDelete: Cascade)
   followerId String
   followedAt DateTime @default(now())
 
@@ -93,14 +93,14 @@ model Rap {
 }
 
 model RapComment {
-  id          String        @id @default(cuid())
-  content     String
-  userId      String
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  rapId       String
-  rap         Rap           @relation(fields: [rapId], references: [id], onDelete: Cascade)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id           String        @id @default(cuid())
+  content      String
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rapId        String
+  rap          Rap           @relation(fields: [rapId], references: [id], onDelete: Cascade)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   commentVotes CommentVote[]
 }
 
@@ -126,14 +126,14 @@ enum CommentVoteType {
 }
 
 model CommentVote {
-  id        String      @id @default(cuid())
+  id        String          @id @default(cuid())
   type      CommentVoteType
   userId    String
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   commentId String
-  comment   RapComment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  comment   RapComment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
 
   @@unique([userId, commentId])
 }
