@@ -1,6 +1,6 @@
 import React from 'react'
 import { api } from 'src/utils/api'
-import { Box, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { Box, Stack, Tab, Tabs, useTheme } from '@mui/material';
 import FeedRapCard from './FeedRapCard';
 import FeedBar from './FeedBar';
 import { RegionFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
@@ -77,24 +77,16 @@ function ExplorePage() {
           }
         />
       )}
-      {tab === 0 && (
-        raps?.map((rap) => {
-          return (
-            <FeedRapCard
-              key={rap.id}
-              rap={rap}
-              sx={{
-                width: '100%',
-              }}
-            />
-          )
-        })
-      )}
-      {tab === 1 && (
-        <Typography>
-          Coming Soon
-        </Typography>
-      )}
+      {raps?.map((rap) =>
+        <FeedRapCard
+          key={rap.id}
+          rap={rap}
+          sx={{
+            width: '100%',
+          }}
+        />
+      )
+      }
     </Stack>
   )
 }

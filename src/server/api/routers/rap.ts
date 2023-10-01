@@ -151,7 +151,7 @@ export const rapRouter = createTRPCRouter({
 
       if (regionFilter !== 'ALL') {
         where = {
-          User: {
+          user: {
             region: regionFilter
           }
         }
