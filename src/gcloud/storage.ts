@@ -3,7 +3,7 @@ import { env } from 'src/env.mjs';
 
 export const gcloudStorage = new Storage({
   credentials: {
-    "private_key": env.GCLOUD_PRIVATE_KEY,
+    "private_key": env.GCLOUD_PRIVATE_KEY.replace(/\\n/g, '\n'),
     "client_email": env.GCLOUD_CLIENT_EMAIL,
     "client_id": env.GCLOUD_CLIENT_ID,
   }
