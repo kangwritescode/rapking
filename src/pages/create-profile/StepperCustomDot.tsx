@@ -46,6 +46,4 @@ const StepperCustomDot = (props: StepIconProps) => {
   }
 }
 
-export default StepperCustomDot
-
-StepperCustomDot.getLayout = false;
+export default StepperCustomDot;
