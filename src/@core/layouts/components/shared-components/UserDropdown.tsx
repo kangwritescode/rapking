@@ -21,7 +21,7 @@ import { Icon } from '@iconify/react'
 import { Settings } from 'src/@core/context/settingsContext'
 import { signOut } from 'next-auth/react'
 import { api } from 'src/utils/api'
-import { CDN_URL } from 'src/shared/constants'
+import { BUCKET_URL } from 'src/shared/constants'
 
 interface Props {
   settings: Settings
@@ -100,7 +100,7 @@ const UserDropdown = (props: Props) => {
           onClick={handleDropdownOpen}
           sx={{ width: 40, height: 40 }}
           {...(userData?.profileImageUrl && {
-            src: `${CDN_URL}/${userData.profileImageUrl}`,
+            src: `${BUCKET_URL}/${userData.profileImageUrl}`,
           })}
         />
       </Badge>
@@ -125,7 +125,7 @@ const UserDropdown = (props: Props) => {
               <Avatar
                 alt='Profile avatar */'
                 {...(userData?.profileImageUrl && {
-                  src: `${CDN_URL}/${userData.profileImageUrl}`,
+                  src: `${BUCKET_URL}/${userData.profileImageUrl}`,
                 })}
                 sx={{ width: '2.5rem', height: '2.5rem' }} />
             </Badge>

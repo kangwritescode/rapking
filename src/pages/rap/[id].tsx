@@ -1,7 +1,7 @@
 import { Avatar, CardMedia, Divider, Link, Stack, Typography, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import React from 'react'
-import { CDN_URL } from 'src/shared/constants';
+import { BUCKET_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
 import TipTapContent from './TipTapContent';
 import RapBar from './RapBar';
@@ -27,7 +27,7 @@ function RapPage() {
         <CardMedia
           component='img'
           alt='profile-header'
-          image={rapData?.coverArtUrl ? `${CDN_URL}/${rapData?.coverArtUrl}` : `${CDN_URL}/default/cover-art.jpg`}
+          image={rapData?.coverArtUrl ? `${BUCKET_URL}/${rapData?.coverArtUrl}` : `${BUCKET_URL}/default/cover-art.jpg`}
           sx={{
             marginBottom: 10,
             height: {
@@ -44,7 +44,7 @@ function RapPage() {
           <Stack direction='row'>
             <Avatar
               {...(userData?.profileImageUrl && {
-                src: `${CDN_URL}/${userData.profileImageUrl}`,
+                src: `${BUCKET_URL}/${userData.profileImageUrl}`,
               })}
               alt='profile-picture'
               onClick={() => router.push(`/u/${userData?.username}/raps`)}

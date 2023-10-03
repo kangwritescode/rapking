@@ -4,7 +4,7 @@ import { Rap } from '@prisma/client'
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React from 'react'
-import { CDN_URL } from 'src/shared/constants';
+import { BUCKET_URL } from 'src/shared/constants';
 
 interface ProfileRapCardProps {
   rap: Rap;
@@ -36,8 +36,8 @@ function ProfileRapCard({ rap, sx, onClick }: ProfileRapCardProps) {
         alt='rap-cover-art'
         image={
           coverArtUrl ?
-            `${CDN_URL}/${coverArtUrl}` :
-            `${CDN_URL}/default/cover-art.jpg`
+            `${BUCKET_URL}/${coverArtUrl}` :
+            `${BUCKET_URL}/default/cover-art.jpg`
         }
         sx={{
           height: 100,

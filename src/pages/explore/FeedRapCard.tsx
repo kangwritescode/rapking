@@ -1,7 +1,7 @@
 import { Avatar, Box, CardMedia, Divider, Stack, SxProps, Typography, useTheme } from '@mui/material';
 import { Rap, User } from '@prisma/client'
 import React from 'react'
-import { CDN_URL } from 'src/shared/constants';
+import { BUCKET_URL } from 'src/shared/constants';
 import { convert } from 'html-to-text';
 import { useRouter } from 'next/router';
 
@@ -33,7 +33,7 @@ function FeedRapCard({ rap, sx }: FeedRapCardProps) {
         <Avatar
           onClick={navigateToProfile}
           {...(userData?.profileImageUrl && {
-            src: `${CDN_URL}/${userData.profileImageUrl}`,
+            src: `${BUCKET_URL}/${userData.profileImageUrl}`,
           })}
           alt='profile-picture'
           sx={{
@@ -69,8 +69,8 @@ function FeedRapCard({ rap, sx }: FeedRapCardProps) {
           onClick={navigateToRap}
           image={
             coverArtUrl ?
-              `${CDN_URL}/${coverArtUrl}` :
-              `${CDN_URL}/default/cover-art.jpg`
+              `${BUCKET_URL}/${coverArtUrl}` :
+              `${BUCKET_URL}/default/cover-art.jpg`
           }
           sx={{
             height: 100,

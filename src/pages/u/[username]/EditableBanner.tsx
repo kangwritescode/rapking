@@ -4,7 +4,7 @@ import { Box, CardMedia, CircularProgress, IconButton } from '@mui/material'
 import { User } from '@prisma/client';
 import React, { useRef, useState } from 'react'
 
-import { CDN_URL } from 'src/shared/constants';
+import { BUCKET_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
 import { useGCloudUpload } from 'src/shared/useGCloudUpload';
 import { useGCloudDelete } from 'src/shared/useGCloudDelete';
@@ -103,8 +103,8 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
           alt='profile-header'
           image={
             bannerUrl ?
-              `${CDN_URL}/${bannerUrl}` :
-              `${CDN_URL}/default/profile-banner.jpg`
+              `${BUCKET_URL}/${bannerUrl}` :
+              `${BUCKET_URL}/default/profile-banner.jpg`
           }
           sx={{
             height: { xs: 150, md: 250 }

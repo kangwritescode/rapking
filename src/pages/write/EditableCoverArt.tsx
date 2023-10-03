@@ -1,7 +1,7 @@
 import { Box, Button, CardMedia, CircularProgress } from '@mui/material'
 import { Rap } from '@prisma/client';
 import React, { useRef, useState } from 'react'
-import { CDN_URL } from 'src/shared/constants'
+import { BUCKET_URL } from 'src/shared/constants'
 import { useGCloudDelete } from 'src/shared/useGCloudDelete';
 import { useGCloudUpload } from 'src/shared/useGCloudUpload';
 import { api } from 'src/utils/api';
@@ -102,8 +102,8 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
             alt='rap-cover-art'
             image={
               coverArtUrl ?
-                `${CDN_URL}/${coverArtUrl}` :
-                `${CDN_URL}/default/cover-art.jpg`
+                `${BUCKET_URL}/${coverArtUrl}` :
+                `${BUCKET_URL}/default/cover-art.jpg`
             }
             sx={(theme) => ({
               border: `1px solid ${theme.palette.grey[700]}`,

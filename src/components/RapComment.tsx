@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Stack, Avatar, Typography, SxProps, IconButton } from '@mui/material'
 import TipTapContent from 'src/pages/rap/TipTapContent'
 import { RapComment, User } from '@prisma/client'
-import { CDN_URL } from 'src/shared/constants';
+import { BUCKET_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
 import { Icon } from '@iconify/react';
 
@@ -76,7 +76,7 @@ function RapComment({ comment, sx }: RapCommentProps) {
       <Stack direction="row">
         <Avatar
           {...(user?.profileImageUrl && {
-            src: `${CDN_URL}/${user.profileImageUrl}`,
+            src: `${BUCKET_URL}/${user.profileImageUrl}`,
           })}
           sx={{
             mr: 3,

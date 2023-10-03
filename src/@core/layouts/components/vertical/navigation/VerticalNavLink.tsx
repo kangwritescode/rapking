@@ -28,7 +28,7 @@ import Translations from 'src/layouts/components/Translations'
 // ** Util Import
 import { handleURLQueries } from 'src/@core/layouts/utils'
 import { api } from 'src/utils/api'
-import { CDN_URL } from 'src/shared/constants'
+import { BUCKET_URL } from 'src/shared/constants'
 import { Avatar } from '@mui/material'
 
 interface Props {
@@ -153,7 +153,7 @@ const VerticalNavLink = ({
               width: 26,
               height: 26,
             }}
-            {...(userData?.profileImageUrl ? { src: `${CDN_URL}/${userData?.profileImageUrl}` } : {})}
+            {...(userData?.profileImageUrl ? { src: `${BUCKET_URL}/${userData?.profileImageUrl}` } : {})}
             />) : <UserIcon icon={icon as string} />}
           </ListItemIcon>
         )}

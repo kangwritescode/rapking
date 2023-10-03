@@ -1,6 +1,6 @@
 import { Region } from "@prisma/client";
 
-export const CDN_URL = 'https://34.36.178.165:443';
+export const BUCKET_URL = 'https://storage.googleapis.com/rapking';
 
 interface StateToRegionMap {
   [stateCode: string]: Region;

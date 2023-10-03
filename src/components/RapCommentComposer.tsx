@@ -2,7 +2,7 @@ import { Avatar, Box, useTheme } from '@mui/material'
 import React from 'react'
 import RapCommentTextEditor from './RapCommentTextEditor'
 import { api } from 'src/utils/api';
-import { CDN_URL } from 'src/shared/constants';
+import { BUCKET_URL } from 'src/shared/constants';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useEditor } from '@tiptap/react';
@@ -92,7 +92,7 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
             marginRight: theme.spacing(2),
           }}
           {...(userData?.profileImageUrl && {
-            src: `${CDN_URL}/${userData.profileImageUrl}`,
+            src: `${BUCKET_URL}/${userData.profileImageUrl}`,
           })}
         />
         {userData?.username}
