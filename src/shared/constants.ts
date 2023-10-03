@@ -1,6 +1,6 @@
 import { Region } from "@prisma/client";
 
-export const CDN_URL = 'http://34.36.116.199';
+export const CDN_URL = 'https://34.36.178.165:443';
 
 interface StateToRegionMap {
   [stateCode: string]: Region;
