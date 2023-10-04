@@ -26,7 +26,7 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
 
   // state
   const userMutation = api.user.updateUser.useMutation();
-  const [usernameIsAvailable, setUsernameIsAvailable] = React.useState<boolean | undefined>(undefined);
+  const [usernameIsAvailable, setUsernameIsAvailable] = useState<boolean | undefined>(undefined);
 
   const updateUsername = async (updatedUsername: string) => {
     try {

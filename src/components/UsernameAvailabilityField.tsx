@@ -23,8 +23,8 @@ function UsernameAvailabilityField({
   sx
 }: UsernameAvailabilityFieldProps) {
 
-  const [value, setValue] = React.useState<string>(initialUsername || '');
-  const [usernameIsAvailable, setUsernameIsAvailable] = React.useState<boolean | undefined>(undefined);
+  const [value, setValue] = useState<string>(initialUsername || '');
+  const [usernameIsAvailable, setUsernameIsAvailable] = useState<boolean | undefined>(undefined);
   const debouncedValue = useDebounce(value, 500);
 
   // queries

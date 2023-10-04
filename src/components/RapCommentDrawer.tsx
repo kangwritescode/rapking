@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Box, Divider, Drawer, IconButton, MenuItem, Select, Typography } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import RapCommentComposer from './RapCommentComposer';
 import { api } from 'src/utils/api';
 import RapComment from './RapComment';
@@ -17,7 +17,7 @@ function RapCommentDrawer({
   rapId
 }: RapCommentDrawerProps) {
 
-  const [sortBy, setSortBy] = React.useState<'POPULAR' | 'RECENT'>('POPULAR');
+  const [sortBy, setSortBy] = useState<'POPULAR' | 'RECENT'>('POPULAR');
 
   const { data: rapComments } = api.rapComment.getRapComments.useQuery({
     rapId: rapId as string,

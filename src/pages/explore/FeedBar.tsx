@@ -17,9 +17,9 @@ interface FeedBarProps {
 
 function FeedBar({ sx, onSortAndFilterChange }: FeedBarProps) {
 
-  const [sortBy, setSortBy] = React.useState<SortByValue>('NEWEST');
-  const [regionFilter, setRegionFilter] = React.useState<RegionFilter>('ALL');
-  const [timeFilter, setTimeFilter] = React.useState<TimeFilter>('ALL');
+  const [sortBy, setSortBy] = useState<SortByValue>('NEWEST');
+  const [regionFilter, setRegionFilter] = useState<RegionFilter>('ALL');
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>('ALL');
 
   useEffect(() => {
     if (onSortAndFilterChange) {

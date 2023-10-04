@@ -1,5 +1,5 @@
 import { Box, IconButton, useTheme } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Icon } from '@iconify/react'
 import { Rap, User } from '@prisma/client'
 import { api } from 'src/utils/api'
@@ -16,7 +16,9 @@ function RapBar({ rapData }: RapBarProps) {
   const theme = useTheme();
 
   // State
-  const [commentDrawerIsOpen, setCommentDrawerIsOpen] = React.useState<boolean>(false);
+  const [commentDrawerIsOpen, setCommentDrawerIsOpen] = useState<boolean>(false);
+  const [currentUserLikedRap, setCurrentUserLikedRap] = useState<boolean>(false);
+  const [rapLikesCount, setRapLikesCount] = useState<number>(0);
 
   // Queries
   const { data: currentUser } = api.user.getCurrentUser.useQuery();
@@ -34,15 +36,23 @@ function RapBar({ rapData }: RapBarProps) {
   // Invalidaters
   const { invalidate: invalidateRapLikes } = api.useContext().vote.getRapLikes;
 
-  // Like Logic
+  // Effects
+  useEffect(() => {
+    if (currentUser && rapLikes) {
+      setCurrentUserLikedRap(rapLikes.some(like => like.userId === currentUser.id))
+    }
+  }, [currentUser, rapLikes])
 
-  let currentUserLikedRap = false;
-  if (currentUser) {
-    currentUserLikedRap = !!rapLikes?.find(vote => vote.userId === currentUser.id && vote.type === 'LIKE');
-  }
+  useEffect(() => {
+    if (rapLikes) {
+      setRapLikesCount(rapLikes.length)
+    }
+  }, [rapLikes])
 
   const likeRap = () => {
     if (currentUser && rapData && currentUser) {
+      setRapLikesCount(rapLikesCount + 1);
+      setCurrentUserLikedRap(true)
       createVote({
         rapId: rapData?.id as string,
         userId: currentUser.id,
@@ -61,6 +71,8 @@ function RapBar({ rapData }: RapBarProps) {
 
   const unlikeRap = () => {
     if (currentUser && rapData && currentUser) {
+      setRapLikesCount(rapLikesCount - 1);
+      setCurrentUserLikedRap(false)
       deleteVote({
         rapId: rapData?.id as string,
         userId: currentUser.id,
@@ -98,7 +110,7 @@ function RapBar({ rapData }: RapBarProps) {
               icon='mdi:fire'
             />
           </IconButton>
-          {rapLikes?.length || 0}
+          {rapLikesCount || 0}
         </Box>
         <Box sx={{
           ml: theme.spacing(5),

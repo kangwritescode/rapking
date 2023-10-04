@@ -6,7 +6,7 @@ import { api } from 'src/utils/api';
 
 function SettingsPage() {
   const theme = useTheme();
-  const [modalIsOopen, setModalIsOpen] = React.useState(false);
+  const [modalIsOopen, setModalIsOpen] = useState(false);
 
   const { mutate: deleteUser } = api.user.deleteUser.useMutation();
   const router = useRouter();

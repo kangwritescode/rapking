@@ -24,8 +24,8 @@ interface FormValues {
 
 function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
   // state
-  const [inputValue, setInputValue] = React.useState('');
-  const [options, setOptions] = React.useState<Option[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const [options, setOptions] = useState<Option[]>([]);
 
   // queries
   const { data: locationsData } = api.geoDB.getLocationsByZip.useQuery({ zipCode: inputValue }, { enabled: inputValue.length === 5 })

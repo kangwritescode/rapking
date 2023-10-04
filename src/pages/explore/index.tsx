@@ -10,16 +10,16 @@ function ExplorePage() {
   const theme = useTheme();
 
   // Tabs
-  const [tab, setTab] = React.useState(0);
+  const [tab, setTab] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
   };
 
   // Feed
-  const [sortByValue, setSortByValue] = React.useState<SortByValue>('NEWEST');
-  const [regionFilter, setRegionFilter] = React.useState<RegionFilter>('ALL');
-  const [timeFilter, setTimeFilter] = React.useState<TimeFilter>('ALL');
+  const [sortByValue, setSortByValue] = useState<SortByValue>('NEWEST');
+  const [regionFilter, setRegionFilter] = useState<RegionFilter>('ALL');
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>('ALL');
   const followingFilter = tab === 1;
 
   const { data: raps } = api.rap.queryRaps.useQuery({

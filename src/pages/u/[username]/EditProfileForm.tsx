@@ -36,7 +36,7 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
 
   const theme = useTheme();
 
-  const [usernameIsAvailable, setUsernameIsAvailable] = React.useState<boolean | undefined>(undefined);
+  const [usernameIsAvailable, setUsernameIsAvailable] = useState<boolean | undefined>(undefined);
 
   const {
     control,
