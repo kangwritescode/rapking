@@ -30,8 +30,8 @@ function RapBar({ rapData }: RapBarProps) {
   });
 
   // Mutations
-  const { mutate: createVote } = api.vote.createRapVote.useMutation();
-  const { mutate: deleteVote } = api.vote.deleteRapVoteByUser.useMutation();
+  const { mutate: createVote, isLoading: createVoteIsLoading } = api.vote.createRapVote.useMutation();
+  const { mutate: deleteVote, isLoading: deleteVoteIsLoading} = api.vote.deleteRapVoteByUser.useMutation();
 
   // Invalidaters
   const { invalidate: invalidateRapLikes } = api.useContext().vote.getRapLikes;
@@ -101,9 +101,10 @@ function RapBar({ rapData }: RapBarProps) {
           alignItems="center">
           <IconButton
             sx={{
-              paddingRight: 1
+              paddingRight: 1,
             }}
             onClick={currentUserLikedRap ? unlikeRap : likeRap}
+            disabled={createVoteIsLoading || deleteVoteIsLoading}
           >
             <Icon
               {...(currentUserLikedRap ? { color: 'orange' } : {})}

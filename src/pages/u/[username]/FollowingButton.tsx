@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react'
 import { Box, Button, Menu, MenuItem, Typography } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 
 interface FollowingButtonProps {
   unfollowClickHandler?: () => void;

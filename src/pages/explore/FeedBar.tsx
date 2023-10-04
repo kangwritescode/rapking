@@ -1,5 +1,5 @@
 import { Box, MenuItem, Select, SxProps, Typography } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { RegionFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 
 interface FeedBarProps {
