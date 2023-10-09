@@ -66,7 +66,7 @@ export default function DataGridDemo({ sx }: DataGridDemoProps) {
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 5,
+              pageSize: 20,
             },
           },
         }}
