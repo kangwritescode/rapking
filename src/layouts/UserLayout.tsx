@@ -52,8 +52,8 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       icon: 'ph:note-pencil-bold',
     },
     {
-      title: 'Standings',
-      path: '/standings',
+      title: 'Leaderboard',
+      path: '/leaderboard',
       icon: 'ph:crown-bold',
 
     },

@@ -7,7 +7,8 @@ import { socialLinkRouter } from "./routers/socialLink";
 import { userFollows } from "./routers/userFollows";
 import { vote } from "./routers/vote";
 import { rapComment } from "./routers/rapComment";
-import { commentVote } from "./routers/commentVote";
+import { commentVoteRouter } from "./routers/commentVote";
+import { leaderboardRouter } from "./routers/leaderboard";
 
 /**
  * This is the primary router for your server.
@@ -23,7 +24,8 @@ export const appRouter = createTRPCRouter({
   userFollows: userFollows,
   vote: vote,
   rapComment: rapComment,
-  commentVote: commentVote
+  commentVote: commentVoteRouter,
+  leaderboard: leaderboardRouter
 });
 
 // export type definition of API

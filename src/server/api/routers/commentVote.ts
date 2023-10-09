@@ -7,7 +7,7 @@ import {
 } from "src/server/api/trpc";
 import { CommentVoteType } from "@prisma/client";
 
-export const commentVote = createTRPCRouter({
+export const commentVoteRouter = createTRPCRouter({
   getCommentLikes: publicProcedure
     .input(z.object({
       commentId: z.string(),
