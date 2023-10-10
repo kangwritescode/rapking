@@ -37,7 +37,7 @@ async function main() {
             }
           },
           status: 'PUBLISHED',
-          dateCreated: faker.date.recent(60)
+          dateCreated: faker.date.past()
         }
       });
 
