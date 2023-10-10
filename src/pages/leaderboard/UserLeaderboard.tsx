@@ -85,6 +85,7 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
   useEffect(() => {
     refetch()
       .then(({ data }) => {
+        console.log({data});
         if (data) {
           const newRows = data.map(({ userData, points }) => ({
             id: userData?.id || '',
@@ -98,8 +99,6 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
         }
       });
   }, [page, refetch])
-
-  console.log(rowsData);
 
   return (
     <Box sx={{
