@@ -2,11 +2,11 @@ import { z } from "zod";
 
 import {
   createTRPCRouter,
-  protectedProcedure,
+  publicProcedure,
 } from "src/server/api/trpc";
 
 export const leaderboardRouter = createTRPCRouter({
-  getTopUsersByPoints: protectedProcedure
+  getTopUsersByPoints: publicProcedure
     .input(z.object({
       limit: z.number().default(20),
       page: z.number().default(0),
