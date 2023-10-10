@@ -8,7 +8,7 @@ import {
 export const leaderboardRouter = createTRPCRouter({
   getTopUsersByPoints: protectedProcedure
     .input(z.object({
-      limit: z.number().default(10),
+      limit: z.number().default(20),
       page: z.number().default(0),
     }))
     .query(async ({ input, ctx }) => {
