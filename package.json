@@ -9,7 +9,8 @@
         "export": "next export",
         "lint": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
         "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
-        "build:icons": "tsc -b src/iconify-bundle && node src/iconify-bundle/bundle-icons-react.js"
+        "build:icons": "tsc -b src/iconify-bundle && node src/iconify-bundle/bundle-icons-react.js",
+        "seed": "ts-node prisma/seed.ts"
     },
     "dependencies": {
         "@emotion/cache": "11.10.5",
@@ -95,6 +96,7 @@
         "zod": "^3.21.4"
     },
     "devDependencies": {
+        "@faker-js/faker": "^8.1.0",
         "@iconify/iconify": "3.1.0",
         "@iconify/json": "2.2.28",
         "@iconify/tools": "2.2.6",
@@ -104,7 +106,7 @@
         "@types/draft-js": "0.11.9",
         "@types/jsonwebtoken": "8.5.9",
         "@types/next": "^9.0.0",
-        "@types/node": "18.14.2",
+        "@types/node": "^20.8.4",
         "@types/nprogress": "0.2.0",
         "@types/payment": "2.1.4",
         "@types/prismjs": "1.26.0",
@@ -113,8 +115,8 @@
         "@types/react-datepicker": "4.8.0",
         "@types/react-draft-wysiwyg": "1.13.4",
         "@types/react-redux": "7.1.24",
-        "@typescript-eslint/eslint-plugin": "5.53.0",
-        "@typescript-eslint/parser": "5.53.0",
+        "@typescript-eslint/eslint-plugin": "^6.7.5",
+        "@typescript-eslint/parser": "^6.7.5",
         "eslint": "8.35.0",
         "eslint-config-next": "13.2.1",
         "eslint-config-prettier": "8.5.0",
@@ -123,7 +125,8 @@
         "eslint-plugin-import": "2.27.5",
         "prettier": "2.8.4",
         "prisma": "^4.12.0",
-        "typescript": "4.9.5"
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2"
     },
     "resolutions": {
         "minipass": "4.2.4",
@@ -140,5 +143,8 @@
         "react-credit-cards": {
             "react": "$react"
         }
+    },
+    "prisma": {
+        "seed": "ts-node prisma/seed.ts"
     }
 }
