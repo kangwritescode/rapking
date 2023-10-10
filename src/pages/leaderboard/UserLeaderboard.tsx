@@ -99,6 +99,8 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
       });
   }, [page, refetch])
 
+  console.log(rowsData);
+
   return (
     <Box sx={{
       '& .MuiDataGrid-columnHeaders': {
