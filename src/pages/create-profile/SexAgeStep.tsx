@@ -1,12 +1,12 @@
 import { Button, StepContent } from '@mui/material'
-import * as yup from 'yup'
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { api } from 'src/utils/api'
 import dayjs, { Dayjs } from 'dayjs'
 import DateofBirthField from 'src/components/DateofBirthField'
 import SexField from 'src/components/SexField'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 export type PersonalStepProps = {
   handleBack: () => void,
@@ -20,14 +20,19 @@ export type SexAgeForm = {
   dob: string | Dayjs | null
 }
 
-const formSchema = yup.object().shape({
-  sex: yup
-    .string()
-    .required(),
-  dob: yup
-    .string()
-    .required()
-})
+const formSchema = z.object({
+  sex: z.string(),
+  dob: z.instanceof(dayjs as any)
+    .refine(value => {
+      const dateOfBirth = value;
+      const now = dayjs(new Date());
+      const diffInYears = now.diff(dateOfBirth, 'year');
+
+      return diffInYears > 10 && diffInYears < 90;
+    }, {
+      message: 'Age should be at least 10 years old and less than 90 years old'
+    })
+});
 
 function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
 
@@ -46,10 +51,9 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
     formState: { errors: errors, isValid },
   } = useForm({
     defaultValues: initialValues,
-    resolver: yupResolver(formSchema)
+    resolver: zodResolver(formSchema),
+    mode: 'all',
   })
-
-  console.log(errors);
 
   const profileMutation = api.user.updateUser.useMutation();
 

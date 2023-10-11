@@ -44,7 +44,6 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
     }
   }
 
-  // form state
   const {
     control: usernameControl,
     handleSubmit: handleUsernameSubmit,
@@ -61,7 +60,7 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
             label='Username'
             control={usernameControl}
             initialUsername={userData?.username}
-            errorMessage={errors.username?.message}
+            errorMessage={errors.username?.message as string}
             availabilityChangedHandler={(isAvailable: boolean | undefined) => setUsernameIsAvailable(isAvailable)}
           />
         <div className='button-wrapper'>
