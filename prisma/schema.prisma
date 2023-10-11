@@ -59,6 +59,7 @@ model User {
   bannerUrl       String?
   profileImageUrl String?
   bio             String?
+  points          Int           @default(0)
   followed        UserFollows[] @relation("FollowedRelation")
   followers       UserFollows[] @relation("FollowerRelation")
   raps            Rap[]
@@ -89,6 +90,7 @@ model Rap {
   coverArtUrl String?
   status      RapStatus    @default(DRAFT)
   dateCreated DateTime     @default(now())
+  likesCount  Int          @default(0)
   votes       RapVote[]
   comments    RapComment[]
 }

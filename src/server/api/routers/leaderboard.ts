@@ -8,47 +8,49 @@ import {
 export const leaderboardRouter = createTRPCRouter({
   getTopUsersByPoints: publicProcedure
     .input(z.object({
-      limit: z.number().default(20),
-      page: z.number().default(0),
+      page: z.number().default(1),
     }))
     .query(async ({ input, ctx }) => {
-      const { limit, page } = input;
+      const { page } = input;
 
-        const skipAmount = page * limit;
+      const pageSize = 20;
+      const skipAmount = page * pageSize;
 
-        const aggregatedData = await ctx.prisma.rapVote.groupBy({
-          by: ['userId'],
-          _count: {
-            _all: true
-          },
-          where: {
-            type: 'LIKE'
-          },
-          orderBy: {
-            _count: {
-              type: 'desc'
-            }
-          },
-          skip: skipAmount,
-          take: limit
-        });
-
-        const userIds = aggregatedData.map(data => data.userId);
-
-        const users = await ctx.prisma.user.findMany({
-          where: {
-            id: {
-              in: userIds
-            }
-          },
-        });
-
-        const result = aggregatedData.map(data => ({
-          userData: users.find(user => user.id === data.userId),
-          points: data._count._all
-        }));
-
-        return result
+      const aggregatedData = await ctx.prisma.rap.groupBy({
+        by: ['userId'],
+        _sum: {
+          likesCount: true,
+        },
+        orderBy: {
+          _sum: {
+            likesCount: 'desc',
+          }
+        },
+        skip: skipAmount,
+        take: pageSize,
       })
+
+      const userIds = aggregatedData.map((data) => data.userId);
+
+      const users = await ctx.prisma.user.findMany({
+        where: {
+          id: {
+            in: userIds,
+          }
+        }
+      });
+
+      const usersAndTheirPoints = aggregatedData.map((data) => {
+        const user = users.find((user) => user.id === data.userId);
+
+        return {
+          user,
+          points: data._sum.likesCount,
+        }
+      });
+
+
+      return usersAndTheirPoints;
+    })
 });
 

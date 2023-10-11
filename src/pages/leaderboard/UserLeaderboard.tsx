@@ -63,7 +63,7 @@ interface DataGridDemoProps {
 export default function UserLeaderboard({ sx }: DataGridDemoProps) {
 
   // State
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [rowsData, setRowsData] = useState<RowData[]>([]);
 
   // Queries
@@ -85,14 +85,14 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
   useEffect(() => {
     refetch()
       .then(({ data }) => {
-        console.log({data});
+        console.log({data, page});
         if (data) {
-          const newRows = data.map(({ userData, points }) => ({
-            id: userData?.id || '',
-            username: userData?.username || '',
-            location: userData?.city || '',
-            region: userData?.region || 'WEST',
-            sex: userData?.sex || '',
+          const newRows = data.map(({ user, points }) => ({
+            id: user?.id || '',
+            username: user?.username || '',
+            location: user?.city || '',
+            region: user?.region || 'WEST',
+            sex: user?.sex || '',
             points: points || 0,
           }));
           setRowsData((prev) => [...prev, ...newRows])

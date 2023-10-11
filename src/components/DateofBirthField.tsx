@@ -1,5 +1,6 @@
 import { FormHelperText, FormLabel, Stack, SxProps } from '@mui/material'
-import { DateField } from '@mui/x-date-pickers'
+import { DatePicker } from '@mui/x-date-pickers'
+import dayjs from 'dayjs'
 import React from 'react'
 import { Control, Controller } from 'react-hook-form'
 
@@ -24,13 +25,12 @@ function DateofBirthField({
         render={({ field: { value, onChange } }) => (
           <Stack marginBottom={3}>
             {label && <FormLabel sx={{ marginBottom: 1 }}>{label}</FormLabel>}
-            <DateField
+            <DatePicker
               format="MM-DD-YYYY"
-              minDate={new Date('1900-01-01')}
-              maxDate={new Date()}
+              minDate={dayjs(new Date('1900-01-01'))}
+              maxDate={dayjs(new Date())}
               value={value}
               onChange={onChange}
-              size='small'
             />
           </Stack>
         )}

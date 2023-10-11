@@ -30,8 +30,8 @@ function RapBar({ rapData }: RapBarProps) {
   });
 
   // Mutations
-  const { mutate: createVote, isLoading: createVoteIsLoading } = api.vote.createRapVote.useMutation();
-  const { mutate: deleteVote, isLoading: deleteVoteIsLoading} = api.vote.deleteRapVoteByUser.useMutation();
+  const { mutate: createLike, isLoading: createLikeIsLoading } = api.vote.createLike.useMutation();
+  const { mutate: deleteLike, isLoading: deleteLikeIsLoading} = api.vote.deleteLike.useMutation();
 
   // Invalidaters
   const { invalidate: invalidateRapLikes } = api.useContext().vote.getRapLikes;
@@ -44,19 +44,18 @@ function RapBar({ rapData }: RapBarProps) {
   }, [currentUser, rapLikes])
 
   useEffect(() => {
-    if (rapLikes) {
-      setRapLikesCount(rapLikes.length)
+    if (rapData?.likesCount) {
+      setRapLikesCount(rapData?.likesCount || 0);
     }
-  }, [rapLikes])
+  }, [rapData?.likesCount])
 
   const likeRap = () => {
     if (currentUser && rapData && currentUser) {
       setRapLikesCount(rapLikesCount + 1);
       setCurrentUserLikedRap(true)
-      createVote({
+      createLike({
         rapId: rapData?.id as string,
         userId: currentUser.id,
-        type: 'LIKE'
       }, {
         onSuccess: () => {
           invalidateRapLikes(
@@ -73,7 +72,7 @@ function RapBar({ rapData }: RapBarProps) {
     if (currentUser && rapData && currentUser) {
       setRapLikesCount(rapLikesCount - 1);
       setCurrentUserLikedRap(false)
-      deleteVote({
+      deleteLike({
         rapId: rapData?.id as string,
         userId: currentUser.id,
       }, {
@@ -104,7 +103,7 @@ function RapBar({ rapData }: RapBarProps) {
               paddingRight: 1,
             }}
             onClick={currentUserLikedRap ? unlikeRap : likeRap}
-            disabled={createVoteIsLoading || deleteVoteIsLoading}
+            disabled={createLikeIsLoading || deleteLikeIsLoading}
           >
             <Icon
               {...(currentUserLikedRap ? { color: 'orange' } : {})}

@@ -17,7 +17,7 @@ export type DateType = Date | null | undefined
 
 export type SexAgeForm = {
   sex: string,
-  dob: string | Dayjs
+  dob: string | Dayjs | null
 }
 
 const formSchema = yup.object().shape({
@@ -45,17 +45,19 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
   // initialValues
   const initialValues: SexAgeForm = {
     sex: profileData?.sex || '',
-    dob: profileData && profileData.dob ? dayjs(profileData.dob.toUTCString()) : ''
+    dob: profileData && profileData.dob ? dayjs(profileData.dob.toUTCString()) : null
   }
 
   const {
-    control: control,
+    control,
     handleSubmit,
     formState: { errors: errors, isValid },
   } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(formSchema)
   })
+
+  console.log(errors);
 
   const profileMutation = api.user.updateUser.useMutation();
 

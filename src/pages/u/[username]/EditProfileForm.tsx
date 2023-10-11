@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Typography, useTheme } from '@mui/material';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -17,7 +17,16 @@ const formSchema = z.object({
     .min(3)
     .max(20)
     .regex(/^(.*[a-zA-Z]){3}/, 'Must include at least three letters'),
-  dob: z.instanceof(dayjs as unknown as typeof Dayjs)
+  dob: z.instanceof(dayjs as any)
+    .refine(value => {
+      const dateOfBirth = value;
+      const now = dayjs(new Date());
+      const diffInYears = now.diff(dateOfBirth, 'year');
+
+      return diffInYears > 10 && diffInYears < 90;
+    }, {
+      message: 'Age should be at least 10 years old and less than 90 years old'
+    })
 });
 
 interface EditProfileFormProps {

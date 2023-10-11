@@ -3,7 +3,21 @@ import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
-async function main() {
+async function clearDatabase() {
+  await prisma.commentVote.deleteMany({});
+  await prisma.rapComment.deleteMany({});
+  await prisma.rapVote.deleteMany({});
+  await prisma.rap.deleteMany({});
+  await prisma.socialLink.deleteMany({});
+  await prisma.userFollows.deleteMany({});
+  await prisma.verificationToken.deleteMany({});
+  await prisma.session.deleteMany({});
+  await prisma.account.deleteMany({});
+  await prisma.user.deleteMany({});
+}
+
+async function seedDatabase() {
+  // For user...
   for (let i = 0; i < 30; i++) {
     const name = faker.person.fullName();
     const email = faker.internet.email(name);
@@ -20,12 +34,13 @@ async function main() {
         dob: faker.date.past(30, new Date('2003-01-01')),
         country: 'United States',
         city: faker.location.city(),
-        state: faker.location.state({ abbreviated: true }) ,
+        state: faker.location.state({ abbreviated: true }),
         region: faker.helpers.arrayElement(['ALL', 'WEST', 'MIDWEST', 'SOUTH', 'EAST']),
         createdAt: faker.date.past(),
       }
     });
 
+    // For rap...
     for (let j = 0; j < 3; j++) {
       const rap = await prisma.rap.create({
         data: {
@@ -41,13 +56,13 @@ async function main() {
         }
       });
 
+      // For like...
       const numberOfLikes = faker.number.int({ min: 0, max: 30 });
       for (let k = 0; k < numberOfLikes; k++) {
         const randomUserId = faker.helpers.arrayElement(
           (await prisma.user.findMany()).map((user) => user.id)
         );
 
-        // Check if the vote already exists
         const existingVote = await prisma.rapVote.findUnique({
           where: {
             userId_rapId: {
@@ -73,10 +88,35 @@ async function main() {
               }
             }
           });
+          await prisma.rap.update({
+            where: {
+              id: rap.id
+            },
+            data: {
+              likesCount: {
+                increment: 1
+              }
+            }
+          });
+          await prisma.user.update({
+            where: {
+              id: user.id
+            },
+            data: {
+              points: {
+                increment: 1
+              }
+            }
+          });
         }
       }
     }
   }
+}
+
+async function main() {
+  await clearDatabase();
+  await seedDatabase();
 }
 
 main()
