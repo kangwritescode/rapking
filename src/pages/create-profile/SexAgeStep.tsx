@@ -27,14 +27,6 @@ const formSchema = yup.object().shape({
   dob: yup
     .string()
     .required()
-    .test('invalid-dob', 'Invalid Date of Birth', value => value !== 'Invalid Date')
-    .test('invalid-age', 'Age should be at least 10 years old', function (value) {
-      const dateOfBirth = new Date(value);
-      const now = new Date();
-      const diffInYears = now.getFullYear() - dateOfBirth.getFullYear();
-
-      return diffInYears > 10 && diffInYears < 90;
-    })
 })
 
 function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {

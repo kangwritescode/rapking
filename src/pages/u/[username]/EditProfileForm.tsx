@@ -61,8 +61,11 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
       sex: userData?.sex || '',
       dob: userData && userData.dob ? dayjs(userData.dob.toUTCString()) : ''
     },
-    resolver: zodResolver(formSchema)
+    resolver: zodResolver(formSchema),
+    mode: 'all'
   });
+
+  console.log(errors);
 
   const onSubmit = async ({ username, sex, dob }: {
     username: string;

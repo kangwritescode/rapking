@@ -21,14 +21,16 @@ function DateofBirthField({
       <Controller
         name='dob'
         control={control}
-        rules={{ required: true }}
+        rules={{
+          required: true,
+        }}
         render={({ field: { value, onChange } }) => (
           <Stack marginBottom={3}>
             {label && <FormLabel sx={{ marginBottom: 1 }}>{label}</FormLabel>}
             <DatePicker
               format="MM-DD-YYYY"
               minDate={dayjs(new Date('1900-01-01'))}
-              maxDate={dayjs(new Date())}
+              maxDate={dayjs().subtract(8, 'year')}
               value={value}
               onChange={onChange}
             />
