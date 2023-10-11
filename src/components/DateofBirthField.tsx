@@ -21,9 +21,6 @@ function DateofBirthField({
       <Controller
         name='dob'
         control={control}
-        rules={{
-          required: true,
-        }}
         render={({ field: { value, onChange } }) => (
           <Stack marginBottom={3}>
             {label && <FormLabel sx={{ marginBottom: 1 }}>{label}</FormLabel>}
