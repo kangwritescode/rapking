@@ -25,23 +25,26 @@ function RapBar({ rapData }: RapBarProps) {
   const { data: rapCommentsCount } = api.rapComment.rapCommentsCount.useQuery({ rapId: rapData?.id as string }, {
     enabled: !!rapData?.id
   });
-  const { data: rapLikes } = api.vote.getRapLikes.useQuery({ rapId: rapData?.id as string }, {
-    enabled: !!rapData?.id
-  });
+  const { data: likeExists } = api
+    .rapVote
+    .likeExists
+    .useQuery({
+      rapId: rapData?.id as string,
+      userId: currentUser?.id as string,
+    }, {
+      enabled: !!rapData?.id && !!currentUser?.id,
+    });
 
   // Mutations
-  const { mutate: createLike, isLoading: createLikeIsLoading } = api.vote.createLike.useMutation();
-  const { mutate: deleteLike, isLoading: deleteLikeIsLoading} = api.vote.deleteLike.useMutation();
+  const { mutate: createLike, isLoading: createLikeIsLoading } = api.rapVote.createLike.useMutation();
+  const { mutate: deleteLike, isLoading: deleteLikeIsLoading } = api.rapVote.deleteLike.useMutation();
 
   // Invalidaters
-  const { invalidate: invalidateRapLikes } = api.useContext().vote.getRapLikes;
+  const { invalidate: invalidateRapLikes } = api.useContext().rapVote.likeExists;
 
-  // Effects
   useEffect(() => {
-    if (currentUser && rapLikes) {
-      setCurrentUserLikedRap(rapLikes.some(like => like.userId === currentUser.id))
-    }
-  }, [currentUser, rapLikes])
+    setCurrentUserLikedRap(likeExists || false)
+  }, [likeExists])
 
   useEffect(() => {
     if (rapData?.likesCount) {

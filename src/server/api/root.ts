@@ -5,7 +5,7 @@ import { rapRouter } from "./routers/rap";
 import { gcloudRouter } from "./routers/gcloud";
 import { socialLinkRouter } from "./routers/socialLink";
 import { userFollows } from "./routers/userFollows";
-import { vote } from "./routers/vote";
+import { rapVote } from "./routers/rapVote";
 import { rapComment } from "./routers/rapComment";
 import { commentVoteRouter } from "./routers/commentVote";
 import { leaderboardRouter } from "./routers/leaderboard";
@@ -22,7 +22,7 @@ export const appRouter = createTRPCRouter({
   gcloud: gcloudRouter,
   socialLink: socialLinkRouter,
   userFollows: userFollows,
-  vote: vote,
+  rapVote: rapVote,
   rapComment: rapComment,
   commentVote: commentVoteRouter,
   leaderboard: leaderboardRouter

@@ -8,7 +8,7 @@ import {
 import { RapVoteType } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
-export const vote = createTRPCRouter({
+export const rapVote = createTRPCRouter({
   getRapLikes: publicProcedure
     .input(z.object({
       rapId: z.string(),
@@ -108,5 +108,25 @@ export const vote = createTRPCRouter({
       });
 
       return vote;
+    }),
+  likeExists: publicProcedure
+    .input(z.object({
+      userId: z.string(),
+      rapId: z.string(),
+    }))
+    .query(async ({ input, ctx }) => {
+
+      const { userId, rapId } = input;
+
+      const vote = await ctx.prisma.rapVote.findUnique({
+        where: {
+          userId_rapId: {
+            userId,
+            rapId,
+          },
+        },
+      });
+
+      return !!vote;
     }),
 });
