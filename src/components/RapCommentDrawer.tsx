@@ -34,7 +34,6 @@ function RapCommentDrawer({
       onClose={onCloseHandler}
     >
       <Box
-
         width='24rem'
         maxWidth='24rem'
         px={6}
