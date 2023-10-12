@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { SxProps } from '@mui/material';
-import { Region } from '@prisma/client';
+import { Region, User } from '@prisma/client';
 import { api } from 'src/utils/api';
 import { useInView } from 'react-intersection-observer';
 
@@ -47,6 +47,19 @@ const columns: GridColDef[] = [
   },
 ];
 
+const convertUserDataToRowData = (userData: User) => {
+  const { username, id, city, region, sex, points } = userData;
+
+  return ({
+    id: id || '',
+    username: username || '',
+    location: city || '',
+    region: region || 'WEST',
+    sex: sex || '',
+    points: points || 0,
+  })
+}
+
 interface RowData {
   id: string;
   username: string;
@@ -63,42 +76,38 @@ interface DataGridDemoProps {
 export default function UserLeaderboard({ sx }: DataGridDemoProps) {
 
   // State
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [rowsData, setRowsData] = useState<RowData[]>([]);
 
   // Queries
-  const { refetch } = api
-    .leaderboard
-    .getTopUsersByPoints
-    .useQuery({ page },
-      { enabled: false });
+  const { refetch } = api.leaderboard.getTopUsersByPoints.useQuery({ page },
+    { enabled: false });
 
   // Hooks
   const { ref, inView } = useInView();
 
+  // Handlers
+  const loadNextPage = useCallback(async () => {
+    try {
+      const { data: usersData } = await refetch();
+      if (usersData) {
+        const newRowsData = usersData.map(convertUserDataToRowData);
+        setRowsData((prev) => [...prev, ...newRowsData])
+        setPage((prev) => prev + 1);
+      }
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }, [refetch])
+
+  // Effects
   useEffect(() => {
     if (inView) {
-      setPage((prev) => prev + 1)
+      loadNextPage();
     }
-  }, [inView]);
+  }, [inView, refetch, setPage, loadNextPage]);
 
-  useEffect(() => {
-    refetch()
-      .then(({ data }) => {
-        console.log({data, page});
-        if (data) {
-          const newRows = data.map(({ user, points }) => ({
-            id: user?.id || '',
-            username: user?.username || '',
-            location: user?.city || '',
-            region: user?.region || 'WEST',
-            sex: user?.sex || '',
-            points: points || 0,
-          }));
-          setRowsData((prev) => [...prev, ...newRows])
-        }
-      });
-  }, [page, refetch])
 
   return (
     <Box sx={{

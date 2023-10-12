@@ -8,7 +8,7 @@ import {
 export const leaderboardRouter = createTRPCRouter({
   getTopUsersByPoints: publicProcedure
     .input(z.object({
-      page: z.number().default(1),
+      page: z.number().default(0),
     }))
     .query(async ({ input, ctx }) => {
       const { page } = input;
@@ -16,41 +16,18 @@ export const leaderboardRouter = createTRPCRouter({
       const pageSize = 20;
       const skipAmount = page * pageSize;
 
-      const aggregatedData = await ctx.prisma.rap.groupBy({
-        by: ['userId'],
-        _sum: {
-          likesCount: true,
-        },
-        orderBy: {
-          _sum: {
-            likesCount: 'desc',
-          }
-        },
-        skip: skipAmount,
+      const usersWithMostPoints = await ctx.prisma.user.findMany({
         take: pageSize,
-      })
-
-      const userIds = aggregatedData.map((data) => data.userId);
-
-      const users = await ctx.prisma.user.findMany({
-        where: {
-          id: {
-            in: userIds,
-          }
-        }
+        skip: skipAmount,
+        orderBy: {
+          points: "desc",
+        },
       });
 
-      const usersAndTheirPoints = aggregatedData.map((data) => {
-        const user = users.find((user) => user.id === data.userId);
+      console.log(usersWithMostPoints, "usersWithMostPoints");
 
-        return {
-          user,
-          points: data._sum.likesCount,
-        }
-      });
+      return usersWithMostPoints;
 
-
-      return usersAndTheirPoints;
     })
 });
 

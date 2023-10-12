@@ -18,7 +18,7 @@ async function clearDatabase() {
 
 async function seedDatabase() {
   // For user...
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 100; i++) {
     const name = faker.person.fullName();
     const email = faker.internet.email(name);
     const username = name.toLowerCase().replace(/ /g, '.');
@@ -57,7 +57,7 @@ async function seedDatabase() {
       });
 
       // For like...
-      const numberOfLikes = faker.number.int({ min: 0, max: 30 });
+      const numberOfLikes = faker.number.int({ min: 0, max: 2 });
       for (let k = 0; k < numberOfLikes; k++) {
         const randomUserId = faker.helpers.arrayElement(
           (await prisma.user.findMany()).map((user) => user.id)
