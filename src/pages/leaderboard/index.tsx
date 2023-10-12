@@ -10,11 +10,11 @@ function LeaderboardPage() {
     <VideoBackground videoSrc='/videos/joey.webm' imageSrc='/images/joey.png' />
       <Box
         sx={{
-          margin: 'auto',
-          width: '620px',
+          mx: 'auto',
+          mt: '4rem',
+          width: '630px',
         }}
       >
-
         <UserLeaderboard />
       </Box>
     </>

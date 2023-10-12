@@ -117,7 +117,7 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
   return (
     <Box sx={{
       '& .MuiDataGrid-columnHeaders': {
-        background: 'black',
+        background: 'rgba(0, 0, 0, 0.8)',
       },
       '& .user-leaderboard-header .MuiDataGrid-columnHeaderTitle': {
         fontFamily: 'Impact',
@@ -130,6 +130,12 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
       '& .user-leaderboard-points-cell .MuiDataGrid-cellContent': {
         fontFamily: 'PressStart2P',
         fontSize: '1rem',
+      },
+      '& .MuiDataGrid-row:nth-child(odd)': {
+        background: 'rgba(0, 0, 0, 0.5)',
+      },
+      '& .MuiDataGrid-row:nth-child(even)': {
+        background: 'rgba(20, 12, 0, 0.623)',
       },
       ...sx
     }}>
