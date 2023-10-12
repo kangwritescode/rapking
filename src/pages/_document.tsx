@@ -15,6 +15,10 @@ class CustomDocument extends Document {
             rel='stylesheet'
             href='https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'
           />
+          <link
+            rel='stylesheet'
+            href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+          />
           <link rel='apple-touch-icon' sizes='180x180' href='/images/apple-touch-icon.png' />
           <link rel='shortcut icon' href='/images/crown.svg' />
         </Head>
@@ -33,11 +37,11 @@ CustomDocument.getInitialProps = async ctx => {
   ctx.renderPage = () =>
     originalRenderPage({
       enhanceApp: App => props =>
-        (
-          <App
-            {...props} // @ts-ignore
-          />
-        )
+      (
+        <App
+          {...props} // @ts-ignore
+        />
+      )
     })
 
   const initialProps = await Document.getInitialProps(ctx)

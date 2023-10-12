@@ -1,3 +1,12 @@
+@font-face {
+  font-family: 'PressStart2P';
+  src: url('../public/fonts/PressStart2P.ttf');
+  font-style: medium;
+  font-weight: normal;
+  font-display: swap;
+}
+
+
 html,
 body {
   min-height: 100%;

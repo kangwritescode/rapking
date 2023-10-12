@@ -1,18 +1,23 @@
 import React from 'react'
 import UserLeaderboard from './UserLeaderboard';
 import { Box } from '@mui/material';
+import VideoBackground from 'src/components/VideoBackground';
 
 function LeaderboardPage() {
 
   return (
-    <Box
-      sx={{
-        margin: 'auto',
-        width: '50%',
-      }}
-    >
+    <>
+    <VideoBackground videoSrc='/videos/joey.webm' imageSrc='/images/joey.png' />
+      <Box
+        sx={{
+          margin: 'auto',
+          width: '620px',
+        }}
+      >
+
         <UserLeaderboard />
-    </Box>
+      </Box>
+    </>
   )
 }
 

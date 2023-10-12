@@ -5,57 +5,63 @@ import { SxProps } from '@mui/material';
 import { Region, User } from '@prisma/client';
 import { api } from 'src/utils/api';
 import { useInView } from 'react-intersection-observer';
+import { v4 } from 'uuid';
 
-const columns: GridColDef[] = [
+let columns: GridColDef[] = [
   {
     field: 'points',
-    headerName: 'Points',
-    sortable: false,
-    filterable: false,
-    hideable: false,
+    headerName: 'Score',
+    width: 120,
+    headerClassName: 'user-leaderboard-points-header',
+    cellClassName: 'user-leaderboard-points-cell',
   },
   {
     field: 'username',
-    headerName: 'Last name',
+    headerName: 'Username',
+    width: 150,
     sortable: false,
-    filterable: false,
-    hideable: false,
+    headerClassName: 'user-leaderboard-header',
   },
   {
     field: 'location',
     headerName: 'Location',
     type: 'number',
+    width: 170,
     sortable: false,
-    filterable: false,
-    hideable: false,
+    headerClassName: 'user-leaderboard-header',
   },
   {
     field: 'region',
     headerName: 'Region',
     type: 'number',
     sortable: false,
-    filterable: false,
-    hideable: false,
+    headerClassName: 'user-leaderboard-header',
   },
   {
     field: 'sex',
     headerName: 'Sex',
     type: 'number',
     sortable: false,
-    filterable: false,
-    hideable: false,
+    headerClassName: 'user-leaderboard-header',
   },
 ];
 
+columns = columns.map((column) => ({
+  ...column,
+  headerAlign: 'center',
+  align: 'center',
+  disableColumnMenu: true
+}));
+
 const convertUserDataToRowData = (userData: User) => {
-  const { username, id, city, region, sex, points } = userData;
+  const { username, city, region, sex, points } = userData;
 
   return ({
-    id: id || '',
+    id: v4(),
     username: username || '',
     location: city || '',
     region: region || 'WEST',
-    sex: sex || '',
+    sex: sex ? sex === 'male' ? 'M' : 'F' : '',
     points: points || 0,
   })
 }
@@ -108,11 +114,22 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
     }
   }, [inView, refetch, setPage, loadNextPage]);
 
-
   return (
     <Box sx={{
       '& .MuiDataGrid-columnHeaders': {
-        background: 'unset',
+        background: 'black',
+      },
+      '& .user-leaderboard-header .MuiDataGrid-columnHeaderTitle': {
+        fontFamily: 'Impact',
+        fontSize: '1.2rem',
+      },
+      '& .user-leaderboard-points-header .MuiDataGrid-columnHeaderTitle': {
+        fontFamily: 'PressStart2P',
+        fontSize: '1rem',
+      },
+      '& .user-leaderboard-points-cell .MuiDataGrid-cellContent': {
+        fontFamily: 'PressStart2P',
+        fontSize: '1rem',
       },
       ...sx
     }}>
@@ -121,6 +138,9 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
         columns={columns}
         hideFooterPagination
         disableRowSelectionOnClick
+        sx={{
+          height: 700
+        }}
       />
       <Box ref={ref} />
     </Box>

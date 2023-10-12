@@ -24,8 +24,6 @@ export const leaderboardRouter = createTRPCRouter({
         },
       });
 
-      console.log(usersWithMostPoints, "usersWithMostPoints");
-
       return usersWithMostPoints;
 
     })
