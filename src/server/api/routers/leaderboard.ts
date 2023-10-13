@@ -9,14 +9,14 @@ export const leaderboardRouter = createTRPCRouter({
   getTopUsersByPoints: publicProcedure
     .input(z.object({
       page: z.number().default(0),
+      pageSize: z.number(),
     }))
     .query(async ({ input, ctx }) => {
-      const { page } = input;
+      const { page, pageSize } = input;
 
-      const pageSize = 20;
       const skipAmount = page * pageSize;
 
-      const usersWithMostPoints = await ctx.prisma.user.findMany({
+      const rowData = await ctx.prisma.user.findMany({
         take: pageSize,
         skip: skipAmount,
         orderBy: {
@@ -24,8 +24,13 @@ export const leaderboardRouter = createTRPCRouter({
         },
       });
 
-      return usersWithMostPoints;
+      // Fetch the total count of users
+      const usersWithPoints = await ctx.prisma.user.count();
 
+      return {
+        rowData,
+        rowCount: usersWithPoints,
+      }
     })
 });
 

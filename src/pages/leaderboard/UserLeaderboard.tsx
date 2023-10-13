@@ -4,7 +4,6 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { SxProps } from '@mui/material';
 import { Region, User } from '@prisma/client';
 import { api } from 'src/utils/api';
-import { useInView } from 'react-intersection-observer';
 import { v4 } from 'uuid';
 
 let columns: GridColDef[] = [
@@ -79,27 +78,31 @@ interface DataGridDemoProps {
   sx?: SxProps;
 }
 
+const PAGE_SIZE = 10;
+
 export default function UserLeaderboard({ sx }: DataGridDemoProps) {
 
   // State
-  const [page, setPage] = useState(0);
   const [rowsData, setRowsData] = useState<RowData[]>([]);
+  const [rowCount, setRowCount] = useState<number>(0);
+  const [page, setPage] = useState(0);
 
   // Queries
-  const { refetch } = api.leaderboard.getTopUsersByPoints.useQuery({ page },
+  const { refetch } = api.leaderboard.getTopUsersByPoints.useQuery({ page, pageSize: PAGE_SIZE },
     { enabled: false });
 
-  // Hooks
-  const { ref, inView } = useInView();
-
   // Handlers
-  const loadNextPage = useCallback(async () => {
+  const loadPage = useCallback(async () => {
     try {
-      const { data: usersData } = await refetch();
-      if (usersData) {
-        const newRowsData = usersData.map(convertUserDataToRowData);
-        setRowsData((prev) => [...prev, ...newRowsData])
-        setPage((prev) => prev + 1);
+      const { data } = await refetch();
+      if (data) {
+        const {
+          rowData,
+          rowCount
+        } = data;
+        const newRowsData = rowData.map(convertUserDataToRowData);
+        setRowsData(newRowsData)
+        setRowCount(rowCount);
       }
     }
     catch (err) {
@@ -109,15 +112,13 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
 
   // Effects
   useEffect(() => {
-    if (inView) {
-      loadNextPage();
-    }
-  }, [inView, refetch, setPage, loadNextPage]);
+    loadPage();
+  }, [page, loadPage]);
 
   return (
     <Box sx={{
       '& .MuiDataGrid-columnHeaders': {
-        background: 'rgba(0, 0, 0, 0.8)',
+        background: 'rgba(0, 0, 0, 0.7)',
       },
       '& .user-leaderboard-header .MuiDataGrid-columnHeaderTitle': {
         fontFamily: 'Impact',
@@ -137,18 +138,26 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
       '& .MuiDataGrid-row:nth-child(even)': {
         background: 'rgba(20, 12, 0, 0.623)',
       },
+      '& .MuiDataGrid-footerContainer': {
+        background: 'rgba(0, 0, 0, 0.7)',
+        borderBottomLeftRadius: '0.5rem',
+        borderBottomRightRadius: '0.5rem',
+      },
       ...sx
     }}>
       <DataGrid
         rows={rowsData}
         columns={columns}
-        hideFooterPagination
         disableRowSelectionOnClick
-        sx={{
-          height: 700
+        autoPageSize
+        paginationModel={{
+          page,
+          pageSize: PAGE_SIZE,
         }}
+        paginationMode='server'
+        onPaginationModelChange={({ page }) => setPage(page)}
+        rowCount={rowCount}
       />
-      <Box ref={ref} />
     </Box>
   );
 }
