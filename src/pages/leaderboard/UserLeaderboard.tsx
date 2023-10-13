@@ -1,69 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { SxProps } from '@mui/material';
+import { SxProps, useMediaQuery, useTheme } from '@mui/material';
 import { Region, User } from '@prisma/client';
 import { api } from 'src/utils/api';
 import { v4 } from 'uuid';
 import UserLeaderboardGridStyles from './styles/UserLeaderboardGridStyles';
-
-let columns: GridColDef[] = [
-  {
-    field: 'points',
-    headerName: 'Score',
-    width: 120,
-    headerClassName: 'user-leaderboard-points-header',
-    cellClassName: 'user-leaderboard-points-cell',
-  },
-  {
-    field: 'username',
-    headerName: 'Username',
-    width: 150,
-    sortable: false,
-    headerClassName: 'user-leaderboard-header',
-  },
-  {
-    field: 'location',
-    headerName: 'Location',
-    type: 'number',
-    width: 170,
-    sortable: false,
-    headerClassName: 'user-leaderboard-header',
-  },
-  {
-    field: 'region',
-    headerName: 'Region',
-    type: 'number',
-    sortable: false,
-    headerClassName: 'user-leaderboard-header',
-  },
-  {
-    field: 'sex',
-    headerName: 'Sex',
-    type: 'number',
-    sortable: false,
-    headerClassName: 'user-leaderboard-header',
-  },
-];
-
-columns = columns.map((column) => ({
-  ...column,
-  headerAlign: 'center',
-  align: 'center',
-  disableColumnMenu: true
-}));
-
-const convertUserDataToRowData = (userData: User) => {
-  const { username, city, state, region, sex, points } = userData;
-
-  return ({
-    id: v4(),
-    username: username || '',
-    location: `${city}, ${state}` || '',
-    region: region || 'WEST',
-    sex: sex ? sex === 'male' ? 'M' : 'F' : '',
-    points: points || 0,
-  })
-}
 
 interface RowData {
   id: string;
@@ -81,6 +22,69 @@ interface DataGridDemoProps {
 const PAGE_SIZE = 10;
 
 export default function UserLeaderboard({ sx }: DataGridDemoProps) {
+
+  const theme = useTheme();
+  const isSmallBreakpoint = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const columns = useMemo(() => {
+    const defaultColumnProps: Partial<GridColDef> = {
+      headerAlign: 'center',
+      align: 'center',
+      disableColumnMenu: true,
+      sortable: false,
+      headerClassName: 'user-leaderboard-header',
+    };
+
+    const baseColumns: GridColDef[] = [
+      {
+        field: 'points',
+        headerName: isSmallBreakpoint ? 'Pts' : 'Score',
+        headerClassName: 'user-leaderboard-points-header',
+        cellClassName: 'user-leaderboard-points-cell',
+        width: isSmallBreakpoint ? 70 : 120,
+      },
+      {
+        field: 'username',
+        headerName: 'Username',
+        width: 150,
+      },
+      {
+        field: 'location',
+        headerName: isSmallBreakpoint ? 'State' : 'Location',
+        type: 'number',
+        width: isSmallBreakpoint ? 76 : 170,
+      },
+      {
+        field: 'region',
+        headerName: 'Region',
+        type: 'number',
+      },
+      {
+        field: 'sex',
+        headerName: 'Sex',
+        type: 'number',
+        width: isSmallBreakpoint ? 76 : undefined,
+      },
+    ];
+
+    return baseColumns.map((column) => {  // Assuming 150 as a default width if not provided
+      return { ...defaultColumnProps, ...column };
+    });
+
+  }, [isSmallBreakpoint]);
+
+  const convertUserDataToRowData = useCallback((userData: User) => {
+    const { username, city, state, region, sex, points } = userData;
+
+    return ({
+      id: v4(),
+      username: username || '',
+      location: isSmallBreakpoint ? state || '' : `${city}, ${state}` || '',
+      region: region || 'WEST',
+      sex: sex ? sex === 'male' ? 'M' : 'F' : '',
+      points: points || 0,
+    })
+  }, [isSmallBreakpoint]);
 
   // State
   const [rowsData, setRowsData] = useState<RowData[]>([]);
@@ -108,7 +112,7 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
     catch (err) {
       console.log(err);
     }
-  }, [refetch])
+  }, [refetch, convertUserDataToRowData])
 
   // Effects
   useEffect(() => {
