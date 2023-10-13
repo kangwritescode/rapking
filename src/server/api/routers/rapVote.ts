@@ -69,7 +69,7 @@ export const rapVote = createTRPCRouter({
         },
       });
 
-      const user = await ctx.prisma.user.update({
+      await ctx.prisma.user.update({
         where: {
           id: rap.userId,
         },
@@ -79,8 +79,6 @@ export const rapVote = createTRPCRouter({
           },
         },
       });
-
-      console.log(user);
 
       return vote;
     }),
