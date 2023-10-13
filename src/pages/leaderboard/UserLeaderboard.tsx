@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import Box from '@mui/material/Box';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { SxProps } from '@mui/material';
 import { Region, User } from '@prisma/client';
 import { api } from 'src/utils/api';
 import { v4 } from 'uuid';
+import UserLeaderboardGridStyles from './styles/UserLeaderboardGridStyles';
 
 let columns: GridColDef[] = [
   {
@@ -53,12 +53,12 @@ columns = columns.map((column) => ({
 }));
 
 const convertUserDataToRowData = (userData: User) => {
-  const { username, city, region, sex, points } = userData;
+  const { username, city, state, region, sex, points } = userData;
 
   return ({
     id: v4(),
     username: username || '',
-    location: city || '',
+    location: `${city}, ${state}` || '',
     region: region || 'WEST',
     sex: sex ? sex === 'male' ? 'M' : 'F' : '',
     points: points || 0,
@@ -116,35 +116,7 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
   }, [page, loadPage]);
 
   return (
-    <Box sx={{
-      '& .MuiDataGrid-columnHeaders': {
-        background: 'rgba(0, 0, 0, 0.7)',
-      },
-      '& .user-leaderboard-header .MuiDataGrid-columnHeaderTitle': {
-        fontFamily: 'Impact',
-        fontSize: '1.2rem',
-      },
-      '& .user-leaderboard-points-header .MuiDataGrid-columnHeaderTitle': {
-        fontFamily: 'PressStart2P',
-        fontSize: '1rem',
-      },
-      '& .user-leaderboard-points-cell .MuiDataGrid-cellContent': {
-        fontFamily: 'PressStart2P',
-        fontSize: '1rem',
-      },
-      '& .MuiDataGrid-row:nth-child(odd)': {
-        background: 'rgba(0, 0, 0, 0.5)',
-      },
-      '& .MuiDataGrid-row:nth-child(even)': {
-        background: 'rgba(20, 12, 0, 0.623)',
-      },
-      '& .MuiDataGrid-footerContainer': {
-        background: 'rgba(0, 0, 0, 0.7)',
-        borderBottomLeftRadius: '0.5rem',
-        borderBottomRightRadius: '0.5rem',
-      },
-      ...sx
-    }}>
+    <UserLeaderboardGridStyles sx={sx}>
       <DataGrid
         rows={rowsData}
         columns={columns}
@@ -158,6 +130,6 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
         onPaginationModelChange={({ page }) => setPage(page)}
         rowCount={rowCount}
       />
-    </Box>
+    </UserLeaderboardGridStyles>
   );
 }

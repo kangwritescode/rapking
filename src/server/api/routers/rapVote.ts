@@ -58,7 +58,7 @@ export const rapVote = createTRPCRouter({
         },
       });
 
-      await ctx.prisma.rap.update({
+      const rap = await ctx.prisma.rap.update({
         where: {
           id: rapId,
         },
@@ -68,6 +68,19 @@ export const rapVote = createTRPCRouter({
           },
         },
       });
+
+      const user = await ctx.prisma.user.update({
+        where: {
+          id: rap.userId,
+        },
+        data: {
+          points: {
+            increment: 1,
+          },
+        },
+      });
+
+      console.log(user);
 
       return vote;
     }),
@@ -96,12 +109,23 @@ export const rapVote = createTRPCRouter({
         });
       }
 
-      await ctx.prisma.rap.update({
+      const rap = await ctx.prisma.rap.update({
         where: {
           id: rapId,
         },
         data: {
           likesCount: {
+            decrement: 1,
+          },
+        },
+      });
+
+      await ctx.prisma.user.update({
+        where: {
+          id: rap.userId,
+        },
+        data: {
+          points: {
             decrement: 1,
           },
         },
