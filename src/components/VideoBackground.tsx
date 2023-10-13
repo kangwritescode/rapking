@@ -8,9 +8,18 @@ interface VideoBackgroundProps {
 
 function VideoBackground({ videoSrc, imageSrc }: VideoBackgroundProps) {
   return (
-    <>
+    <Box
+      sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: -1
+      }}
+    >
       <Box sx={{
-        position: 'fixed',
+        position: 'absolute',
         width: '100%',
         height: '100%',
         backgroundColor: 'rgba(36, 24, 3, 0.664)',
@@ -25,24 +34,24 @@ function VideoBackground({ videoSrc, imageSrc }: VideoBackgroundProps) {
         muted
         sx={{
           objectFit: 'cover',
-          position: 'fixed',
+          position: 'absolute',
           width: '100%',
           height: '100%',
+          zIndex: -2,
         }}
-        zIndex={-2}
       />
       <CardMedia
         src={imageSrc}
         component='img'
         sx={{
-          zIndex: -3,
           objectFit: 'cover',
-          position: 'fixed',
-          width: '100%',
+          position: 'absolute',
           height: '100%',
+          width: '100%',
+          zIndex: -3,
         }}
       />
-    </>
+    </Box >
   )
 }
 

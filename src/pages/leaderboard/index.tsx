@@ -7,7 +7,10 @@ function LeaderboardPage() {
 
   return (
     <>
-    <VideoBackground videoSrc='/videos/joey.webm' imageSrc='/images/joey.png' />
+      <VideoBackground
+        videoSrc='/videos/joey.webm'
+        imageSrc='/images/joey.png'
+      />
       <Box
         sx={{
           mx: 'auto',

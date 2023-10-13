@@ -9,6 +9,7 @@ import { LayoutProps } from 'src/@core/layouts/types'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
+import { useRouter } from 'next/router'
 
 interface Props {
   hidden: LayoutProps['hidden']
@@ -53,6 +54,10 @@ const LayoutAppBar = (props: Props) => {
   // ** Vars
   const { skin, appBar, appBarBlur, contentWidth } = settings
 
+  // ** Router
+  const router = useRouter()
+  const isLeaderboardPage = router.pathname.includes('/leaderboard')
+
   const appBarFixedStyles = () => {
     return {
       px: `${theme.spacing(5)} !important`,
@@ -79,7 +84,10 @@ const LayoutAppBar = (props: Props) => {
       elevation={0}
       color='default'
       className='layout-navbar'
-      sx={{ ...userAppBarStyle }}
+      sx={{
+        ...userAppBarStyle,
+        ...(isLeaderboardPage ? { backgroundColor: 'background.default' } : {})
+      }}
       position={appBar === 'fixed' ? 'sticky' : 'static'}
       {...userAppBarProps}
     >

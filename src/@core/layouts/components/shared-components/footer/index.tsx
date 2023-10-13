@@ -7,6 +7,7 @@ import { LayoutProps } from 'src/@core/layouts/types'
 
 // ** Footer Content Component
 import FooterContent from './FooterContent'
+import { useRouter } from 'next/router'
 
 interface Props {
   settings: LayoutProps['settings']
@@ -24,6 +25,10 @@ const Footer = (props: Props) => {
 
   // ** Vars
   const { skin, footer, layout, contentWidth } = settings
+
+  // ** Router
+  const router = useRouter()
+  const isLeaderboardPage = router.pathname.includes('/leaderboard')
 
   if (footer === 'hidden') {
     return null
@@ -55,11 +60,10 @@ const Footer = (props: Props) => {
         className='footer-content-container'
         sx={{
           width: '100%',
+          ...(isLeaderboardPage ? {display: 'none'} : {}),
           py: theme.spacing(footer === 'fixed' && skin === 'bordered' ? 3.875 : 4),
           ...(contentWidth === 'boxed' && { '@media (min-width:1440px)': { maxWidth: 1440 } }),
           ...(layout === 'vertical' && {
-            borderTopLeftRadius: 14,
-            borderTopRightRadius: 14,
             ...(footer === 'fixed' && { backgroundColor: 'background.paper' })
           }),
           ...(footer === 'fixed'
