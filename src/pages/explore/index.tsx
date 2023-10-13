@@ -3,7 +3,7 @@ import { api } from 'src/utils/api'
 import { Box, Stack, Tab, Tabs, useTheme } from '@mui/material';
 import FeedRapCard from './FeedRapCard';
 import FeedBar from './FeedBar';
-import { RegionFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
+import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 
 function ExplorePage() {
 
@@ -20,6 +20,7 @@ function ExplorePage() {
   const [sortByValue, setSortByValue] = useState<SortByValue>('NEWEST');
   const [regionFilter, setRegionFilter] = useState<RegionFilter>('ALL');
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('ALL');
+  const [sexFilter, setSexFilter] = useState<SexFilter>('ANY');
   const followingFilter = tab === 1;
 
   const { data: raps } = api.rap.queryRaps.useQuery({
@@ -27,6 +28,7 @@ function ExplorePage() {
     regionFilter,
     timeFilter,
     followingFilter,
+    sexFilter,
     includeUser: true,
   });
 
@@ -69,11 +71,13 @@ function ExplorePage() {
         onSortAndFilterChange={({
           sortBy,
           regionFilter,
-          timeFilter
+          timeFilter,
+          sexFilter
         }) => {
           setSortByValue(sortBy);
           setRegionFilter(regionFilter);
           setTimeFilter(timeFilter);
+          setSexFilter(sexFilter);
         }
         }
       />

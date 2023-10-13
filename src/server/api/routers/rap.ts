@@ -23,6 +23,7 @@ const updateRapPayloadSchema = z.object({
 const sortBySchema = z.enum(["NEWEST", "TOP"]);
 const timeFilterSchema = z.enum(["ALL", "24HOURS", "7DAYS", "30DAYS", "6MONTHS", "12MONTHS"]);
 const regionFilterSchema = z.enum(["ALL", "WEST", "MIDWEST", "EAST", "SOUTH"]);
+const sexFilterSchema = z.enum(['ANY', 'MALE', 'FEMALE']);
 
 // Types
 export type CreateRapPayload = z.infer<typeof createRapPayloadSchema>;
@@ -31,6 +32,7 @@ export type UpdateRapPayload = z.infer<typeof updateRapPayloadSchema>;
 export type SortByValue = z.infer<typeof sortBySchema>;
 export type TimeFilter = z.infer<typeof timeFilterSchema>;
 export type RegionFilter = z.infer<typeof regionFilterSchema>;
+export type SexFilter = z.infer<typeof sexFilterSchema>;
 
 // Utils
 function getTimeFilterDate(timeFilter: TimeFilter) {
@@ -158,11 +160,12 @@ export const rapRouter = createTRPCRouter({
       regionFilter: regionFilterSchema,
       timeFilter: timeFilterSchema,
       followingFilter: z.boolean().optional(),
+      sexFilter: sexFilterSchema,
       includeUser: z.boolean().optional(),
     }))
     .query(async ({ ctx, input }) => {
 
-      const { sortBy, regionFilter, timeFilter, followingFilter } = input;
+      const { sortBy, regionFilter, timeFilter, followingFilter, sexFilter } = input;
 
       // Sort logic
       let orderBy: any;
@@ -182,6 +185,13 @@ export const rapRouter = createTRPCRouter({
 
       if (regionFilter !== 'ALL') {
         where.user = { region: regionFilter };
+      }
+
+      if (sexFilter !== 'ANY') {
+        where.user = {
+          ...where.user,
+          sex: sexFilter === 'MALE' ? 'male' : 'female'
+        }
       }
 
       const filterDate = getTimeFilterDate(timeFilter);

@@ -99,7 +99,7 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
                 <Box sx={{ mr: 4, display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
                   <Icon icon='material-symbols:male' />
                   <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>
-                    Male
+                    {userData.sex === 'male' ? 'Male' : 'Female'}
                   </Typography>
                 </Box>
                 <Box sx={{ mr: 5, display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
