@@ -14,11 +14,12 @@ const FooterContent = () => {
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-end' }}>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>
-        <LinkStyled target='_blank' href='https://discord.gg/fcMURpEc'>
-          Join the Rapking Discord
-        </LinkStyled>
-      </Box>
+      <LinkStyled sx={{mr: 5}} target='_blank' href='https://blank.com' onClick={(e) => e.preventDefault()}>
+        Provide Feedback
+      </LinkStyled>
+      <LinkStyled target='_blank' href='https://discord.gg/fcMURpEc'>
+        Join the Rapking Discord
+      </LinkStyled>
     </Box>
   )
 }
