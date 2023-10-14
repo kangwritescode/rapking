@@ -23,7 +23,7 @@ function ExplorePage() {
   const [sexFilter, setSexFilter] = useState<SexFilter>('ANY');
   const followingFilter = tab === 1;
 
-  const { data: raps } = api.rap.queryRaps.useQuery({
+  const { data: raps } = api.feed.queryRaps.useQuery({
     sortBy: sortByValue,
     regionFilter,
     timeFilter,
