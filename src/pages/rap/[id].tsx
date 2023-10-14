@@ -13,9 +13,7 @@ function RapPage() {
   const router = useRouter();
 
   const { id } = router.query;
-  const { data: rapData } = api.rap.getRap.useQuery({
-    id: id as string
-  });
+  const { data: rapData } = api.rap.getRap.useQuery({ id: id as string }, { enabled: Boolean(id) });
 
   const userData = rapData?.user;
 
@@ -77,3 +75,28 @@ function RapPage() {
 }
 
 export default RapPage;
+
+import { createServerSideHelpers } from '@trpc/react-query/server';
+import { GetServerSidePropsContext } from 'next';
+import { appRouter } from 'src/server/api/root';
+import superjson from 'superjson';
+import { createTRPCContext } from 'src/server/api/trpc'
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+
+  const { id } = context.query;
+
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    ctx: await createTRPCContext(context),
+    transformer: superjson,
+  });
+
+  await helpers.rap.getRap.prefetch({ id })
+
+  return {
+    props: {
+      trpcState: helpers.dehydrate(),
+    }
+  }
+}

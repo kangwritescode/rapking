@@ -6,7 +6,6 @@ import {
   publicProcedure
 } from "src/server/api/trpc";
 import { RapVoteType } from "@prisma/client";
-import { TRPCError } from "@trpc/server";
 
 export const rapVote = createTRPCRouter({
   getRapLikes: publicProcedure
@@ -29,13 +28,14 @@ export const rapVote = createTRPCRouter({
     .input(z.object({
       userId: z.string(),
       rapId: z.string(),
+      authorId: z.string(),
     }))
     .mutation(async ({ input, ctx }) => {
 
-      const { userId, rapId } = input;
+      const { userId, rapId, authorId } = input;
 
-      // see if user has already voted on this rap
-      const existingVote = await ctx.prisma.rapVote.findUnique({
+      // Check if vote exists
+      const vote = await ctx.prisma.rapVote.findUnique({
         where: {
           userId_rapId: {
             userId,
@@ -43,55 +43,56 @@ export const rapVote = createTRPCRouter({
           },
         },
       });
-      if (existingVote) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "You have already voted on this rap.",
-        });
+
+      if (vote) {
+        throw new Error("Vote already exists");
       }
 
-      const vote = await ctx.prisma.rapVote.create({
-        data: {
-          type: RapVoteType.LIKE,
-          userId,
-          rapId,
-        },
-      });
-
-      const rap = await ctx.prisma.rap.update({
-        where: {
-          id: rapId,
-        },
-        data: {
-          likesCount: {
-            increment: 1,
+      // Start transaction for creating vote and updating rap and user points
+      const [createdVote, rap] = await ctx.prisma.$transaction([
+        ctx.prisma.rapVote.create({
+          data: {
+            type: RapVoteType.LIKE,
+            userId,
+            rapId,
           },
-        },
-      });
-
-      await ctx.prisma.user.update({
-        where: {
-          id: rap.userId,
-        },
-        data: {
-          points: {
-            increment: 1,
+        }),
+        ctx.prisma.rap.update({
+          where: {
+            id: rapId,
           },
-        },
-      });
+          data: {
+            likesCount: {
+              increment: 1,
+            },
+          },
+        }),
+        ctx.prisma.user.update({
+          where: {
+            id: authorId,
+          },
+          data: {
+            points: {
+              increment: 1,
+            },
+          },
+        })
+      ])
 
-      return vote;
+      return {createdVote, rapLikesCount: rap.likesCount};
     }),
   deleteLike: protectedProcedure
     .input(z.object({
       userId: z.string(),
       rapId: z.string(),
+      authorId: z.string(),
     }))
     .mutation(async ({ input, ctx }) => {
 
-      const { userId, rapId } = input;
+      const { userId, rapId, authorId } = input;
 
-      const vote = await ctx.prisma.rapVote.delete({
+      // Check if vote exists
+      const vote = await ctx.prisma.rapVote.findUnique({
         where: {
           userId_rapId: {
             userId,
@@ -101,35 +102,41 @@ export const rapVote = createTRPCRouter({
       });
 
       if (!vote) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "You have not voted on this rap.",
-        });
+        throw new Error("Vote does not exist");
       }
 
-      const rap = await ctx.prisma.rap.update({
-        where: {
-          id: rapId,
-        },
-        data: {
-          likesCount: {
-            decrement: 1,
+      const [deletedVote, updatedRap] = await ctx.prisma.$transaction([
+        ctx.prisma.rapVote.delete({
+          where: {
+            userId_rapId: {
+              userId,
+              rapId,
+            },
           },
-        },
-      });
-
-      await ctx.prisma.user.update({
-        where: {
-          id: rap.userId,
-        },
-        data: {
-          points: {
-            decrement: 1,
+        }),
+        ctx.prisma.rap.update({
+          where: {
+            id: rapId,
           },
-        },
-      });
+          data: {
+            likesCount: {
+              decrement: 1,
+            },
+          },
+        }),
+        ctx.prisma.user.update({
+          where: {
+            id: authorId,
+          },
+          data: {
+            points: {
+              decrement: 1,
+            },
+          },
+        })
+      ]);
 
-      return vote;
+      return {deletedVote, rapLikesCount: updatedRap.likesCount};
     }),
   likeExists: publicProcedure
     .input(z.object({

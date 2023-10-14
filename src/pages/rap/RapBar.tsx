@@ -1,9 +1,10 @@
 import { Box, IconButton, useTheme } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Icon } from '@iconify/react'
 import { Rap, User } from '@prisma/client'
-import { api } from 'src/utils/api'
 import RapCommentDrawer from 'src/components/RapCommentDrawer'
+import LikeButton from './LikeButton'
+import { api } from 'src/utils/api'
 
 interface RapBarProps {
   rapData?: (Rap & {
@@ -15,80 +16,15 @@ function RapBar({ rapData }: RapBarProps) {
 
   const theme = useTheme();
 
-  // State
-  const [commentDrawerIsOpen, setCommentDrawerIsOpen] = useState<boolean>(false);
-  const [currentUserLikedRap, setCurrentUserLikedRap] = useState<boolean>(false);
-  const [rapLikesCount, setRapLikesCount] = useState<number>(0);
-
   // Queries
-  const { data: currentUser } = api.user.getCurrentUser.useQuery();
-  const { data: rapCommentsCount } = api.rapComment.rapCommentsCount.useQuery({ rapId: rapData?.id as string }, {
+  const { data: rapCommentsCount } = api.rapComment.rapCommentsCount.useQuery({
+    rapId: rapData?.id as string
+  }, {
     enabled: !!rapData?.id
   });
-  const { data: likeExists } = api
-    .rapVote
-    .likeExists
-    .useQuery({
-      rapId: rapData?.id as string,
-      userId: currentUser?.id as string,
-    }, {
-      enabled: !!rapData?.id && !!currentUser?.id,
-    });
 
-  // Mutations
-  const { mutate: createLike, isLoading: createLikeIsLoading } = api.rapVote.createLike.useMutation();
-  const { mutate: deleteLike, isLoading: deleteLikeIsLoading } = api.rapVote.deleteLike.useMutation();
-
-  // Invalidaters
-  const { invalidate: invalidateRapLikes } = api.useContext().rapVote.likeExists;
-
-  useEffect(() => {
-    setCurrentUserLikedRap(likeExists || false)
-  }, [likeExists])
-
-  useEffect(() => {
-    if (rapData?.likesCount) {
-      setRapLikesCount(rapData?.likesCount || 0);
-    }
-  }, [rapData?.likesCount])
-
-  const likeRap = () => {
-    if (currentUser && rapData && currentUser) {
-      setRapLikesCount(rapLikesCount + 1);
-      setCurrentUserLikedRap(true)
-      createLike({
-        rapId: rapData?.id as string,
-        userId: currentUser.id,
-      }, {
-        onSuccess: () => {
-          invalidateRapLikes(
-            {
-              rapId: rapData?.id as string,
-            },
-          )
-        }
-      })
-    }
-  }
-
-  const unlikeRap = () => {
-    if (currentUser && rapData && currentUser) {
-      setRapLikesCount(rapLikesCount - 1);
-      setCurrentUserLikedRap(false)
-      deleteLike({
-        rapId: rapData?.id as string,
-        userId: currentUser.id,
-      }, {
-        onSuccess: () => {
-          invalidateRapLikes(
-            {
-              rapId: rapData?.id as string,
-            },
-          )
-        }
-      })
-    }
-  }
+  // State
+  const [commentDrawerIsOpen, setCommentDrawerIsOpen] = useState<boolean>(false);
 
   return (
     <>
@@ -98,23 +34,7 @@ function RapBar({ rapData }: RapBarProps) {
         rapId={rapData?.id as string}
       />
       <Box display="flex">
-        <Box
-          display="flex"
-          alignItems="center">
-          <IconButton
-            sx={{
-              paddingRight: 1,
-            }}
-            onClick={currentUserLikedRap ? unlikeRap : likeRap}
-            disabled={createLikeIsLoading || deleteLikeIsLoading}
-          >
-            <Icon
-              {...(currentUserLikedRap ? { color: 'orange' } : {})}
-              icon='mdi:fire'
-            />
-          </IconButton>
-          {rapLikesCount || 0}
-        </Box>
+       <LikeButton rapData={rapData} />
         <Box sx={{
           ml: theme.spacing(5),
           display: 'flex',
