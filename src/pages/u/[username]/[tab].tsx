@@ -111,7 +111,7 @@ const UserProfile = () => {
                     value='profile'
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
-                        <Icon fontSize={20} icon='material-symbols:post' />
+                        <Icon fontSize={20} icon='iconamoon:profile-fill' />
                         {!hideText && 'Profile'}
                       </Box>
                     }

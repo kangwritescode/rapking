@@ -10,6 +10,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useForm } from 'react-hook-form';
 import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
+import toast from 'react-hot-toast';
 
 interface RapCommentComposerProps {
   rapId?: string;
@@ -23,10 +24,11 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
   const { data: userData } = api.user.getCurrentUser.useQuery();
 
   // Mutations
-  const { mutate: postComment } = api.rapComment.postComment.useMutation();
+  const { mutate: postComment, isLoading } = api.rapComment.postComment.useMutation();
 
   // Invalidaters
   const { invalidate: invalidateRapComments } = api.useContext().rapComment.getRapComments;
+  const { invalidate: invalidateCommentsCount } = api.useContext().rapComment.rapCommentsCount;
 
   const {
     setValue,
@@ -54,11 +56,13 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
         content: editedContent
       }, {
         onSuccess: () => {
-          invalidateRapComments({
-            rapId: rapId as string,
-          })
+          invalidateRapComments()
+          invalidateCommentsCount()
           reset();
           editor?.commands.clearContent();
+        },
+        onError: (error) => {
+            toast.error(error.message)
         }
       })
     }
@@ -100,7 +104,7 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
       <form onSubmit={handleSubmit(submitFormHandler)}>
         <RapCommentTextEditor
           editor={editor}
-          submitButtonIsDisabled={!isValid || isSubmitting}
+          submitButtonIsDisabled={!isValid || isSubmitting || isLoading}
         />
       </form>
     </Box>

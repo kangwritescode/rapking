@@ -13,7 +13,7 @@ function ProfileTab({ userData }: ProfileTabProps) {
   return (
     <Box
       display='grid'
-      gridTemplateColumns={['1fr 1fr 1fr']}
+      gridTemplateColumns={['1fr', '1fr 1fr', '1fr 1fr 1fr']}
       gap={4}
       position="relative"
     >
@@ -21,7 +21,11 @@ function ProfileTab({ userData }: ProfileTabProps) {
         userData={userData}
         sx={{
           p: theme.spacing(5),
-          gridColumn: '1 / 2',
+          gridColumn: [
+            '1 / 1',
+            '1 / 2',
+            '1 / 2',
+          ],
         }} />
     </Box >
   )

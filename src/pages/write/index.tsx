@@ -21,8 +21,8 @@ function WritePage() {
 
   const router = useRouter();
 
-  const { mutate: createProfile } = api.rap.createRap.useMutation();
-  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const { mutate: createProfile, isLoading, isSuccess } = api.rap.createRap.useMutation();
+  const [formIsInvalid, setFormIsInvalid] = useState(true);
   const [rap, setRap] = useState<CreateRapPayload | null>(null);
 
   const submitHandler = () => {
@@ -50,12 +50,12 @@ function WritePage() {
   return (
     <PageContainer>
       <WriteHeader
-        disabled={buttonDisabled}
+        disabled={formIsInvalid || isLoading || isSuccess}
         onClickHandler={submitHandler}
       />
       <RapEditor
         handleCreate={submitHandler}
-        onDisabledStateChanged={(isDisabled: boolean) => setButtonDisabled(isDisabled)}
+        onDisabledStateChanged={(isDisabled: boolean) => setFormIsInvalid(isDisabled)}
         onRapChange={onRapChangeHandler}
       />
     </PageContainer>

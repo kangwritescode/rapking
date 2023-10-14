@@ -23,15 +23,14 @@ const ExistingRap = () => {
   const { data: rapData } = api.rap.getRap.useQuery({ id: id as string });
 
   // Mutations
-  const { mutate: updateRap } = api.rap.updateRap.useMutation();
+  const { mutate: updateRap, isLoading } = api.rap.updateRap.useMutation();
 
   // State
   const [updateRapPayload, setUpdateRapPayload] = useState<UpdateRapPayload | null>(null);
-  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [formIsInvalid, setFormIsInvalid] = useState(true);
 
   // Invalidaters
-    // Invalidaters
-    const { invalidate: invalidateRapQuery } = api.useContext().rap.getRap;
+  const { invalidate: invalidateRapQuery } = api.useContext().rap.getRap;
 
   const submitHandler = () => {
     if (updateRapPayload) {
@@ -54,7 +53,7 @@ const ExistingRap = () => {
   return (
     <PageContainer>
       <WriteHeader
-        disabled={buttonDisabled}
+        disabled={formIsInvalid || isLoading}
         onClickHandler={submitHandler}
         rapData={rapData}
       />
@@ -63,7 +62,7 @@ const ExistingRap = () => {
           handleUpdate={submitHandler}
           rapData={rapData}
           onRapChange={onRapChangeHandler}
-          onDisabledStateChanged={(isDisabled: boolean) => setButtonDisabled(isDisabled)}
+          onDisabledStateChanged={(isDisabled: boolean) => setFormIsInvalid(isDisabled)}
         />
       )}
     </PageContainer>
