@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { api } from 'src/utils/api'
 import { Box, Stack, Tab, Tabs, useTheme } from '@mui/material';
-import FeedRapCard from './FeedRapCard';
 import FeedBar from './FeedBar';
 import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
+
+import Feed from './Feed';
+
 
 function ExplorePage() {
 
@@ -22,15 +23,6 @@ function ExplorePage() {
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('ALL');
   const [sexFilter, setSexFilter] = useState<SexFilter>('ANY');
   const followingFilter = tab === 1;
-
-  const { data: raps } = api.feed.queryRaps.useQuery({
-    sortBy: sortByValue,
-    regionFilter,
-    timeFilter,
-    followingFilter,
-    sexFilter,
-    includeUser: true,
-  });
 
   return (
     <Stack
@@ -81,16 +73,13 @@ function ExplorePage() {
         }
         }
       />
-      {raps?.map((rap) =>
-        <FeedRapCard
-          key={rap.id}
-          rap={rap}
-          sx={{
-            width: '100%',
-          }}
-        />
-      )
-      }
+      <Feed
+        sortByValue={sortByValue}
+        regionFilter={regionFilter}
+        timeFilter={timeFilter}
+        followingFilter={followingFilter}
+        sexFilter={sexFilter}
+      />
     </Stack>
   )
 }
