@@ -145,8 +145,6 @@ export const feedRouter = createTRPCRouter({
         take: pageSize,
       });
 
-      const rapsCount = await ctx.prisma.rap.count({ where });
-
-      return { rapsData: raps, rapsCount };
+      return { rapsData: raps };
     }),
 });

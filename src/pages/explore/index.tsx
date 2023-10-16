@@ -70,11 +70,10 @@ function ExplorePage() {
           setRegionFilter(regionFilter);
           setTimeFilter(timeFilter);
           setSexFilter(sexFilter);
-        }
-        }
+        }}
       />
       <Feed
-        sortByValue={sortByValue}
+        sortBy={sortByValue}
         regionFilter={regionFilter}
         timeFilter={timeFilter}
         followingFilter={followingFilter}
