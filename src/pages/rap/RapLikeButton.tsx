@@ -1,16 +1,16 @@
-import { Icon } from '@iconify/react';
-import { Box, IconButton } from '@mui/material';
+import { Box } from '@mui/material';
 import { Rap, User } from '@prisma/client';
 import React, { useEffect, useRef, useState } from 'react'
+import FireIconButton from 'src/components/FireIconButton';
 import { api } from 'src/utils/api';
 
-interface LikeButtonProps {
+interface RapLikeButtonProps {
   rapData?: (Rap & {
     user?: User;
   }) | null;
 }
 
-function LikeButton({ rapData }: LikeButtonProps) {
+function RapLikeButton({ rapData }: RapLikeButtonProps) {
 
   // State
   const [currentUserLikedRap, setCurrentUserLikedRap] = useState<boolean>(false);
@@ -108,20 +108,13 @@ function LikeButton({ rapData }: LikeButtonProps) {
     <Box
       display="flex"
       alignItems="center">
-      <IconButton
-        sx={{
-          paddingRight: 1,
-        }}
+      <FireIconButton
         onClick={currentUserLikedRap ? handleUnlike : handleLike}
-      >
-        <Icon
-          {...(currentUserLikedRap ? { color: 'orange' } : {})}
-          icon='mdi:fire'
-        />
-      </IconButton>
+        isColored={currentUserLikedRap}
+      />
       {rapLikesCount || 0}
     </Box>
   )
 }
 
-export default LikeButton
+export default RapLikeButton

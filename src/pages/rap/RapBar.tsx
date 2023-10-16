@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Icon } from '@iconify/react'
 import { Rap, User } from '@prisma/client'
 import RapCommentDrawer from 'src/components/RapCommentDrawer'
-import LikeButton from './LikeButton'
+import RapLikeButton from './RapLikeButton'
 import { api } from 'src/utils/api'
 
 interface RapBarProps {
@@ -34,7 +34,7 @@ function RapBar({ rapData }: RapBarProps) {
         rapId={rapData?.id as string}
       />
       <Box display="flex">
-       <LikeButton rapData={rapData} />
+       <RapLikeButton rapData={rapData} />
         <Box sx={{
           ml: theme.spacing(5),
           display: 'flex',

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React from 'react'
 import { BUCKET_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
-import TipTapContent from './TipTapContent';
+import TipTapContent from '../../components/TipTapContent';
 import RapBar from './RapBar';
 
 

@@ -24,27 +24,7 @@ export const commentVoteRouter = createTRPCRouter({
 
       return rapVotes;
     }),
-  createCommentVote: protectedProcedure
-    .input(z.object({
-      type: z.enum([CommentVoteType.LIKE]),
-      userId: z.string(),
-      commentId: z.string(),
-    }))
-    .mutation(async ({ input, ctx }) => {
-
-      const { userId, commentId, type } = input;
-
-      const commentVote = await ctx.prisma.commentVote.create({
-        data: {
-          type,
-          userId,
-          commentId,
-        },
-      });
-
-      return commentVote;
-    }),
-  deleteCommentVote: protectedProcedure
+  createLike: protectedProcedure
     .input(z.object({
       userId: z.string(),
       commentId: z.string(),
@@ -53,7 +33,42 @@ export const commentVoteRouter = createTRPCRouter({
 
       const { userId, commentId } = input;
 
-      const commentVote = await ctx.prisma.commentVote.delete({
+      const [commentVote, rapComment] = await ctx.prisma.$transaction([
+        ctx.prisma.commentVote.create({
+          data: {
+            type: CommentVoteType.LIKE,
+            userId,
+            commentId,
+          },
+        }),
+        ctx.prisma.rapComment.update({
+          where: {
+            id: commentId,
+          },
+          data: {
+            likesCount: {
+              increment: 1,
+            },
+          },
+        })
+      ]);
+
+      return {
+        commentVote,
+        rapComment,
+      };
+    }),
+  deleteVote: protectedProcedure
+    .input(z.object({
+      userId: z.string(),
+      commentId: z.string(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+
+      const { userId, commentId } = input;
+
+      // Check if vote exists
+      const vote = await ctx.prisma.commentVote.findUnique({
         where: {
           userId_commentId: {
             userId,
@@ -62,6 +77,53 @@ export const commentVoteRouter = createTRPCRouter({
         },
       });
 
-      return commentVote;
+      if (!vote) {
+        throw new Error("Vote does not exist");
+      }
+
+      const [deletedVote, updatedRap] = await ctx.prisma.$transaction([
+        ctx.prisma.commentVote.delete({
+          where: {
+            userId_commentId: {
+              userId,
+              commentId,
+            },
+          },
+        }),
+        ctx.prisma.rapComment.update({
+          where: {
+            id: commentId,
+          },
+          data: {
+            likesCount: {
+              decrement: 1,
+            },
+          },
+        })
+      ]);
+
+      return {
+        deletedVote,
+        updatedRap,
+      };
+    }),
+  likeExists: publicProcedure
+    .input(z.object({
+      userId: z.string(),
+      commentId: z.string(),
+    }))
+    .query(async ({ input, ctx }) => {
+      const { userId, commentId } = input;
+
+      const vote = await ctx.prisma.commentVote.findUnique({
+        where: {
+          userId_commentId: {
+            userId,
+            commentId,
+          },
+        },
+      });
+
+      return !!vote;
     }),
 });
