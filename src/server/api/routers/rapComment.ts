@@ -22,7 +22,7 @@ export const rapComment = createTRPCRouter({
         };
       } else if (sortBy === 'POPULAR') {
         orderBy = {
-          createdAt: 'asc',
+          likesCount: 'desc',
         };
       }
 
