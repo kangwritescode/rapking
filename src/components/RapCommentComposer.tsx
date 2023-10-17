@@ -28,7 +28,7 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
 
   // Invalidaters
   const { invalidate: invalidateRapComments } = api.useContext().rapComment.getRapComments;
-  const { invalidate: invalidateCommentsCount } = api.useContext().rapComment.rapCommentsCount;
+  const { invalidate: invalidateCommentsCount } = api.useContext().rapComment.getRapCommentsCount;
 
   const {
     setValue,

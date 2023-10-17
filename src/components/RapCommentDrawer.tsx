@@ -2,8 +2,8 @@ import { Icon } from '@iconify/react';
 import { Box, Divider, Drawer, IconButton, MenuItem, Select, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import RapCommentComposer from './RapCommentComposer';
-import { api } from 'src/utils/api';
 import RapComments from './RapComments';
+import { api } from 'src/utils/api';
 
 interface RapCommentDrawerProps {
   onCloseHandler: () => void;
@@ -19,15 +19,11 @@ function RapCommentDrawer({
 
   const [sortBy, setSortBy] = useState<'POPULAR' | 'RECENT'>('POPULAR');
 
-  const { data: rapComments } = api.rapComment.getRapComments.useQuery({
+  const {data: rapCommentsCount} = api.rapComment.getRapCommentsCount.useQuery({
     rapId: rapId as string,
-    sortBy,
-    page: 0,
-    pageSize: 10,
   }, {
     enabled: !!rapId,
   });
-
 
   return (
     <Drawer
@@ -47,7 +43,7 @@ function RapCommentDrawer({
           alignItems="center"
         >
           <Typography variant="h6">
-            Comments {rapComments?.length ? `(${rapComments?.length})` : ''}
+            Comments {rapCommentsCount ? `(${rapCommentsCount})` : ''}
           </Typography>
           <IconButton onClick={onCloseHandler}>
             <Icon icon="mdi:close" />
@@ -77,7 +73,7 @@ function RapCommentDrawer({
         width="24rem"
         maxWidth='24rem'
         px={5}>
-          <RapComments rapComments={rapComments} />
+          <RapComments rapId={rapId} sortBy={sortBy} />
       </Box>
     </Drawer>
   )

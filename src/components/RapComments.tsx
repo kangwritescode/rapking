@@ -1,13 +1,23 @@
 import React, { Fragment } from 'react'
 import RapComment from './RapComment'
 import { Divider } from '@mui/material'
-import { RapCommentWithUserData } from 'src/server/api/routers/rapComment'
+import { api } from 'src/utils/api';
 
 interface RapCommentsProps {
-  rapComments?: RapCommentWithUserData[] | null
+  sortBy: 'POPULAR' | 'RECENT';
+  rapId?: string;
 }
 
-function RapComments({ rapComments }: RapCommentsProps) {
+function RapComments({ sortBy, rapId }: RapCommentsProps) {
+  const { data: rapComments } = api.rapComment.getRapComments.useQuery({
+    rapId: rapId as string,
+    sortBy,
+    page: 0,
+    pageSize: 10,
+  }, {
+    enabled: !!rapId,
+  });
+
   return rapComments?.map((comment) =>
     <Fragment key={comment.id}>
       <RapComment

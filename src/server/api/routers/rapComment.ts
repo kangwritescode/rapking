@@ -69,21 +69,6 @@ export const rapComment = createTRPCRouter({
 
       return rapComment;
     }),
-  rapCommentsCount: publicProcedure
-    .input(z.object({
-      rapId: z.string(),
-    }))
-    .query(async ({ input, ctx }) => {
-      const { rapId } = input;
-
-      const count = await ctx.prisma.rapComment.count({
-        where: {
-          rapId,
-        },
-      });
-
-      return count;
-    }),
   deleteComment: protectedProcedure
     .input(z.object(
       {
@@ -101,5 +86,20 @@ export const rapComment = createTRPCRouter({
       });
 
       return rapComment;
+    }),
+  getRapCommentsCount: publicProcedure
+    .input(z.object({
+      rapId: z.string(),
+    }))
+    .query(async ({ input, ctx }) => {
+      const { rapId } = input;
+
+      const count = await ctx.prisma.rapComment.count({
+        where: {
+          rapId,
+        },
+      });
+
+      return count;
     }),
 });

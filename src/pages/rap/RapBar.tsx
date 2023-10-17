@@ -17,7 +17,7 @@ function RapBar({ rapData }: RapBarProps) {
   const theme = useTheme();
 
   // Queries
-  const { data: rapCommentsCount } = api.rapComment.rapCommentsCount.useQuery({
+  const { data: rapCommentsCount } = api.rapComment.getRapCommentsCount.useQuery({
     rapId: rapData?.id as string
   }, {
     enabled: !!rapData?.id
