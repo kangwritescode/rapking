@@ -1,9 +1,9 @@
 import { Icon } from '@iconify/react';
 import { Box, Divider, Drawer, IconButton, MenuItem, Select, Typography } from '@mui/material'
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import RapCommentComposer from './RapCommentComposer';
 import { api } from 'src/utils/api';
-import RapComment from './RapComment';
+import RapComments from './RapComments';
 
 interface RapCommentDrawerProps {
   onCloseHandler: () => void;
@@ -22,6 +22,8 @@ function RapCommentDrawer({
   const { data: rapComments } = api.rapComment.getRapComments.useQuery({
     rapId: rapId as string,
     sortBy,
+    page: 0,
+    pageSize: 10,
   }, {
     enabled: !!rapId,
   });
@@ -75,17 +77,7 @@ function RapCommentDrawer({
         width="24rem"
         maxWidth='24rem'
         px={5}>
-        {rapComments?.map((comment) =>
-          <Fragment key={comment.id}>
-            <RapComment
-              sx={{
-                py: 5
-              }}
-              comment={comment}
-            />
-            <Divider />
-          </Fragment>
-        )}
+          <RapComments rapComments={rapComments} />
       </Box>
     </Drawer>
   )

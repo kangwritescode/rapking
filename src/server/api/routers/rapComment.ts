@@ -5,15 +5,22 @@ import {
   protectedProcedure,
   publicProcedure
 } from "src/server/api/trpc";
+import { RapComment, User } from "@prisma/client";
+
+export type RapCommentWithUserData = RapComment & {
+  user: User;
+};
 
 export const rapComment = createTRPCRouter({
   getRapComments: publicProcedure
     .input(z.object({
       rapId: z.string(),
       sortBy: z.enum(["POPULAR", "RECENT"]),
+      page: z.number(),
+      pageSize: z.number(),
     }))
     .query(async ({ input, ctx }) => {
-      const { rapId, sortBy } = input;
+      const { rapId, sortBy, page, pageSize } = input;
 
       let orderBy = {};
       if (sortBy === 'RECENT') {
@@ -26,6 +33,7 @@ export const rapComment = createTRPCRouter({
         };
       }
 
+      const skip = page * pageSize;
 
       const rapComments = await ctx.prisma.rapComment.findMany({
         where: {
@@ -35,6 +43,8 @@ export const rapComment = createTRPCRouter({
         include: {
           user: true,
         },
+        skip,
+        take: pageSize,
       });
 
       return rapComments;
