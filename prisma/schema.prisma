@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  seed = "node prisma/seed.ts"
+  seed     = "node prisma/seed.ts"
 }
 
 datasource db {
@@ -43,32 +43,34 @@ model Session {
 }
 
 model User {
-  id              String        @id @default(cuid())
-  name            String?
-  email           String?       @unique
-  emailVerified   DateTime?
-  image           String?
-  username        String?       @unique
-  sex             String?
-  dob             DateTime?
-  country         String?
-  city            String?
-  state           String?
-  region          Region?
-  createdAt       DateTime      @default(now())
-  bannerUrl       String?
-  profileImageUrl String?
-  bio             String?
-  points          Int           @default(0)
-  followed        UserFollows[] @relation("FollowedRelation")
-  followers       UserFollows[] @relation("FollowerRelation")
-  raps            Rap[]
-  accounts        Account[]
-  sessions        Session[]
-  socialLinks     SocialLink[]
-  rapVotes        RapVote[]
-  rapComments     RapComment[]
-  commentVotes    CommentVote[]
+  id                    String         @id @default(cuid())
+  name                  String?
+  email                 String?        @unique
+  emailVerified         DateTime?
+  image                 String?
+  username              String?        @unique
+  sex                   String?
+  dob                   DateTime?
+  country               String?
+  city                  String?
+  state                 String?
+  region                Region?
+  createdAt             DateTime       @default(now())
+  bannerUrl             String?
+  profileImageUrl       String?
+  bio                   String?
+  points                Int            @default(0)
+  followed              UserFollows[]  @relation("FollowedRelation")
+  followers             UserFollows[]  @relation("FollowerRelation")
+  raps                  Rap[]
+  accounts              Account[]
+  sessions              Session[]
+  socialLinks           SocialLink[]
+  rapVotes              RapVote[]
+  rapComments           RapComment[]
+  commentVotes          CommentVote[]
+  sentNotifications     Notification[] @relation("NotifierRelation")
+  receivedNotifications Notification[] @relation("UserRelation")
 }
 
 model UserFollows {
@@ -158,6 +160,24 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum NotificationType {
+  FOLLOW
+  RAP_COMMENT
+  RAP_LIKE
+  COMMENT_LIKE
+}
+
+model Notification {
+  id           String           @id @default(cuid())
+  userId       String
+  recipient    User             @relation("UserRelation", fields: [userId], references: [id], onDelete: Cascade)
+  type         NotificationType
+  read         Boolean          @default(false)
+  createdAt    DateTime         @default(now())
+  notifierId   String
+  notifierUser User             @relation("NotifierRelation", fields: [notifierId], references: [id], onDelete: Cascade)
 }
 
 enum RapStatus {
