@@ -68,8 +68,8 @@ export const feedRouter = createTRPCRouter({
       timeFilter: timeFilterSchema,
       followingFilter: z.boolean().optional(),
       sexFilter: sexFilterSchema,
-      page: z.number(),
-      pageSize: z.number(),
+      cursor: z.string().nullish(),
+      limit: z.number().min(1).max(50),
     }))
     .query(async ({ ctx, input }) => {
 
@@ -79,8 +79,8 @@ export const feedRouter = createTRPCRouter({
         timeFilter,
         followingFilter,
         sexFilter,
-        page,
-        pageSize,
+        cursor,
+        limit,
       } = input;
 
       // Sort logic
@@ -133,18 +133,23 @@ export const feedRouter = createTRPCRouter({
         where.userId = { in: followedUserIds };
       }
 
-      const skip = page * pageSize;
-
       const raps = await ctx.prisma.rap.findMany({
         where,
         orderBy,
         include: {
           user: true,
         },
-        skip,
-        take: pageSize,
+        cursor: cursor ? { id: cursor } : undefined,
+        take: limit + 1,
       });
 
-      return { rapsData: raps };
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (raps.length > limit) {
+        const nextItem = raps.pop();
+        nextCursor = nextItem!.id;
+      }
+
+
+      return { raps, nextCursor };
     }),
 });

@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 import { api } from 'src/utils/api';
-import { Rap, User } from '@prisma/client';
 import FeedRapCard from './FeedRapCard';
 import { Divider } from '@mui/material';
 import { Virtuoso } from 'react-virtuoso';
@@ -24,60 +23,39 @@ function Feed({
   sexFilter
 }: FeedProps) {
 
-  // State
-  const [raps, setRaps] = useState<(Rap & { user: User })[]>([]);
-  const [page, setPage] = useState(0);
-  const [areMoreRapsToLoad, setAreMoreRapsToLoad] = useState(true);
-
-  const { refetch } = api.feed.queryRaps.useQuery({
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    refetch
+  } = api.feed.queryRaps.useInfiniteQuery({
     sortBy,
     regionFilter,
     timeFilter,
     followingFilter,
     sexFilter,
-    page,
-    pageSize: PAGE_SIZE
+    limit: PAGE_SIZE
   }, {
-    enabled: false
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 
-  const loadNextPage = useCallback(async () => {
-    const { status, data } = await refetch();
-    if (status === 'success') {
-      const { rapsData } = data;
-      if (rapsData.length) {
-        setRaps((prevRaps) => [...prevRaps, ...rapsData]);
-        setPage((prevPage) => prevPage + 1);
-      } else {
-        setAreMoreRapsToLoad(false);
-      }
-    }
-  }, [refetch])
+  const rapData = data?.pages.flatMap(page => page.raps) ?? [];
 
-  // Reset state when filters change
   useEffect(() => {
-    setPage(0);
-    setRaps([]);
-    setAreMoreRapsToLoad(true);
-  }, [sortBy, regionFilter, timeFilter, followingFilter, sexFilter, loadNextPage])
+    refetch();
+  }, [sortBy, regionFilter, timeFilter, followingFilter, sexFilter, refetch])
 
-  // Load initial page
-  useEffect(() => {
-    if (!raps.length && areMoreRapsToLoad) {
-      loadNextPage();
-    }
-  }, [loadNextPage, raps, areMoreRapsToLoad])
 
   return (
     <Virtuoso
       style={{
-        width: '100%'
+        width: '100%',
       }}
-      data={raps}
-      totalCount={raps.length}
+      data={rapData}
+      totalCount={rapData.length}
       endReached={() => {
-        if (areMoreRapsToLoad) {
-          loadNextPage();
+        if (hasNextPage) {
+          fetchNextPage();
         }
       }}
       overscan={400}
