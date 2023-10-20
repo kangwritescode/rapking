@@ -32,6 +32,7 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -81,33 +82,39 @@ model UserFollows {
   followedAt DateTime @default(now())
 
   @@id([followerId, followedId])
+  @@index([followedId])
 }
 
 model Rap {
-  id          String       @id @default(cuid())
-  title       String
-  content     String
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-  coverArtUrl String?
-  status      RapStatus    @default(DRAFT)
-  dateCreated DateTime     @default(now())
-  likesCount  Int          @default(0)
-  votes       RapVote[]
-  comments    RapComment[]
+  id            String         @id @default(cuid())
+  title         String
+  content       String
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  coverArtUrl   String?
+  status        RapStatus      @default(DRAFT)
+  dateCreated   DateTime       @default(now())
+  likesCount    Int            @default(0)
+  votes         RapVote[]
+  comments      RapComment[]
+
+  @@index([userId, dateCreated(sort: Desc)])
 }
 
 model RapComment {
-  id           String        @id @default(cuid())
-  content      String
-  userId       String
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  rapId        String
-  rap          Rap           @relation(fields: [rapId], references: [id], onDelete: Cascade)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  commentVotes CommentVote[]
-  likesCount   Int           @default(0)
+  id            String         @id @default(cuid())
+  content       String
+  userId        String
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rapId         String
+  rap           Rap            @relation(fields: [rapId], references: [id], onDelete: Cascade)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  commentVotes  CommentVote[]
+  likesCount    Int            @default(0)
+  notifications Notification[]
+
+  @@index([rapId, createdAt(sort: Desc)])
 }
 
 enum RapVoteType {
@@ -115,16 +122,18 @@ enum RapVoteType {
 }
 
 model RapVote {
-  id        String      @id @default(cuid())
-  type      RapVoteType
-  userId    String
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  rapId     String
-  rap       Rap         @relation(fields: [rapId], references: [id], onDelete: Cascade)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id           String         @id @default(cuid())
+  type         RapVoteType
+  userId       String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rapId        String
+  rap          Rap            @relation(fields: [rapId], references: [id], onDelete: Cascade)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  notifications Notification[]
 
   @@unique([userId, rapId])
+  @@index([rapId, createdAt(sort: Desc)])
 }
 
 enum CommentVoteType {
@@ -132,16 +141,18 @@ enum CommentVoteType {
 }
 
 model CommentVote {
-  id        String          @id @default(cuid())
-  type      CommentVoteType
-  userId    String
-  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  commentId String
-  comment   RapComment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  id           String          @id @default(cuid())
+  type         CommentVoteType
+  userId       String
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  commentId    String
+  comment      RapComment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  notifications Notification[]
 
   @@unique([userId, commentId])
+  @@index([commentId, createdAt(sort: Desc)])
 }
 
 model SocialLink {
@@ -152,6 +163,8 @@ model SocialLink {
   displayText String?
 
   User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
 }
 
 model VerificationToken {
@@ -165,8 +178,8 @@ model VerificationToken {
 enum NotificationType {
   FOLLOW
   RAP_COMMENT
-  RAP_LIKE
-  COMMENT_LIKE
+  RAP_VOTE
+  COMMENT_VOTE
 }
 
 model Notification {
@@ -178,6 +191,17 @@ model Notification {
   createdAt    DateTime         @default(now())
   notifierId   String
   notifierUser User             @relation("NotifierRelation", fields: [notifierId], references: [id], onDelete: Cascade)
+
+  commentId String?
+  comment   RapComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  rapVoteId String?
+  rapVote   RapVote? @relation(fields: [rapVoteId], references: [id], onDelete: Cascade)
+
+  commentVoteId String?
+  commentVote   CommentVote? @relation(fields: [commentVoteId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
 }
 
 enum RapStatus {
