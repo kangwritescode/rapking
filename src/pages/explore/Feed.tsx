@@ -1,11 +1,10 @@
-import React, { CSSProperties, useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 import { api } from 'src/utils/api';
-import { FixedSizeList as List, ListOnItemsRenderedProps } from 'react-window';
 import { Rap, User } from '@prisma/client';
 import FeedRapCard from './FeedRapCard';
-import FallbackSpinner from 'src/@core/components/spinner';
-import { useTheme } from '@mui/material';
+import { Divider } from '@mui/material';
+import { Virtuoso } from 'react-virtuoso';
 
 interface FeedProps {
   sortBy: SortByValue
@@ -55,43 +54,45 @@ function Feed({
     }
   }, [refetch])
 
+  // Reset state when filters change
   useEffect(() => {
     setPage(0);
     setRaps([]);
     setAreMoreRapsToLoad(true);
   }, [sortBy, regionFilter, timeFilter, followingFilter, sexFilter, loadNextPage])
 
+  // Load initial page
   useEffect(() => {
     if (!raps.length && areMoreRapsToLoad) {
       loadNextPage();
     }
   }, [loadNextPage, raps, areMoreRapsToLoad])
 
-  const handleItemsRendered = ({ visibleStopIndex }: ListOnItemsRenderedProps) => {
-    if (visibleStopIndex >= raps.length - 2 && areMoreRapsToLoad) {
-      loadNextPage()
-    }
-  };
-
-  const Row = ({ index, style }: { index: number; style: CSSProperties; }) => {
-    const rap = raps[index];
-    if (!rap) return <FallbackSpinner sx={style} />;
-
-    return <FeedRapCard rap={rap} sx={style} />;
-  };
-
-  const theme = useTheme();
-  const isMobile = theme.breakpoints.down('sm');
-
   return (
-    <List
-      height={isMobile ? 550 : 650}
-      itemCount={raps.length}
-      itemSize={182}
+    <Virtuoso
+      style={{
+        width: '100%'
+      }}
+      data={raps}
+      totalCount={raps.length}
+      endReached={() => {
+        if (areMoreRapsToLoad) {
+          loadNextPage();
+        }
+      }}
+      overscan={400}
       width='100%'
-      onItemsRendered={handleItemsRendered}>
-      {Row}
-    </List>
+      itemContent={(_, rap) => (
+        <>
+          <FeedRapCard
+            key={rap.id}
+            rap={rap}
+            sx={{ mt: 7, mb: 9 }}
+          />
+          <Divider />
+        </>
+      )}
+    />
   )
 }
 

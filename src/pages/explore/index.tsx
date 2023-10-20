@@ -34,7 +34,8 @@ function ExplorePage() {
           '80%'
         ],
         maxWidth: '45rem',
-        margin: 'auto'
+        margin: 'auto',
+        height: '100%',
       }}>
       <Box
         sx={{

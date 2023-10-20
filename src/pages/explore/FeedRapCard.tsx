@@ -1,4 +1,4 @@
-import { Avatar, Box, CardMedia, Divider, Stack, SxProps, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Avatar, Box, CardMedia, Stack, SxProps, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Rap, User } from '@prisma/client'
 import React from 'react'
 import { BUCKET_URL } from 'src/shared/constants';
@@ -27,7 +27,7 @@ function FeedRapCard({ rap, sx }: FeedRapCardProps) {
   }
 
   let formattedContent = convert(content);
-  const maxLength = isMediumView ? 100 : 160;
+  const maxLength = isMobileView ? 50 : isMediumView ? 100 : 160;
 
   if (formattedContent.length > maxLength) {
       formattedContent = `${formattedContent.slice(0, maxLength)}...`;
@@ -58,7 +58,7 @@ function FeedRapCard({ rap, sx }: FeedRapCardProps) {
           width='calc(100% - 100px)'
           pr={theme.spacing(12)}
           sx={{
-            wordBreak: 'break-all',
+            wordBreak: 'keep-all',
             cursor: 'pointer',
           }}
           onClick={navigateToRap}>
@@ -67,7 +67,7 @@ function FeedRapCard({ rap, sx }: FeedRapCardProps) {
             fontWeight='bold'>
             {title}
           </Typography>
-          {isMobileView ? null : formattedContent}
+          {formattedContent}
         </Box>
         <CardMedia
           component='img'
@@ -86,10 +86,6 @@ function FeedRapCard({ rap, sx }: FeedRapCardProps) {
           }}
         />
       </Stack>
-      <Divider
-        sx={{
-          marginTop: theme.spacing(6),
-        }} />
     </Box>
   )
 }
