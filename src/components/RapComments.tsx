@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from 'react'
 import RapComment from './RapComment'
-import { Divider } from '@mui/material'
+import { Box, CircularProgress, Divider } from '@mui/material'
 import { api } from 'src/utils/api';
 import { Virtuoso } from 'react-virtuoso';
 
@@ -38,7 +38,6 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
       data={rapCommentsData}
       totalCount={rapCommentsData.length}
       endReached={() => {
-        console.log('fetching next page')
         if (hasNextPage) {
           fetchNextPage();
         }
@@ -57,6 +56,23 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
           <Divider />
         </Fragment>
       )}
+      components={{
+        Footer: () => (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              py: 3,
+              height: 100,
+            }}
+          >
+            {hasNextPage && (
+              <CircularProgress color='inherit' size={20} />
+            )}
+          </Box>
+        )
+      }}
     />
   )
 }
