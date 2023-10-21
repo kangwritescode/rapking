@@ -105,6 +105,7 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
         <RapCommentTextEditor
           editor={editor}
           submitButtonIsDisabled={!isValid || isSubmitting || isLoading}
+          showSubmitLoader={isSubmitting || isLoading}
         />
       </form>
     </Box>

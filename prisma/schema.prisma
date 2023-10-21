@@ -86,17 +86,18 @@ model UserFollows {
 }
 
 model Rap {
-  id            String         @id @default(cuid())
-  title         String
-  content       String
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        String
-  coverArtUrl   String?
-  status        RapStatus      @default(DRAFT)
-  dateCreated   DateTime       @default(now())
-  likesCount    Int            @default(0)
-  votes         RapVote[]
-  comments      RapComment[]
+  id           String         @id @default(cuid())
+  title        String
+  content      String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  coverArtUrl  String?
+  status       RapStatus      @default(DRAFT)
+  dateCreated  DateTime       @default(now())
+  likesCount   Int            @default(0)
+  votes        RapVote[]
+  comments     RapComment[]
+  Notification Notification[]
 
   @@index([userId, dateCreated(sort: Desc)])
 }
@@ -122,14 +123,14 @@ enum RapVoteType {
 }
 
 model RapVote {
-  id           String         @id @default(cuid())
-  type         RapVoteType
-  userId       String
-  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  rapId        String
-  rap          Rap            @relation(fields: [rapId], references: [id], onDelete: Cascade)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  id            String         @id @default(cuid())
+  type          RapVoteType
+  userId        String
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rapId         String
+  rap           Rap            @relation(fields: [rapId], references: [id], onDelete: Cascade)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   notifications Notification[]
 
   @@unique([userId, rapId])
@@ -141,14 +142,14 @@ enum CommentVoteType {
 }
 
 model CommentVote {
-  id           String          @id @default(cuid())
-  type         CommentVoteType
-  userId       String
-  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  commentId    String
-  comment      RapComment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  id            String          @id @default(cuid())
+  type          CommentVoteType
+  userId        String
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  commentId     String
+  comment       RapComment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
   notifications Notification[]
 
   @@unique([userId, commentId])
@@ -184,13 +185,16 @@ enum NotificationType {
 
 model Notification {
   id           String           @id @default(cuid())
-  userId       String
-  recipient    User             @relation("UserRelation", fields: [userId], references: [id], onDelete: Cascade)
+  recipientId  String
+  recipient    User             @relation("UserRelation", fields: [recipientId], references: [id], onDelete: Cascade)
   type         NotificationType
   read         Boolean          @default(false)
   createdAt    DateTime         @default(now())
   notifierId   String
   notifierUser User             @relation("NotifierRelation", fields: [notifierId], references: [id], onDelete: Cascade)
+
+  rapId String?
+  rap   Rap?    @relation(fields: [rapId], references: [id], onDelete: Cascade)
 
   commentId String?
   comment   RapComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
@@ -201,7 +205,7 @@ model Notification {
   commentVoteId String?
   commentVote   CommentVote? @relation(fields: [commentVoteId], references: [id], onDelete: Cascade)
 
-  @@index([userId, createdAt(sort: Desc)])
+  @@index([recipientId, createdAt(sort: Desc)])
 }
 
 enum RapStatus {

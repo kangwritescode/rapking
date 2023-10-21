@@ -5,7 +5,8 @@ import {
   protectedProcedure,
   publicProcedure
 } from "src/server/api/trpc";
-import { RapComment, User } from "@prisma/client";
+import { NotificationType, RapComment, User } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 
 export type RapCommentWithUserData = RapComment & {
   user: User;
@@ -68,11 +69,34 @@ export const rapComment = createTRPCRouter({
 
       const { content, userId, rapId } = input;
 
+      const rap = await ctx.prisma.rap.findUnique({
+        where: {
+          id: rapId,
+        },
+      });
+
+      if (!rap) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Rap doesn't exist",
+        });
+      }
+
       const rapComment = await ctx.prisma.rapComment.create({
         data: {
           content,
           userId,
           rapId,
+        },
+      });
+
+      await ctx.prisma.notification.create({
+        data: {
+          type: NotificationType.RAP_COMMENT,
+          recipientId: rap.userId,
+          notifierId: userId,
+          commentId: rapComment.id,
+          rapId: rap.id,
         },
       });
 

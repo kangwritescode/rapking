@@ -17,6 +17,7 @@ import { Icon } from '@iconify/react'
 
 // ** Third Party Components
 import PerfectScrollbarComponent from 'react-perfect-scrollbar'
+import { compile } from 'html-to-text';
 
 // ** Type Imports
 import { ThemeColor } from 'src/@core/layouts/types'
@@ -29,28 +30,31 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 
 // ** Util Import
 import { getInitials } from 'src/@core/utils/get-initials'
+import { api } from 'src/utils/api'
+import { NotificationWithAssociatedData } from 'src/server/api/routers/notifications'
+import { getFormattedDate } from 'src/@core/utils/get-formatted-date'
 
 export type NotificationsType = {
   meta: string
   title: string
   subtitle: string
 } & (
-  | { avatarAlt: string; avatarImg: string; avatarText?: never; avatarColor?: never; avatarIcon?: never }
-  | {
+    | { avatarAlt: string; avatarImg: string; avatarText?: never; avatarColor?: never; avatarIcon?: never }
+    | {
       avatarAlt?: never
       avatarImg?: never
       avatarText: string
       avatarIcon?: never
       avatarColor?: ThemeColor
     }
-  | {
+    | {
       avatarAlt?: never
       avatarImg?: never
       avatarText?: never
       avatarIcon: ReactNode
       avatarColor?: ThemeColor
     }
-)
+  )
 interface Props {
   settings: Settings
   notifications: NotificationsType[]
@@ -121,7 +125,7 @@ const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: bool
 
 const NotificationDropdown = (props: Props) => {
   // ** Props
-  const { settings, notifications } = props
+  const { settings } = props
 
   // ** States
   const [anchorEl, setAnchorEl] = useState<(EventTarget & Element) | null>(null)
@@ -132,6 +136,12 @@ const NotificationDropdown = (props: Props) => {
   // ** Vars
   const { direction } = settings
 
+  // ** Utils
+  const htmlToText = compile();
+
+  // ** Query
+  const { data: notifications } = api.notifications.getUserNotifications.useQuery();
+
   const handleDropdownOpen = (event: SyntheticEvent) => {
     setAnchorEl(event.currentTarget)
   }
@@ -140,21 +150,15 @@ const NotificationDropdown = (props: Props) => {
     setAnchorEl(null)
   }
 
-  const RenderAvatar = ({ notification }: { notification: NotificationsType }) => {
-    const { avatarAlt, avatarImg, avatarIcon, avatarText, avatarColor } = notification
+  const RenderAvatar = ({ notification }: { notification: NotificationWithAssociatedData }) => {
+    const { notifierUser, type } = notification
 
-    if (avatarImg) {
-      return <Avatar alt={avatarAlt} src={avatarImg} />
-    } else if (avatarIcon) {
-      return (
-        <Avatar skin='light' color={avatarColor}>
-          {avatarIcon}
-        </Avatar>
-      )
+    if (type === 'RAP_COMMENT' && notifierUser?.profileImageUrl) {
+      return <Avatar alt='notificatino-avatar' src={notifierUser?.profileImageUrl} />
     } else {
       return (
-        <Avatar skin='light' color={avatarColor}>
-          {getInitials(avatarText as string)}
+        <Avatar skin='light' color='info'>
+          {getInitials(notifierUser?.username as string)}
         </Avatar>
       )
     }
@@ -166,7 +170,7 @@ const NotificationDropdown = (props: Props) => {
         <Badge
           color='error'
           variant='dot'
-          invisible={!notifications.length}
+          invisible={Boolean(notifications?.length || true)}
           sx={{
             '& .MuiBadge-badge': { top: 4, right: 4, boxShadow: theme => `0 0 0 2px ${theme.palette.background.paper}` }
           }}
@@ -191,27 +195,40 @@ const NotificationDropdown = (props: Props) => {
             <CustomChip
               skin='light'
               size='small'
-              color='primary'
-              label={`${notifications.length} New`}
+              color='secondary'
+              label={`${notifications?.length || 0} New`}
               sx={{ height: 20, fontSize: '0.75rem', fontWeight: 500, borderRadius: '10px' }}
             />
           </Box>
         </MenuItem>
         <ScrollWrapper hidden={hidden}>
-          {notifications.map((notification: NotificationsType, index: number) => (
-            <MenuItem key={index} onClick={handleDropdownClose}>
-              <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-                <RenderAvatar notification={notification} />
-                <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                  <MenuItemTitle>{notification.title}</MenuItemTitle>
-                  <MenuItemSubtitle variant='body2'>{notification.subtitle}</MenuItemSubtitle>
+          {notifications?.map((notification, index) => {
+            let title = '';
+            if (notification.type === 'RAP_COMMENT') {
+              title = `${notification.notifierUser?.username} commented on ${notification.rap?.title}`;
+            }
+            let subtitle = '';
+            if (notification.type === 'RAP_COMMENT') {
+              subtitle = notification.comment ? htmlToText(notification.comment.content) : '';
+            }
+
+            const notificationDate = getFormattedDate(notification.createdAt)
+
+            return (
+              <MenuItem key={index} onClick={handleDropdownClose}>
+                <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+                  <RenderAvatar notification={notification} />
+                  <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
+                    <MenuItemTitle>{title}</MenuItemTitle>
+                    <MenuItemSubtitle variant='body2'>{subtitle}</MenuItemSubtitle>
+                  </Box>
+                  <Typography variant='caption' sx={{ color: 'text.disabled' }}>
+                    {notificationDate}
+                  </Typography>
                 </Box>
-                <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                  {notification.meta}
-                </Typography>
-              </Box>
-            </MenuItem>
-          ))}
+              </MenuItem>
+            )
+          })}
         </ScrollWrapper>
         <MenuItem
           disableRipple

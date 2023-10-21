@@ -1,14 +1,15 @@
 import { RichTextEditor } from '@mantine/tiptap';
 import { Editor } from '@tiptap/react';
-import { Box, Button, useTheme } from '@mui/material';
+import { Box, Button, CircularProgress, useTheme } from '@mui/material';
 
 
 interface RapCommentTextEditorProps {
   editor: Editor | null;
   submitButtonIsDisabled?: boolean;
+  showSubmitLoader?: boolean;
 }
 
-export default function RapCommentTextEditor({ editor, submitButtonIsDisabled }: RapCommentTextEditorProps) {
+export default function RapCommentTextEditor({ editor, submitButtonIsDisabled, showSubmitLoader }: RapCommentTextEditorProps) {
 
   const theme = useTheme()
 
@@ -75,8 +76,10 @@ export default function RapCommentTextEditor({ editor, submitButtonIsDisabled }:
             sx={{
               borderRadius: '20px',
               textTransform: 'unset',
+              width: '5rem',
+              height: '2rem',
             }}>
-            Submit
+              {showSubmitLoader ? <CircularProgress color='inherit' size={18} /> : 'Submit'}
           </Button>
         </Box>
       </RichTextEditor.Toolbar>

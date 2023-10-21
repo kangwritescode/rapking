@@ -10,6 +10,7 @@ import { rapComment } from "./routers/rapComment";
 import { commentVoteRouter } from "./routers/commentVote";
 import { leaderboardRouter } from "./routers/leaderboard";
 import { feedRouter } from "./routers/feed";
+import { notificationsRouter } from "./routers/notifications";
 
 /**
  * This is the primary router for your server.
@@ -28,6 +29,7 @@ export const appRouter = createTRPCRouter({
   commentVote: commentVoteRouter,
   leaderboard: leaderboardRouter,
   feed: feedRouter,
+  notifications: notificationsRouter
 });
 
 // export type definition of API
