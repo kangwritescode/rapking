@@ -1,10 +1,8 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import RapComment from './RapComment'
-import { Box, Divider } from '@mui/material'
+import { Divider } from '@mui/material'
 import { api } from 'src/utils/api';
-import { RapCommentWithUserData } from 'src/server/api/routers/rapComment';
-import { useInView } from 'react-intersection-observer';
-import FallbackSpinner from 'src/@core/components/spinner';
+import { Virtuoso } from 'react-virtuoso';
 
 interface RapCommentsProps {
   sortBy: 'POPULAR' | 'RECENT';
@@ -13,70 +11,70 @@ interface RapCommentsProps {
 
 function RapComments({ sortBy, rapId }: RapCommentsProps) {
 
-  const { ref, inView } = useInView();
-
-  const [areMoreToLoad, setAreMoreToLoad] = useState(true);
-  const [page, setPage] = useState(0);
-  const [rapComments, setRapComments] = useState<RapCommentWithUserData[]>([]);
-
-  const { refetch } = api.rapComment.getRapComments.useQuery({
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    refetch
+  } = api.rapComment.getRapComments.useInfiniteQuery({
     rapId: rapId as string,
     sortBy,
-    page,
-    pageSize: 6,
+    limit: 6,
   }, {
-    enabled: !!rapId,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
-
-  const loadNextPage = useCallback(async () => {
-    const { status, data: rapCommentsData } = await refetch();
-    if (status === 'success') {
-      if (rapCommentsData.length) {
-        setRapComments((prevRaps) => [...prevRaps, ...rapCommentsData]);
-        setPage((prevPage) => prevPage + 1);
-      } else {
-        setAreMoreToLoad(false);
-      }
-    }
-  }, [refetch])
-
-  // Load initial page
-  useEffect(() => {
-    if (!rapComments.length && areMoreToLoad) {
-      loadNextPage();
-    }
-  }, [loadNextPage, rapComments, areMoreToLoad])
-
-  // Load next page when inView
-  useEffect(() => {
-    if (inView && areMoreToLoad) {
-      loadNextPage();
-    }
-  }, [inView, areMoreToLoad, loadNextPage])
 
   // Reset state when filters change
   useEffect(() => {
-    setPage(0);
-    setRapComments([]);
-    setAreMoreToLoad(true);
-  }, [sortBy])
+    refetch();
+  }, [sortBy, refetch])
 
-  return <>
-    {rapComments?.map((comment) =>
-      <Fragment key={comment.id}>
-        <RapComment
-          sx={{
-            py: 5
-          }}
-          comment={comment}
-        />
-        <Divider />
-      </Fragment>
-    )}
-    <Box ref={ref} height='100px'>
-      {inView && areMoreToLoad && <FallbackSpinner sx={{ height: '100px' }} />}
-    </Box>
-  </>
+  const rapCommentsData = data?.pages.flatMap(page => page.rapComments) ?? [];
+
+  const ids = new Set();
+  const hasDuplicates = rapCommentsData.some((comment) => {
+    if (ids.has(comment.id)) {
+      console.warn("Duplicate comment ID:", comment.id);
+
+      return true;
+    }
+    ids.add(comment.id);
+
+    return false;
+  });
+
+  console.log("hasDuplicates:", hasDuplicates);
+  console.log(rapCommentsData.map((comment) => comment));
+
+  return (
+    <Virtuoso
+      style={{
+        width: '100%',
+      }}
+      data={rapCommentsData}
+      totalCount={rapCommentsData.length}
+      endReached={() => {
+        console.log('fetching next page')
+        if (hasNextPage) {
+          fetchNextPage();
+        }
+      }}
+      overscan={400}
+      width='100%'
+      itemContent={(_, rapComment) => (
+        <Fragment key={rapComment.id}>
+          <RapComment
+            sx={{
+              py: 5
+            }}
+            key={rapComment.id}
+            comment={rapComment}
+          />
+          <Divider />
+        </Fragment>
+      )}
+    />
+  )
 }
 
 export default RapComments

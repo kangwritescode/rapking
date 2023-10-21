@@ -72,6 +72,7 @@ function RapCommentDrawer({
       <Box
         width="24rem"
         maxWidth='24rem'
+        height='100%'
         px={5}>
           <RapComments rapId={rapId} sortBy={sortBy} />
       </Box>

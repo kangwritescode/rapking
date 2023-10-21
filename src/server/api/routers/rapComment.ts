@@ -16,11 +16,11 @@ export const rapComment = createTRPCRouter({
     .input(z.object({
       rapId: z.string(),
       sortBy: z.enum(["POPULAR", "RECENT"]),
-      page: z.number(),
-      pageSize: z.number(),
+      limit: z.number(),
+      cursor: z.string().optional(),
     }))
     .query(async ({ input, ctx }) => {
-      const { rapId, sortBy, page, pageSize } = input;
+      const { rapId, sortBy, cursor, limit } = input;
 
       let orderBy = {};
       if (sortBy === 'RECENT') {
@@ -28,12 +28,11 @@ export const rapComment = createTRPCRouter({
           createdAt: 'desc',
         };
       } else if (sortBy === 'POPULAR') {
-        orderBy = {
-          likesCount: 'desc',
-        };
+        orderBy = [
+          { likesCount: 'desc' },
+          { id: 'asc' }
+        ];
       }
-
-      const skip = page * pageSize;
 
       const rapComments = await ctx.prisma.rapComment.findMany({
         where: {
@@ -43,11 +42,21 @@ export const rapComment = createTRPCRouter({
         include: {
           user: true,
         },
-        skip,
-        take: pageSize,
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined
       });
 
-      return rapComments;
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (rapComments.length > limit) {
+        const nextItem = rapComments.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      return {
+        rapComments,
+        nextCursor,
+      };
     }),
   postComment: protectedProcedure
     .input(z.object({
