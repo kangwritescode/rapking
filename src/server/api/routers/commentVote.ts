@@ -126,4 +126,20 @@ export const commentVoteRouter = createTRPCRouter({
 
       return !!vote;
     }),
+  getCommentLikesCount: publicProcedure
+    .input(z.object({
+      commentId: z.string(),
+    }))
+    .query(async ({ input, ctx }) => {
+      const { commentId } = input;
+
+      const count = await ctx.prisma.commentVote.count({
+        where: {
+          commentId,
+          type: CommentVoteType.LIKE,
+        },
+      });
+
+      return count;
+    }),
 });

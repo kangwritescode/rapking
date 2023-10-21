@@ -1,17 +1,18 @@
 import { Box, SxProps } from '@mui/material';
-import { RapComment, User } from '@prisma/client';
+import { useSession } from 'next-auth/react';
 import React, { useEffect, useRef, useState } from 'react'
 import FireIconButton from 'src/components/FireIconButton';
 import { api } from 'src/utils/api';
 
 interface CommentLikeButtonProps {
-  rapCommentData?: (RapComment & {
-    user?: User;
-  }) | null;
+  rapCommentId?: string;
   sx?: SxProps;
 }
 
-function CommentLikeButton({ rapCommentData, sx }: CommentLikeButtonProps) {
+function CommentLikeButton({ rapCommentId, sx }: CommentLikeButtonProps) {
+
+  const { data } = useSession()
+  const currentUserId = data?.user?.id;
 
   // State
   const [currentUserLikedRapComment, setCurrentUserLikedRapComment] = useState<boolean>(false);
@@ -20,12 +21,16 @@ function CommentLikeButton({ rapCommentData, sx }: CommentLikeButtonProps) {
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   // Queries
-  const { data: currentUser } = api.user.getCurrentUser.useQuery();
-  const { data: likeExists } = api.commentVote.likeExists.useQuery({
-    commentId: rapCommentData?.id as string,
-    userId: currentUser?.id as string,
+  const { data: commentLikesCount } = api.commentVote.getCommentLikesCount.useQuery({
+    commentId: rapCommentId as string,
   }, {
-    enabled: Boolean(currentUser?.id && rapCommentData?.id)
+    enabled: Boolean(rapCommentId)
+  });
+  const { data: likeExists } = api.commentVote.likeExists.useQuery({
+    commentId: rapCommentId as string,
+    userId: currentUserId as string,
+  }, {
+    enabled: Boolean(currentUserId && rapCommentId)
   });
 
   // Mutations
@@ -33,11 +38,11 @@ function CommentLikeButton({ rapCommentData, sx }: CommentLikeButtonProps) {
   const { mutate: deleteLike } = api.commentVote.deleteVote.useMutation();
 
   // Invalidators
-  const { invalidate: invalidateRapComments } = api.useContext().rapComment.getRapComments;
+  const { invalidate: invalidateLikesCount } = api.useContext().commentVote.getCommentLikesCount;
   const { invalidate: invalidateLikeExists } = api.useContext().commentVote.likeExists;
 
   const invalidateCache = () => {
-    invalidateRapComments();
+    invalidateLikesCount();
     invalidateLikeExists();
   }
 
@@ -46,19 +51,22 @@ function CommentLikeButton({ rapCommentData, sx }: CommentLikeButtonProps) {
     clearTimeout(debounceTimer.current as NodeJS.Timeout);
     debounceTimer.current = setTimeout(() => {
       action();
-    }, 1000);
+    }, 300);
   };
 
   const handleLike = () => {
-    if (!currentUser?.id || !rapCommentData?.id) return;
+    if (!currentUserId || !rapCommentId) return;
 
     setCurrentUserLikedRapComment(true);
     setRapCommentLikesCount(prevCount => prevCount + 1);
     handleDebouncedAPI(() => {
       createLike({
-        commentId: rapCommentData.id,
-        userId: currentUser.id,
+        commentId: rapCommentId,
+        userId: currentUserId,
       }, {
+        onSuccess: () => {
+          invalidateCache()
+        },
         onError: () => {
           invalidateCache()
         }
@@ -67,16 +75,19 @@ function CommentLikeButton({ rapCommentData, sx }: CommentLikeButtonProps) {
   };
 
   const handleUnlike = () => {
-    if (!currentUser?.id || !rapCommentData?.id) return;
+    if (!currentUserId || !rapCommentId) return;
 
     setCurrentUserLikedRapComment(false);
     setRapCommentLikesCount(prevCount => prevCount - 1);
 
     handleDebouncedAPI(() => {
       deleteLike({
-        commentId: rapCommentData.id,
-        userId: currentUser.id,
+        commentId: rapCommentId,
+        userId: currentUserId,
       }, {
+        onSuccess: () => {
+          invalidateCache()
+        },
         onError: () => {
           invalidateCache()
         }
@@ -89,10 +100,10 @@ function CommentLikeButton({ rapCommentData, sx }: CommentLikeButtonProps) {
   }, [likeExists])
 
   useEffect(() => {
-    if (rapCommentData?.likesCount) {
-      setRapCommentLikesCount(rapCommentData?.likesCount || 0);
+    if (commentLikesCount) {
+      setRapCommentLikesCount(commentLikesCount || 0);
     }
-  }, [rapCommentData?.likesCount])
+  }, [commentLikesCount])
 
   useEffect(() => {
     return () => {

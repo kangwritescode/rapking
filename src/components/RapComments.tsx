@@ -19,32 +19,16 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
   } = api.rapComment.getRapComments.useInfiniteQuery({
     rapId: rapId as string,
     sortBy,
-    limit: 6,
+    limit: 5,
   }, {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 
-  // Reset state when filters change
   useEffect(() => {
     refetch();
   }, [sortBy, refetch])
 
   const rapCommentsData = data?.pages.flatMap(page => page.rapComments) ?? [];
-
-  const ids = new Set();
-  const hasDuplicates = rapCommentsData.some((comment) => {
-    if (ids.has(comment.id)) {
-      console.warn("Duplicate comment ID:", comment.id);
-
-      return true;
-    }
-    ids.add(comment.id);
-
-    return false;
-  });
-
-  console.log("hasDuplicates:", hasDuplicates);
-  console.log(rapCommentsData.map((comment) => comment));
 
   return (
     <Virtuoso
@@ -59,7 +43,7 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
           fetchNextPage();
         }
       }}
-      overscan={400}
+      overscan={200}
       width='100%'
       itemContent={(_, rapComment) => (
         <Fragment key={rapComment.id}>

@@ -43,7 +43,7 @@ function RapComment({ comment, sx }: RapCommentProps) {
           fontSize: 14,
         }}
       />
-      <CommentLikeButton rapCommentData={comment} sx={{ ml: -1 }} />
+      <CommentLikeButton rapCommentId={comment.id} sx={{ ml: -1 }} />
     </Box>
   )
 }
