@@ -6,6 +6,7 @@ import {
   publicProcedure
 } from "src/server/api/trpc";
 import { RapVoteType } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 
 export const rapVote = createTRPCRouter({
   getRapLikes: publicProcedure
@@ -28,11 +29,10 @@ export const rapVote = createTRPCRouter({
     .input(z.object({
       userId: z.string(),
       rapId: z.string(),
-      authorId: z.string(),
     }))
     .mutation(async ({ input, ctx }) => {
 
-      const { userId, rapId, authorId } = input;
+      const { userId, rapId } = input;
 
       // Check if vote exists
       const vote = await ctx.prisma.rapVote.findUnique({
@@ -45,7 +45,26 @@ export const rapVote = createTRPCRouter({
       });
 
       if (vote) {
-        throw new Error("Vote already exists");
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Vote already exists",
+        });
+      }
+
+      const rapData = await ctx.prisma.rap.findUnique({
+        where: {
+          id: rapId,
+        },
+        select: {
+          userId: true,
+        },
+      });
+
+      if (!rapData) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Rap not found",
+        });
       }
 
       // Start transaction for creating vote and updating rap and user points
@@ -69,7 +88,7 @@ export const rapVote = createTRPCRouter({
         }),
         ctx.prisma.user.update({
           where: {
-            id: authorId,
+            id: rapData.userId,
           },
           data: {
             points: {
@@ -79,17 +98,16 @@ export const rapVote = createTRPCRouter({
         })
       ])
 
-      return {createdVote, rapLikesCount: rap.likesCount};
+      return { createdVote, rapLikesCount: rap.likesCount };
     }),
   deleteLike: protectedProcedure
     .input(z.object({
       userId: z.string(),
       rapId: z.string(),
-      authorId: z.string(),
     }))
     .mutation(async ({ input, ctx }) => {
 
-      const { userId, rapId, authorId } = input;
+      const { userId, rapId } = input;
 
       // Check if vote exists
       const vote = await ctx.prisma.rapVote.findUnique({
@@ -103,6 +121,22 @@ export const rapVote = createTRPCRouter({
 
       if (!vote) {
         throw new Error("Vote does not exist");
+      }
+
+      const rapData = await ctx.prisma.rap.findUnique({
+        where: {
+          id: rapId,
+        },
+        select: {
+          userId: true,
+        },
+      });
+
+      if (!rapData) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Rap not found",
+        });
       }
 
       const [deletedVote, updatedRap] = await ctx.prisma.$transaction([
@@ -126,7 +160,7 @@ export const rapVote = createTRPCRouter({
         }),
         ctx.prisma.user.update({
           where: {
-            id: authorId,
+            id: rapData.userId,
           },
           data: {
             points: {
@@ -136,7 +170,7 @@ export const rapVote = createTRPCRouter({
         })
       ]);
 
-      return {deletedVote, rapLikesCount: updatedRap.likesCount};
+      return { deletedVote, rapLikesCount: updatedRap.likesCount };
     }),
   likeExists: publicProcedure
     .input(z.object({
@@ -157,5 +191,21 @@ export const rapVote = createTRPCRouter({
       });
 
       return !!vote;
+    }),
+  getRapLikesCount: publicProcedure
+    .input(z.object({
+      rapId: z.string(),
+    }))
+    .query(async ({ input, ctx }) => {
+      const { rapId } = input;
+
+      const count = await ctx.prisma.rapVote.count({
+        where: {
+          rapId,
+          type: RapVoteType.LIKE,
+        },
+      });
+
+      return count;
     }),
 });

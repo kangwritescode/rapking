@@ -34,7 +34,7 @@ function RapBar({ rapData }: RapBarProps) {
         rapId={rapData?.id as string}
       />
       <Box display="flex">
-       <RapLikeButton rapData={rapData} />
+       <RapLikeButton rapId={rapData?.id} />
         <Box sx={{
           ml: theme.spacing(5),
           display: 'flex',

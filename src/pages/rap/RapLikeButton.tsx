@@ -1,16 +1,17 @@
 import { Box } from '@mui/material';
-import { Rap, User } from '@prisma/client';
+import { useSession } from 'next-auth/react';
 import React, { useEffect, useRef, useState } from 'react'
 import FireIconButton from 'src/components/FireIconButton';
 import { api } from 'src/utils/api';
 
 interface RapLikeButtonProps {
-  rapData?: (Rap & {
-    user?: User;
-  }) | null;
+  rapId?: string;
 }
 
-function RapLikeButton({ rapData }: RapLikeButtonProps) {
+function RapLikeButton({ rapId }: RapLikeButtonProps) {
+  // Auth state
+  const { data } = useSession();
+  const currentUserId = data?.user?.id;
 
   // State
   const [currentUserLikedRap, setCurrentUserLikedRap] = useState<boolean>(false);
@@ -19,12 +20,16 @@ function RapLikeButton({ rapData }: RapLikeButtonProps) {
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   // Queries
-  const { data: currentUser } = api.user.getCurrentUser.useQuery();
   const { data: likeExists } = api.rapVote.likeExists.useQuery({
-    rapId: rapData?.id as string,
-    userId: currentUser?.id as string,
+    rapId: rapId as string,
+    userId: currentUserId as string,
   }, {
-    enabled: Boolean(currentUser?.id && rapData?.id)
+    enabled: Boolean(currentUserId && rapId)
+  });
+  const { data: rapLikesCountData } = api.rapVote.getRapLikesCount.useQuery({
+    rapId: rapId as string,
+  }, {
+    enabled: Boolean(rapId)
   });
 
   // Mutations
@@ -32,11 +37,11 @@ function RapLikeButton({ rapData }: RapLikeButtonProps) {
   const { mutate: deleteLike } = api.rapVote.deleteLike.useMutation();
 
   // Invalidators
-  const { invalidate: invalidateRap } = api.useContext().rap.getRap;
+  const { invalidate: invalidateRapLikesCount } = api.useContext().rapVote.getRapLikesCount;
   const { invalidate: invalidateLikeExists } = api.useContext().rapVote.likeExists;
 
   const invalidateCache = () => {
-    invalidateRap();
+    invalidateRapLikesCount();
     invalidateLikeExists();
   }
 
@@ -45,20 +50,22 @@ function RapLikeButton({ rapData }: RapLikeButtonProps) {
     clearTimeout(debounceTimer.current as NodeJS.Timeout);
     debounceTimer.current = setTimeout(() => {
       action();
-    }, 1000);
+    }, 300);
   };
 
   const handleLike = () => {
-    if (!currentUser?.id || !rapData?.id) return;
+    if (!currentUserId || !rapId) return;
 
     setCurrentUserLikedRap(true);
     setRapLikesCount(prevCount => prevCount + 1);
     handleDebouncedAPI(() => {
       createLike({
-        rapId: rapData.id,
-        userId: currentUser.id,
-        authorId: rapData.user?.id as string,
+        rapId: rapId,
+        userId: currentUserId,
       }, {
+        onSuccess: () => {
+          invalidateCache()
+        },
         onError: () => {
           invalidateCache()
         }
@@ -67,17 +74,19 @@ function RapLikeButton({ rapData }: RapLikeButtonProps) {
   };
 
   const handleUnlike = () => {
-    if (!currentUser?.id || !rapData?.id) return;
+    if (!currentUserId || !rapId) return;
 
     setCurrentUserLikedRap(false);
     setRapLikesCount(prevCount => prevCount - 1);
 
     handleDebouncedAPI(() => {
       deleteLike({
-        rapId: rapData.id,
-        userId: currentUser.id,
-        authorId: rapData.user?.id as string,
+        rapId: rapId,
+        userId: currentUserId,
       }, {
+        onSuccess: () => {
+          invalidateCache()
+        },
         onError: () => {
           invalidateCache()
         }
@@ -90,10 +99,8 @@ function RapLikeButton({ rapData }: RapLikeButtonProps) {
   }, [likeExists])
 
   useEffect(() => {
-    if (rapData?.likesCount) {
-      setRapLikesCount(rapData?.likesCount || 0);
-    }
-  }, [rapData?.likesCount])
+      setRapLikesCount(rapLikesCountData || 0);
+  }, [rapLikesCountData])
 
   useEffect(() => {
     return () => {
