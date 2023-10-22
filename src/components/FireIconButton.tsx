@@ -6,8 +6,9 @@ interface FireIconButtonProps {
   onClick: () => void
   isColored?: boolean
   sx?: SxProps
+  disabled?: boolean
 }
-function FireIconButton({ onClick, isColored, sx }: FireIconButtonProps) {
+function FireIconButton({ onClick, isColored, sx, disabled }: FireIconButtonProps) {
   return (
     <IconButton
       sx={{
@@ -15,6 +16,7 @@ function FireIconButton({ onClick, isColored, sx }: FireIconButtonProps) {
         ...sx
       }}
       onClick={onClick}
+      disabled={disabled}
     >
       <Icon
         {...(isColored ? { color: 'orange' } : {})}

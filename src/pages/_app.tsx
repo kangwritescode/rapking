@@ -15,6 +15,7 @@ import themeConfig from 'src/configs/themeConfig'
 
 // ** Third Party Import
 import { Toaster } from 'react-hot-toast'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 // ** Component Imports
 import UserLayout from 'src/layouts/UserLayout'
@@ -103,6 +104,7 @@ const App: any = (props: ExtendedAppProps) => {
                         <FallbackSpinner />
                       }>
                         {getLayout(<Component {...pageProps} />)}
+                        <ReactQueryDevtools initialIsOpen={false} />
                       </CreateProfileGuard>
                     </ LocalizationProvider>
                   <ReactHotToast>

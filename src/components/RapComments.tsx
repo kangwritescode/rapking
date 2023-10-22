@@ -1,8 +1,10 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useCallback, useEffect } from 'react'
 import RapComment from './RapComment'
 import { Box, CircularProgress, Divider } from '@mui/material'
 import { api } from 'src/utils/api';
 import { Virtuoso } from 'react-virtuoso';
+import { useQueryClient } from '@tanstack/react-query';
+import { getQueryKey } from '@trpc/react-query';
 
 interface RapCommentsProps {
   sortBy: 'POPULAR' | 'RECENT';
@@ -15,18 +17,33 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
     data,
     fetchNextPage,
     hasNextPage,
-    refetch
   } = api.rapComment.getRapComments.useInfiniteQuery({
     rapId: rapId as string,
     sortBy,
     limit: 5,
   }, {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchIntervalInBackground: false,
+    refetchOnReconnect: false,
   });
 
+  const queryClient = useQueryClient();
+
+  const clearQueryCache = useCallback(() => {
+    const postListKey = getQueryKey(api.rapComment.getRapComments, {
+      rapId: rapId as string,
+      sortBy,
+      limit: 5,
+    }, 'infinite');
+    queryClient.removeQueries(postListKey);
+    queryClient.setQueryDefaults(postListKey, {});
+  }, [queryClient, rapId, sortBy]);
+
   useEffect(() => {
-    refetch();
-  }, [sortBy, refetch])
+    return clearQueryCache;
+  }, [clearQueryCache]);
 
   const rapCommentsData = data?.pages.flatMap(page => page.rapComments) ?? [];
 
