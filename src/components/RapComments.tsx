@@ -1,6 +1,6 @@
 import React, { Fragment, useCallback, useEffect } from 'react'
 import RapComment from './RapComment'
-import { Box, CircularProgress, Divider } from '@mui/material'
+import { CircularProgress, Divider, Stack } from '@mui/material'
 import { api } from 'src/utils/api';
 import { Virtuoso } from 'react-virtuoso';
 import { useQueryClient } from '@tanstack/react-query';
@@ -17,6 +17,7 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
     data,
     fetchNextPage,
     hasNextPage,
+    isLoading: commentsAreLoading,
   } = api.rapComment.getRapComments.useInfiniteQuery({
     rapId: rapId as string,
     sortBy,
@@ -74,21 +75,19 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
         </Fragment>
       )}
       components={{
-        Footer: () => (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              py: 3,
-              height: 100,
-            }}
-          >
-            {hasNextPage && (
+        ...(commentsAreLoading && {
+          Header: () => (
+            <Stack alignItems='center' justifyContent='center' height='5rem'>
               <CircularProgress color='inherit' size={20} />
-            )}
-          </Box>
-        )
+            </Stack>
+          )
+        }),
+        ...(hasNextPage && {
+          Footer: () => (<Stack alignItems='center' justifyContent='center' height='5rem'>
+            <CircularProgress color='inherit' size={20} />
+          </Stack>
+          )
+        })
       }}
     />
   )
