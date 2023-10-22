@@ -18,6 +18,7 @@ import { useState } from 'react'
 import { api } from 'src/utils/api'
 import FollowingButton from './FollowingButton'
 import { CircularProgress } from '@mui/material'
+import toast from 'react-hot-toast'
 
 interface UserProfileHeaderProps {
   userData?: User | null;
@@ -46,6 +47,14 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
     createFollow({ followerId: currentUserData?.id || '', followedId: userData?.id || '' }, {
       onSuccess: () => {
         invalidateFollowsQuery()
+      },
+      onError: (error) => {
+        if (error.data?.code === 'UNAUTHORIZED') {
+          toast.error('You must be logged in to follow a user.')
+        }
+        else {
+          toast.error(error.message)
+        }
       }
     })
   }

@@ -21,19 +21,24 @@ function WritePage() {
 
   const router = useRouter();
 
-  const { mutate: createProfile, isLoading, isSuccess } = api.rap.createRap.useMutation();
+  const { mutate: createRap, isLoading, isSuccess } = api.rap.createRap.useMutation();
   const [formIsInvalid, setFormIsInvalid] = useState(true);
   const [rap, setRap] = useState<CreateRapPayload | null>(null);
 
   const submitHandler = () => {
     if (rap) {
       const editedContent = removeTrailingAndLeadingPElements(rap.content);
-      createProfile({
+      createRap({
         title: rap.title,
         content: editedContent,
       }, {
         onError: (error) => {
-          toast.error(error.message)
+          if (error.data?.code === 'UNAUTHORIZED') {
+            toast.error('You must be logged in to create a rap.')
+          }
+          else {
+            toast.error(error.message)
+          }
         },
         onSuccess: (data: Rap) => {
           toast.success('Rap Created Successfully!')

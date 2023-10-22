@@ -4,11 +4,13 @@ import FeedBar from './FeedBar';
 import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 
 import Feed from './Feed';
+import { useSession } from 'next-auth/react';
 
 
 function ExplorePage() {
 
   const theme = useTheme();
+  const { status } = useSession()
 
   // Tabs
   const [tab, setTab] = useState(0);
@@ -56,7 +58,7 @@ function ExplorePage() {
             }
           }}>
           <Tab label="All" />
-          <Tab label="Following" />
+          {status === 'authenticated' && <Tab label="Following" />}
         </Tabs>
       </Box>
       <FeedBar
