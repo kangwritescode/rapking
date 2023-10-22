@@ -5,6 +5,7 @@ import {
   publicProcedure,
   protectedProcedure
 } from "src/server/api/trpc";
+import { NotificationType } from "@prisma/client";
 
 export const userFollows = createTRPCRouter({
   getFollow: publicProcedure
@@ -43,6 +44,14 @@ export const userFollows = createTRPCRouter({
         },
       });
 
+      await ctx.prisma.notification.create({
+        data: {
+          type: NotificationType.FOLLOW,
+          recipientId: followedId,
+          notifierId: followerId,
+        },
+      });
+
       return follow;
     }),
   deleteFollow: protectedProcedure
@@ -62,6 +71,22 @@ export const userFollows = createTRPCRouter({
           },
         },
       });
+
+      const followNotification = await ctx.prisma.notification.findFirst({
+        where: {
+          type: NotificationType.FOLLOW,
+          recipientId: followedId,
+          notifierId: followerId,
+        },
+      });
+
+      if (followNotification) {
+        await ctx.prisma.notification.delete({
+          where: {
+            id: followNotification.id,
+          },
+        });
+      }
 
       return follow;
     }),

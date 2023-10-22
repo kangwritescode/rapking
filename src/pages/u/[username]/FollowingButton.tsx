@@ -1,12 +1,13 @@
 import { Icon } from '@iconify/react'
-import { Box, Button, Menu, MenuItem, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Menu, MenuItem, Typography } from '@mui/material'
 import React, { useState } from 'react'
 
 interface FollowingButtonProps {
   unfollowClickHandler?: () => void;
+  isLoading?: boolean;
 }
 
-function FollowingButton({ unfollowClickHandler }: FollowingButtonProps) {
+function FollowingButton({ unfollowClickHandler, isLoading }: FollowingButtonProps) {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -24,11 +25,12 @@ function FollowingButton({ unfollowClickHandler }: FollowingButtonProps) {
         variant={'outlined'}
         color={'inherit'}
         onClick={handleClick}
-        endIcon={
-          <Icon icon='basil:caret-down-solid' />
-        }
+        {...(!isLoading ? { endIcon: <Icon icon='basil:caret-down-solid' /> } : {})}
+        sx={{ minWidth: '10rem' }}
       >
-        {'Following'}
+        {
+          isLoading ? <CircularProgress color='inherit' size='1.5rem' /> : 'FOLLOWING'
+        }
       </Button>
       <Menu
         anchorEl={anchorEl}

@@ -8,6 +8,7 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import { getInitials } from 'src/@core/utils/get-initials'
 import { StyledMenuItem } from './NotificationDropdown';
 import { useRouter } from 'next/router';
+import { BUCKET_URL } from 'src/shared/constants';
 
 // ** Styled component for the title in MenuItems
 const MenuItemTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
@@ -38,15 +39,15 @@ const Avatar = styled(CustomAvatar)<CustomAvatarProps>({
 const RenderAvatar = ({ notification }: { notification: NotificationWithAssociatedData }) => {
   const { notifierUser, type } = notification
 
-  if (type === 'RAP_COMMENT' && notifierUser?.profileImageUrl) {
-    return <Avatar alt='notificatino-avatar' src={notifierUser?.profileImageUrl} />
-  } else {
-    return (
-      <Avatar skin='light' color='info'>
-        {getInitials(notifierUser?.username as string)}
-      </Avatar>
-    )
+  if ((type === 'RAP_COMMENT' || type === 'FOLLOW') && notifierUser?.profileImageUrl) {
+    return <Avatar alt='notification-avatar' src={`${BUCKET_URL}/${notifierUser.profileImageUrl}`} />;
   }
+
+  return (
+    <Avatar skin='light' color='info'>
+      {getInitials(notifierUser?.username as string)}
+    </Avatar>
+  )
 }
 
 interface NotificationProps {
@@ -62,6 +63,9 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
   if (notification.type === 'RAP_COMMENT') {
     title = `${notification.notifierUser?.username} commented on ${notification.rap?.title}`;
   }
+  else if (notification.type === 'FOLLOW') {
+    title = `${notification.notifierUser?.username} is now following you`;
+  }
   let subtitle = '';
   if (notification.type === 'RAP_COMMENT') {
     subtitle = notification.comment ? htmlToText(notification.comment.content) : '';
@@ -70,9 +74,11 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
   const notificationDate = getFormattedDate(notification.createdAt)
 
   const onClickHandler = async () => {
+    closeDropdown()
     if (notification.type === 'RAP_COMMENT') {
-      closeDropdown()
       router.push(`/rap/${notification.rap?.id}/?commentId=${notification.comment?.id}`)
+    } else if (notification.type === 'FOLLOW') {
+      router.push(`/u/${notification.notifierUser?.username}/profile`)
     }
   }
 
@@ -80,7 +86,7 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
     <StyledMenuItem key={notification.id} onClick={onClickHandler}>
       <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
         <RenderAvatar
-         notification={notification} />
+          notification={notification} />
         <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
           <MenuItemTitle>{title}</MenuItemTitle>
           <MenuItemSubtitle variant='body2'>{subtitle}</MenuItemSubtitle>

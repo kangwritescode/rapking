@@ -17,6 +17,7 @@ import EditProfileDialog from './EditProfileDialog'
 import { useState } from 'react'
 import { api } from 'src/utils/api'
 import FollowingButton from './FollowingButton'
+import { CircularProgress } from '@mui/material'
 
 interface UserProfileHeaderProps {
   userData?: User | null;
@@ -34,8 +35,8 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
   })
 
   // Mutations
-  const { mutate: createFollow } = api.userFollows.createFollow.useMutation();
-  const { mutate: deleteFollow } = api.userFollows.deleteFollow.useMutation();
+  const { mutate: createFollow, isLoading: createFollowIsLoading } = api.userFollows.createFollow.useMutation();
+  const { mutate: deleteFollow, isLoading: deleteFollowIsLoading } = api.userFollows.deleteFollow.useMutation();
 
   // Invalidators
   const { invalidate: invalidateFollowsQuery } = api.useContext().userFollows
@@ -126,15 +127,17 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
                 Edit Profile
               </Button>
             ) : followData ?
-              <FollowingButton unfollowClickHandler={unfollowButonClickHandler} />
+              <FollowingButton isLoading={deleteFollowIsLoading} unfollowClickHandler={unfollowButonClickHandler} />
               :
               <Button
                 variant='contained'
                 color='primary'
                 onClick={followButtonClickHandler}
-                startIcon={<Icon icon='mdi:account-plus-outline' />}
+                disabled={createFollowIsLoading}
+                {...(!createFollowIsLoading ? { startIcon: <Icon icon='mdi:account-plus-outline' /> } : {})}
+                sx={{ minWidth: '8rem' }}
               >
-                {'Follow'}
+                {createFollowIsLoading ? <CircularProgress color='inherit' size='1.5rem' /> : 'Follow'}
               </Button>}
           </Box>
         </CardContent>
