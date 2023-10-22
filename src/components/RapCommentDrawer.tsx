@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import RapCommentComposer from './RapCommentComposer';
 import RapComments from './RapComments';
 import { api } from 'src/utils/api';
+import { useRouter } from 'next/router';
 
 interface RapCommentDrawerProps {
   onCloseHandler: () => void;
@@ -17,9 +18,11 @@ function RapCommentDrawer({
   rapId
 }: RapCommentDrawerProps) {
 
-  const [sortBy, setSortBy] = useState<'POPULAR' | 'RECENT'>('POPULAR');
+  const { commentId } = useRouter().query;
 
-  const {data: rapCommentsCount} = api.rapComment.getRapCommentsCount.useQuery({
+  const [sortBy, setSortBy] = useState<'POPULAR' | 'RECENT'>(commentId ? 'RECENT' : 'POPULAR');
+
+  const { data: rapCommentsCount } = api.rapComment.getRapCommentsCount.useQuery({
     rapId: rapId as string,
   }, {
     enabled: !!rapId,
@@ -74,7 +77,7 @@ function RapCommentDrawer({
         maxWidth='24rem'
         height='100%'
         px={5}>
-          <RapComments rapId={rapId} sortBy={sortBy} />
+        <RapComments rapId={rapId} sortBy={sortBy} />
       </Box>
     </Drawer>
   )

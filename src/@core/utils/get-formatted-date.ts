@@ -26,7 +26,3 @@ export function getFormattedDate(inputDate: Date) {
 
   return date.format('DD MMM');
 }
-
-console.log(getFormattedDate(new Date('2023-10-19T00:00:00Z'))); // Outputs: "Yesterday"
-console.log(getFormattedDate(new Date('2023-10-18T00:00:00Z'))); // Outputs: "2 days ago"
-console.log(getFormattedDate(new Date('2023-09-11T00:00:00Z'))); // Outputs: "11 Sep"

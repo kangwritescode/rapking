@@ -5,6 +5,7 @@ import { Rap, User } from '@prisma/client'
 import RapCommentDrawer from 'src/components/RapCommentDrawer'
 import RapLikeButton from './RapLikeButton'
 import { api } from 'src/utils/api'
+import { useRouter } from 'next/router'
 
 interface RapBarProps {
   rapData?: (Rap & {
@@ -23,8 +24,10 @@ function RapBar({ rapData }: RapBarProps) {
     enabled: !!rapData?.id
   });
 
+  const { commentId } = useRouter().query;
+
   // State
-  const [commentDrawerIsOpen, setCommentDrawerIsOpen] = useState<boolean>(false);
+  const [commentDrawerIsOpen, setCommentDrawerIsOpen] = useState<boolean>(!!commentId);
 
   return (
     <>
@@ -34,7 +37,7 @@ function RapBar({ rapData }: RapBarProps) {
         rapId={rapData?.id as string}
       />
       <Box display="flex">
-       <RapLikeButton rapId={rapData?.id} />
+        <RapLikeButton rapId={rapData?.id} />
         <Box sx={{
           ml: theme.spacing(5),
           display: 'flex',

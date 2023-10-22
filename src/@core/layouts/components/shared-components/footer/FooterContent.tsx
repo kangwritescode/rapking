@@ -14,10 +14,7 @@ const FooterContent = () => {
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-end' }}>
-      <LinkStyled sx={{mr: 5}} target='_blank' href='https://blank.com' onClick={(e) => e.preventDefault()}>
-        Provide Feedback
-      </LinkStyled>
-      <LinkStyled target='_blank' href='https://discord.gg/fcMURpEc'>
+      <LinkStyled target='_blank' href='https://discord.gg/G5A3N4qm'>
         Join the Rapking Discord
       </LinkStyled>
     </Box>

@@ -1,0 +1,96 @@
+import { Box, Typography, TypographyProps, styled } from '@mui/material';
+import { htmlToText } from 'html-to-text';
+import React from 'react'
+import { getFormattedDate } from 'src/@core/utils/get-formatted-date';
+import { NotificationWithAssociatedData } from 'src/server/api/routers/notifications'
+import { CustomAvatarProps } from 'src/@core/components/mui/avatar/types'
+import CustomAvatar from 'src/@core/components/mui/avatar'
+import { getInitials } from 'src/@core/utils/get-initials'
+import { StyledMenuItem } from './NotificationDropdown';
+import { useRouter } from 'next/router';
+
+// ** Styled component for the title in MenuItems
+const MenuItemTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
+  fontWeight: 600,
+  flex: '1 1 100%',
+  overflow: 'hidden',
+  fontSize: '0.875rem',
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis',
+  marginBottom: theme.spacing(0.75)
+}))
+
+// ** Styled component for the subtitle in MenuItems
+const MenuItemSubtitle = styled(Typography)<TypographyProps>({
+  flex: '1 1 100%',
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis'
+})
+
+// ** Styled Avatar component
+const Avatar = styled(CustomAvatar)<CustomAvatarProps>({
+  width: 38,
+  height: 38,
+  fontSize: '1.125rem'
+})
+
+const RenderAvatar = ({ notification }: { notification: NotificationWithAssociatedData }) => {
+  const { notifierUser, type } = notification
+
+  if (type === 'RAP_COMMENT' && notifierUser?.profileImageUrl) {
+    return <Avatar alt='notificatino-avatar' src={notifierUser?.profileImageUrl} />
+  } else {
+    return (
+      <Avatar skin='light' color='info'>
+        {getInitials(notifierUser?.username as string)}
+      </Avatar>
+    )
+  }
+}
+
+interface NotificationProps {
+  notification: NotificationWithAssociatedData
+  closeDropdown: () => void;
+}
+
+function Notification({ notification, closeDropdown }: NotificationProps) {
+
+  const router = useRouter();
+
+  let title = '';
+  if (notification.type === 'RAP_COMMENT') {
+    title = `${notification.notifierUser?.username} commented on ${notification.rap?.title}`;
+  }
+  let subtitle = '';
+  if (notification.type === 'RAP_COMMENT') {
+    subtitle = notification.comment ? htmlToText(notification.comment.content) : '';
+  }
+
+  const notificationDate = getFormattedDate(notification.createdAt)
+
+  const onClickHandler = async () => {
+    if (notification.type === 'RAP_COMMENT') {
+      closeDropdown()
+      router.push(`/rap/${notification.rap?.id}/?commentId=${notification.comment?.id}`)
+    }
+  }
+
+  return (
+    <StyledMenuItem key={notification.id} onClick={onClickHandler}>
+      <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+        <RenderAvatar
+         notification={notification} />
+        <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
+          <MenuItemTitle>{title}</MenuItemTitle>
+          <MenuItemSubtitle variant='body2'>{subtitle}</MenuItemSubtitle>
+        </Box>
+        <Typography variant='caption' sx={{ color: 'text.disabled' }}>
+          {notificationDate}
+        </Typography>
+      </Box>
+    </StyledMenuItem>
+  )
+}
+
+export default Notification

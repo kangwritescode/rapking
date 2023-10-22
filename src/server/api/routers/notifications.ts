@@ -3,6 +3,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "src/server/api/trpc";
+import { z } from "zod";
 
 export type NotificationWithAssociatedData = Notification & {
   comment: {
@@ -50,9 +51,47 @@ export const notificationsRouter = createTRPCRouter({
               profileImageUrl: true,
             }
           },
-        }
+        },
       });
 
       return notifications as NotificationWithAssociatedData[];
+    }),
+  markAllNotificationsAsRead: protectedProcedure
+    .mutation(async ({ ctx }) => {
+      await ctx.prisma.notification.updateMany({
+        where: {
+          recipientId: ctx.session.user.id,
+          read: false,
+        },
+        data: {
+          read: true,
+        }
+      });
+
+      return true;
+    }),
+  markNotificationAsRead: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.notification.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          read: true,
+        }
+      });
+
+      return true;
+    }),
+  deleteAllUserNotifications: protectedProcedure
+    .mutation(async ({ ctx }) => {
+      await ctx.prisma.notification.deleteMany({
+        where: {
+          recipientId: ctx.session.user.id,
+        },
+      });
+
+      return true;
     }),
 });
