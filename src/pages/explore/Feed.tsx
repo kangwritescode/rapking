@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 import { api } from 'src/utils/api';
 import FeedRapCard from './FeedRapCard';
-import { Divider } from '@mui/material';
+import { CircularProgress, Divider, Stack } from '@mui/material';
 import { Virtuoso } from 'react-virtuoso';
 
 interface FeedProps {
@@ -27,7 +27,8 @@ function Feed({
     data,
     fetchNextPage,
     hasNextPage,
-    refetch
+    refetch,
+    isLoading: rapsAreLoading,
   } = api.feed.queryRaps.useInfiniteQuery({
     sortBy,
     regionFilter,
@@ -74,6 +75,21 @@ function Feed({
           <Divider />
         </>
       )}
+      components={{
+        ...(rapsAreLoading && {
+          Header: () => (
+            <Stack alignItems='center' justifyContent='center' height='5rem'>
+              <CircularProgress color='inherit' size={20} />
+            </Stack>
+          )
+        }),
+        ...(hasNextPage && {
+          Footer: () => (<Stack alignItems='center' justifyContent='center' height='5rem'>
+            <CircularProgress color='inherit' size={20} />
+          </Stack>
+          )
+        })
+      }}
     />
   )
 }

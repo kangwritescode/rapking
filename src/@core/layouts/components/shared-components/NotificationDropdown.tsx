@@ -53,7 +53,6 @@ export type NotificationsType = {
   )
 interface Props {
   settings: Settings
-  notifications: NotificationsType[]
 }
 
 // ** Styled Menu component
