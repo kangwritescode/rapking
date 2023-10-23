@@ -29,12 +29,13 @@ const SwipeableDrawer = styled(MuiSwipeableDrawer)<SwipeableDrawerProps>({
     paddingLeft: 4,
     paddingRight: 4
   },
-  '& .MuiDrawer-paper': {
-    left: 'unset',
-    right: 'unset',
-    overflowX: 'hidden',
-    transition: 'width .25s ease-in-out, box-shadow .25s ease-in-out'
-  }
+
+  // '& .MuiDrawer-paper': {
+  //   left: 'unset',
+  //   right: 'unset',
+  //   overflowX: 'hidden',
+  //   transition: 'width .25s ease-in-out, box-shadow .25s ease-in-out'
+  // }
 })
 
 const Drawer = (props: Props) => {

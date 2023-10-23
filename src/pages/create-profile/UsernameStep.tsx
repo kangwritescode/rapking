@@ -1,4 +1,4 @@
-import { Button, StepContent } from '@mui/material'
+import { Button, CircularProgress, StepContent } from '@mui/material'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -25,12 +25,12 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
   const { data: userData } = api.user.getCurrentUser.useQuery();
 
   // state
-  const userMutation = api.user.updateUser.useMutation();
+  const { mutateAsync: updateUser, isLoading } = api.user.updateUser.useMutation();
   const [usernameIsAvailable, setUsernameIsAvailable] = useState<boolean | undefined>(undefined);
 
   const updateUsername = async (updatedUsername: string) => {
     try {
-      const updatedProfile = await userMutation.mutateAsync({
+      const updatedProfile = await updateUser({
         username: updatedUsername
       })
       if (updatedProfile) {
@@ -56,20 +56,24 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
   return (
     <StepContent>
       <form key={0} onSubmit={handleUsernameSubmit((formValues) => updateUsername(formValues.username))}>
-          <UsernameAvailabilityField
-            label='Username'
-            control={usernameControl}
-            initialUsername={userData?.username}
-            errorMessage={errors.username?.message as string}
-            availabilityChangedHandler={(isAvailable: boolean | undefined) => setUsernameIsAvailable(isAvailable)}
-          />
+        <UsernameAvailabilityField
+          label='Username'
+          control={usernameControl}
+          initialUsername={userData?.username}
+          errorMessage={errors.username?.message as string}
+          availabilityChangedHandler={(isAvailable: boolean | undefined) => setUsernameIsAvailable(isAvailable)}
+        />
         <div className='button-wrapper'>
           <Button
-            disabled={!isValid || !usernameIsAvailable}
+            disabled={!isValid || !usernameIsAvailable || isLoading}
             type='submit'
             size='small'
-            variant='contained'>
-            Next
+            variant='contained'
+            sx={{ minHeight: '1.8rem' }}
+          >
+            {isLoading ?
+              <CircularProgress color='inherit' size='1.3rem' /> :
+              'Next'}
           </Button>
         </div>
       </form>

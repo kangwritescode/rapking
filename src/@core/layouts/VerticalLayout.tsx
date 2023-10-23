@@ -18,6 +18,8 @@ import Navigation from './components/vertical/navigation'
 import Footer from './components/shared-components/footer'
 import ScrollToTop from 'src/@core/components/scroll-to-top'
 import { Icon } from '@iconify/react'
+import { api } from 'src/utils/api'
+import { useSession } from 'next-auth/react'
 
 const VerticalLayoutWrapper = styled('div')({
   height: '100%',
@@ -47,8 +49,11 @@ const VerticalLayout = (props: LayoutProps) => {
   // ** Props
   const { settings, children, scrollToTop, footerProps, contentHeightFixed, verticalLayoutProps } = props
 
+  // ** Queries
+  const { data: profileIsComplete } = api.user.getProfileIsComplete.useQuery();
+
   // ** Vars
-  const { skin, navHidden, contentWidth } = settings
+  const { skin, contentWidth } = settings
   const { navigationSize, collapsedNavigationSize } = themeConfig
   const navWidth = navigationSize
   const navigationBorderWidth = skin === 'bordered' ? 1 : 0
@@ -60,11 +65,14 @@ const VerticalLayout = (props: LayoutProps) => {
   // ** Toggle Functions
   const toggleNavVisibility = () => setNavVisible(!navVisible)
 
+  // ** Auth
+  const {status} = useSession()
+
   return (
     <>
       <VerticalLayoutWrapper className='layout-wrapper'>
         {/* Navigation Menu */}
-        {navHidden && !(navHidden && settings.lastLayout === 'horizontal') ? null : (
+        {!profileIsComplete && status === 'authenticated' ? null : (
           <Navigation
             navWidth={navWidth}
             navVisible={navVisible}

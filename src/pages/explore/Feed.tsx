@@ -37,6 +37,10 @@ function Feed({
     limit: PAGE_SIZE
   }, {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchIntervalInBackground: false,
+    refetchOnReconnect: false,
   });
 
   const rapData = data?.pages.flatMap(page => page.raps) ?? [];

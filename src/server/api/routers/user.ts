@@ -125,4 +125,28 @@ export const userRouter = createTRPCRouter({
 
       return true;
     }),
+  getProfileIsComplete: protectedProcedure
+    .query(async ({ ctx }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          id: ctx.session.user.id,
+        },
+      });
+      if (!user) {
+        throw new TRPCError({
+          code: "UNPROCESSABLE_CONTENT",
+          message: "User not found",
+        });
+      }
+
+      const profileIsComplete = user !== null
+        && user.username !== null
+        && user.dob !== null
+        && user.state !== null
+        && user.city !== null
+        && user.country !== null
+        && user.sex !== null;
+
+      return profileIsComplete;
+    }),
 });

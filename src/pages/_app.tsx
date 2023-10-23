@@ -46,7 +46,6 @@ import 'src/iconify-bundle/icons-bundle-react'
 import '../../styles/globals.css'
 import { api } from 'src/utils/api';
 import CreateProfileGuard from 'src/@core/components/auth/CreateProfileGuard';
-import FallbackSpinner from 'src/@core/components/spinner';
 
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
@@ -100,9 +99,7 @@ const App: any = (props: ExtendedAppProps) => {
               return (
                 <ThemeComponent settings={settings}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <CreateProfileGuard fallback={
-                        <FallbackSpinner />
-                      }>
+                      <CreateProfileGuard>
                         {getLayout(<Component {...pageProps} />)}
                         <ReactQueryDevtools initialIsOpen={false} />
                       </CreateProfileGuard>

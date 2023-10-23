@@ -15,7 +15,7 @@ const Home = () => {
         <li>Notifications</li>
       </ul>
       <p>For now, join the &nbsp;
-        <Link sx={{ color: 'gold' }} href='https://discord.gg/fcMURpEc'>
+        <Link sx={{ color: 'gold' }} href='https://discord.gg/G5A3N4qm'>
           Rapking Community
         </Link>
         &nbsp;
@@ -27,4 +27,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Home;

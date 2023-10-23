@@ -1,47 +1,33 @@
-// ** React Imports
-import { ReactNode, ReactElement } from 'react'
-
-// ** Next Import
-import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/react'
-import { api } from 'src/utils/api'
+import React, { ReactNode, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
+import { api } from 'src/utils/api';
 
 interface CreateProfileGuardProps {
-    children: ReactNode
-    fallback: ReactElement | null
+    children: ReactNode;
 }
 
-const CreateProfileGuard = (props: CreateProfileGuardProps) => {
-    const { children, fallback } = props
+const CreateProfileGuard: React.FC<CreateProfileGuardProps> = ({ children }) => {
     const { status } = useSession();
-    const router = useRouter()
+    const router = useRouter();
+    const { data: profileIsComplete, isLoading: isProfileLoading } = api.user.getProfileIsComplete.useQuery();
 
-    // queries
-    const { data: userData } = api.user.getCurrentUser.useQuery();
+    // Ensuring both session and profile data are settled
+    const isDataLoading = status === 'loading' || isProfileLoading;
 
-    const profileIsIncomplete = userData === null
-        || userData?.username === null
-        || userData?.dob === null
-        || userData?.state === null
-        || userData?.city === null
-        || userData?.country === null
-        || userData?.sex === null
+    useEffect(() => {
+        if (isDataLoading) return;
 
-    if (status === 'loading') {
-        return fallback
-    }
-    if (status === 'authenticated' && profileIsIncomplete && router.asPath !== '/create-profile/') {
-        router.replace('/create-profile/')
+        if (status === 'authenticated') {
+            if (!profileIsComplete && router.asPath !== '/create-profile/') {
+                router.replace('/create-profile/');
+            } else if (profileIsComplete && router.asPath === '/create-profile/') {
+                router.replace('/');
+            }
+        }
+    }, [status, profileIsComplete, router, isDataLoading]);
 
-        return <></>
-    }
-    if (status === 'authenticated' && !profileIsIncomplete && router.asPath === '/create-profile/') {
-        router.replace('/')
+    return children;
+};
 
-        return <></>
-    }
-
-    return <>{children}</>
-}
-
-export default CreateProfileGuard
+export default CreateProfileGuard;

@@ -1,4 +1,4 @@
-import { Button, StepContent } from '@mui/material'
+import { Button, CircularProgress, StepContent } from '@mui/material'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { api } from 'src/utils/api'
@@ -21,7 +21,7 @@ export type SexAgeForm = {
 }
 
 const formSchema = z.object({
-  sex: z.string(),
+  sex: z.string().min(1),
   dob: z.instanceof(dayjs as any)
     .refine(value => {
       const dateOfBirth = value;
@@ -52,14 +52,13 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
   } = useForm({
     defaultValues: initialValues,
     resolver: zodResolver(formSchema),
-    mode: 'all',
   })
 
-  const profileMutation = api.user.updateUser.useMutation();
+  const { mutateAsync: updateProfile, isLoading } = api.user.updateUser.useMutation();
 
   const updateUser = async ({ sex, dob }: SexAgeForm) => {
     try {
-      const updatedProfile = await profileMutation.mutateAsync({
+      const updatedProfile = await updateProfile({
         sex,
         dob: new Date(dob as string)
       })
@@ -81,17 +80,20 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
           <Button
             size='small'
             variant='outlined'
-            color='primary'
+            color='secondary'
             onClick={handleBack}>
             Back
           </Button>
           <Button
-            disabled={!!errors.sex || !!errors.dob || !isValid}
+            disabled={!!errors.sex || !!errors.dob || !isValid || isLoading}
             type='submit'
             size='small'
-            sx={{ ml: 4 }}
-            variant='contained'>
-            Next
+            sx={{ ml: 4, minHeight: '1.8rem' }}
+            variant='contained'
+          >
+            {isLoading ?
+              <CircularProgress color='inherit' size='1.3rem' /> :
+              'Next'}
           </Button>
         </div>
       </form>

@@ -1,10 +1,11 @@
-import { Alert, Autocomplete, Box, Button, StepContent, TextField } from '@mui/material'
+import { Alert, Autocomplete, Box, Button, CircularProgress, StepContent, TextField } from '@mui/material'
 import * as yup from 'yup'
 import React, { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { api } from 'src/utils/api'
 import { getLocationsResult } from 'src/server/api/routers/geoDB'
+import toast from 'react-hot-toast'
 
 export type LocationStepProps = {
   handleBack: () => void,
@@ -30,7 +31,7 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
   // queries
   const { data: locationsData } = api.geoDB.getLocationsByZip.useQuery({ zipCode: inputValue }, { enabled: inputValue.length === 5 })
   const { data: userData } = api.user.getCurrentUser.useQuery();
-  const profileMutation = api.user.updateUser.useMutation();
+  const {mutateAsync: updateUser, isLoading} = api.user.updateUser.useMutation();
 
   // initial values
   const initialLocation: Option | null = userData?.state && userData?.city ?
@@ -44,20 +45,18 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
     }
   }, [locationsData, inputValue])
 
-  const updateUser = async (formValues: FormValues) => {
+  const updateLocation = async (formValues: FormValues) => {
     try {
-      const updatedProfile = await profileMutation.mutateAsync({
+      const updatedProfile = await updateUser({
         state: formValues.location?.state,
         city: formValues.location?.city,
         country: formValues.country
       })
-
-      // on successful update
       if (updatedProfile) {
         handleCreateProfile()
       }
       else {
-        throw new Error('Failed to update location')
+        toast.error('Failed to update location')
       }
     } catch (error) {
       console.error(error)
@@ -89,7 +88,7 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
 
   return (
     <StepContent>
-      <form key={0} onSubmit={handleUsernameSubmit(updateUser)}>
+      <form key={0} onSubmit={handleUsernameSubmit(updateLocation)}>
         <Controller
           control={formControl}
           name='country'
@@ -115,6 +114,7 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
               renderInput={(params) => (
                 <TextField {...params} sx={{ width: '100%' }} placeholder='Enter ZIP Code' size='small' />
               )}
+              isOptionEqualToValue={(option, value) => option.city === value.city}
               onChange={(_, newValue) => onChange(newValue)}
               value={value}
               renderOption={(props, option) => (
@@ -132,17 +132,21 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
           <Button
             size='small'
             variant='outlined'
-            color='primary'
+            color='secondary'
             onClick={handleBack}>
             Back
           </Button>
           <Button
-            disabled={!isValid}
+            disabled={!isValid || isLoading}
             type='submit'
-            sx={{ ml: 4 }}
+            sx={{ ml: 4, minHeight: '1.8rem', minWidth: '9.7rem' }}
             size='small'
             variant='contained'>
-            Complete Profile
+            {
+              isLoading ?
+                <CircularProgress color='inherit' size='1.3rem' /> :
+                'Complete Profile'
+            }
           </Button>
         </div>
       </form>

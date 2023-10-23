@@ -1,14 +1,9 @@
 // ** React Imports
 import { useState } from 'react'
 
-// ** Next Imports
-import { useRouter } from 'next/router'
-
 // ** MUI Imports
-import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Step from '@mui/material/Step'
-import Button from '@mui/material/Button'
 import Stepper from '@mui/material/Stepper'
 import StepLabel from '@mui/material/StepLabel'
 import CardHeader from '@mui/material/CardHeader'
@@ -45,8 +40,7 @@ const steps = [
 
 const CompleteProfilePage = () => {
 
-  // ** Router
-  const router = useRouter()
+  const { invalidate } = api.useContext().user.getProfileIsComplete;
 
   // ** States
   const [activeStep, setActiveStep] = useState<number>(0)
@@ -58,13 +52,10 @@ const CompleteProfilePage = () => {
   const handleNext = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1)
   }
-  const handleReset = () => {
-    setActiveStep(0)
-  }
 
   const handleCreateProfile = () => {
+    invalidate();
     toast.success('Profile created successfully!')
-    router.push('/')
   }
 
   return (
@@ -92,14 +83,6 @@ const CompleteProfilePage = () => {
             })}
           </Stepper>
         </StepperWrapper>
-        {activeStep === steps.length && (
-          <Box sx={{ mt: 4 }}>
-            <Typography>All steps are completed!</Typography>
-            <Button size='small' sx={{ mt: 2 }} variant='contained' onClick={handleReset}>
-              Reset
-            </Button>
-          </Box>
-        )}
       </CardContent>
     </Card>
   )
@@ -112,6 +95,7 @@ import { GetServerSidePropsContext } from 'next';
 import { appRouter } from 'src/server/api/root';
 import superjson from 'superjson';
 import { createTRPCContext } from 'src/server/api/trpc'
+import { api } from 'src/utils/api'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
 
@@ -120,7 +104,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     ctx: await createTRPCContext(context),
     transformer: superjson,
   });
-  await helpers.user.getCurrentUser.prefetch()
+  helpers.user.getProfileIsComplete.fetch();
 
   return {
     props: {

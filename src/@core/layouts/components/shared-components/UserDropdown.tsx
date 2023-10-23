@@ -79,8 +79,8 @@ const UserDropdown = (props: Props) => {
   }
 
   const handleLogout = () => {
-    signOut()
     handleDropdownClose()
+    signOut({callbackUrl: '/'})
   }
 
   return (
