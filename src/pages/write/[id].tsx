@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import { api } from "src/utils/api";
-import RapEditor from "./RapEditor";
+import RapEditor from "../../components/WritePage/RapEditor";
 import { toast } from "react-hot-toast";
 import { useCallback, useState } from "react";
 import { UpdateRapPayload } from "src/server/api/routers/rap";
 import { Container, styled } from "@mui/material";
-import WriteHeader from "./WriteHeader";
+import WriteHeader from "../../components/WritePage/WriteHeader";
 
 const PageContainer = styled(Container)(() => ({
   display: 'flex',

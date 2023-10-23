@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Box, Stack, Tab, Tabs, useTheme } from '@mui/material';
-import FeedBar from './FeedBar';
+import FeedBar from '../../components/ExplorePage/FeedBar';
 import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 
-import Feed from './Feed';
+import Feed from '../../components/ExplorePage/Feed';
 import { useSession } from 'next-auth/react';
 
 

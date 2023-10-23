@@ -15,13 +15,13 @@ import clsx from 'clsx'
 import toast from 'react-hot-toast'
 
 // ** Custom Components Imports
-import StepperCustomDot from './StepperCustomDot'
+import StepperCustomDot from '../../components/CreateProfilePage/StepperCustomDot'
 
 // ** Styled Components
 import StepperWrapper from 'src/@core/styles/mui/stepper'
-import UsernameStep from './UsernameStep'
-import PersonalStep from './SexAgeStep'
-import LocationStep from './LocationStep'
+import UsernameStep from '../../components/CreateProfilePage/UsernameStep'
+import PersonalStep from '../../components/CreateProfilePage/SexAgeStep'
+import LocationStep from '../../components/CreateProfilePage/LocationStep'
 
 const steps = [
   {

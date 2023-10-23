@@ -4,7 +4,7 @@ import React from 'react'
 import { BUCKET_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
 import TipTapContent from '../../components/TipTapContent';
-import RapBar from './RapBar';
+import RapBar from '../../components/RapPage/RapBar';
 
 
 function RapPage() {

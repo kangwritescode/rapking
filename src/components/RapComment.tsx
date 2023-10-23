@@ -3,7 +3,7 @@ import { Box, Stack, Avatar, Typography, SxProps } from '@mui/material'
 import TipTapContent from 'src/components/TipTapContent'
 import { RapComment, User } from '@prisma/client'
 import { BUCKET_URL } from 'src/shared/constants';
-import CommentLikeButton from 'src/pages/rap/CommentLikeButton';
+import CommentLikeButton from 'src/components/RapPage/CommentLikeButton';
 
 interface RapCommentProps {
   comment: RapComment & {

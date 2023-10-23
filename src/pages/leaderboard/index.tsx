@@ -1,5 +1,5 @@
 import React from 'react'
-import UserLeaderboard from './UserLeaderboard';
+import UserLeaderboard from '../../components/LeaderboardPage/UserLeaderboard';
 import { Box } from '@mui/material';
 import VideoBackground from 'src/components/VideoBackground';
 

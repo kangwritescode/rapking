@@ -21,9 +21,9 @@ import { Icon } from '@iconify/react'
 
 // ** Components
 import { api } from 'src/utils/api'
-import RapsTab from './RapsTab'
-import UserProfileHeader from './UserProfileHeader'
-import ProfileTab from './ProfileTab'
+import RapsTab from '../../../components/UserPage/RapsTab'
+import UserProfileHeader from '../../../components/UserPage/UserProfileHeader'
+import ProfileTab from '../../../components/UserPage/ProfileTab'
 
 const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
   '& .MuiTabs-indicator': {
