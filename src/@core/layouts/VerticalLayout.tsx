@@ -67,16 +67,17 @@ const VerticalLayout = (props: LayoutProps) => {
   const { status } = useSession()
 
   // ** Queries
-  const { data: profileIsComplete } = api.user.getProfileIsComplete.useQuery(undefined, {
+  const { data: profileIsComplete, isLoading } = api.user.getProfileIsComplete.useQuery(undefined, {
     enabled: status === 'authenticated',
   });
+
+  const showNavigation = profileIsComplete && status === 'authenticated' || isLoading || status === 'loading';
 
   return (
     <>
       <VerticalLayoutWrapper className='layout-wrapper'>
         {/* Navigation Menu */}
-        {!profileIsComplete && status === 'authenticated' ? null : (
-          <Navigation
+        {showNavigation ? <Navigation
             navWidth={navWidth}
             navVisible={navVisible}
             setNavVisible={setNavVisible}
@@ -92,7 +93,8 @@ const VerticalLayout = (props: LayoutProps) => {
             afterNavMenuContent={verticalLayoutProps.navMenu.afterContent}
             beforeNavMenuContent={verticalLayoutProps.navMenu.beforeContent}
             {...props}
-          />
+          /> : (
+          null
         )}
         <MainContentWrapper
           className='layout-content-wrapper'
