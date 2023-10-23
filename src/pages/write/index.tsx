@@ -9,6 +9,7 @@ import { Rap } from '@prisma/client';
 import WriteHeader from '../../components/WritePage/WriteHeader';
 import { CreateRapPayload } from 'src/server/api/routers/rap';
 import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
+import { useSession } from 'next-auth/react';
 
 const PageContainer = styled(Container)(() => ({
   display: 'flex',
@@ -20,12 +21,16 @@ const PageContainer = styled(Container)(() => ({
 function WritePage() {
 
   const router = useRouter();
+  const { status } = useSession();
 
   const { mutate: createRap, isLoading, isSuccess } = api.rap.createRap.useMutation();
   const [formIsInvalid, setFormIsInvalid] = useState(true);
   const [rap, setRap] = useState<CreateRapPayload | null>(null);
 
   const submitHandler = () => {
+    if (status === 'unauthenticated') {
+      return toast.error('You must be logged in to create a rap.')
+    }
     if (rap) {
       const editedContent = removeTrailingAndLeadingPElements(rap.content);
       createRap({

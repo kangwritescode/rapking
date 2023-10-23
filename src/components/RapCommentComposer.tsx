@@ -22,11 +22,11 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
   const theme = useTheme();
 
   // Session
-  const session = useSession();
+  const { data, status } = useSession();
 
   // Queries
   const { data: userData } = api.user.getCurrentUser.useQuery(undefined, {
-    enabled: !!session.data?.user?.id,
+    enabled: !!data?.user?.id,
   });
 
   // Mutations
@@ -52,7 +52,10 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
   })
 
   const submitFormHandler = (formValues: { content: string }) => {
-    if (userData && formValues.content && rapId) {
+    if (status === 'unauthenticated') {
+      toast.error('You must be logged in to comment.')
+    }
+    else if (userData && formValues.content && rapId) {
 
       const editedContent = removeTrailingAndLeadingPElements(formValues.content);
 
@@ -68,7 +71,7 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
           editor?.commands.clearContent();
         },
         onError: (error) => {
-            toast.error(error.message)
+          toast.error(error.message)
         }
       })
     }

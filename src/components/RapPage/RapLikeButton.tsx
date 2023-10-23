@@ -1,6 +1,7 @@
 import { Box } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useRef, useState } from 'react'
+import toast from 'react-hot-toast';
 import FireIconButton from 'src/components/FireIconButton';
 import { api } from 'src/utils/api';
 
@@ -10,7 +11,7 @@ interface RapLikeButtonProps {
 
 function RapLikeButton({ rapId }: RapLikeButtonProps) {
   // Auth state
-  const { data } = useSession();
+  const { data, status } = useSession();
   const currentUserId = data?.user?.id;
 
   // State
@@ -99,7 +100,7 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
   }, [likeExists])
 
   useEffect(() => {
-      setRapLikesCount(rapLikesCountData || 0);
+    setRapLikesCount(rapLikesCountData || 0);
   }, [rapLikesCountData])
 
   useEffect(() => {
@@ -111,12 +112,16 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
     };
   }, []);
 
+  const buttonClickHandler = status === 'unauthenticated' ?
+    () => void toast.error('You must be logged in to vote.') :
+    currentUserLikedRap ? handleUnlike : handleLike;
+
   return (
     <Box
       display="flex"
       alignItems="center">
       <FireIconButton
-        onClick={currentUserLikedRap ? handleUnlike : handleLike}
+        onClick={buttonClickHandler}
         isColored={currentUserLikedRap}
       />
       {rapLikesCount || 0}

@@ -1,6 +1,7 @@
 import { Box, SxProps } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useRef, useState } from 'react'
+import toast from 'react-hot-toast';
 import FireIconButton from 'src/components/FireIconButton';
 import { api } from 'src/utils/api';
 
@@ -11,7 +12,7 @@ interface CommentLikeButtonProps {
 
 function CommentLikeButton({ rapCommentId, sx }: CommentLikeButtonProps) {
 
-  const { data } = useSession()
+  const { data, status } = useSession()
   const currentUserId = data?.user?.id;
 
   // State
@@ -56,6 +57,9 @@ function CommentLikeButton({ rapCommentId, sx }: CommentLikeButtonProps) {
   };
 
   const handleLike = () => {
+    if (status === 'unauthenticated') {
+      return toast.error('You must be logged in to like a comment.')
+    }
     if (!currentUserId || !rapCommentId) return;
 
     setCurrentUserLikedRapComment(true);
@@ -72,7 +76,10 @@ function CommentLikeButton({ rapCommentId, sx }: CommentLikeButtonProps) {
     };
 
     const handleUnlike = () => {
-      if (!currentUserId || !rapCommentId) return;
+      if (status === 'unauthenticated') {
+        return toast.error('You must be logged in to like a comment.')
+      }
+      if (!rapCommentId || !currentUserId) return;
 
       setCurrentUserLikedRapComment(false);
       setRapCommentLikesCount(prevCount => prevCount - 1);
