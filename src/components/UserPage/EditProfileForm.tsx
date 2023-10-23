@@ -4,9 +4,9 @@ import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import DateofBirthField from 'src/components/DateofBirthField';
-import SexField from 'src/components/SexField';
-import UsernameAvailabilityField from 'src/components/UsernameAvailabilityField'
+import DateofBirthField from 'src/components/FormComponents/DateofBirthField';
+import SexField from 'src/components/FormComponents/SexField';
+import UsernameAvailabilityField from 'src/components/FormComponents/UsernameAvailabilityField'
 import { api } from 'src/utils/api';
 import { z } from 'zod';
 

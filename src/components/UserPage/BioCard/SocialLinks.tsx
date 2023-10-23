@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 import { IconButton, Stack, useTheme } from '@mui/material';
 import { SocialLink } from '@prisma/client'
 import React from 'react'
-import CustomUrlButton from 'src/components/CustomUrlButton';
+import CustomUrlButton from 'src/components/UserPage/CustomUrlButton';
 import { api } from 'src/utils/api';
 
 interface SocialLinksProps {

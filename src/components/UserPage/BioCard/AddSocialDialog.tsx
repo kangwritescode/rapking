@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 import { Dialog, DialogContent, DialogTitle, Divider, IconButton, Typography, useTheme } from '@mui/material'
 import { SocialPlatform } from '@prisma/client';
 import React, { useRef, useState } from 'react'
-import CustomUrlButton from 'src/components/CustomUrlButton';
+import CustomUrlButton from 'src/components/UserPage/CustomUrlButton';
 import CustomUrlForm from './CustomUrlForm';
 import { LoadingButton } from '@mui/lab';
 

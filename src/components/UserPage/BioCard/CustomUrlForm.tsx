@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Button, TextField, useTheme } from '@mui/material'
 import React, { RefObject, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import CustomUrlButton from 'src/components/CustomUrlButton'
+import CustomUrlButton from 'src/components/UserPage/CustomUrlButton'
 import { api } from 'src/utils/api'
 import { z } from 'zod'
 

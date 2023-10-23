@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { api } from 'src/utils/api'
 import { z } from 'zod'
-import UsernameAvailabilityField from 'src/components/UsernameAvailabilityField'
+import UsernameAvailabilityField from 'src/components/FormComponents/UsernameAvailabilityField'
 
 export type UsernameStepProps = {
   handleNext: () => void

@@ -1,7 +1,7 @@
 import React from 'react'
 import UserLeaderboard from '../../components/LeaderboardPage/UserLeaderboard';
 import { Box } from '@mui/material';
-import VideoBackground from 'src/components/VideoBackground';
+import VideoBackground from 'src/components/UI/VideoBackground';
 
 function LeaderboardPage() {
 
