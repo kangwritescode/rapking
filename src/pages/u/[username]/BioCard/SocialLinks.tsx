@@ -40,11 +40,13 @@ function SocialLinks({ socialLinks }: SocialLinksProps) {
               />
               <IconButton
                 color="error"
+                size='small'
                 sx={{
                   opacity: 0.3,
                   "&:hover": {
                     opacity: 'unset',
                   },
+                  marginLeft: theme.spacing(1),
                 }}>
                 <Icon
                   icon="si-glyph:button-remove"

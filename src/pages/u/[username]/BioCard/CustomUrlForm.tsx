@@ -14,12 +14,13 @@ const customLinkFormSchema = z.object({
   url: z
     .string()
     .min(10)
-    .max(30)
+    .max(100)
 })
 
 type CustomLinkForm = z.infer<typeof customLinkFormSchema>;
 
 interface CustomUrlFormProps {
+  isLoadingHandler?: (isLoading: boolean) => void;
   isValidChangedHandler?: (isValid: boolean) => void;
   submitButtonRef?: RefObject<HTMLButtonElement>;
   onSuccess?: () => void;
@@ -29,11 +30,12 @@ function CustomUrlForm({
   isValidChangedHandler,
   submitButtonRef,
   onSuccess,
+  isLoadingHandler,
 }: CustomUrlFormProps) {
 
   const theme = useTheme();
 
-  const { mutate } = api.socialLink.postSocialLink.useMutation();
+  const { mutate, isLoading } = api.socialLink.postSocialLink.useMutation();
   const { invalidate: invalidateSocialLinks } = api.useContext().socialLink.getSocialLinkByUserId;
 
   const createSocialLink = (values: CustomLinkForm) => {
@@ -72,6 +74,12 @@ function CustomUrlForm({
       isValidChangedHandler(isValid);
     }
   }, [isValid, isValidChangedHandler])
+
+  useEffect(() => {
+    if (isLoadingHandler && isLoading) {
+      isLoadingHandler(isLoading);
+    }
+  }, [isLoading, isLoadingHandler])
 
   return (
     <>

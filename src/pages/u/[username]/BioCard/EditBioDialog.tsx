@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Icon } from '@iconify/react';
+import { LoadingButton } from '@mui/lab';
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -28,7 +28,7 @@ function EditBioDialog({ isOpen, onCloseHandler, userData }: EditBioDialogProps)
 
   const theme = useTheme();
 
-  const { mutate } = api.user.updateUser.useMutation();
+  const { mutate, isLoading } = api.user.updateUser.useMutation();
   const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
 
   const handleClose = (_: any, reason: string) => {
@@ -99,17 +99,17 @@ function EditBioDialog({ isOpen, onCloseHandler, userData }: EditBioDialogProps)
           )}
         </DialogContent>
         <DialogActions>
-          <Button
-            disabled={!isValid}
-            autoFocus
+          <LoadingButton
+            loading={!isValid || isLoading}
             variant='contained'
             sx={{
               borderRadius: '20px',
             }}
             type="submit"
+            size='small'
           >
             Save
-          </Button>
+          </LoadingButton>
         </DialogActions>
       </form>
     </Dialog>

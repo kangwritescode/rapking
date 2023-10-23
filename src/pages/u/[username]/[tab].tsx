@@ -57,11 +57,13 @@ const UserProfile = () => {
   const { username, tab } = router.query;
 
   // ** Queries
-  const { data: userData } = api.user.getCurrentUser.useQuery(undefined, {
-    enabled: !!session.data?.user?.id,
+  const { data: userData } = api.user.findByUsername.useQuery({ username: username as string }, {
+    enabled: Boolean(username)
   });
   const { data: rapsData } = api.rap.getRapsByUser.useQuery({ userId: userData?.id || '' });
-  const { data: currentUserData } = api.user.getCurrentUser.useQuery();
+  const { data: currentUserData } = api.user.getCurrentUser.useQuery(undefined, {
+    enabled: !!session.data?.user?.id,
+  });
 
   // ** State
   const [activeTab, setActiveTab] = useState<string>(String(tab))

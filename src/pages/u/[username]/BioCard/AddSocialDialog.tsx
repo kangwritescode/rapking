@@ -1,9 +1,11 @@
 import { Icon } from '@iconify/react';
-import { Button, Dialog, DialogContent, DialogTitle, Divider, IconButton, Typography, useTheme } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Divider, IconButton, Typography, useTheme } from '@mui/material'
 import { SocialPlatform } from '@prisma/client';
 import React, { useRef, useState } from 'react'
 import CustomUrlButton from 'src/components/CustomUrlButton';
 import CustomUrlForm from './CustomUrlForm';
+import { LoadingButton } from '@mui/lab';
+
 
 interface AddSocialDialogProps {
   isOpen: boolean;
@@ -15,7 +17,7 @@ function AddSocialDialog({ isOpen, onCloseHandler }: AddSocialDialogProps) {
   const theme = useTheme();
 
   const [selectedSocial, setSelectedSocial] = useState<SocialPlatform | undefined>();
-  const [isValid, setIsValid] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -44,15 +46,15 @@ function AddSocialDialog({ isOpen, onCloseHandler }: AddSocialDialogProps) {
           Add Social Link
         </Typography>
         {selectedSocial && (
-          <Button
-            disabled={!isValid}
+          <LoadingButton
             variant="contained"
+            loading={isLoading}
             size="small"
             sx={{ borderRadius: "20px" }}
             type='submit'
             onClick={() => submitButtonRef.current?.click()}>
             Save
-          </Button>
+          </LoadingButton>
         )}
         {!selectedSocial && (
           <IconButton
@@ -73,7 +75,8 @@ function AddSocialDialog({ isOpen, onCloseHandler }: AddSocialDialogProps) {
         }}>
         {selectedSocial === "CUSTOM" ?
           <CustomUrlForm
-            isValidChangedHandler={(isValid) => setIsValid(isValid)}
+            isLoadingHandler={(isLoading) => setIsLoading(isLoading)}
+            isValidChangedHandler={(isValid) => setIsLoading(!isValid)}
             submitButtonRef={submitButtonRef}
             onSuccess={() => handleClose(undefined, "")}
           /> :

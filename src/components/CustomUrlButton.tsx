@@ -15,6 +15,7 @@ function CustomUrlButton({ onClickHandler, sx, text }: CustomUrlButtonProps) {
     <Button
       variant="outlined"
       startIcon={<Icon color="inherit" icon="octicon:link-16" />}
+      size='small'
       sx={{
         borderRadius: "20px",
         color: theme.palette.grey[400],

@@ -165,7 +165,7 @@ model SocialLink {
 
   User User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId])
+  @@index([userId])
 }
 
 model VerificationToken {

@@ -56,6 +56,7 @@ function BioCard({ userData, sx }: BioCardProps) {
         {isCurrentUser && (
           <Button
             color="secondary"
+            size='small'
             variant="outlined"
             startIcon={<Icon icon="mdi:pencil-outline" />}
             onClick={() => setBioModalIsOpen(true)}
