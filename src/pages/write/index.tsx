@@ -1,12 +1,12 @@
 import { Container } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import React, { useCallback, useState } from 'react'
-import RapEditor from './RapEditor';
+import RapEditor from '../../components/WritePage/RapEditor';
 import { api } from 'src/utils/api';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import { Rap } from '@prisma/client';
-import WriteHeader from './WriteHeader';
+import WriteHeader from '../../components/WritePage/WriteHeader';
 import { CreateRapPayload } from 'src/server/api/routers/rap';
 import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
 
