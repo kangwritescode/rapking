@@ -19,7 +19,7 @@ import { Icon } from '@iconify/react'
 
 // ** Type Imports
 import { Settings } from 'src/@core/context/settingsContext'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { api } from 'src/utils/api'
 import { BUCKET_URL } from 'src/shared/constants'
 
@@ -37,6 +37,10 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
 }))
 
 const UserDropdown = (props: Props) => {
+
+  // ** Auth
+  const session = useSession();
+
   // ** Props
   const { settings } = props
 
@@ -50,7 +54,9 @@ const UserDropdown = (props: Props) => {
   const { direction } = settings
 
   // ** Query
-  const { data: userData } = api.user.getCurrentUser.useQuery();
+  const { data: userData } = api.user.getCurrentUser.useQuery(undefined, {
+    enabled: !!session.data?.user?.id,
+  });
 
   const handleDropdownOpen = (event: SyntheticEvent) => {
     setAnchorEl(event.currentTarget)

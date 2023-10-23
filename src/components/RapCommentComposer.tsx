@@ -11,6 +11,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { useForm } from 'react-hook-form';
 import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
 import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 interface RapCommentComposerProps {
   rapId?: string;
@@ -20,8 +21,13 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
 
   const theme = useTheme();
 
+  // Session
+  const session = useSession();
+
   // Queries
-  const { data: userData } = api.user.getCurrentUser.useQuery();
+  const { data: userData } = api.user.getCurrentUser.useQuery(undefined, {
+    enabled: !!session.data?.user?.id,
+  });
 
   // Mutations
   const { mutate: postComment, isLoading } = api.rapComment.postComment.useMutation();

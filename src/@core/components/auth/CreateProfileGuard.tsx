@@ -10,7 +10,9 @@ interface CreateProfileGuardProps {
 const CreateProfileGuard: React.FC<CreateProfileGuardProps> = ({ children }) => {
     const { status } = useSession();
     const router = useRouter();
-    const { data: profileIsComplete, isLoading: isProfileLoading } = api.user.getProfileIsComplete.useQuery();
+    const { data: profileIsComplete, isLoading: isProfileLoading } = api.user.getProfileIsComplete.useQuery(undefined, {
+      enabled: status === 'authenticated',
+    });
 
     // Ensuring both session and profile data are settled
     const isDataLoading = status === 'loading' || isProfileLoading;

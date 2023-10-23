@@ -32,10 +32,10 @@ function UserLeaderboardGridStyles({ sx, children }: UserLeaderboardGridStylesPr
       '& .MuiDataGrid-columnHeaders': {
         background: 'rgba(0, 0, 0, 0.7)',
       },
-      '& .MuiDataGrid-row:nth-child(odd)': {
+      '& .MuiDataGrid-row:nth-of-type(odd)': {
         background: 'rgba(0, 0, 0, 0.5)',
       },
-      '& .MuiDataGrid-row:nth-child(even)': {
+      '& .MuiDataGrid-row:nth-of-type(even)': {
         background: 'rgba(20, 12, 0, 0.623)',
       },
       '& .MuiDataGrid-footerContainer': {

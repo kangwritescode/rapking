@@ -30,6 +30,7 @@ import { handleURLQueries } from 'src/@core/layouts/utils'
 import { api } from 'src/utils/api'
 import { BUCKET_URL } from 'src/shared/constants'
 import { Avatar } from '@mui/material'
+import { useSession } from 'next-auth/react'
 
 interface Props {
   parent?: boolean
@@ -90,9 +91,14 @@ const VerticalNavLink = ({
   // ** Vars
   const { navCollapsed } = settings
 
+  // ** Session
+  const session = useSession();
+
   // logic for profile icon
   const isUserPage = item.path?.includes('profile');
-  const { data: userData } = api.user.getCurrentUser.useQuery();
+  const { data: userData } = api.user.getCurrentUser.useQuery(undefined, {
+    enabled: !!session.data?.user?.id,
+  });
   const showProfileIcon = isUserPage;
 
   const icon = parent && !item.icon ? themeConfig.navSubItemIcon : item.icon

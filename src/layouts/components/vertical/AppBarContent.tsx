@@ -69,8 +69,10 @@ const AppBarContent = (props: Props) => {
   // ** Props
   const { settings, toggleNavVisibility } = props
 
-  const { data: profileIsComplete } = api.user.getProfileIsComplete.useQuery();
   const { status } = useSession();
+  const { data: profileIsComplete } = api.user.getProfileIsComplete.useQuery(undefined, {
+    enabled: status === 'authenticated',
+  });
 
   return (
     <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

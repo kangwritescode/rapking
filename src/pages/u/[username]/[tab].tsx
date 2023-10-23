@@ -47,6 +47,9 @@ const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
 
 const UserProfile = () => {
 
+  // Session
+  const session = useSession();
+
   // ** Hooks
   const router = useRouter()
   const hideText = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'))
@@ -54,7 +57,9 @@ const UserProfile = () => {
   const { username, tab } = router.query;
 
   // ** Queries
-  const { data: userData } = api.user.findByUsername.useQuery({ username: String(username) });
+  const { data: userData } = api.user.getCurrentUser.useQuery(undefined, {
+    enabled: !!session.data?.user?.id,
+  });
   const { data: rapsData } = api.rap.getRapsByUser.useQuery({ userId: userData?.id || '' });
   const { data: currentUserData } = api.user.getCurrentUser.useQuery();
 
@@ -154,6 +159,7 @@ import { GetServerSidePropsContext } from 'next';
 import { appRouter } from 'src/server/api/root';
 import superjson from 'superjson';
 import { createTRPCContext } from 'src/server/api/trpc'
+import { useSession } from 'next-auth/react'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
 

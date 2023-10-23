@@ -46,11 +46,9 @@ const ContentWrapper = styled('main')(({ theme }) => ({
 }))
 
 const VerticalLayout = (props: LayoutProps) => {
+
   // ** Props
   const { settings, children, scrollToTop, footerProps, contentHeightFixed, verticalLayoutProps } = props
-
-  // ** Queries
-  const { data: profileIsComplete } = api.user.getProfileIsComplete.useQuery();
 
   // ** Vars
   const { skin, contentWidth } = settings
@@ -66,7 +64,12 @@ const VerticalLayout = (props: LayoutProps) => {
   const toggleNavVisibility = () => setNavVisible(!navVisible)
 
   // ** Auth
-  const {status} = useSession()
+  const { status } = useSession()
+
+  // ** Queries
+  const { data: profileIsComplete } = api.user.getProfileIsComplete.useQuery(undefined, {
+    enabled: status === 'authenticated',
+  });
 
   return (
     <>

@@ -15,6 +15,7 @@ import VerticalAppBarContent from './components/vertical/AppBarContent'
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
 import { api } from 'src/utils/api'
+import { useSession } from 'next-auth/react'
 
 interface Props {
   children: ReactNode
@@ -23,7 +24,11 @@ interface Props {
 
 const UserLayout = ({ children, contentHeightFixed }: Props) => {
 
-  const { data: userData } = api.user.getCurrentUser.useQuery();
+  const session = useSession();
+
+  const { data: userData } = api.user.getCurrentUser.useQuery(undefined, {
+    enabled: !!session.data?.user?.id,
+  });
   const { settings, saveSettings } = useSettings()
 
   /**
