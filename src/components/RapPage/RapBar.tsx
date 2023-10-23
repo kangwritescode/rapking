@@ -16,6 +16,7 @@ interface RapBarProps {
 function RapBar({ rapData }: RapBarProps) {
 
   const theme = useTheme();
+  const { commentId } = useRouter().query;
 
   // Queries
   const { data: rapCommentsCount } = api.rapComment.getRapCommentsCount.useQuery({
@@ -23,8 +24,6 @@ function RapBar({ rapData }: RapBarProps) {
   }, {
     enabled: !!rapData?.id
   });
-
-  const { commentId } = useRouter().query;
 
   // State
   const [commentDrawerIsOpen, setCommentDrawerIsOpen] = useState<boolean>(!!commentId);
