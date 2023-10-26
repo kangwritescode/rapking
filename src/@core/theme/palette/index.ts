@@ -14,7 +14,7 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
 
   const primaryGradient = () => {
     if (themeColor === 'primary') {
-      return '#C6A7FE'
+      return '#334657'
     } else if (themeColor === 'secondary') {
       return '#9C9FA4'
     } else if (themeColor === 'success') {
@@ -35,7 +35,7 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
       return '#312D4B'
     } else if (mode === 'light') {
       return '#F4F5FA'
-    } else return '#181818'
+    } else return '#121212'
   }
 
   return {
@@ -57,15 +57,15 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
       white: whiteColor
     },
     primary: {
-      light: '#472e6c',
-      main: '#442c68',
-      dark: '#3f2960',
+      light: '#7c9bb3',
+      main: '#5b7b97',
+      dark: '#405865',
       contrastText: whiteColor
     },
     secondary: {
-      light: '#e0b805',
-      main: '#e0b805',
-      dark: '#e0b805',
+      light: '#b89a7d',
+      main: '#97775B',
+      dark: '#754f3b',
       contrastText: whiteColor
     },
     error: {
