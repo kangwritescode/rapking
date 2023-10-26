@@ -5,6 +5,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { LoadingButton } from '@mui/lab';
 
 interface AlertDialogProps {
   isOpen: boolean;
@@ -14,6 +15,8 @@ interface AlertDialogProps {
   cancelButtonProps?: React.ComponentProps<typeof Button>;
   submitButtonProps?: React.ComponentProps<typeof Button>;
   onSubmitHandler?: () => void;
+  actionButtonText: string;
+  isLoading?: boolean;
 }
 
 export default function AlertDialog({
@@ -24,6 +27,8 @@ export default function AlertDialog({
   cancelButtonProps,
   submitButtonProps,
   onSubmitHandler,
+  actionButtonText,
+  isLoading
 }: AlertDialogProps) {
 
   return (
@@ -49,13 +54,14 @@ export default function AlertDialog({
         >
           Cancel
         </Button>
-        <Button
+        <LoadingButton
+          loading={isLoading}
           {...onSubmitHandler && { onClick: onSubmitHandler }}
           autoFocus
           {...submitButtonProps}
         >
-          Delete Account
-        </Button>
+          {actionButtonText}
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

@@ -5,12 +5,14 @@ import { BUCKET_URL } from 'src/shared/constants';
 import { convert } from 'html-to-text';
 import { useRouter } from 'next/router';
 import dayjs from 'dayjs';
+import RapCardMenu from './UserPage/RapCardMenu';
 
 interface RapCardProps {
   rap: Rap & { user: User };
   sx?: SxProps;
   hideAvatar?: boolean;
   hideUsername?: boolean;
+  showMenu?: boolean;
 }
 
 
@@ -25,7 +27,7 @@ function formatDate(dateObj: Date) {
   }
 }
 
-function RapCard({ rap, sx, hideAvatar, hideUsername }: RapCardProps) {
+function RapCard({ rap, sx, hideAvatar, hideUsername, showMenu }: RapCardProps) {
   const { id, title, dateCreated, coverArtUrl, content, user: userData } = rap;
 
   const theme = useTheme();
@@ -49,7 +51,7 @@ function RapCard({ rap, sx, hideAvatar, hideUsername }: RapCardProps) {
   }
 
   return (
-    <Box sx={sx}>
+    <Box position='relative' sx={sx}>
       <Stack direction='row' alignItems='center' pb={theme.spacing(2)}>
         {!hideAvatar && (
           <Avatar
@@ -73,25 +75,42 @@ function RapCard({ rap, sx, hideAvatar, hideUsername }: RapCardProps) {
             onClick={navigateToProfile}
             sx={{ cursor: 'pointer' }}> {userData?.username}&nbsp;·&nbsp; </Typography>
         )}
-        <Typography fontSize='.875rem'>{formatDate(dateCreated)}</Typography>
+        <Typography
+          fontSize='.875rem'
+          onClick={navigateToRap}
+          sx={{
+            cursor: 'pointer'
+          }}>
+          {formatDate(dateCreated)}
+        </Typography>
       </Stack>
       <Stack direction='row' justifyContent='space-between'>
         <Box
-          width='calc(100% - 100px)'
           pr={theme.spacing(12)}
           sx={{
             wordBreak: 'keep-all',
-            cursor: 'pointer',
           }}
-          onClick={navigateToRap}>
+          width='100%'
+          >
           <Typography
             fontSize='1.25rem'
-            fontWeight='bold'>
+            fontWeight='bold'
+            onClick={navigateToRap}
+            sx={{
+              cursor: 'pointer'
+            }}>
             {title}
           </Typography>
-          <Typography>
+          <Typography
+            sx={{
+              cursor: 'pointer',
+            }}
+            onClick={navigateToRap}>
             {formattedContent}
           </Typography>
+          <Stack direction='row' justifyContent='end'>
+            {showMenu && <RapCardMenu rapId={rap.id} />}
+          </Stack>
         </Box>
         <CardMedia
           component='img'

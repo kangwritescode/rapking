@@ -32,6 +32,7 @@ function SettingsPage() {
             router.reload();
           }
         })}
+        actionButtonText='Delete Account'
       />
       <Button
         variant='contained'

@@ -67,7 +67,7 @@ export const rapRouter = createTRPCRouter({
           content: input.content,
           userId: ctx.session.user.id,
         },
-      })
+      });
 
     }),
   updateRap: protectedProcedure
@@ -98,7 +98,7 @@ export const rapRouter = createTRPCRouter({
           ...(input.status && { status: input.status }),
           ...(input.coverArtUrl && { coverArtUrl: input.coverArtUrl })
         },
-      })
+      });
 
     }),
   getRap: publicProcedure
@@ -118,7 +118,7 @@ export const rapRouter = createTRPCRouter({
       });
     }),
   getRapsByUser: protectedProcedure
-    .input(z.object({ userId: z.string()}))
+    .input(z.object({ userId: z.string() }))
     .query(async ({ ctx, input }) => {
 
       return await ctx.prisma.rap.findMany({
@@ -128,6 +128,15 @@ export const rapRouter = createTRPCRouter({
         include: {
           user: true
         }
+      });
+    }),
+  deleteRap: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.rap.delete({
+        where: {
+          id: input.id,
+        },
       });
     }),
 });
