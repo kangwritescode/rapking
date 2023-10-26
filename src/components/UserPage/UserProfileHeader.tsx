@@ -1,24 +1,23 @@
 // ** MUI Components
-import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import CardContent from '@mui/material/CardContent'
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 
 // ** Third Party Imports
 
-
 // ** Icon Imports
-import { Icon } from '@iconify/react'
-import { User } from '@prisma/client'
-import EditableBanner from './EditableBanner'
-import EditableProfilePhoto from './EditableProfilePhoto'
-import EditProfileDialog from './EditProfileDialog'
-import { useState } from 'react'
-import { api } from 'src/utils/api'
-import FollowingButton from './FollowingButton'
-import { CircularProgress } from '@mui/material'
-import toast from 'react-hot-toast'
+import { Icon } from '@iconify/react';
+import { CircularProgress } from '@mui/material';
+import { User } from '@prisma/client';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { api } from 'src/utils/api';
+import EditProfileDialog from './EditProfileDialog';
+import EditableBanner from './EditableBanner';
+import EditableProfilePhoto from './EditableProfilePhoto';
+import FollowingButton from './FollowingButton';
 
 interface UserProfileHeaderProps {
   userData?: User | null;
@@ -26,46 +25,53 @@ interface UserProfileHeaderProps {
 }
 
 const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps) => {
-
   // State
-  const [modalIsOpen, setIsModalIsOpen] = useState<boolean>(false)
+  const [modalIsOpen, setIsModalIsOpen] = useState<boolean>(false);
 
   // Queries
-  const { data: followData } = api.userFollows.getFollow.useQuery({ followerId: currentUserData?.id || '', followedId: userData?.id || '' }, {
-    enabled: !!currentUserData?.id && !!userData?.id
-  })
+  const { data: followData } = api.userFollows.getFollow.useQuery(
+    { followerId: currentUserData?.id || '', followedId: userData?.id || '' },
+    {
+      enabled: !!currentUserData?.id && !!userData?.id
+    }
+  );
 
   // Mutations
   const { mutate: createFollow, isLoading: createFollowIsLoading } = api.userFollows.createFollow.useMutation();
   const { mutate: deleteFollow, isLoading: deleteFollowIsLoading } = api.userFollows.deleteFollow.useMutation();
 
   // Invalidators
-  const { invalidate: invalidateFollowsQuery } = api.useContext().userFollows
+  const { invalidate: invalidateFollowsQuery } = api.useContext().userFollows;
 
   // Handlers
   const followButtonClickHandler = () => {
-    createFollow({ followerId: currentUserData?.id || '', followedId: userData?.id || '' }, {
-      onSuccess: () => {
-        invalidateFollowsQuery()
-      },
-      onError: (error) => {
-        if (error.data?.code === 'UNAUTHORIZED') {
-          toast.error('You must be logged in to follow a user.')
-        }
-        else {
-          toast.error(error.message)
+    createFollow(
+      { followerId: currentUserData?.id || '', followedId: userData?.id || '' },
+      {
+        onSuccess: () => {
+          invalidateFollowsQuery();
+        },
+        onError: error => {
+          if (error.data?.code === 'UNAUTHORIZED') {
+            toast.error('You must be logged in to follow a user.');
+          } else {
+            toast.error(error.message);
+          }
         }
       }
-    })
-  }
+    );
+  };
 
   const unfollowButonClickHandler = () => {
-    deleteFollow({ followerId: currentUserData?.id || '', followedId: userData?.id || '' }, {
-      onSuccess: () => {
-        invalidateFollowsQuery()
+    deleteFollow(
+      { followerId: currentUserData?.id || '', followedId: userData?.id || '' },
+      {
+        onSuccess: () => {
+          invalidateFollowsQuery();
+        }
       }
-    })
-  }
+    );
+  };
 
   const isCurrentUser = currentUserData?.id === userData?.id;
 
@@ -96,7 +102,7 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
             }}
           >
             <Box sx={{ mb: [6, 0], display: 'flex', flexDirection: 'column', alignItems: ['center', 'flex-start'] }}>
-              <Typography variant='h5' sx={{ mb: 4 }}>
+              <Typography variant='h5' sx={{ mb: 2 }}>
                 {userData?.username}
               </Typography>
               <Box
@@ -114,7 +120,9 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
                 </Box>
                 <Box sx={{ mr: 5, display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
                   <Icon icon='mdi:map-marker-outline' />
-                  <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>{userData?.city + ', ' + userData?.state}</Typography>
+                  <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>
+                    {userData?.city + ', ' + userData?.state}
+                  </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
                   <Icon icon='mdi:calendar-blank' />
@@ -126,18 +134,18 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
             </Box>
             {isCurrentUser ? (
               <Button
-                sx={{ borderRadius: "20px" }}
+                sx={{ borderRadius: '20px' }}
                 variant='outlined'
-                color="secondary"
+                color='secondary'
                 onClick={() => setIsModalIsOpen(true)}
-                startIcon={
-                  <Icon icon='mdi:pencil-outline' />
-                }>
+                size='small'
+                startIcon={<Icon icon='mdi:pencil-outline' />}
+              >
                 Edit Profile
               </Button>
-            ) : followData ?
+            ) : followData ? (
               <FollowingButton isLoading={deleteFollowIsLoading} unfollowClickHandler={unfollowButonClickHandler} />
-              :
+            ) : (
               <Button
                 variant='contained'
                 color='primary'
@@ -147,13 +155,13 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
                 sx={{ minWidth: '8rem' }}
               >
                 {createFollowIsLoading ? <CircularProgress color='inherit' size='1.5rem' /> : 'Follow'}
-              </Button>}
+              </Button>
+            )}
           </Box>
         </CardContent>
       </Card>
     </>
-  ) : null
-}
+  ) : null;
+};
 
-export default UserProfileHeader
-
+export default UserProfileHeader;

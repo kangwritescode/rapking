@@ -1,12 +1,12 @@
 import { Icon } from '@iconify/react';
-import { Button, Card, SxProps, Typography, useTheme } from '@mui/material'
+import { Button, Card, SxProps, Typography, useTheme } from '@mui/material';
 import { User } from '@prisma/client';
-import React, { useState } from 'react'
-import AddSocialDialog from './AddSocialDialog';
-import { api } from 'src/utils/api';
-import SocialLinks from './SocialLinks';
-import EditBioDialog from './EditBioDialog';
 import { useSession } from 'next-auth/react';
+import { useState } from 'react';
+import { api } from 'src/utils/api';
+import AddSocialDialog from './AddSocialDialog';
+import EditBioDialog from './EditBioDialog';
+import SocialLinks from './SocialLinks';
 
 interface BioCardProps {
   userData?: User | null;
@@ -21,9 +21,12 @@ function BioCard({ userData, sx }: BioCardProps) {
   const [socialsModalIsOpen, setSocialsModalIsOpen] = useState(false);
   const [bioModalIsOpen, setBioModalIsOpen] = useState(false);
 
-  const { data: socialLinksData } = api.socialLink.getSocialLinkByUserId.useQuery({ userId: userData?.id || '' }, {
-    enabled: !!userData?.id,
-  });
+  const { data: socialLinksData } = api.socialLink.getSocialLinkByUserId.useQuery(
+    { userId: userData?.id || '' },
+    {
+      enabled: !!userData?.id
+    }
+  );
 
   return (
     <>
@@ -35,11 +38,12 @@ function BioCard({ userData, sx }: BioCardProps) {
         sx={{
           wordBreak: 'break-word',
           ...sx
-        }}>
+        }}
+      >
         <Typography
           variant='body1'
           sx={{
-            mb: theme.spacing(1),
+            mb: theme.spacing(1)
           }}
         >
           Bio
@@ -48,61 +52,58 @@ function BioCard({ userData, sx }: BioCardProps) {
           variant='body1'
           color='text.secondary'
           sx={{
-            mb: theme.spacing(2),
+            mb: theme.spacing(2)
           }}
         >
-          {userData?.bio || "Add a bio."}
+          {userData?.bio || 'Add a bio.'}
         </Typography>
         {isCurrentUser && (
           <Button
-            color="secondary"
+            color='secondary'
             size='small'
-            variant="outlined"
-            startIcon={<Icon icon="mdi:pencil-outline" />}
+            variant='outlined'
+            startIcon={<Icon icon='mdi:pencil-outline' />}
             onClick={() => setBioModalIsOpen(true)}
             sx={{
-              borderRadius: '20px',
+              borderRadius: '20px'
             }}
             disabled={!isCurrentUser}
           >
             Edit
           </Button>
         )}
-        {(socialLinksData &&
-          socialLinksData.length &&
-          !isCurrentUser) ||
-          isCurrentUser && (
+        {(socialLinksData && socialLinksData.length && !isCurrentUser) ||
+          (isCurrentUser && (
             <Typography
               variant='body1'
               sx={{
                 mb: theme.spacing(2),
-                mt: theme.spacing(4),
+                mt: theme.spacing(4)
               }}
             >
               Socials
             </Typography>
-          )}
+          ))}
         <SocialLinks socialLinks={socialLinksData || []} />
-        {socialLinksData &&
-          socialLinksData.length < 5 &&
-          isCurrentUser &&
-          (
-            <Button
-              onClick={() => setSocialsModalIsOpen(true)}
-              variant="outlined"
-              color="secondary"
-              startIcon={<Icon icon="zondicons:add-outline" />}
-              disabled={!isCurrentUser}
-              sx={{
-                position: 'relative',
-                borderRadius: '20px',
-              }}>
-              Add link
-            </Button>
-          )}
+        {socialLinksData && socialLinksData.length < 5 && isCurrentUser && (
+          <Button
+            onClick={() => setSocialsModalIsOpen(true)}
+            variant='outlined'
+            color='secondary'
+            startIcon={<Icon icon='zondicons:add-outline' />}
+            disabled={!isCurrentUser}
+            size='small'
+            sx={{
+              position: 'relative',
+              borderRadius: '20px'
+            }}
+          >
+            Add link
+          </Button>
+        )}
       </Card>
     </>
-  )
+  );
 }
 
-export default BioCard
+export default BioCard;
