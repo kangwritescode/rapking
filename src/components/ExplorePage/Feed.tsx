@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 import { api } from 'src/utils/api';
-import FeedRapCard from './FeedRapCard';
+import RapCard from '../RapCard';
 import { CircularProgress, Divider, Stack } from '@mui/material';
 import { Virtuoso } from 'react-virtuoso';
 
@@ -67,7 +67,7 @@ function Feed({
       width='100%'
       itemContent={(_, rap) => (
         <>
-          <FeedRapCard
+          <RapCard
             key={rap.id}
             rap={rap}
             sx={{ mt: 7, mb: 9 }}

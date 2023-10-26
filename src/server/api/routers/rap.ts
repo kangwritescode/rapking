@@ -118,12 +118,15 @@ export const rapRouter = createTRPCRouter({
       });
     }),
   getRapsByUser: protectedProcedure
-    .input(z.object({ userId: z.string() }))
+    .input(z.object({ userId: z.string()}))
     .query(async ({ ctx, input }) => {
 
       return await ctx.prisma.rap.findMany({
         where: {
           userId: input.userId
+        },
+        include: {
+          user: true
         }
       });
     }),

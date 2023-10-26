@@ -1,21 +1,17 @@
-import { Rap } from '@prisma/client'
+import { Rap, User } from '@prisma/client'
 import React from 'react'
-import ProfileRapCard from './ProfileRapCard';
 import { Box } from '@mui/material';
 import Link from 'next/link';
+import RapCard from '../RapCard';
 
 interface RapsTabProps {
-  raps?: Rap[] | null;
+  raps?: (Rap & { user: User })[] | null;
 }
 
 function RapsTab({ raps }: RapsTabProps) {
 
   return (
-    <Box
-      display='grid'
-      gridTemplateColumns={['1fr', '1fr 1fr', '1fr 1fr 1fr']}
-      gap={4}
-    >
+    <Box py={6} px={2}>
       {raps?.map((rap) => {
         return (
           <Link
@@ -23,14 +19,7 @@ function RapsTab({ raps }: RapsTabProps) {
             key={rap.id}
             style={{ textDecoration: 'none' }}
           >
-            <ProfileRapCard
-              key={rap.id}
-              rap={rap}
-              sx={{
-                cursor: 'pointer',
-                height: '100%',
-              }}
-            />
+            <RapCard rap={rap} hideAvatar hideUsername />
           </Link>
         )
       })}
