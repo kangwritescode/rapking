@@ -35,8 +35,6 @@ const UserProfile = () => {
     setValue(newValue);
   };
 
-  console.log(rapsData);
-
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>

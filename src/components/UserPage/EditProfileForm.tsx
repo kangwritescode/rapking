@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Typography, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import DateofBirthField from 'src/components/FormComponents/DateofBirthField';
@@ -34,8 +33,6 @@ interface EditProfileFormProps {
 }
 
 function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
-
-  const router = useRouter();
 
   const { data: userData } = api.user.getCurrentUser.useQuery();
   const { mutate: updateUser } = api.user.updateUser.useMutation();
