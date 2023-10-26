@@ -1,46 +1,51 @@
 {
-    // JS
-    "javascript.updateImportsOnFileMove.enabled": "always",
-    // JSON
-    "[json]": {
-        "editor.defaultFormatter": "vscode.json-language-features"
-    },
-    "[jsonc]": {
-        "editor.defaultFormatter": "vscode.json-language-features"
-    },
-    // Extension: Git
-    "git.rebaseWhenSync": true,
-    "git.autofetch": true,
-    "git.enableSmartCommit": true,
-    // Extension: Prettier
-    "prettier.requireConfig": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": false,
-    // Extension: ESLint
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true,
-        "source.organizeImports": false,
-    },
-    "eslint.validate": [
-        "javascript",
-        "typescript",
-        "javascriptreact",
-        "typescriptreact"
-    ],
-    "eslint.format.enable": true,
-    // Package manager Configs
-    "eslint.packageManager": "yarn",
-    "npm.packageManager": "yarn",
-    // Extension: cSpell
-    "cSpell.words": [
-        "Customizer"
-    ],
-    "search-node-modules.path": "node_modules",
-    "markdown.extension.toc.updateOnSave": false,
-    "[prisma]": {
-        "editor.defaultFormatter": "Prisma.prisma"
-    },
-    "[xml]": {
-        "editor.defaultFormatter": "PrateekMahendrakar.prettyxml"
-    }
+  // JS
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  // JSON
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  // Extension: Git
+  "git.rebaseWhenSync": true,
+  "git.autofetch": true,
+  "git.enableSmartCommit": true,
+  // Extension: Prettier
+  "prettier.requireConfig": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // Extension: ESLint
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.organizeImports": true,
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "javascriptreact",
+    "typescriptreact"
+  ],
+  "eslint.format.enable": true,
+  // Package manager Configs
+  "npm.packageManager": "yarn",
+  // Extension: cSpell
+  "cSpell.words": [
+    "Customizer"
+  ],
+  "search-node-modules.path": "node_modules",
+  "markdown.extension.toc.updateOnSave": false,
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "[xml]": {
+    "editor.defaultFormatter": "PrateekMahendrakar.prettyxml"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
