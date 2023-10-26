@@ -1,6 +1,5 @@
+import { Box, Typography } from '@mui/material';
 import { Rap, User } from '@prisma/client';
-import React from 'react';
-import { Box } from '@mui/material';
 import RapCard from '../RapCard';
 
 interface RapsTabProps {
@@ -13,6 +12,7 @@ function RapsTab({ raps }: RapsTabProps) {
       {raps?.map(rap => (
         <RapCard key={rap.id} rap={rap} hideAvatar hideUsername showMenu />
       ))}
+      {raps?.length === 0 && <Typography>No raps yet.</Typography>}
     </Box>
   );
 }
