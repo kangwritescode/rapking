@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { Box, Stack, Tab, Tabs, useTheme } from '@mui/material';
 import FeedBar from '../../components/ExplorePage/FeedBar';
 import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
@@ -6,11 +6,9 @@ import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api
 import Feed from '../../components/ExplorePage/Feed';
 import { useSession } from 'next-auth/react';
 
-
 function ExplorePage() {
-
   const theme = useTheme();
-  const { status } = useSession()
+  const { status } = useSession();
 
   // Tabs
   const [tab, setTab] = useState(0);
@@ -30,22 +28,20 @@ function ExplorePage() {
     <Stack
       alignItems='center'
       sx={{
-        width: [
-          '100%',
-          '90%',
-          '80%'
-        ],
+        width: ['100%', '90%', '80%'],
         maxWidth: '45rem',
         margin: 'auto',
-        height: '100%',
-      }}>
+        height: '100%'
+      }}
+    >
       <Box
         sx={{
           borderBottom: 1,
           borderColor: 'divider',
           width: '100%',
           mb: '1rem'
-        }}>
+        }}
+      >
         <Tabs
           value={tab}
           onChange={handleChange}
@@ -56,19 +52,15 @@ function ExplorePage() {
             ['& .MuiTabs-indicator']: {
               backgroundColor: theme.palette.grey[100]
             }
-          }}>
-          <Tab label="All" />
-          {status === 'authenticated' && <Tab label="Following" />}
+          }}
+        >
+          <Tab label='All' />
+          {status === 'authenticated' && <Tab label='Following' />}
         </Tabs>
       </Box>
       <FeedBar
         sx={{ mb: '2rem' }}
-        onSortAndFilterChange={({
-          sortBy,
-          regionFilter,
-          timeFilter,
-          sexFilter
-        }) => {
+        onSortAndFilterChange={({ sortBy, regionFilter, timeFilter, sexFilter }) => {
           setSortByValue(sortBy);
           setRegionFilter(regionFilter);
           setTimeFilter(timeFilter);
@@ -83,7 +75,7 @@ function ExplorePage() {
         sexFilter={sexFilter}
       />
     </Stack>
-  )
+  );
 }
 
-export default ExplorePage
+export default ExplorePage;

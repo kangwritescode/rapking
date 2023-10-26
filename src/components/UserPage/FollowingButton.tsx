@@ -1,6 +1,6 @@
-import { Icon } from '@iconify/react'
-import { Box, Button, CircularProgress, Menu, MenuItem, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import { Icon } from '@iconify/react';
+import { Box, Button, CircularProgress, Menu, MenuItem, Typography } from '@mui/material';
+import React, { useState } from 'react';
 
 interface FollowingButtonProps {
   unfollowClickHandler?: () => void;
@@ -8,7 +8,6 @@ interface FollowingButtonProps {
 }
 
 function FollowingButton({ unfollowClickHandler, isLoading }: FollowingButtonProps) {
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -28,27 +27,20 @@ function FollowingButton({ unfollowClickHandler, isLoading }: FollowingButtonPro
         {...(!isLoading ? { endIcon: <Icon icon='basil:caret-down-solid' /> } : {})}
         sx={{ minWidth: '10rem' }}
       >
-        {
-          isLoading ? <CircularProgress color='inherit' size='1.5rem' /> : 'FOLLOWING'
-        }
+        {isLoading ? <CircularProgress color='inherit' size='1.5rem' /> : 'FOLLOWING'}
       </Button>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-      >
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem
           onClick={() => {
-            handleClose()
-            unfollowClickHandler && unfollowClickHandler()
-          }}>
-          <Typography variant="button">
-            UNFOLLOW
-          </Typography>
+            handleClose();
+            unfollowClickHandler && unfollowClickHandler();
+          }}
+        >
+          <Typography variant='button'>UNFOLLOW</Typography>
         </MenuItem>
       </Menu>
     </Box>
-  )
+  );
 }
 
-export default FollowingButton
+export default FollowingButton;

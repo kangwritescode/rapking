@@ -1,27 +1,27 @@
 // ** MUI Theme Provider
-import { deepmerge } from '@mui/utils'
-import { PaletteMode, ThemeOptions } from '@mui/material'
+import { deepmerge } from '@mui/utils';
+import { PaletteMode, ThemeOptions } from '@mui/material';
 
 // ** User Theme Options
-import UserThemeOptions from 'src/layouts/UserThemeOptions'
+import UserThemeOptions from 'src/layouts/UserThemeOptions';
 
 // ** Type Import
-import { Settings } from 'src/@core/context/settingsContext'
+import { Settings } from 'src/@core/context/settingsContext';
 
 // ** Theme Override Imports
-import palette from './palette'
-import spacing from './spacing'
-import shadows from './shadows'
-import overrides from './overrides'
-import typography from './typography'
-import breakpoints from './breakpoints'
+import palette from './palette';
+import spacing from './spacing';
+import shadows from './shadows';
+import overrides from './overrides';
+import typography from './typography';
+import breakpoints from './breakpoints';
 
 const themeOptions = (settings: Settings, overrideMode: PaletteMode): ThemeOptions => {
   // ** Vars
-  const { skin, mode, direction, themeColor } = settings
+  const { skin, mode, direction, themeColor } = settings;
 
   // ** Create New object before removing user component overrides and typography objects from userThemeOptions
-  const userThemeConfig: ThemeOptions = Object.assign({}, UserThemeOptions())
+  const userThemeConfig: ThemeOptions = Object.assign({}, UserThemeOptions());
 
   const mergedThemeConfig: ThemeOptions = deepmerge(
     {
@@ -42,7 +42,7 @@ const themeOptions = (settings: Settings, overrideMode: PaletteMode): ThemeOptio
       typography
     },
     userThemeConfig
-  )
+  );
 
   return deepmerge(mergedThemeConfig, {
     palette: {
@@ -52,7 +52,7 @@ const themeOptions = (settings: Settings, overrideMode: PaletteMode): ThemeOptio
           : palette(mode === 'semi-dark' ? overrideMode : mode, skin, themeColor).primary)
       }
     }
-  })
-}
+  });
+};
 
-export default themeOptions
+export default themeOptions;

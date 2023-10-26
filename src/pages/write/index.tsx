@@ -1,6 +1,6 @@
-import { Container } from '@mui/material'
-import { styled } from '@mui/material/styles'
-import React, { useCallback, useState } from 'react'
+import { Container } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import React, { useCallback, useState } from 'react';
 import RapEditor from '../../components/WritePage/RapEditor';
 import { api } from 'src/utils/api';
 import { toast } from 'react-hot-toast';
@@ -15,11 +15,10 @@ const PageContainer = styled(Container)(() => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'top',
-  flexDirection: 'column',
-}))
+  flexDirection: 'column'
+}));
 
 function WritePage() {
-
   const router = useRouter();
   const { status } = useSession();
 
@@ -29,47 +28,46 @@ function WritePage() {
 
   const submitHandler = () => {
     if (status === 'unauthenticated') {
-      return toast.error('You must be logged in to create a rap.')
+      return toast.error('You must be logged in to create a rap.');
     }
     if (rap) {
       const editedContent = removeTrailingAndLeadingPElements(rap.content);
-      createRap({
-        title: rap.title,
-        content: editedContent,
-      }, {
-        onError: (error) => {
-          if (error.data?.code === 'UNAUTHORIZED') {
-            toast.error('You must be logged in to create a rap.')
-          }
-          else {
-            toast.error(error.message)
-          }
+      createRap(
+        {
+          title: rap.title,
+          content: editedContent
         },
-        onSuccess: (data: Rap) => {
-          toast.success('Rap Created Successfully!')
-          router.push(`/write/${data.id}`)
+        {
+          onError: error => {
+            if (error.data?.code === 'UNAUTHORIZED') {
+              toast.error('You must be logged in to create a rap.');
+            } else {
+              toast.error(error.message);
+            }
+          },
+          onSuccess: (data: Rap) => {
+            toast.success('Rap Created Successfully!');
+            router.push(`/write/${data.id}`);
+          }
         }
-      })
+      );
     }
-  }
+  };
 
   const onRapChangeHandler = useCallback((rap: CreateRapPayload) => {
-    setRap(rap)
-  }, [])
+    setRap(rap);
+  }, []);
 
   return (
     <PageContainer>
-      <WriteHeader
-        disabled={formIsInvalid || isLoading || isSuccess}
-        onClickHandler={submitHandler}
-      />
+      <WriteHeader disabled={formIsInvalid || isLoading || isSuccess} onClickHandler={submitHandler} />
       <RapEditor
         handleCreate={submitHandler}
         onDisabledStateChanged={(isDisabled: boolean) => setFormIsInvalid(isDisabled)}
         onRapChange={onRapChangeHandler}
       />
     </PageContainer>
-  )
+  );
 }
 
 export default WritePage;

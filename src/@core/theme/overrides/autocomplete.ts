@@ -1,6 +1,6 @@
 // ** Type Imports
-import { OwnerStateThemeType } from './'
-import { Skin } from 'src/@core/layouts/types'
+import { OwnerStateThemeType } from './';
+import { Skin } from 'src/@core/layouts/types';
 
 const Autocomplete = (skin: Skin) => {
   return {
@@ -11,7 +11,7 @@ const Autocomplete = (skin: Skin) => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default Autocomplete
+export default Autocomplete;

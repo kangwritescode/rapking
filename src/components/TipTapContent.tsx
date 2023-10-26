@@ -1,6 +1,6 @@
 import { Box, SxProps } from '@mui/material';
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 
 interface TipTapContentProps {
   content: string;
@@ -8,20 +8,17 @@ interface TipTapContentProps {
 }
 
 const TipTapContent = ({ content, sx }: TipTapContentProps) => {
-
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-    ],
+    extensions: [StarterKit],
     content,
-    editable: false,
-  })
+    editable: false
+  });
 
   return (
     <Box sx={sx}>
       <EditorContent editor={editor} spellCheck={false} />
     </Box>
-  )
-}
+  );
+};
 
 export default TipTapContent;

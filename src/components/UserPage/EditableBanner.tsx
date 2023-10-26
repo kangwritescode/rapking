@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Icon } from '@iconify/react';
-import { Box, CardMedia, CircularProgress, IconButton } from '@mui/material'
+import { Box, CardMedia, CircularProgress, IconButton } from '@mui/material';
 import { User } from '@prisma/client';
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react';
 
 import { BUCKET_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
@@ -15,7 +15,6 @@ interface EditableBannerProps {
 }
 
 function EditableBanner({ isEditable, userData }: EditableBannerProps) {
-
   const { id, bannerUrl } = userData;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -30,40 +29,40 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
   const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
 
   const { deleteFile } = useGCloudDelete({
-    url: bannerUrl || '',
-  })
+    url: bannerUrl || ''
+  });
 
   const { isUploading } = useGCloudUpload({
     path: `user/${id}`,
     filename: 'banner',
     file,
-    onUploadSuccess: async (url) => {
+    onUploadSuccess: async url => {
       await updateUser({ bannerUrl: url });
       invalidateUserQuery();
       setFile(null);
       deleteFile();
     }
-  })
+  });
 
   return (
     <>
       <input
-        accept="image/jpeg, image/png"
-        id="image-button-file"
-        type="file"
+        accept='image/jpeg, image/png'
+        id='image-button-file'
+        type='file'
         ref={fileInputRef}
-        onChange={(e) => {
+        onChange={e => {
           if (e.target.files) {
-            setFile(e.target.files[0])
+            setFile(e.target.files[0]);
           }
         }}
         hidden
       />
       <Box
         sx={{
-          position: 'relative',
-        }}>
-
+          position: 'relative'
+        }}
+      >
         {isUploading && (
           <CircularProgress
             sx={{
@@ -72,18 +71,16 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
               position: 'absolute',
               top: '50%',
               left: '50%',
-              translate: '-50% -50%',
-            }} />
+              translate: '-50% -50%'
+            }}
+          />
         )}
 
         {isEditable && (
-          <Box
-            position='absolute'
-            right='1rem'
-            bottom='1rem'>
+          <Box position='absolute' right='1rem' bottom='1rem'>
             <IconButton
               onClick={() => fileInputRef?.current?.click()}
-              sx={(theme) => ({
+              sx={theme => ({
                 background: theme.palette.background.paper,
                 color: theme.palette.text.primary,
                 opacity: 0.6,
@@ -101,18 +98,14 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
         <CardMedia
           component='img'
           alt='profile-header'
-          image={
-            bannerUrl ?
-              `${BUCKET_URL}/${bannerUrl}` :
-              `${BUCKET_URL}/default/profile-banner.jpg`
-          }
+          image={bannerUrl ? `${BUCKET_URL}/${bannerUrl}` : `${BUCKET_URL}/default/profile-banner.jpg`}
           sx={{
             height: { xs: 150, md: 250 }
           }}
         />
       </Box>
     </>
-  )
+  );
 }
 
-export default EditableBanner
+export default EditableBanner;

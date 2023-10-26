@@ -1,19 +1,18 @@
-import { useRouter } from "next/router";
-import { api } from "src/utils/api";
-import RapEditor from "../../components/WritePage/RapEditor";
-import { toast } from "react-hot-toast";
-import { useCallback, useState } from "react";
-import { UpdateRapPayload } from "src/server/api/routers/rap";
-import { Container, styled } from "@mui/material";
-import WriteHeader from "../../components/WritePage/WriteHeader";
+import { useRouter } from 'next/router';
+import { api } from 'src/utils/api';
+import RapEditor from '../../components/WritePage/RapEditor';
+import { toast } from 'react-hot-toast';
+import { useCallback, useState } from 'react';
+import { UpdateRapPayload } from 'src/server/api/routers/rap';
+import { Container, styled } from '@mui/material';
+import WriteHeader from '../../components/WritePage/WriteHeader';
 
 const PageContainer = styled(Container)(() => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'top',
-  flexDirection: 'column',
-}))
-
+  flexDirection: 'column'
+}));
 
 const ExistingRap = () => {
   const router = useRouter();
@@ -35,28 +34,24 @@ const ExistingRap = () => {
   const submitHandler = () => {
     if (updateRapPayload) {
       updateRap(updateRapPayload, {
-        onError: (error) => {
-          toast.error(error.message)
+        onError: error => {
+          toast.error(error.message);
         },
         onSuccess: () => {
-          toast.success('Rap Updated Successfully!')
+          toast.success('Rap Updated Successfully!');
           invalidateRapQuery({ id: id as string });
         }
-      })
+      });
     }
-  }
+  };
 
   const onRapChangeHandler = useCallback((rapPayload: UpdateRapPayload) => {
-    setUpdateRapPayload(rapPayload)
-  }, [])
+    setUpdateRapPayload(rapPayload);
+  }, []);
 
   return (
     <PageContainer>
-      <WriteHeader
-        disabled={formIsInvalid || isLoading}
-        onClickHandler={submitHandler}
-        rapData={rapData}
-      />
+      <WriteHeader disabled={formIsInvalid || isLoading} onClickHandler={submitHandler} rapData={rapData} />
       {rapData && (
         <RapEditor
           handleUpdate={submitHandler}
@@ -67,6 +62,6 @@ const ExistingRap = () => {
       )}
     </PageContainer>
   );
-}
+};
 
 export default ExistingRap;

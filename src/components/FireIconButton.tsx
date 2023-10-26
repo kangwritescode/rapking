@@ -1,12 +1,12 @@
-import { Icon } from '@iconify/react'
-import { IconButton, SxProps } from '@mui/material'
-import React from 'react'
+import { Icon } from '@iconify/react';
+import { IconButton, SxProps } from '@mui/material';
+import React from 'react';
 
 interface FireIconButtonProps {
-  onClick: () => void
-  isColored?: boolean
-  sx?: SxProps
-  disabled?: boolean
+  onClick: () => void;
+  isColored?: boolean;
+  sx?: SxProps;
+  disabled?: boolean;
 }
 function FireIconButton({ onClick, isColored, sx, disabled }: FireIconButtonProps) {
   return (
@@ -18,12 +18,9 @@ function FireIconButton({ onClick, isColored, sx, disabled }: FireIconButtonProp
       onClick={onClick}
       disabled={disabled}
     >
-      <Icon
-        {...(isColored ? { color: 'orange' } : {})}
-        icon='mdi:fire'
-      />
+      <Icon {...(isColored ? { color: 'orange' } : {})} icon='mdi:fire' />
     </IconButton>
-  )
+  );
 }
 
-export default FireIconButton
+export default FireIconButton;

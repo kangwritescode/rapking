@@ -1,16 +1,15 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import {
-  createTRPCRouter,
-  publicProcedure,
-} from "src/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from 'src/server/api/trpc';
 
 export const leaderboardRouter = createTRPCRouter({
   getTopUsersByPoints: publicProcedure
-    .input(z.object({
-      page: z.number().default(0),
-      pageSize: z.number(),
-    }))
+    .input(
+      z.object({
+        page: z.number().default(0),
+        pageSize: z.number()
+      })
+    )
     .query(async ({ input, ctx }) => {
       const { page, pageSize } = input;
 
@@ -20,8 +19,8 @@ export const leaderboardRouter = createTRPCRouter({
         take: pageSize,
         skip: skipAmount,
         orderBy: {
-          points: "desc",
-        },
+          points: 'desc'
+        }
       });
 
       // Fetch the total count of users
@@ -29,8 +28,7 @@ export const leaderboardRouter = createTRPCRouter({
 
       return {
         rowData,
-        rowCount: usersWithPoints,
-      }
+        rowCount: usersWithPoints
+      };
     })
 });
-

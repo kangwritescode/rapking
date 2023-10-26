@@ -1,8 +1,8 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 // ** Util Imports
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba';
 
 const Chip = () => {
   return {
@@ -75,7 +75,7 @@ const Chip = () => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default Chip
+export default Chip;

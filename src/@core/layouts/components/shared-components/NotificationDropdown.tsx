@@ -1,58 +1,58 @@
 // ** React Imports
-import { useState, SyntheticEvent, Fragment, ReactNode } from 'react'
+import { useState, SyntheticEvent, Fragment, ReactNode } from 'react';
 
 // ** MUI Imports
-import Box from '@mui/material/Box'
-import Badge from '@mui/material/Badge'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import { styled, Theme } from '@mui/material/styles'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import MuiMenu, { MenuProps } from '@mui/material/Menu'
-import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box';
+import Badge from '@mui/material/Badge';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import { styled, Theme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import MuiMenu, { MenuProps } from '@mui/material/Menu';
+import Typography from '@mui/material/Typography';
 import MuiMenuItem, { MenuItemProps } from '@mui/material/MenuItem';
 
 // ** Icon Imports
-import { Icon } from '@iconify/react'
+import { Icon } from '@iconify/react';
 
 // ** Third Party Components
-import PerfectScrollbarComponent from 'react-perfect-scrollbar'
+import PerfectScrollbarComponent from 'react-perfect-scrollbar';
 
 // ** Type Imports
-import { ThemeColor } from 'src/@core/layouts/types'
-import { Settings } from 'src/@core/context/settingsContext'
+import { ThemeColor } from 'src/@core/layouts/types';
+import { Settings } from 'src/@core/context/settingsContext';
 
 // ** Custom Components Imports
-import CustomChip from 'src/@core/components/mui/chip'
+import CustomChip from 'src/@core/components/mui/chip';
 
 // ** Util Import
-import { api } from 'src/utils/api'
-import Notification from './Notification'
-import { CircularProgress, Stack } from '@mui/material'
+import { api } from 'src/utils/api';
+import Notification from './Notification';
+import { CircularProgress, Stack } from '@mui/material';
 
 export type NotificationsType = {
-  meta: string
-  title: string
-  subtitle: string
+  meta: string;
+  title: string;
+  subtitle: string;
 } & (
-    | { avatarAlt: string; avatarImg: string; avatarText?: never; avatarColor?: never; avatarIcon?: never }
-    | {
-      avatarAlt?: never
-      avatarImg?: never
-      avatarText: string
-      avatarIcon?: never
-      avatarColor?: ThemeColor
+  | { avatarAlt: string; avatarImg: string; avatarText?: never; avatarColor?: never; avatarIcon?: never }
+  | {
+      avatarAlt?: never;
+      avatarImg?: never;
+      avatarText: string;
+      avatarIcon?: never;
+      avatarColor?: ThemeColor;
     }
-    | {
-      avatarAlt?: never
-      avatarImg?: never
-      avatarText?: never
-      avatarIcon: ReactNode
-      avatarColor?: ThemeColor
+  | {
+      avatarAlt?: never;
+      avatarImg?: never;
+      avatarText?: never;
+      avatarIcon: ReactNode;
+      avatarColor?: ThemeColor;
     }
-  )
+);
 interface Props {
-  settings: Settings
+  settings: Settings;
 }
 
 // ** Styled Menu component
@@ -68,7 +68,7 @@ const Menu = styled(MuiMenu)<MenuProps>(({ theme }) => ({
   '& .MuiMenu-list': {
     padding: 0
   }
-}))
+}));
 
 // ** Styled MenuItem component
 export const StyledMenuItem = styled(MuiMenuItem)<MenuItemProps>(({ theme }) => ({
@@ -77,37 +77,37 @@ export const StyledMenuItem = styled(MuiMenuItem)<MenuItemProps>(({ theme }) => 
   '&:not(:last-of-type)': {
     borderBottom: `1px solid ${theme.palette.divider}`
   }
-}))
+}));
 
 // ** Styled PerfectScrollbar component
 const PerfectScrollbar = styled(PerfectScrollbarComponent)({
   maxHeight: 349
-})
+});
 
 const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: boolean }) => {
   if (hidden) {
-    return <Box sx={{ maxHeight: 349, overflowY: 'auto', overflowX: 'hidden' }}>{children}</Box>
+    return <Box sx={{ maxHeight: 349, overflowY: 'auto', overflowX: 'hidden' }}>{children}</Box>;
   } else {
-    return <PerfectScrollbar options={{ wheelPropagation: false, suppressScrollX: true }}>{children}</PerfectScrollbar>
+    return <PerfectScrollbar options={{ wheelPropagation: false, suppressScrollX: true }}>{children}</PerfectScrollbar>;
   }
-}
+};
 
 const NotificationDropdown = (props: Props) => {
-
   // ** Props
-  const { settings } = props
+  const { settings } = props;
 
   // ** States
-  const [anchorEl, setAnchorEl] = useState<(EventTarget & Element) | null>(null)
+  const [anchorEl, setAnchorEl] = useState<(EventTarget & Element) | null>(null);
 
   // ** Hook
-  const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
+  const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
   // ** Vars
-  const { direction } = settings
+  const { direction } = settings;
 
   // ** Query
-  const { data: notifications, isLoading: getNotificationsIsLoading } = api.notifications.getUserNotifications.useQuery();
+  const { data: notifications, isLoading: getNotificationsIsLoading } =
+    api.notifications.getUserNotifications.useQuery();
 
   // ** Mutations
   const { mutate: markAllAsRead } = api.notifications.markAllNotificationsAsRead.useMutation();
@@ -117,15 +117,15 @@ const NotificationDropdown = (props: Props) => {
   const { invalidate: invalidateNotifications } = api.useContext().notifications.getUserNotifications;
 
   const handleDropdownOpen = (event: SyntheticEvent) => {
-    setAnchorEl(event.currentTarget)
+    setAnchorEl(event.currentTarget);
     invalidateNotifications();
     markAllAsRead(undefined);
-  }
+  };
 
   const handleDropdownClose = () => {
-    setAnchorEl(null)
+    setAnchorEl(null);
     invalidateNotifications();
-  }
+  };
 
   const clearAllButtonHandler = () => {
     deleteAllUserNotifications(undefined, {
@@ -133,8 +133,8 @@ const NotificationDropdown = (props: Props) => {
         invalidateNotifications();
         handleDropdownClose();
       }
-    })
-  }
+    });
+  };
 
   const hasUnreadNotifications = notifications?.some(notification => !notification.read);
 
@@ -176,12 +176,9 @@ const NotificationDropdown = (props: Props) => {
           </Box>
         </StyledMenuItem>
         <ScrollWrapper hidden={hidden}>
-          {notifications?.map((notification) =>
-            <Notification
-              closeDropdown={handleDropdownClose}
-              key={notification.id}
-              notification={notification}
-            />)}
+          {notifications?.map(notification => (
+            <Notification closeDropdown={handleDropdownClose} key={notification.id} notification={notification} />
+          ))}
           {!notifications?.length && !getNotificationsIsLoading && (
             <StyledMenuItem
               disableRipple
@@ -229,7 +226,7 @@ const NotificationDropdown = (props: Props) => {
         ) : undefined}
       </Menu>
     </Fragment>
-  )
-}
+  );
+};
 
-export default NotificationDropdown
+export default NotificationDropdown;

@@ -1,8 +1,8 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 // ** Util Import
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba';
 
 const Pagination = () => {
   return {
@@ -29,7 +29,7 @@ const Pagination = () => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default Pagination
+export default Pagination;

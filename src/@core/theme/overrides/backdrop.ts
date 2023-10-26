@@ -1,8 +1,8 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 // ** Util Import
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba';
 
 const Backdrop = () => {
   return {
@@ -19,7 +19,7 @@ const Backdrop = () => {
         }
       }
     }
-  }
-}
+  };
+};
 
-export default Backdrop
+export default Backdrop;

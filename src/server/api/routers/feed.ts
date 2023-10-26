@@ -1,27 +1,24 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import {
-  createTRPCRouter,
-  publicProcedure,
-} from "src/server/api/trpc";
-import { TRPCError } from "@trpc/server";
+import { createTRPCRouter, publicProcedure } from 'src/server/api/trpc';
+import { TRPCError } from '@trpc/server';
 
 // Schemas
 const createRapPayloadSchema = z.object({
   title: z.string(),
-  content: z.string(),
+  content: z.string()
 });
 const updateRapPayloadSchema = z.object({
   id: z.string(),
   title: z.string().optional(),
   content: z.string().optional(),
-  status: z.enum(["DRAFT", "PUBLISHED"]).optional(),
-  coverArtUrl: z.string().optional().nullable(),
+  status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
+  coverArtUrl: z.string().optional().nullable()
 });
 
-const sortBySchema = z.enum(["NEWEST", "TOP"]);
-const timeFilterSchema = z.enum(["ALL", "24HOURS", "7DAYS", "30DAYS", "6MONTHS", "12MONTHS"]);
-const regionFilterSchema = z.enum(["ALL", "WEST", "MIDWEST", "EAST", "SOUTH"]);
+const sortBySchema = z.enum(['NEWEST', 'TOP']);
+const timeFilterSchema = z.enum(['ALL', '24HOURS', '7DAYS', '30DAYS', '6MONTHS', '12MONTHS']);
+const regionFilterSchema = z.enum(['ALL', 'WEST', 'MIDWEST', 'EAST', 'SOUTH']);
 const sexFilterSchema = z.enum(['ANY', 'MALE', 'FEMALE']);
 
 // Types
@@ -62,26 +59,19 @@ function getTimeFilterDate(timeFilter: TimeFilter) {
 
 export const feedRouter = createTRPCRouter({
   queryRaps: publicProcedure
-    .input(z.object({
-      sortBy: sortBySchema,
-      regionFilter: regionFilterSchema,
-      timeFilter: timeFilterSchema,
-      followingFilter: z.boolean().optional(),
-      sexFilter: sexFilterSchema,
-      cursor: z.string().nullish(),
-      limit: z.number().min(1).max(50),
-    }))
+    .input(
+      z.object({
+        sortBy: sortBySchema,
+        regionFilter: regionFilterSchema,
+        timeFilter: timeFilterSchema,
+        followingFilter: z.boolean().optional(),
+        sexFilter: sexFilterSchema,
+        cursor: z.string().nullish(),
+        limit: z.number().min(1).max(50)
+      })
+    )
     .query(async ({ ctx, input }) => {
-
-      const {
-        sortBy,
-        regionFilter,
-        timeFilter,
-        followingFilter,
-        sexFilter,
-        cursor,
-        limit,
-      } = input;
+      const { sortBy, regionFilter, timeFilter, followingFilter, sexFilter, cursor, limit } = input;
 
       // Sort logic
       let orderBy: any;
@@ -107,7 +97,7 @@ export const feedRouter = createTRPCRouter({
         where.user = {
           ...where.user,
           sex: sexFilter === 'MALE' ? 'male' : 'female'
-        }
+        };
       }
 
       const filterDate = getTimeFilterDate(timeFilter);
@@ -119,14 +109,14 @@ export const feedRouter = createTRPCRouter({
         // Handle for when user is not logged in
         if (!ctx.session) {
           throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: "You must be logged in to use this filter.",
+            code: 'BAD_REQUEST',
+            message: 'You must be logged in to use this filter.'
           });
         }
         const userId = ctx.session.user.id;
         const followedUsers = await ctx.prisma.userFollows.findMany({
           where: { followerId: userId },
-          select: { followedId: true },
+          select: { followedId: true }
         });
 
         const followedUserIds = followedUsers.map(follow => follow.followedId);
@@ -137,10 +127,10 @@ export const feedRouter = createTRPCRouter({
         where,
         orderBy,
         include: {
-          user: true,
+          user: true
         },
         cursor: cursor ? { id: cursor } : undefined,
-        take: limit + 1,
+        take: limit + 1
       });
 
       let nextCursor: typeof cursor | undefined = undefined;
@@ -149,7 +139,6 @@ export const feedRouter = createTRPCRouter({
         nextCursor = nextItem!.id;
       }
 
-
       return { raps, nextCursor };
-    }),
+    })
 });

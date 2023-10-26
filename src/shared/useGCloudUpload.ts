@@ -21,22 +21,23 @@ export const useGCloudUpload = ({
   filename,
   onUploadSuccess
 }: UseGCloudUploadProps): UseGCloudUploadReturn => {
-
   const [isUploading, setIsUploading] = useState(false);
   const [newFileUrl, setNewFileUrl] = useState('');
 
   useEffect(() => {
-    if (file && filename ) {
+    if (file && filename) {
       const fileExtension = file.name.split('.').pop();
       setNewFileUrl(`${path}/${filename}-${v4()}.${fileExtension}`);
-    }
-    else if (!file) {
+    } else if (!file) {
       setNewFileUrl('');
     }
   }, [file, filename, path]);
 
   // Queries and Mutations
-  const { data: presignedWriteUrl } = api.gcloud.generateWriteUrl.useQuery({ fileName: newFileUrl }, { enabled: !!newFileUrl });
+  const { data: presignedWriteUrl } = api.gcloud.generateWriteUrl.useQuery(
+    { fileName: newFileUrl },
+    { enabled: !!newFileUrl }
+  );
 
   useEffect(() => {
     if (presignedWriteUrl && file && newFileUrl) {
@@ -55,11 +56,11 @@ export const useGCloudUpload = ({
       };
       upload();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [presignedWriteUrl, file, newFileUrl]);
 
   return {
     isUploading,
-    newFileUrl,
+    newFileUrl
   };
 };

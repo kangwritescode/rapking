@@ -1,30 +1,30 @@
 // ** React Imports
-import { useState, SyntheticEvent, Fragment } from 'react'
+import { useState, SyntheticEvent, Fragment } from 'react';
 
 // ** Next Import
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 // ** MUI Imports
-import Box from '@mui/material/Box'
-import Menu from '@mui/material/Menu'
-import Badge from '@mui/material/Badge'
-import Avatar from '@mui/material/Avatar'
-import Divider from '@mui/material/Divider'
-import MenuItem from '@mui/material/MenuItem'
-import { styled } from '@mui/material/styles'
-import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box';
+import Menu from '@mui/material/Menu';
+import Badge from '@mui/material/Badge';
+import Avatar from '@mui/material/Avatar';
+import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 
 // ** Icon Imports
-import { Icon } from '@iconify/react'
+import { Icon } from '@iconify/react';
 
 // ** Type Imports
-import { Settings } from 'src/@core/context/settingsContext'
-import { signOut, useSession } from 'next-auth/react'
-import { api } from 'src/utils/api'
-import { BUCKET_URL } from 'src/shared/constants'
+import { Settings } from 'src/@core/context/settingsContext';
+import { signOut, useSession } from 'next-auth/react';
+import { api } from 'src/utils/api';
+import { BUCKET_URL } from 'src/shared/constants';
 
 interface Props {
-  settings: Settings
+  settings: Settings;
 }
 
 // ** Styled Components
@@ -34,40 +34,39 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
   borderRadius: '50%',
   backgroundColor: theme.palette.success.main,
   boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
-}))
+}));
 
 const UserDropdown = (props: Props) => {
-
   // ** Auth
   const session = useSession();
 
   // ** Props
-  const { settings } = props
+  const { settings } = props;
 
   // ** States
-  const [anchorEl, setAnchorEl] = useState<Element | null>(null)
+  const [anchorEl, setAnchorEl] = useState<Element | null>(null);
 
   // ** Hooks
-  const router = useRouter()
+  const router = useRouter();
 
   // ** Vars
-  const { direction } = settings
+  const { direction } = settings;
 
   // ** Query
   const { data: userData } = api.user.getCurrentUser.useQuery(undefined, {
-    enabled: !!session.data?.user?.id,
+    enabled: !!session.data?.user?.id
   });
 
   const handleDropdownOpen = (event: SyntheticEvent) => {
-    setAnchorEl(event.currentTarget)
-  }
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleDropdownClose = (url?: string) => {
     if (url) {
-      router.push(url)
+      router.push(url);
     }
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
 
   const styles = {
     py: 2,
@@ -82,12 +81,12 @@ const UserDropdown = (props: Props) => {
       fontSize: '1.375rem',
       color: 'text.primary'
     }
-  }
+  };
 
   const handleLogout = () => {
-    handleDropdownClose()
-    signOut({callbackUrl: '/'})
-  }
+    handleDropdownClose();
+    signOut({ callbackUrl: '/' });
+  };
 
   return (
     <Fragment>
@@ -106,7 +105,7 @@ const UserDropdown = (props: Props) => {
           onClick={handleDropdownOpen}
           sx={{ width: 40, height: 40 }}
           {...(userData?.profileImageUrl && {
-            src: `${BUCKET_URL}/${userData.profileImageUrl}`,
+            src: `${BUCKET_URL}/${userData.profileImageUrl}`
           })}
         />
       </Badge>
@@ -131,14 +130,13 @@ const UserDropdown = (props: Props) => {
               <Avatar
                 alt='Profile avatar */'
                 {...(userData?.profileImageUrl && {
-                  src: `${BUCKET_URL}/${userData.profileImageUrl}`,
+                  src: `${BUCKET_URL}/${userData.profileImageUrl}`
                 })}
-                sx={{ width: '2.5rem', height: '2.5rem' }} />
+                sx={{ width: '2.5rem', height: '2.5rem' }}
+              />
             </Badge>
             <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 600 }}>
-                {userData?.username || ''}
-              </Typography>
+              <Typography sx={{ fontWeight: 600 }}>{userData?.username || ''}</Typography>
             </Box>
           </Box>
         </Box>
@@ -146,8 +144,8 @@ const UserDropdown = (props: Props) => {
         <MenuItem
           sx={{ p: 0 }}
           onClick={() => {
-            handleDropdownClose()
-            router.push('/settings')
+            handleDropdownClose();
+            router.push('/settings');
           }}
         >
           <Box sx={styles}>
@@ -165,7 +163,7 @@ const UserDropdown = (props: Props) => {
         </MenuItem>
       </Menu>
     </Fragment>
-  )
-}
+  );
+};
 
-export default UserDropdown
+export default UserDropdown;

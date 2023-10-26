@@ -1,8 +1,8 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 // ** Util Import
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba';
 
 const Tooltip = () => {
   return {
@@ -22,7 +22,7 @@ const Tooltip = () => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default Tooltip
+export default Tooltip;

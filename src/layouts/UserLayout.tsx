@@ -1,35 +1,34 @@
 // ** React Imports
-import { ReactNode } from 'react'
+import { ReactNode } from 'react';
 
 // ** MUI Imports
-import { Theme } from '@mui/material/styles'
-import useMediaQuery from '@mui/material/useMediaQuery'
+import { Theme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 // ** Layout Imports
 // !Do not remove this Layout import
-import Layout from 'src/@core/layouts/Layout'
+import Layout from 'src/@core/layouts/Layout';
 
 // ** Navigation Imports
-import VerticalAppBarContent from './components/vertical/AppBarContent'
+import VerticalAppBarContent from './components/vertical/AppBarContent';
 
 // ** Hook Import
-import { useSettings } from 'src/@core/hooks/useSettings'
-import { api } from 'src/utils/api'
-import { useSession } from 'next-auth/react'
+import { useSettings } from 'src/@core/hooks/useSettings';
+import { api } from 'src/utils/api';
+import { useSession } from 'next-auth/react';
 
 interface Props {
-  children: ReactNode
-  contentHeightFixed?: boolean
+  children: ReactNode;
+  contentHeightFixed?: boolean;
 }
 
 const UserLayout = ({ children, contentHeightFixed }: Props) => {
-
   const session = useSession();
 
   const { data: userData } = api.user.getCurrentUser.useQuery(undefined, {
-    enabled: !!session.data?.user?.id,
+    enabled: !!session.data?.user?.id
   });
-  const { settings, saveSettings } = useSettings()
+  const { settings, saveSettings } = useSettings();
 
   /**
    *  The below variable will hide the current layout menu at given screen size.
@@ -39,37 +38,36 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
    *  to know more about what values can be passed to this hook.
    *  ! Do not change this value unless you know what you are doing. It can break the template.
    */
-  const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
+  const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
   if (hidden && settings.layout === 'horizontal') {
-    settings.layout = 'vertical'
+    settings.layout = 'vertical';
   }
 
   const navItems = [
     {
       title: 'Explore',
       path: '/explore',
-      icon: 'mdi:earth',
+      icon: 'mdi:earth'
     },
     {
       title: 'Write',
       path: '/write',
-      icon: 'ph:note-pencil-bold',
+      icon: 'ph:note-pencil-bold'
     },
     {
       title: 'Leaderboard',
       path: '/leaderboard',
-      icon: 'ph:crown-bold',
-
-    },
-  ]
+      icon: 'ph:crown-bold'
+    }
+  ];
 
   if (userData) {
     navItems.splice(0, 0, {
       title: userData.username || 'Profile',
       path: `/u/${userData.username}`,
       icon: 'gg:profile'
-    })
+    });
   }
 
   return (
@@ -96,7 +94,7 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
     >
       {children}
     </Layout>
-  )
-}
+  );
+};
 
-export default UserLayout
+export default UserLayout;

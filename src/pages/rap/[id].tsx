@@ -1,14 +1,12 @@
 import { Avatar, CardMedia, Divider, Link, Stack, Typography, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
-import React from 'react'
+import React from 'react';
 import { BUCKET_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
 import TipTapContent from '../../components/TipTapContent';
 import RapBar from '../../components/RapPage/RapBar';
 
-
 function RapPage() {
-
   const theme = useTheme();
   const router = useRouter();
 
@@ -18,9 +16,7 @@ function RapPage() {
   const userData = rapData?.user;
 
   return (
-    <Stack
-      direction='column'
-      alignItems='center'>
+    <Stack direction='column' alignItems='center'>
       <Stack width={{ xs: '100%', md: '40rem' }}>
         <CardMedia
           component='img'
@@ -31,18 +27,24 @@ function RapPage() {
             height: {
               xs: 200,
               sm: 250,
-              md: 300,
+              md: 300
             }
           }}
         />
         <Typography variant='h4' fontWeight='bold'>
           {rapData?.title}
         </Typography>
-        <Stack direction='row' mt={theme.spacing(4)} mb={theme.spacing(4)} alignItems="center" justifyContent="space-between">
+        <Stack
+          direction='row'
+          mt={theme.spacing(4)}
+          mb={theme.spacing(4)}
+          alignItems='center'
+          justifyContent='space-between'
+        >
           <Stack direction='row'>
             <Avatar
               {...(userData?.profileImageUrl && {
-                src: `${BUCKET_URL}/${userData.profileImageUrl}`,
+                src: `${BUCKET_URL}/${userData.profileImageUrl}`
               })}
               alt='profile-picture'
               onClick={() => router.push(`/u/${userData?.username}/raps`)}
@@ -50,18 +52,14 @@ function RapPage() {
                 mr: theme.spacing(4),
                 width: 50,
                 height: 50,
-                cursor: 'pointer',
+                cursor: 'pointer'
               }}
             />
             <Stack>
               <Link>
-                <Typography fontWeight='bold'>
-                  {userData?.username}
-                </Typography>
+                <Typography fontWeight='bold'>{userData?.username}</Typography>
               </Link>
-              <Typography>
-                {rapData?.dateCreated.toLocaleDateString()}
-              </Typography>
+              <Typography>{rapData?.dateCreated.toLocaleDateString()}</Typography>
             </Stack>
           </Stack>
         </Stack>
@@ -71,7 +69,7 @@ function RapPage() {
         {rapData?.content && <TipTapContent sx={{ marginTop: theme.spacing(2) }} content={rapData.content} />}
       </Stack>
     </Stack>
-  )
+  );
 }
 
 export default RapPage;
@@ -80,23 +78,22 @@ import { createServerSideHelpers } from '@trpc/react-query/server';
 import { GetServerSidePropsContext } from 'next';
 import { appRouter } from 'src/server/api/root';
 import superjson from 'superjson';
-import { createTRPCContext } from 'src/server/api/trpc'
+import { createTRPCContext } from 'src/server/api/trpc';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-
   const { id } = context.query;
 
   const helpers = createServerSideHelpers({
     router: appRouter,
     ctx: await createTRPCContext(context),
-    transformer: superjson,
+    transformer: superjson
   });
 
-  await helpers.rap.getRap.prefetch({ id })
+  await helpers.rap.getRap.prefetch({ id });
 
   return {
     props: {
-      trpcState: helpers.dehydrate(),
+      trpcState: helpers.dehydrate()
     }
-  }
+  };
 }

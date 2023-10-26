@@ -1,7 +1,7 @@
-import { Box, Button, CardMedia, CircularProgress } from '@mui/material'
+import { Box, Button, CardMedia, CircularProgress } from '@mui/material';
 import { Rap } from '@prisma/client';
-import React, { useRef, useState } from 'react'
-import { BUCKET_URL } from 'src/shared/constants'
+import React, { useRef, useState } from 'react';
+import { BUCKET_URL } from 'src/shared/constants';
 import { useGCloudDelete } from 'src/shared/useGCloudDelete';
 import { useGCloudUpload } from 'src/shared/useGCloudUpload';
 import { api } from 'src/utils/api';
@@ -12,7 +12,6 @@ interface EditableCoverArtProps {
 }
 
 function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
-
   const { id, coverArtUrl } = rapData;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -26,40 +25,39 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
   // Invalidaters
   const { invalidate: invalidateRapQuery } = api.useContext().rap.getRap;
 
-  const { deleteFile } = useGCloudDelete({ url: coverArtUrl || '' })
+  const { deleteFile } = useGCloudDelete({ url: coverArtUrl || '' });
 
   const { isUploading } = useGCloudUpload({
     path: `rap/${id}`,
     filename: 'cover-art',
     file,
-    onUploadSuccess: async (url) => {
+    onUploadSuccess: async url => {
       await updateRap({ id, coverArtUrl: url });
       invalidateRapQuery();
       setFile(null);
       deleteFile();
     }
-  })
+  });
 
   return (
-
     <>
       <input
-        accept="image/jpeg, image/png"
-        id="image-button-file"
-        type="file"
+        accept='image/jpeg, image/png'
+        id='image-button-file'
+        type='file'
         ref={fileInputRef}
-        onChange={(e) => {
+        onChange={e => {
           if (e.target.files) {
-            setFile(e.target.files[0])
+            setFile(e.target.files[0]);
           }
         }}
         hidden
       />
       <Box
         sx={{
-          position: 'relative',
-        }}>
-
+          position: 'relative'
+        }}
+      >
         {isUploading && (
           <CircularProgress
             sx={{
@@ -68,19 +66,16 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
               position: 'absolute',
               top: '50%',
               left: '50%',
-              translate: '-50% -50%',
-            }} />
+              translate: '-50% -50%'
+            }}
+          />
         )}
 
         {isEditable && (
-          <Box
-            position='absolute'
-            right='1rem'
-            bottom='1rem'
-            zIndex={1}>
+          <Box position='absolute' right='1rem' bottom='1rem' zIndex={1}>
             <Button
               onClick={() => fileInputRef?.current?.click()}
-              sx={(theme) => ({
+              sx={theme => ({
                 background: theme.palette.background.paper,
                 borderRadius: '10rem',
                 color: theme.palette.text.primary,
@@ -100,12 +95,8 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
           <CardMedia
             component='img'
             alt='rap-cover-art'
-            image={
-              coverArtUrl ?
-                `${BUCKET_URL}/${coverArtUrl}` :
-                `${BUCKET_URL}/default/cover-art.jpg`
-            }
-            sx={(theme) => ({
+            image={coverArtUrl ? `${BUCKET_URL}/${coverArtUrl}` : `${BUCKET_URL}/default/cover-art.jpg`}
+            sx={theme => ({
               border: `1px solid ${theme.palette.grey[700]}`,
               height: {
                 xs: 150,
@@ -120,13 +111,13 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
             width='100%'
             bgcolor='black'
             sx={{
-              opacity: 0.2,
-            }} />
+              opacity: 0.2
+            }}
+          />
         </Box>
       </Box>
     </>
-
-  )
+  );
 }
 
-export default EditableCoverArt
+export default EditableCoverArt;

@@ -1,5 +1,5 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 const Breadcrumbs = () => {
   return {
@@ -19,7 +19,7 @@ const Breadcrumbs = () => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default Breadcrumbs
+export default Breadcrumbs;

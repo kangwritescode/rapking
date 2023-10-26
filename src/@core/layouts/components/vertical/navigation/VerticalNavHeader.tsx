@@ -1,32 +1,32 @@
 // ** Next Import
-import Link from 'next/link'
+import Link from 'next/link';
 
 // ** MUI Imports
-import IconButton from '@mui/material/IconButton'
-import Box, { BoxProps } from '@mui/material/Box'
-import { styled, useTheme } from '@mui/material/styles'
-import Typography, { TypographyProps } from '@mui/material/Typography'
+import IconButton from '@mui/material/IconButton';
+import Box, { BoxProps } from '@mui/material/Box';
+import { styled, useTheme } from '@mui/material/styles';
+import Typography, { TypographyProps } from '@mui/material/Typography';
 
 // ** Type Import
-import { LayoutProps } from 'src/@core/layouts/types'
+import { LayoutProps } from 'src/@core/layouts/types';
 
 // ** Custom Icon Import
-import { Icon } from '@iconify/react'
+import { Icon } from '@iconify/react';
 
 // ** Configs
-import themeConfig from 'src/configs/themeConfig'
+import themeConfig from 'src/configs/themeConfig';
 
 interface Props {
-  navHover: boolean
-  collapsedNavWidth: number
-  hidden: LayoutProps['hidden']
-  navigationBorderWidth: number
-  toggleNavVisibility: () => void
-  settings: LayoutProps['settings']
-  saveSettings: LayoutProps['saveSettings']
-  navMenuBranding?: LayoutProps['verticalLayoutProps']['navMenu']['branding']
-  menuLockedIcon?: LayoutProps['verticalLayoutProps']['navMenu']['lockedIcon']
-  menuUnlockedIcon?: LayoutProps['verticalLayoutProps']['navMenu']['unlockedIcon']
+  navHover: boolean;
+  collapsedNavWidth: number;
+  hidden: LayoutProps['hidden'];
+  navigationBorderWidth: number;
+  toggleNavVisibility: () => void;
+  settings: LayoutProps['settings'];
+  saveSettings: LayoutProps['saveSettings'];
+  navMenuBranding?: LayoutProps['verticalLayoutProps']['navMenu']['branding'];
+  menuLockedIcon?: LayoutProps['verticalLayoutProps']['navMenu']['lockedIcon'];
+  menuUnlockedIcon?: LayoutProps['verticalLayoutProps']['navMenu']['unlockedIcon'];
 }
 
 // ** Styled Components
@@ -37,7 +37,7 @@ const MenuHeaderWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   paddingRight: theme.spacing(4.5),
   transition: 'padding .25s ease-in-out',
   minHeight: theme.mixins.toolbar.minHeight
-}))
+}));
 
 const HeaderTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
   fontWeight: 600,
@@ -45,13 +45,13 @@ const HeaderTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
   textTransform: 'uppercase',
   color: theme.palette.text.primary,
   transition: 'opacity .25s ease-in-out, margin .25s ease-in-out'
-}))
+}));
 
 const LinkStyled = styled(Link)({
   display: 'flex',
   alignItems: 'center',
   textDecoration: 'none'
-})
+});
 
 const VerticalNavHeader = (props: Props) => {
   // ** Props
@@ -66,29 +66,29 @@ const VerticalNavHeader = (props: Props) => {
     menuLockedIcon: userMenuLockedIcon,
     navMenuBranding: userNavMenuBranding,
     menuUnlockedIcon: userMenuUnlockedIcon
-  } = props
+  } = props;
 
   // ** Hooks & Vars
-  const theme = useTheme()
-  const { navCollapsed } = settings
+  const theme = useTheme();
+  const { navCollapsed } = settings;
 
-  const menuCollapsedStyles = navCollapsed && !navHover ? { opacity: 0 } : { opacity: 1 }
+  const menuCollapsedStyles = navCollapsed && !navHover ? { opacity: 0 } : { opacity: 1 };
 
   const menuHeaderPaddingLeft = () => {
     if (navCollapsed && !navHover) {
       if (userNavMenuBranding) {
-        return 0
+        return 0;
       } else {
-        return (collapsedNavWidth - navigationBorderWidth - 30) / 8
+        return (collapsedNavWidth - navigationBorderWidth - 30) / 8;
       }
     } else {
-      return 6
+      return 6;
     }
-  }
+  };
 
-  const MenuLockedIcon = () => userMenuLockedIcon || <Icon icon='mdi:radiobox-marked' />
+  const MenuLockedIcon = () => userMenuLockedIcon || <Icon icon='mdi:radiobox-marked' />;
 
-  const MenuUnlockedIcon = () => userMenuUnlockedIcon || <Icon icon='mdi:radiobox-blank' />
+  const MenuUnlockedIcon = () => userMenuUnlockedIcon || <Icon icon='mdi:radiobox-blank' />;
 
   return (
     <MenuHeaderWrapper className='nav-header' sx={{ pl: menuHeaderPaddingLeft() }}>
@@ -96,7 +96,7 @@ const VerticalNavHeader = (props: Props) => {
         userNavMenuBranding(props)
       ) : (
         <LinkStyled href='/'>
-          <Icon icon="tabler:crown" color={theme.palette.secondary.main}/>
+          <Icon icon='tabler:crown' color={theme.palette.secondary.main} />
           <HeaderTitle variant='h6' sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 3 }) }}>
             {themeConfig.templateName}
           </HeaderTitle>
@@ -132,7 +132,7 @@ const VerticalNavHeader = (props: Props) => {
         </IconButton>
       )}
     </MenuHeaderWrapper>
-  )
-}
+  );
+};
 
-export default VerticalNavHeader
+export default VerticalNavHeader;

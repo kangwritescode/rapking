@@ -30,7 +30,7 @@ function RapCardMenu({ rapId }: RapCardMenuProps) {
   const [modalIsOopen, setModalIsOpen] = React.useState(false);
 
   const { mutate: deleteRap, isLoading } = api.rap.deleteRap.useMutation();
-  const {invalidate: invalidateRaps} = api.useContext().rap.getRapsByUser;
+  const { invalidate: invalidateRaps } = api.useContext().rap.getRapsByUser;
 
   return (
     <Box>
@@ -59,14 +59,17 @@ function RapCardMenu({ rapId }: RapCardMenuProps) {
           color: 'error'
         }}
         onSubmitHandler={() =>
-          deleteRap({id: rapId}, {
-            onSuccess: () => {
-              invalidateRaps();
-            },
-            onError: () => {
-              toast.error('Something went wrong. Please try again.');
+          deleteRap(
+            { id: rapId },
+            {
+              onSuccess: () => {
+                invalidateRaps();
+              },
+              onError: () => {
+                toast.error('Something went wrong. Please try again.');
+              }
             }
-          })
+          )
         }
         actionButtonText='Delete Account'
         isLoading={isLoading}

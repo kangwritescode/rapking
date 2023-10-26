@@ -1,8 +1,8 @@
 // ** React Import
-import { Children } from 'react'
+import { Children } from 'react';
 
 // ** Next Import
-import Document, { Html, Head, Main, NextScript } from 'next/document'
+import Document, { Html, Head, Main, NextScript } from 'next/document';
 
 class CustomDocument extends Document {
   render() {
@@ -15,10 +15,7 @@ class CustomDocument extends Document {
             rel='stylesheet'
             href='https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'
           />
-          <link
-            rel='stylesheet'
-            href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
-          />
+          <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap' />
           <link rel='apple-touch-icon' sizes='180x180' href='/images/apple-touch-icon.png' />
           <link rel='shortcut icon' href='/images/crown.svg' />
         </Head>
@@ -27,29 +24,29 @@ class CustomDocument extends Document {
           <NextScript />
         </body>
       </Html>
-    )
+    );
   }
 }
 
 CustomDocument.getInitialProps = async ctx => {
-  const originalRenderPage = ctx.renderPage
+  const originalRenderPage = ctx.renderPage;
 
   ctx.renderPage = () =>
     originalRenderPage({
       enhanceApp: App => props =>
-      (
-        <App
-          {...props} // @ts-ignore
-        />
-      )
-    })
+        (
+          <App
+            {...props} // @ts-ignore
+          />
+        )
+    });
 
-  const initialProps = await Document.getInitialProps(ctx)
+  const initialProps = await Document.getInitialProps(ctx);
 
   return {
     ...initialProps,
     styles: [...Children.toArray(initialProps.styles)]
-  }
-}
+  };
+};
 
-export default CustomDocument
+export default CustomDocument;

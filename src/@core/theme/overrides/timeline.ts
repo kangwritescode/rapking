@@ -1,8 +1,8 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 // ** Util Import
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba';
 
 const Timeline = () => {
   return {
@@ -77,7 +77,7 @@ const Timeline = () => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default Timeline
+export default Timeline;

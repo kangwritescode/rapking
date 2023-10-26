@@ -1,6 +1,6 @@
-import { Button, Chip, Divider, Popover, Stack, SxProps, Typography } from '@mui/material'
+import { Button, Chip, Divider, Popover, Stack, SxProps, Typography } from '@mui/material';
 import { RapStatus } from '@prisma/client';
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { api } from 'src/utils/api';
 
@@ -11,10 +11,9 @@ interface StatusChangerProps {
 }
 
 function StatusChanger({ status, sx, rapId }: StatusChangerProps) {
-
   const utils = api.useContext();
 
-  const { mutate: updateRap } = api.rap.updateRap.useMutation()
+  const { mutate: updateRap } = api.rap.updateRap.useMutation();
 
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
 
@@ -30,24 +29,27 @@ function StatusChanger({ status, sx, rapId }: StatusChangerProps) {
   const id = open ? 'simple-popover' : undefined;
 
   const updateStatusHandler = (status: RapStatus) => {
-    updateRap({
-      id: rapId,
-      status
-    }, {
-      onError: (error: any) => {
-        console.log(error)
-        toast.error(error.message, {
-          position: 'bottom-left',
-        })
+    updateRap(
+      {
+        id: rapId,
+        status
       },
-      onSuccess: () => {
-        utils.rap.getRap.invalidate()
-        toast.success('Updated Rap!', {
-          position: 'bottom-left',
-        })
+      {
+        onError: (error: any) => {
+          console.log(error);
+          toast.error(error.message, {
+            position: 'bottom-left'
+          });
+        },
+        onSuccess: () => {
+          utils.rap.getRap.invalidate();
+          toast.success('Updated Rap!', {
+            position: 'bottom-left'
+          });
+        }
       }
-    })
-  }
+    );
+  };
 
   return (
     <>
@@ -72,23 +74,26 @@ function StatusChanger({ status, sx, rapId }: StatusChangerProps) {
           <Button
             color='error'
             onClick={() => {
-              updateStatusHandler('DRAFT')
-              handleClose()
-            }}>
+              updateStatusHandler('DRAFT');
+              handleClose();
+            }}
+          >
             <Typography>Draft</Typography>
           </Button>
           <Divider />
           <Button
             color='success'
             onClick={() => {
-              updateStatusHandler('PUBLISHED')
-              handleClose()
-            }}>
+              updateStatusHandler('PUBLISHED');
+              handleClose();
+            }}
+          >
             <Typography>Published</Typography>
           </Button>
         </Stack>
-      </Popover></>
-  )
+      </Popover>
+    </>
+  );
 }
 
-export default StatusChanger
+export default StatusChanger;

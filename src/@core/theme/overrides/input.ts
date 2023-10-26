@@ -1,5 +1,5 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 const input = () => {
   return {
@@ -59,7 +59,7 @@ const input = () => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default input
+export default input;

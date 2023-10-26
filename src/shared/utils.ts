@@ -1,36 +1,38 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export function useDebounce(value: string, delay: number) {
-    // State and setters for debounced value
-    const [debouncedValue, setDebouncedValue] = useState(value);
-    useEffect(
-        () => {
-            // Update debounced value after delay
-            const handler = setTimeout(() => {
-                setDebouncedValue(value);
-            }, delay);
+  // State and setters for debounced value
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(
+    () => {
+      // Update debounced value after delay
+      const handler = setTimeout(() => {
+        setDebouncedValue(value);
+      }, delay);
 
-            // Cancel the timeout if value changes (also on delay change or unmount)
-            // This is how we prevent debounced value from updating if value is changed ...
-            // .. within the delay period. Timeout gets cleared and restarted.
-            return () => {
-                clearTimeout(handler);
-            };
-        },
-        [value, delay] // Only re-call effect if value or delay changes
-    );
+      // Cancel the timeout if value changes (also on delay change or unmount)
+      // This is how we prevent debounced value from updating if value is changed ...
+      // .. within the delay period. Timeout gets cleared and restarted.
+      return () => {
+        clearTimeout(handler);
+      };
+    },
+    [value, delay] // Only re-call effect if value or delay changes
+  );
 
-    return debouncedValue;
+  return debouncedValue;
 }
 
-export function debounce<T extends (...args: any[]) => any>(func: T, delay: number): (...funcArgs: Parameters<T>) => void {
+export function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+): (...funcArgs: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | null;
 
   return (...args: Parameters<T>) => {
-      if (timeout) {
-          clearTimeout(timeout);
-      }
-      timeout = setTimeout(() => func(...args), delay);
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => func(...args), delay);
   };
 }
-

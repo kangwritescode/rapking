@@ -1,16 +1,16 @@
-import { createTRPCRouter } from "src/server/api/trpc";
-import { userRouter } from "src/server/api/routers/user";
-import { geoDBRouter } from "./routers/geoDB";
-import { rapRouter } from "./routers/rap";
-import { gcloudRouter } from "./routers/gcloud";
-import { socialLinkRouter } from "./routers/socialLink";
-import { userFollows } from "./routers/userFollows";
-import { rapVote } from "./routers/rapVote";
-import { rapComment } from "./routers/rapComment";
-import { commentVoteRouter } from "./routers/commentVote";
-import { leaderboardRouter } from "./routers/leaderboard";
-import { feedRouter } from "./routers/feed";
-import { notificationsRouter } from "./routers/notifications";
+import { createTRPCRouter } from 'src/server/api/trpc';
+import { userRouter } from 'src/server/api/routers/user';
+import { geoDBRouter } from './routers/geoDB';
+import { rapRouter } from './routers/rap';
+import { gcloudRouter } from './routers/gcloud';
+import { socialLinkRouter } from './routers/socialLink';
+import { userFollows } from './routers/userFollows';
+import { rapVote } from './routers/rapVote';
+import { rapComment } from './routers/rapComment';
+import { commentVoteRouter } from './routers/commentVote';
+import { leaderboardRouter } from './routers/leaderboard';
+import { feedRouter } from './routers/feed';
+import { notificationsRouter } from './routers/notifications';
 
 /**
  * This is the primary router for your server.

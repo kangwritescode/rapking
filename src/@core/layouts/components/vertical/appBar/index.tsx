@@ -1,23 +1,23 @@
 // ** MUI Imports
-import { styled, useTheme } from '@mui/material/styles'
-import useScrollTrigger from '@mui/material/useScrollTrigger'
-import MuiAppBar, { AppBarProps } from '@mui/material/AppBar'
-import MuiToolbar, { ToolbarProps } from '@mui/material/Toolbar'
+import { styled, useTheme } from '@mui/material/styles';
+import useScrollTrigger from '@mui/material/useScrollTrigger';
+import MuiAppBar, { AppBarProps } from '@mui/material/AppBar';
+import MuiToolbar, { ToolbarProps } from '@mui/material/Toolbar';
 
 // ** Type Imports
-import { LayoutProps } from 'src/@core/layouts/types'
+import { LayoutProps } from 'src/@core/layouts/types';
 
 // ** Util Import
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
-import { useRouter } from 'next/router'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba';
+import { useRouter } from 'next/router';
 
 interface Props {
-  hidden: LayoutProps['hidden']
-  toggleNavVisibility: () => void
-  settings: LayoutProps['settings']
-  saveSettings: LayoutProps['saveSettings']
-  appBarContent: NonNullable<LayoutProps['verticalLayoutProps']['appBar']>['content']
-  appBarProps: NonNullable<LayoutProps['verticalLayoutProps']['appBar']>['componentProps']
+  hidden: LayoutProps['hidden'];
+  toggleNavVisibility: () => void;
+  settings: LayoutProps['settings'];
+  saveSettings: LayoutProps['saveSettings'];
+  appBarContent: NonNullable<LayoutProps['verticalLayoutProps']['appBar']>['content'];
+  appBarProps: NonNullable<LayoutProps['verticalLayoutProps']['appBar']>['componentProps'];
 }
 
 const AppBar = styled(MuiAppBar)<AppBarProps>(({ theme }) => ({
@@ -32,7 +32,7 @@ const AppBar = styled(MuiAppBar)<AppBarProps>(({ theme }) => ({
     paddingLeft: theme.spacing(4),
     paddingRight: theme.spacing(4)
   }
-}))
+}));
 
 const Toolbar = styled(MuiToolbar)<ToolbarProps>(({ theme }) => ({
   width: '100%',
@@ -41,22 +41,22 @@ const Toolbar = styled(MuiToolbar)<ToolbarProps>(({ theme }) => ({
   padding: `${theme.spacing(0)} !important`,
   minHeight: `${theme.mixins.toolbar.minHeight}px !important`,
   transition: 'padding .25s ease-in-out, box-shadow .25s ease-in-out, backdrop-filter .25s ease-in-out'
-}))
+}));
 
 const LayoutAppBar = (props: Props) => {
   // ** Props
-  const { settings, appBarProps, appBarContent: userAppBarContent } = props
+  const { settings, appBarProps, appBarContent: userAppBarContent } = props;
 
   // ** Hooks
-  const theme = useTheme()
-  const scrollTrigger = useScrollTrigger({ threshold: 0, disableHysteresis: true })
+  const theme = useTheme();
+  const scrollTrigger = useScrollTrigger({ threshold: 0, disableHysteresis: true });
 
   // ** Vars
-  const { skin, appBar, appBarBlur, contentWidth } = settings
+  const { skin, appBar, appBarBlur, contentWidth } = settings;
 
   // ** Router
-  const router = useRouter()
-  const isLeaderboardPage = router.pathname.includes('/leaderboard')
+  const router = useRouter();
+  const isLeaderboardPage = router.pathname.includes('/leaderboard');
 
   const appBarFixedStyles = () => {
     return {
@@ -65,19 +65,19 @@ const LayoutAppBar = (props: Props) => {
       ...(appBarBlur && { backdropFilter: 'blur(8px)' }),
       backgroundColor: hexToRGBA(theme.palette.background.paper, appBarBlur ? 0.85 : 1),
       ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}`, borderTopWidth: 0 })
-    }
-  }
+    };
+  };
 
   if (appBar === 'hidden') {
-    return null
+    return null;
   }
 
-  let userAppBarStyle = {}
+  let userAppBarStyle = {};
   if (appBarProps && appBarProps.sx) {
-    userAppBarStyle = appBarProps.sx
+    userAppBarStyle = appBarProps.sx;
   }
-  const userAppBarProps = Object.assign({}, appBarProps)
-  delete userAppBarProps.sx
+  const userAppBarProps = Object.assign({}, appBarProps);
+  delete userAppBarProps.sx;
 
   return (
     <AppBar
@@ -103,7 +103,7 @@ const LayoutAppBar = (props: Props) => {
         {(userAppBarContent && userAppBarContent(props)) || null}
       </Toolbar>
     </AppBar>
-  )
-}
+  );
+};
 
-export default LayoutAppBar
+export default LayoutAppBar;

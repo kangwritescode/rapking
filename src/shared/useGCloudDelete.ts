@@ -10,9 +10,11 @@ type UseGCloudDeleteReturn = {
 };
 
 export const useGCloudDelete = ({ url }: UseGCloudDeleteProps): UseGCloudDeleteReturn => {
-
   // Queries and Mutations
-  const { data: presignedDeleteUrl } = api.gcloud.generateDeleteUrl.useQuery({ fileName: url || '' }, { enabled: !!url });
+  const { data: presignedDeleteUrl } = api.gcloud.generateDeleteUrl.useQuery(
+    { fileName: url || '' },
+    { enabled: !!url }
+  );
 
   const deleteFile = () => {
     if (presignedDeleteUrl) {

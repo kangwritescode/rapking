@@ -1,24 +1,24 @@
 // ** MUI Imports
-import { Theme } from '@mui/material/styles'
+import { Theme } from '@mui/material/styles';
 
 // ** Hook Import
-import { useSettings } from 'src/@core/hooks/useSettings'
+import { useSettings } from 'src/@core/hooks/useSettings';
 
 // ** Util Import
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba';
 
 const GlobalStyles = (theme: Theme) => {
   // ** Hook & Var
-  const { settings } = useSettings()
-  const { mode } = settings
+  const { settings } = useSettings();
+  const { mode } = settings;
 
   const perfectScrollbarThumbBgColor = () => {
     if (mode === 'light') {
-      return '#C2C4D1 !important'
+      return '#C2C4D1 !important';
     } else {
-      return '#504B6D !important'
+      return '#504B6D !important';
     }
-  }
+  };
 
   return {
     'body[style^="padding-right"] .layout-navbar-and-nav-container::after': {
@@ -82,7 +82,7 @@ const GlobalStyles = (theme: Theme) => {
         backgroundColor: theme.palette.secondary.main
       }
     }
-  }
-}
+  };
+};
 
-export default GlobalStyles
+export default GlobalStyles;

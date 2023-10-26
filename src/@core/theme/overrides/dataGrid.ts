@@ -1,5 +1,5 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 const DataGrid = () => {
   return {
@@ -98,7 +98,7 @@ const DataGrid = () => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default DataGrid
+export default DataGrid;

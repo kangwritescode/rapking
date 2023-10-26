@@ -1,14 +1,14 @@
-import { Button, CircularProgress, StepContent } from '@mui/material'
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { api } from 'src/utils/api'
-import { z } from 'zod'
-import UsernameAvailabilityField from 'src/components/FormComponents/UsernameAvailabilityField'
+import { Button, CircularProgress, StepContent } from '@mui/material';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { api } from 'src/utils/api';
+import { z } from 'zod';
+import UsernameAvailabilityField from 'src/components/FormComponents/UsernameAvailabilityField';
 
 export type UsernameStepProps = {
-  handleNext: () => void
-}
+  handleNext: () => void;
+};
 
 const usernameSchema = z.object({
   username: z
@@ -16,11 +16,9 @@ const usernameSchema = z.object({
     .min(3)
     .max(20)
     .regex(/^(.*[a-zA-Z]){3}/, 'Must include at least three letters')
-})
-
+});
 
 function UsernameStep({ handleNext }: UsernameStepProps) {
-
   // queries
   const { data: userData } = api.user.getCurrentUser.useQuery();
 
@@ -32,17 +30,16 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
     try {
       const updatedProfile = await updateUser({
         username: updatedUsername
-      })
+      });
       if (updatedProfile) {
-        return handleNext()
-      }
-      else {
-        throw new Error('Failed to update username')
+        return handleNext();
+      } else {
+        throw new Error('Failed to update username');
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const {
     control: usernameControl,
@@ -51,11 +48,11 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
   } = useForm({
     defaultValues: { username: userData?.username || '' },
     resolver: zodResolver(usernameSchema)
-  })
+  });
 
   return (
     <StepContent>
-      <form key={0} onSubmit={handleUsernameSubmit((formValues) => updateUsername(formValues.username))}>
+      <form key={0} onSubmit={handleUsernameSubmit(formValues => updateUsername(formValues.username))}>
         <UsernameAvailabilityField
           label='Username'
           control={usernameControl}
@@ -71,15 +68,12 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
             variant='contained'
             sx={{ minHeight: '1.8rem' }}
           >
-            {isLoading ?
-              <CircularProgress color='inherit' size='1.3rem' /> :
-              'Next'}
+            {isLoading ? <CircularProgress color='inherit' size='1.3rem' /> : 'Next'}
           </Button>
         </div>
       </form>
-
     </StepContent>
-  )
+  );
 }
 
-export default UsernameStep
+export default UsernameStep;

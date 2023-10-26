@@ -1,9 +1,8 @@
 // ** MUI Imports
-import Box, { BoxProps } from '@mui/material/Box'
-import CircularProgress from '@mui/material/CircularProgress'
+import Box, { BoxProps } from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const FallbackSpinner = ({ sx }: { sx?: BoxProps['sx'] }) => {
-
   return (
     <Box
       sx={{
@@ -17,7 +16,7 @@ const FallbackSpinner = ({ sx }: { sx?: BoxProps['sx'] }) => {
     >
       <CircularProgress disableShrink color='inherit' />
     </Box>
-  )
-}
+  );
+};
 
-export default FallbackSpinner
+export default FallbackSpinner;

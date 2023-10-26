@@ -1,47 +1,47 @@
 // ** React Imports
-import { ElementType } from 'react'
+import { ElementType } from 'react';
 
 // ** Next Imports
-import Link from 'next/link'
-import { useRouter } from 'next/router'
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 // ** MUI Imports
-import Chip from '@mui/material/Chip'
-import ListItem from '@mui/material/ListItem'
-import { styled } from '@mui/material/styles'
-import Typography from '@mui/material/Typography'
-import Box, { BoxProps } from '@mui/material/Box'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemButton, { ListItemButtonProps } from '@mui/material/ListItemButton'
+import Chip from '@mui/material/Chip';
+import ListItem from '@mui/material/ListItem';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import Box, { BoxProps } from '@mui/material/Box';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemButton, { ListItemButtonProps } from '@mui/material/ListItemButton';
 
 // ** Configs Import
-import themeConfig from 'src/configs/themeConfig'
+import themeConfig from 'src/configs/themeConfig';
 
 // ** Types
-import { NavLink, NavGroup } from 'src/@core/layouts/types'
-import { Settings } from 'src/@core/context/settingsContext'
+import { NavLink, NavGroup } from 'src/@core/layouts/types';
+import { Settings } from 'src/@core/context/settingsContext';
 
 // ** Custom Components Imports
-import UserIcon from 'src/layouts/components/UserIcon'
-import Translations from 'src/layouts/components/Translations'
+import UserIcon from 'src/layouts/components/UserIcon';
+import Translations from 'src/layouts/components/Translations';
 
 // ** Util Import
-import { handleURLQueries } from 'src/@core/layouts/utils'
-import { api } from 'src/utils/api'
-import { BUCKET_URL } from 'src/shared/constants'
-import { Avatar } from '@mui/material'
-import { useSession } from 'next-auth/react'
+import { handleURLQueries } from 'src/@core/layouts/utils';
+import { api } from 'src/utils/api';
+import { BUCKET_URL } from 'src/shared/constants';
+import { Avatar } from '@mui/material';
+import { useSession } from 'next-auth/react';
 
 interface Props {
-  parent?: boolean
-  item: NavLink
-  navHover?: boolean
-  settings: Settings
-  navVisible?: boolean
-  collapsedNavWidth: number
-  navigationBorderWidth: number
-  toggleNavVisibility: () => void
-  isSubToSub?: NavGroup | undefined
+  parent?: boolean;
+  item: NavLink;
+  navHover?: boolean;
+  settings: Settings;
+  navVisible?: boolean;
+  collapsedNavWidth: number;
+  navigationBorderWidth: number;
+  toggleNavVisibility: () => void;
+  isSubToSub?: NavGroup | undefined;
 }
 
 // ** Styled Components
@@ -62,7 +62,7 @@ const MenuNavLink = styled(ListItemButton)<
       color: `${theme.palette.common.white} !important`
     }
   }
-}))
+}));
 
 const MenuItemTextMetaWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   width: '100%',
@@ -72,7 +72,7 @@ const MenuItemTextMetaWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   justifyContent: 'space-between',
   transition: 'opacity .25s ease-in-out',
   ...(themeConfig.menuTextTruncate && { overflow: 'hidden' })
-}))
+}));
 
 const VerticalNavLink = ({
   item,
@@ -86,30 +86,30 @@ const VerticalNavLink = ({
   navigationBorderWidth
 }: Props) => {
   // ** Hooks
-  const router = useRouter()
+  const router = useRouter();
 
   // ** Vars
-  const { navCollapsed } = settings
+  const { navCollapsed } = settings;
 
   // ** Session
   const { data: sessionData, status } = useSession();
 
   const { data: userData } = api.user.getCurrentUser.useQuery(undefined, {
-    enabled: !!sessionData?.user?.id,
+    enabled: !!sessionData?.user?.id
   });
 
-  const isProfileIcon = item.path?.includes('/u/')
-  const showUserIcon = status === 'authenticated' && userData?.profileImageUrl && isProfileIcon
+  const isProfileIcon = item.path?.includes('/u/');
+  const showUserIcon = status === 'authenticated' && userData?.profileImageUrl && isProfileIcon;
 
-  const icon = parent && !item.icon ? themeConfig.navSubItemIcon : item.icon
+  const icon = parent && !item.icon ? themeConfig.navSubItemIcon : item.icon;
 
   const isNavLinkActive = () => {
     if (router.pathname === item.path || handleURLQueries(router, item.path) || item.path?.includes('username')) {
-      return true
+      return true;
     } else {
-      return false
+      return false;
     }
-  }
+  };
 
   return (
     <ListItem
@@ -126,11 +126,11 @@ const VerticalNavLink = ({
         {...(item.openInNewTab ? { target: '_blank' } : null)}
         onClick={e => {
           if (item.path === undefined) {
-            e.preventDefault()
-            e.stopPropagation()
+            e.preventDefault();
+            e.stopPropagation();
           }
           if (navVisible) {
-            toggleNavVisibility()
+            toggleNavVisibility();
           }
         }}
         sx={{
@@ -154,13 +154,17 @@ const VerticalNavLink = ({
               }
             }}
           >
-
-            {showUserIcon ? (<Avatar sx={{
-              width: 26,
-              height: 26,
-            }}
-              {...(userData?.profileImageUrl ? { src: `${BUCKET_URL}/${userData?.profileImageUrl}` } : {})}
-            />) : <UserIcon icon={icon as string} />}
+            {showUserIcon ? (
+              <Avatar
+                sx={{
+                  width: 26,
+                  height: 26
+                }}
+                {...(userData?.profileImageUrl ? { src: `${BUCKET_URL}/${userData?.profileImageUrl}` } : {})}
+              />
+            ) : (
+              <UserIcon icon={icon as string} />
+            )}
           </ListItemIcon>
         )}
 
@@ -191,7 +195,7 @@ const VerticalNavLink = ({
         </MenuItemTextMetaWrapper>
       </MenuNavLink>
     </ListItem>
-  )
-}
+  );
+};
 
-export default VerticalNavLink
+export default VerticalNavLink;

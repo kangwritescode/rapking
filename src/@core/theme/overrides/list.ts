@@ -1,5 +1,5 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 const List = () => {
   return {
@@ -38,7 +38,7 @@ const List = () => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default List
+export default List;

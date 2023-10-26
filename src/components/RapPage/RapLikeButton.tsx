@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { useSession } from 'next-auth/react';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import FireIconButton from 'src/components/FireIconButton';
 import { api } from 'src/utils/api';
@@ -21,17 +21,23 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   // Queries
-  const { data: likeExists } = api.rapVote.likeExists.useQuery({
-    rapId: rapId as string,
-    userId: currentUserId as string,
-  }, {
-    enabled: Boolean(currentUserId && rapId)
-  });
-  const { data: rapLikesCountData } = api.rapVote.getRapLikesCount.useQuery({
-    rapId: rapId as string,
-  }, {
-    enabled: Boolean(rapId)
-  });
+  const { data: likeExists } = api.rapVote.likeExists.useQuery(
+    {
+      rapId: rapId as string,
+      userId: currentUserId as string
+    },
+    {
+      enabled: Boolean(currentUserId && rapId)
+    }
+  );
+  const { data: rapLikesCountData } = api.rapVote.getRapLikesCount.useQuery(
+    {
+      rapId: rapId as string
+    },
+    {
+      enabled: Boolean(rapId)
+    }
+  );
 
   // Mutations
   const { mutate: createLike } = api.rapVote.createLike.useMutation();
@@ -44,7 +50,7 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
   const invalidateCache = () => {
     invalidateRapLikesCount();
     invalidateLikeExists();
-  }
+  };
 
   // A utility to debounce API calls and handle cache invalidation.
   const handleDebouncedAPI = (action: () => void) => {
@@ -60,18 +66,21 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
     setCurrentUserLikedRap(true);
     setRapLikesCount(prevCount => prevCount + 1);
     handleDebouncedAPI(() => {
-      createLike({
-        rapId: rapId,
-        userId: currentUserId,
-      }, {
-        onSuccess: () => {
-          invalidateCache()
+      createLike(
+        {
+          rapId: rapId,
+          userId: currentUserId
         },
-        onError: () => {
-          invalidateCache()
+        {
+          onSuccess: () => {
+            invalidateCache();
+          },
+          onError: () => {
+            invalidateCache();
+          }
         }
-      })
-    })
+      );
+    });
   };
 
   const handleUnlike = () => {
@@ -81,27 +90,30 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
     setRapLikesCount(prevCount => prevCount - 1);
 
     handleDebouncedAPI(() => {
-      deleteLike({
-        rapId: rapId,
-        userId: currentUserId,
-      }, {
-        onSuccess: () => {
-          invalidateCache()
+      deleteLike(
+        {
+          rapId: rapId,
+          userId: currentUserId
         },
-        onError: () => {
-          invalidateCache()
+        {
+          onSuccess: () => {
+            invalidateCache();
+          },
+          onError: () => {
+            invalidateCache();
+          }
         }
-      });
-    })
+      );
+    });
   };
 
   useEffect(() => {
-    setCurrentUserLikedRap(likeExists || false)
-  }, [likeExists])
+    setCurrentUserLikedRap(likeExists || false);
+  }, [likeExists]);
 
   useEffect(() => {
     setRapLikesCount(rapLikesCountData || 0);
-  }, [rapLikesCountData])
+  }, [rapLikesCountData]);
 
   useEffect(() => {
     return () => {
@@ -112,21 +124,19 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
     };
   }, []);
 
-  const buttonClickHandler = status === 'unauthenticated' ?
-    () => void toast.error('You must be logged in to vote.') :
-    currentUserLikedRap ? handleUnlike : handleLike;
+  const buttonClickHandler =
+    status === 'unauthenticated'
+      ? () => void toast.error('You must be logged in to vote.')
+      : currentUserLikedRap
+      ? handleUnlike
+      : handleLike;
 
   return (
-    <Box
-      display="flex"
-      alignItems="center">
-      <FireIconButton
-        onClick={buttonClickHandler}
-        isColored={currentUserLikedRap}
-      />
+    <Box display='flex' alignItems='center'>
+      <FireIconButton onClick={buttonClickHandler} isColored={currentUserLikedRap} />
       {rapLikesCount || 0}
     </Box>
-  )
+  );
 }
 
-export default RapLikeButton
+export default RapLikeButton;

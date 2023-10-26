@@ -1,15 +1,15 @@
 // ** Type Imports
-import { OwnerStateThemeType } from './'
-import { Skin } from 'src/@core/layouts/types'
+import { OwnerStateThemeType } from './';
+import { Skin } from 'src/@core/layouts/types';
 
 const Menu = (skin: Skin) => {
   const boxShadow = (theme: OwnerStateThemeType['theme']) => {
     if (skin === 'bordered') {
-      return theme.shadows[0]
+      return theme.shadows[0];
     } else if (theme.palette.mode === 'light') {
-      return theme.shadows[8]
-    } else return theme.shadows[9]
-  }
+      return theme.shadows[8];
+    } else return theme.shadows[9];
+  };
 
   return {
     MuiMenu: {
@@ -23,7 +23,7 @@ const Menu = (skin: Skin) => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default Menu
+export default Menu;

@@ -1,36 +1,35 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure
-} from "src/server/api/trpc";
-import { CommentVoteType } from "@prisma/client";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
+import { CommentVoteType } from '@prisma/client';
 
 export const commentVoteRouter = createTRPCRouter({
   getCommentLikes: publicProcedure
-    .input(z.object({
-      commentId: z.string(),
-    }))
+    .input(
+      z.object({
+        commentId: z.string()
+      })
+    )
     .query(async ({ input, ctx }) => {
       const { commentId } = input;
 
       const rapVotes = await ctx.prisma.commentVote.findMany({
         where: {
           commentId,
-          type: CommentVoteType.LIKE,
-        },
+          type: CommentVoteType.LIKE
+        }
       });
 
       return rapVotes;
     }),
   createLike: protectedProcedure
-    .input(z.object({
-      userId: z.string(),
-      commentId: z.string(),
-    }))
+    .input(
+      z.object({
+        userId: z.string(),
+        commentId: z.string()
+      })
+    )
     .mutation(async ({ input, ctx }) => {
-
       const { userId, commentId } = input;
 
       const [commentVote, rapComment] = await ctx.prisma.$transaction([
@@ -38,33 +37,34 @@ export const commentVoteRouter = createTRPCRouter({
           data: {
             type: CommentVoteType.LIKE,
             userId,
-            commentId,
-          },
+            commentId
+          }
         }),
         ctx.prisma.rapComment.update({
           where: {
-            id: commentId,
+            id: commentId
           },
           data: {
             likesCount: {
-              increment: 1,
-            },
-          },
+              increment: 1
+            }
+          }
         })
       ]);
 
       return {
         commentVote,
-        rapComment,
+        rapComment
       };
     }),
   deleteVote: protectedProcedure
-    .input(z.object({
-      userId: z.string(),
-      commentId: z.string(),
-    }))
+    .input(
+      z.object({
+        userId: z.string(),
+        commentId: z.string()
+      })
+    )
     .mutation(async ({ input, ctx }) => {
-
       const { userId, commentId } = input;
 
       // Check if vote exists
@@ -72,13 +72,13 @@ export const commentVoteRouter = createTRPCRouter({
         where: {
           userId_commentId: {
             userId,
-            commentId,
-          },
-        },
+            commentId
+          }
+        }
       });
 
       if (!vote) {
-        throw new Error("Vote does not exist");
+        throw new Error('Vote does not exist');
       }
 
       const [deletedVote, updatedRap] = await ctx.prisma.$transaction([
@@ -86,32 +86,34 @@ export const commentVoteRouter = createTRPCRouter({
           where: {
             userId_commentId: {
               userId,
-              commentId,
-            },
-          },
+              commentId
+            }
+          }
         }),
         ctx.prisma.rapComment.update({
           where: {
-            id: commentId,
+            id: commentId
           },
           data: {
             likesCount: {
-              decrement: 1,
-            },
-          },
+              decrement: 1
+            }
+          }
         })
       ]);
 
       return {
         deletedVote,
-        updatedRap,
+        updatedRap
       };
     }),
   likeExists: publicProcedure
-    .input(z.object({
-      userId: z.string(),
-      commentId: z.string(),
-    }))
+    .input(
+      z.object({
+        userId: z.string(),
+        commentId: z.string()
+      })
+    )
     .query(async ({ input, ctx }) => {
       const { userId, commentId } = input;
 
@@ -119,27 +121,29 @@ export const commentVoteRouter = createTRPCRouter({
         where: {
           userId_commentId: {
             userId,
-            commentId,
-          },
-        },
+            commentId
+          }
+        }
       });
 
       return !!vote;
     }),
   getCommentLikesCount: publicProcedure
-    .input(z.object({
-      commentId: z.string(),
-    }))
+    .input(
+      z.object({
+        commentId: z.string()
+      })
+    )
     .query(async ({ input, ctx }) => {
       const { commentId } = input;
 
       const count = await ctx.prisma.commentVote.count({
         where: {
           commentId,
-          type: CommentVoteType.LIKE,
-        },
+          type: CommentVoteType.LIKE
+        }
       });
 
       return count;
-    }),
+    })
 });

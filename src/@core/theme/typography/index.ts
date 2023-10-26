@@ -57,7 +57,7 @@ const typography = {
   },
   overline: {
     letterSpacing: '1px'
-  },
-}
+  }
+};
 
-export default typography
+export default typography;

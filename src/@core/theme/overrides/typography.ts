@@ -1,5 +1,5 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 const typography = {
   MuiTypography: {
@@ -63,6 +63,6 @@ const typography = {
       }
     ]
   }
-}
+};
 
-export default typography
+export default typography;

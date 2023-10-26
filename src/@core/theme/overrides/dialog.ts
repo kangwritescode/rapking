@@ -1,6 +1,6 @@
 // ** Type Imports
-import { OwnerStateThemeType } from './'
-import { Skin } from 'src/@core/layouts/types'
+import { OwnerStateThemeType } from './';
+import { Skin } from 'src/@core/layouts/types';
 
 const Dialog = (skin: Skin) => {
   return {
@@ -54,7 +54,7 @@ const Dialog = (skin: Skin) => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default Dialog
+export default Dialog;

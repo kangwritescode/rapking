@@ -1,8 +1,8 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 // ** Theme Config Imports
-import themeConfig from 'src/configs/themeConfig'
+import themeConfig from 'src/configs/themeConfig';
 
 const Button = () => {
   return {
@@ -54,7 +54,7 @@ const Button = () => {
         disableRipple: themeConfig.disableRipple
       }
     }
-  }
-}
+  };
+};
 
-export default Button
+export default Button;

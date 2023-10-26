@@ -1,6 +1,6 @@
-import { Avatar, Box, useTheme } from '@mui/material'
-import React from 'react'
-import RapCommentTextEditor from './RapCommentTextEditor'
+import { Avatar, Box, useTheme } from '@mui/material';
+import React from 'react';
+import RapCommentTextEditor from './RapCommentTextEditor';
 import { api } from 'src/utils/api';
 import { BUCKET_URL } from 'src/shared/constants';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,7 +18,6 @@ interface RapCommentComposerProps {
 }
 
 function RapCommentComposer({ rapId }: RapCommentComposerProps) {
-
   const theme = useTheme();
 
   // Session
@@ -26,7 +25,7 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
 
   // Queries
   const { data: userData } = api.user.getCurrentUser.useQuery(undefined, {
-    enabled: !!data?.user?.id,
+    enabled: !!data?.user?.id
   });
 
   // Mutations
@@ -38,74 +37,75 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
 
   const {
     setValue,
-    formState: {
-      isValid,
-      isSubmitting
-    },
+    formState: { isValid, isSubmitting },
     reset,
     handleSubmit
   } = useForm({
     defaultValues: { content: '' },
-    resolver: zodResolver(z.object({
-      content: z.string().min(1).max(500)
-    }))
-  })
+    resolver: zodResolver(
+      z.object({
+        content: z.string().min(1).max(500)
+      })
+    )
+  });
 
   const submitFormHandler = (formValues: { content: string }) => {
     if (status === 'unauthenticated') {
-      toast.error('You must be logged in to comment.')
-    }
-    else if (userData && formValues.content && rapId) {
-
+      toast.error('You must be logged in to comment.');
+    } else if (userData && formValues.content && rapId) {
       const editedContent = removeTrailingAndLeadingPElements(formValues.content);
 
-      postComment({
-        userId: userData.id,
-        rapId,
-        content: editedContent
-      }, {
-        onSuccess: () => {
-          invalidateRapComments()
-          invalidateCommentsCount()
-          reset();
-          editor?.commands.clearContent();
+      postComment(
+        {
+          userId: userData.id,
+          rapId,
+          content: editedContent
         },
-        onError: (error) => {
-          toast.error(error.message)
+        {
+          onSuccess: () => {
+            invalidateRapComments();
+            invalidateCommentsCount();
+            reset();
+            editor?.commands.clearContent();
+          },
+          onError: error => {
+            toast.error(error.message);
+          }
         }
-      })
+      );
     }
-  }
+  };
 
   const editor = useEditor({
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder: 'Write a comment...',
+        placeholder: 'Write a comment...'
       })
     ],
     onUpdate({ editor }) {
       setValue('content', editor.getHTML(), { shouldValidate: true });
-    },
+    }
   });
 
   return (
     <Box
       sx={{
         border: `1px solid ${theme.palette.grey[300]}`,
-        boxShadow: '1px 1px 14px 0px rgba(255, 255, 255, 0.15)',
-      }}>
-      <Box px={4} pt={3} display="flex" alignItems='center'>
+        boxShadow: '1px 1px 14px 0px rgba(255, 255, 255, 0.15)'
+      }}
+    >
+      <Box px={4} pt={3} display='flex' alignItems='center'>
         <Avatar
           sx={{
             cursor: 'pointer',
             width: 35,
             height: 35,
             position: 'relative',
-            marginRight: theme.spacing(2),
+            marginRight: theme.spacing(2)
           }}
           {...(userData?.profileImageUrl && {
-            src: `${BUCKET_URL}/${userData.profileImageUrl}`,
+            src: `${BUCKET_URL}/${userData.profileImageUrl}`
           })}
         />
         {userData?.username}
@@ -118,7 +118,7 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
         />
       </form>
     </Box>
-  )
+  );
 }
 
-export default RapCommentComposer
+export default RapCommentComposer;

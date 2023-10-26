@@ -2,14 +2,12 @@ import { RichTextEditor } from '@mantine/tiptap';
 import { Editor } from '@tiptap/react';
 import { useTheme } from '@mui/material';
 
-
 interface RapTextEditorProps {
   editor: Editor | null;
 }
 
 export default function RapTextEditor({ editor }: RapTextEditorProps) {
-
-  const theme = useTheme()
+  const theme = useTheme();
 
   return (
     <RichTextEditor
@@ -22,18 +20,19 @@ export default function RapTextEditor({ editor }: RapTextEditorProps) {
           minHeight: '15rem'
         },
         toolbar: {
-          background: theme.palette.background.paper,
+          background: theme.palette.background.paper
         },
         control: {
           color: theme.palette.text.primary,
-          background: theme.palette.background.paper,
+          background: theme.palette.background.paper
         },
         controlsGroup: {
           '& > *:hover': {
-            background: `rgba(255, 255, 255, 0.2) !important`,
+            background: `rgba(255, 255, 255, 0.2) !important`
           }
         }
-      }}>
+      }}
+    >
       <RichTextEditor.Toolbar>
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold />

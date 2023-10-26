@@ -1,6 +1,6 @@
 // ** Type Imports
-import { OwnerStateThemeType } from './'
-import { Skin } from 'src/@core/layouts/types'
+import { OwnerStateThemeType } from './';
+import { Skin } from 'src/@core/layouts/types';
 
 const Card = (skin: Skin) => {
   return {
@@ -84,7 +84,7 @@ const Card = (skin: Skin) => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default Card
+export default Card;

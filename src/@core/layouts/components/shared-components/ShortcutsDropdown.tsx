@@ -1,43 +1,43 @@
 // ** React Imports
-import { useState, SyntheticEvent, Fragment, ReactNode } from 'react'
+import { useState, SyntheticEvent, Fragment, ReactNode } from 'react';
 
 // ** Next Import
-import Link from 'next/link'
+import Link from 'next/link';
 
 // ** MUI Imports
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
-import Divider from '@mui/material/Divider'
-import Tooltip from '@mui/material/Tooltip'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
-import { styled, Theme } from '@mui/material/styles'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import MuiMenu, { MenuProps } from '@mui/material/Menu'
-import MuiMenuItem, { MenuItemProps } from '@mui/material/MenuItem'
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Divider from '@mui/material/Divider';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import { styled, Theme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import MuiMenu, { MenuProps } from '@mui/material/Menu';
+import MuiMenuItem, { MenuItemProps } from '@mui/material/MenuItem';
 
 // ** Icon Imports
-import { Icon } from '@iconify/react'
+import { Icon } from '@iconify/react';
 
 // ** Third Party Components
-import PerfectScrollbarComponent from 'react-perfect-scrollbar'
+import PerfectScrollbarComponent from 'react-perfect-scrollbar';
 
 // ** Type Imports
-import { Settings } from 'src/@core/context/settingsContext'
+import { Settings } from 'src/@core/context/settingsContext';
 
 // ** Custom Components Imports
-import CustomAvatar from 'src/@core/components/mui/avatar'
+import CustomAvatar from 'src/@core/components/mui/avatar';
 
 export type ShortcutsType = {
-  url: string
-  icon: string
-  title: string
-  subtitle: string
-}
+  url: string;
+  icon: string;
+  title: string;
+  subtitle: string;
+};
 
 interface Props {
-  settings: Settings
-  shortcuts: ShortcutsType[]
+  settings: Settings;
+  shortcuts: ShortcutsType[];
 }
 
 // ** Styled Menu component
@@ -53,7 +53,7 @@ const Menu = styled(MuiMenu)<MenuProps>(({ theme }) => ({
   '& .MuiMenu-list': {
     padding: 0
   }
-}))
+}));
 
 // ** Styled MenuItem component
 const MenuItem = styled(MuiMenuItem)<MenuItemProps>(({ theme }) => ({
@@ -62,41 +62,41 @@ const MenuItem = styled(MuiMenuItem)<MenuItemProps>(({ theme }) => ({
   '&:not(:last-of-type)': {
     borderBottom: `1px solid ${theme.palette.divider}`
   }
-}))
+}));
 
 // ** Styled PerfectScrollbar component
 const PerfectScrollbar = styled(PerfectScrollbarComponent)({
   maxHeight: '30rem'
-})
+});
 
 const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: boolean }) => {
   if (hidden) {
-    return <Box sx={{ maxHeight: '30rem', overflowY: 'auto', overflowX: 'hidden' }}>{children}</Box>
+    return <Box sx={{ maxHeight: '30rem', overflowY: 'auto', overflowX: 'hidden' }}>{children}</Box>;
   } else {
-    return <PerfectScrollbar options={{ wheelPropagation: false, suppressScrollX: true }}>{children}</PerfectScrollbar>
+    return <PerfectScrollbar options={{ wheelPropagation: false, suppressScrollX: true }}>{children}</PerfectScrollbar>;
   }
-}
+};
 
 const ShortcutsDropdown = (props: Props) => {
   // ** Props
-  const { shortcuts, settings } = props
+  const { shortcuts, settings } = props;
 
   // ** States
-  const [anchorEl, setAnchorEl] = useState<(EventTarget & Element) | null>(null)
+  const [anchorEl, setAnchorEl] = useState<(EventTarget & Element) | null>(null);
 
   // ** Hook
-  const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
+  const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
   // ** Vars
-  const { direction } = settings
+  const { direction } = settings;
 
   const handleDropdownOpen = (event: SyntheticEvent) => {
-    setAnchorEl(event.currentTarget)
-  }
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleDropdownClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
 
   return (
     <Fragment>
@@ -171,7 +171,7 @@ const ShortcutsDropdown = (props: Props) => {
         </ScrollWrapper>
       </Menu>
     </Fragment>
-  )
-}
+  );
+};
 
-export default ShortcutsDropdown
+export default ShortcutsDropdown;

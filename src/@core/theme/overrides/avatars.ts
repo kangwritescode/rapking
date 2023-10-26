@@ -1,5 +1,5 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 const Avatar = () => {
   return {
@@ -35,7 +35,7 @@ const Avatar = () => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default Avatar
+export default Avatar;

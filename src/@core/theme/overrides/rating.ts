@@ -1,5 +1,5 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 const Rating = () => {
   return {
@@ -13,7 +13,7 @@ const Rating = () => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default Rating
+export default Rating;

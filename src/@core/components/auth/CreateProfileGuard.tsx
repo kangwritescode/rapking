@@ -11,8 +11,12 @@ interface CreateProfileGuardProps {
 const CreateProfileGuard: React.FC<CreateProfileGuardProps> = ({ children }) => {
   const { status } = useSession();
   const router = useRouter();
-  const { data: profileIsComplete, fetchStatus, isLoading } = api.user.getProfileIsComplete.useQuery(undefined, {
-    enabled: status === 'authenticated',
+  const {
+    data: profileIsComplete,
+    fetchStatus,
+    isLoading
+  } = api.user.getProfileIsComplete.useQuery(undefined, {
+    enabled: status === 'authenticated'
   });
 
   const isDataLoading = status === 'loading' || (fetchStatus !== 'idle' && isLoading);

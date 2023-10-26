@@ -22,7 +22,6 @@ interface DataGridDemoProps {
 const PAGE_SIZE = 10;
 
 export default function UserLeaderboard({ sx }: DataGridDemoProps) {
-
   const theme = useTheme();
   const isSmallBreakpoint = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -32,7 +31,7 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
       align: 'center',
       disableColumnMenu: true,
       sortable: false,
-      headerClassName: 'user-leaderboard-header',
+      headerClassName: 'user-leaderboard-header'
     };
 
     const baseColumns: GridColDef[] = [
@@ -41,50 +40,53 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
         headerName: isSmallBreakpoint ? 'Pts' : 'Score',
         headerClassName: 'user-leaderboard-points-header',
         cellClassName: 'user-leaderboard-points-cell',
-        width: isSmallBreakpoint ? 70 : 120,
+        width: isSmallBreakpoint ? 70 : 120
       },
       {
         field: 'username',
         headerName: 'Username',
-        width: 150,
+        width: 150
       },
       {
         field: 'location',
         headerName: isSmallBreakpoint ? 'State' : 'Location',
         type: 'number',
-        width: isSmallBreakpoint ? 76 : 170,
+        width: isSmallBreakpoint ? 76 : 170
       },
       {
         field: 'region',
         headerName: 'Region',
-        type: 'number',
+        type: 'number'
       },
       {
         field: 'sex',
         headerName: 'Sex',
         type: 'number',
-        width: isSmallBreakpoint ? 76 : undefined,
-      },
+        width: isSmallBreakpoint ? 76 : undefined
+      }
     ];
 
-    return baseColumns.map((column) => {  // Assuming 150 as a default width if not provided
+    return baseColumns.map(column => {
+      // Assuming 150 as a default width if not provided
       return { ...defaultColumnProps, ...column };
     });
-
   }, [isSmallBreakpoint]);
 
-  const convertUserDataToRowData = useCallback((userData: User) => {
-    const { username, city, state, region, sex, points } = userData;
+  const convertUserDataToRowData = useCallback(
+    (userData: User) => {
+      const { username, city, state, region, sex, points } = userData;
 
-    return ({
-      id: v4(),
-      username: username || '',
-      location: isSmallBreakpoint ? state || '' : `${city}, ${state}` || '',
-      region: region || 'WEST',
-      sex: sex ? sex === 'male' ? 'M' : 'F' : '',
-      points: points || 0,
-    })
-  }, [isSmallBreakpoint]);
+      return {
+        id: v4(),
+        username: username || '',
+        location: isSmallBreakpoint ? state || '' : `${city}, ${state}` || '',
+        region: region || 'WEST',
+        sex: sex ? (sex === 'male' ? 'M' : 'F') : '',
+        points: points || 0
+      };
+    },
+    [isSmallBreakpoint]
+  );
 
   // State
   const [rowsData, setRowsData] = useState<RowData[]>([]);
@@ -92,27 +94,22 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
   const [page, setPage] = useState(0);
 
   // Queries
-  const { refetch } = api.leaderboard.getTopUsersByPoints.useQuery({ page, pageSize: PAGE_SIZE },
-    { enabled: false });
+  const { refetch } = api.leaderboard.getTopUsersByPoints.useQuery({ page, pageSize: PAGE_SIZE }, { enabled: false });
 
   // Handlers
   const loadPage = useCallback(async () => {
     try {
       const { data } = await refetch();
       if (data) {
-        const {
-          rowData,
-          rowCount
-        } = data;
+        const { rowData, rowCount } = data;
         const newRowsData = rowData.map(convertUserDataToRowData);
-        setRowsData(newRowsData)
+        setRowsData(newRowsData);
         setRowCount(rowCount);
       }
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err);
     }
-  }, [refetch, convertUserDataToRowData])
+  }, [refetch, convertUserDataToRowData]);
 
   // Effects
   useEffect(() => {
@@ -128,7 +125,7 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
         autoPageSize
         paginationModel={{
           page,
-          pageSize: PAGE_SIZE,
+          pageSize: PAGE_SIZE
         }}
         paginationMode='server'
         onPaginationModelChange={({ page }) => setPage(page)}

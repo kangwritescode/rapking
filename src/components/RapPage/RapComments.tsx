@@ -1,6 +1,6 @@
-import React, { Fragment, useCallback, useEffect } from 'react'
-import RapComment from './RapComment'
-import { CircularProgress, Divider, Stack } from '@mui/material'
+import React, { Fragment, useCallback, useEffect } from 'react';
+import RapComment from './RapComment';
+import { CircularProgress, Divider, Stack } from '@mui/material';
 import { api } from 'src/utils/api';
 import { Virtuoso } from 'react-virtuoso';
 import { useQueryClient } from '@tanstack/react-query';
@@ -12,32 +12,38 @@ interface RapCommentsProps {
 }
 
 function RapComments({ sortBy, rapId }: RapCommentsProps) {
-
   const {
     data,
     fetchNextPage,
     hasNextPage,
-    isLoading: commentsAreLoading,
-  } = api.rapComment.getRapComments.useInfiniteQuery({
-    rapId: rapId as string,
-    sortBy,
-    limit: 5,
-  }, {
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchIntervalInBackground: false,
-    refetchOnReconnect: false,
-  });
+    isLoading: commentsAreLoading
+  } = api.rapComment.getRapComments.useInfiniteQuery(
+    {
+      rapId: rapId as string,
+      sortBy,
+      limit: 5
+    },
+    {
+      getNextPageParam: lastPage => lastPage.nextCursor,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchIntervalInBackground: false,
+      refetchOnReconnect: false
+    }
+  );
 
   const queryClient = useQueryClient();
 
   const clearQueryCache = useCallback(() => {
-    const postListKey = getQueryKey(api.rapComment.getRapComments, {
-      rapId: rapId as string,
-      sortBy,
-      limit: 5,
-    }, 'infinite');
+    const postListKey = getQueryKey(
+      api.rapComment.getRapComments,
+      {
+        rapId: rapId as string,
+        sortBy,
+        limit: 5
+      },
+      'infinite'
+    );
     queryClient.removeQueries(postListKey);
     queryClient.setQueryDefaults(postListKey, {});
   }, [queryClient, rapId, sortBy]);
@@ -51,7 +57,7 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
   return (
     <Virtuoso
       style={{
-        width: '100%',
+        width: '100%'
       }}
       data={rapCommentsData}
       totalCount={rapCommentsData.length}
@@ -83,14 +89,15 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
           )
         }),
         ...(hasNextPage && {
-          Footer: () => (<Stack alignItems='center' justifyContent='center' height='5rem'>
-            <CircularProgress color='inherit' size={20} />
-          </Stack>
+          Footer: () => (
+            <Stack alignItems='center' justifyContent='center' height='5rem'>
+              <CircularProgress color='inherit' size={20} />
+            </Stack>
           )
         })
       }}
     />
-  )
+  );
 }
 
-export default RapComments
+export default RapComments;

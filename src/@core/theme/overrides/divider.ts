@@ -1,5 +1,5 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 const Divider = () => {
   return {
@@ -23,7 +23,7 @@ const Divider = () => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default Divider
+export default Divider;

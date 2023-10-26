@@ -1,42 +1,42 @@
 // ** Type Imports
-import { Palette } from '@mui/material'
-import { Skin, ThemeColor } from 'src/@core/layouts/types'
+import { Palette } from '@mui/material';
+import { Skin, ThemeColor } from 'src/@core/layouts/types';
 
 // BG Color: #2A2D34
 // Slighty Lighter BG Color: #30343c
 
 const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColor): Palette => {
   // ** Vars
-  const whiteColor = '#FFF'
-  const lightColor = '58, 53, 65'
-  const darkColor = '255, 255, 255'
-  const mainColor = mode === 'light' ? lightColor : darkColor
+  const whiteColor = '#FFF';
+  const lightColor = '58, 53, 65';
+  const darkColor = '255, 255, 255';
+  const mainColor = mode === 'light' ? lightColor : darkColor;
 
   const primaryGradient = () => {
     if (themeColor === 'primary') {
-      return '#334657'
+      return '#334657';
     } else if (themeColor === 'secondary') {
-      return '#9C9FA4'
+      return '#9C9FA4';
     } else if (themeColor === 'success') {
-      return '#93DD5C'
+      return '#93DD5C';
     } else if (themeColor === 'error') {
-      return '#FF8C90'
+      return '#FF8C90';
     } else if (themeColor === 'warning') {
-      return '#FFCF5C'
+      return '#FFCF5C';
     } else {
-      return '#6ACDFF'
+      return '#6ACDFF';
     }
-  }
+  };
 
   const defaultBgColor = () => {
     if (skin === 'bordered' && mode === 'light') {
-      return whiteColor
+      return whiteColor;
     } else if (skin === 'bordered' && mode === 'dark') {
-      return '#312D4B'
+      return '#312D4B';
     } else if (mode === 'light') {
-      return '#F4F5FA'
-    } else return '#121212'
-  }
+      return '#F4F5FA';
+    } else return '#121212';
+  };
 
   return {
     customColors: {
@@ -126,7 +126,7 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
       disabledBackground: `rgba(${mainColor}, 0.12)`,
       focus: `rgba(${mainColor}, 0.12)`
     }
-  } as Palette
-}
+  } as Palette;
+};
 
-export default DefaultPalette
+export default DefaultPalette;

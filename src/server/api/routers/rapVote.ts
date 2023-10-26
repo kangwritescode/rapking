@@ -1,37 +1,36 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure
-} from "src/server/api/trpc";
-import { RapVoteType } from "@prisma/client";
-import { TRPCError } from "@trpc/server";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
+import { RapVoteType } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
 
 export const rapVote = createTRPCRouter({
   getRapLikes: publicProcedure
-    .input(z.object({
-      rapId: z.string(),
-    }))
+    .input(
+      z.object({
+        rapId: z.string()
+      })
+    )
     .query(async ({ input, ctx }) => {
       const { rapId } = input;
 
       const rapVotes = await ctx.prisma.rapVote.findMany({
         where: {
           rapId,
-          type: RapVoteType.LIKE,
-        },
+          type: RapVoteType.LIKE
+        }
       });
 
       return rapVotes;
     }),
   createLike: protectedProcedure
-    .input(z.object({
-      userId: z.string(),
-      rapId: z.string(),
-    }))
+    .input(
+      z.object({
+        userId: z.string(),
+        rapId: z.string()
+      })
+    )
     .mutation(async ({ input, ctx }) => {
-
       const { userId, rapId } = input;
 
       // Check if vote exists
@@ -39,31 +38,31 @@ export const rapVote = createTRPCRouter({
         where: {
           userId_rapId: {
             userId,
-            rapId,
-          },
-        },
+            rapId
+          }
+        }
       });
 
       if (vote) {
         throw new TRPCError({
-          code: "CONFLICT",
-          message: "Vote already exists",
+          code: 'CONFLICT',
+          message: 'Vote already exists'
         });
       }
 
       const rapData = await ctx.prisma.rap.findUnique({
         where: {
-          id: rapId,
+          id: rapId
         },
         select: {
-          userId: true,
-        },
+          userId: true
+        }
       });
 
       if (!rapData) {
         throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Rap not found",
+          code: 'NOT_FOUND',
+          message: 'Rap not found'
         });
       }
 
@@ -73,40 +72,41 @@ export const rapVote = createTRPCRouter({
           data: {
             type: RapVoteType.LIKE,
             userId,
-            rapId,
-          },
+            rapId
+          }
         }),
         ctx.prisma.rap.update({
           where: {
-            id: rapId,
+            id: rapId
           },
           data: {
             likesCount: {
-              increment: 1,
-            },
-          },
+              increment: 1
+            }
+          }
         }),
         ctx.prisma.user.update({
           where: {
-            id: rapData.userId,
+            id: rapData.userId
           },
           data: {
             points: {
-              increment: 1,
-            },
-          },
+              increment: 1
+            }
+          }
         })
-      ])
+      ]);
 
       return { createdVote, rapLikesCount: rap.likesCount };
     }),
   deleteLike: protectedProcedure
-    .input(z.object({
-      userId: z.string(),
-      rapId: z.string(),
-    }))
+    .input(
+      z.object({
+        userId: z.string(),
+        rapId: z.string()
+      })
+    )
     .mutation(async ({ input, ctx }) => {
-
       const { userId, rapId } = input;
 
       // Check if vote exists
@@ -114,28 +114,28 @@ export const rapVote = createTRPCRouter({
         where: {
           userId_rapId: {
             userId,
-            rapId,
-          },
-        },
+            rapId
+          }
+        }
       });
 
       if (!vote) {
-        throw new Error("Vote does not exist");
+        throw new Error('Vote does not exist');
       }
 
       const rapData = await ctx.prisma.rap.findUnique({
         where: {
-          id: rapId,
+          id: rapId
         },
         select: {
-          userId: true,
-        },
+          userId: true
+        }
       });
 
       if (!rapData) {
         throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Rap not found",
+          code: 'NOT_FOUND',
+          message: 'Rap not found'
         });
       }
 
@@ -144,68 +144,71 @@ export const rapVote = createTRPCRouter({
           where: {
             userId_rapId: {
               userId,
-              rapId,
-            },
-          },
+              rapId
+            }
+          }
         }),
         ctx.prisma.rap.update({
           where: {
-            id: rapId,
+            id: rapId
           },
           data: {
             likesCount: {
-              decrement: 1,
-            },
-          },
+              decrement: 1
+            }
+          }
         }),
         ctx.prisma.user.update({
           where: {
-            id: rapData.userId,
+            id: rapData.userId
           },
           data: {
             points: {
-              decrement: 1,
-            },
-          },
+              decrement: 1
+            }
+          }
         })
       ]);
 
       return { deletedVote, rapLikesCount: updatedRap.likesCount };
     }),
   likeExists: publicProcedure
-    .input(z.object({
-      userId: z.string(),
-      rapId: z.string(),
-    }))
+    .input(
+      z.object({
+        userId: z.string(),
+        rapId: z.string()
+      })
+    )
     .query(async ({ input, ctx }) => {
-
       const { userId, rapId } = input;
 
       const vote = await ctx.prisma.rapVote.findUnique({
         where: {
           userId_rapId: {
             userId,
-            rapId,
-          },
-        },
+            rapId
+          }
+        }
       });
 
       return !!vote;
     }),
   getRapLikesCount: publicProcedure
-    .input(z.object({
-      rapId: z.string(),
-    }))
+    .input(
+      z.object({
+        rapId: z.string()
+      })
+    )
     .query(async ({ input, ctx }) => {
       const { rapId } = input;
 
       const count = await ctx.prisma.rapVote.count({
         where: {
           rapId,
-          type: RapVoteType.LIKE,
-        },
+          type: RapVoteType.LIKE
+        }
       });
 
       return count;
-    }),
+    })
 });

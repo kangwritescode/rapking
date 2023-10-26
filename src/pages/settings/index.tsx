@@ -1,6 +1,6 @@
-import { Button, Typography, useTheme } from '@mui/material'
+import { Button, Typography, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import AlertDialog from 'src/components/AlertDialog';
 import { api } from 'src/utils/api';
 
@@ -13,10 +13,7 @@ function SettingsPage() {
 
   return (
     <>
-      <Typography
-        variant='h5'
-        sx={{ mb: theme.spacing(4) }}
-      >
+      <Typography variant='h5' sx={{ mb: theme.spacing(4) }}>
         Settings
       </Typography>
       <AlertDialog
@@ -27,41 +24,40 @@ function SettingsPage() {
         submitButtonProps={{
           color: 'error'
         }}
-        onSubmitHandler={() => deleteUser(undefined, {
-          onSuccess: () => {
-            router.reload();
-          }
-        })}
+        onSubmitHandler={() =>
+          deleteUser(undefined, {
+            onSuccess: () => {
+              router.reload();
+            }
+          })
+        }
         actionButtonText='Delete Account'
       />
-      <Button
-        variant='contained'
-        color='error'
-        onClick={() => setModalIsOpen(true)}>
+      <Button variant='contained' color='error' onClick={() => setModalIsOpen(true)}>
         Delete Account
       </Button>
     </>
-  )
+  );
 }
 
-export default SettingsPage
+export default SettingsPage;
 
 import { getSession } from 'next-auth/react';
 import { GetServerSideProps } from 'next/types';
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async context => {
   const session = await getSession(context);
 
   if (!session) {
     return {
       redirect: {
         destination: '/',
-        permanent: false,
-      },
+        permanent: false
+      }
     };
   }
 
   return {
-    props: {}, // Add props if needed
+    props: {} // Add props if needed
   };
 };

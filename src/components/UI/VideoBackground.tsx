@@ -1,5 +1,5 @@
-import { Box, CardMedia } from '@mui/material'
-import React from 'react'
+import { Box, CardMedia } from '@mui/material';
+import React from 'react';
 
 interface VideoBackgroundProps {
   videoSrc: string;
@@ -18,13 +18,15 @@ function VideoBackground({ videoSrc, imageSrc }: VideoBackgroundProps) {
         zIndex: -1
       }}
     >
-      <Box sx={{
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(36, 24, 3, 0.664)',
-        zIndex: -1,
-      }} />
+      <Box
+        sx={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(36, 24, 3, 0.664)',
+          zIndex: -1
+        }}
+      />
       <Box
         component='video'
         src={videoSrc}
@@ -37,7 +39,7 @@ function VideoBackground({ videoSrc, imageSrc }: VideoBackgroundProps) {
           position: 'absolute',
           width: '100%',
           height: '100%',
-          zIndex: -2,
+          zIndex: -2
         }}
       />
       <CardMedia
@@ -48,11 +50,11 @@ function VideoBackground({ videoSrc, imageSrc }: VideoBackgroundProps) {
           position: 'absolute',
           height: '100%',
           width: '100%',
-          zIndex: -3,
+          zIndex: -3
         }}
       />
-    </Box >
-  )
+    </Box>
+  );
 }
 
-export default VideoBackground
+export default VideoBackground;

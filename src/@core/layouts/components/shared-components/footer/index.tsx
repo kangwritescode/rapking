@@ -1,37 +1,37 @@
 // ** MUI Imports
-import Box from '@mui/material/Box'
-import { useTheme } from '@mui/material/styles'
+import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
 
 // ** Type Import
-import { LayoutProps } from 'src/@core/layouts/types'
+import { LayoutProps } from 'src/@core/layouts/types';
 
 // ** Footer Content Component
-import FooterContent from './FooterContent'
-import { useRouter } from 'next/router'
+import FooterContent from './FooterContent';
+import { useRouter } from 'next/router';
 
 interface Props {
-  settings: LayoutProps['settings']
-  saveSettings: LayoutProps['saveSettings']
-  footerStyles?: NonNullable<LayoutProps['footerProps']>['sx']
-  footerContent?: NonNullable<LayoutProps['footerProps']>['content']
+  settings: LayoutProps['settings'];
+  saveSettings: LayoutProps['saveSettings'];
+  footerStyles?: NonNullable<LayoutProps['footerProps']>['sx'];
+  footerContent?: NonNullable<LayoutProps['footerProps']>['content'];
 }
 
 const Footer = (props: Props) => {
   // ** Props
-  const { settings, footerStyles, footerContent: userFooterContent } = props
+  const { settings, footerStyles, footerContent: userFooterContent } = props;
 
   // ** Hook
-  const theme = useTheme()
+  const theme = useTheme();
 
   // ** Vars
-  const { skin, footer, layout, contentWidth } = settings
+  const { skin, footer, layout, contentWidth } = settings;
 
   // ** Router
-  const router = useRouter()
-  const isLeaderboardPage = router.pathname.includes('/leaderboard')
+  const router = useRouter();
+  const isLeaderboardPage = router.pathname.includes('/leaderboard');
 
   if (footer === 'hidden') {
-    return null
+    return null;
   }
 
   return (
@@ -60,7 +60,7 @@ const Footer = (props: Props) => {
         className='footer-content-container'
         sx={{
           width: '100%',
-          ...(isLeaderboardPage ? {display: 'none'} : {}),
+          ...(isLeaderboardPage ? { display: 'none' } : {}),
           py: theme.spacing(footer === 'fixed' && skin === 'bordered' ? 3.875 : 4),
           ...(contentWidth === 'boxed' && { '@media (min-width:1440px)': { maxWidth: 1440 } }),
           ...(layout === 'vertical' && {
@@ -85,7 +85,7 @@ const Footer = (props: Props) => {
         {userFooterContent ? userFooterContent(props) : <FooterContent />}
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

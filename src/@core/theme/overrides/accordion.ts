@@ -1,13 +1,13 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 // ** Hook Import
-import { useSettings } from 'src/@core/hooks/useSettings'
+import { useSettings } from 'src/@core/hooks/useSettings';
 
 const Accordion = () => {
   // Hook & Var
-  const { settings } = useSettings()
-  const { skin } = settings
+  const { settings } = useSettings();
+  const { skin } = settings;
 
   return {
     MuiAccordion: {
@@ -67,7 +67,7 @@ const Accordion = () => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default Accordion
+export default Accordion;

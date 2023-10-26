@@ -1,30 +1,30 @@
 // ** React Imports
-import { useState } from 'react'
+import { useState } from 'react';
 
 // ** MUI Imports
-import Fab from '@mui/material/Fab'
-import { styled } from '@mui/material/styles'
-import Box, { BoxProps } from '@mui/material/Box'
+import Fab from '@mui/material/Fab';
+import { styled } from '@mui/material/styles';
+import Box, { BoxProps } from '@mui/material/Box';
 
 // ** Theme Config Import
-import themeConfig from 'src/configs/themeConfig'
+import themeConfig from 'src/configs/themeConfig';
 
 // ** Type Import
-import { LayoutProps } from 'src/@core/layouts/types'
+import { LayoutProps } from 'src/@core/layouts/types';
 
 // ** Components
-import AppBar from './components/vertical/appBar'
-import Navigation from './components/vertical/navigation'
-import Footer from './components/shared-components/footer'
-import ScrollToTop from 'src/@core/components/scroll-to-top'
-import { Icon } from '@iconify/react'
-import { api } from 'src/utils/api'
-import { useSession } from 'next-auth/react'
+import AppBar from './components/vertical/appBar';
+import Navigation from './components/vertical/navigation';
+import Footer from './components/shared-components/footer';
+import ScrollToTop from 'src/@core/components/scroll-to-top';
+import { Icon } from '@iconify/react';
+import { api } from 'src/utils/api';
+import { useSession } from 'next-auth/react';
 
 const VerticalLayoutWrapper = styled('div')({
   height: '100%',
   display: 'flex'
-})
+});
 
 const MainContentWrapper = styled(Box)<BoxProps>({
   flexGrow: 1,
@@ -32,7 +32,7 @@ const MainContentWrapper = styled(Box)<BoxProps>({
   display: 'flex',
   minHeight: '100vh',
   flexDirection: 'column'
-})
+});
 
 const ContentWrapper = styled('main')(({ theme }) => ({
   flexGrow: 1,
@@ -43,41 +43,41 @@ const ContentWrapper = styled('main')(({ theme }) => ({
     paddingLeft: theme.spacing(4),
     paddingRight: theme.spacing(4)
   }
-}))
+}));
 
 const VerticalLayout = (props: LayoutProps) => {
-
   // ** Props
-  const { settings, children, scrollToTop, footerProps, contentHeightFixed, verticalLayoutProps } = props
+  const { settings, children, scrollToTop, footerProps, contentHeightFixed, verticalLayoutProps } = props;
 
   // ** Vars
-  const { skin, contentWidth } = settings
-  const { navigationSize, collapsedNavigationSize } = themeConfig
-  const navWidth = navigationSize
-  const navigationBorderWidth = skin === 'bordered' ? 1 : 0
-  const collapsedNavWidth = collapsedNavigationSize
+  const { skin, contentWidth } = settings;
+  const { navigationSize, collapsedNavigationSize } = themeConfig;
+  const navWidth = navigationSize;
+  const navigationBorderWidth = skin === 'bordered' ? 1 : 0;
+  const collapsedNavWidth = collapsedNavigationSize;
 
   // ** States
-  const [navVisible, setNavVisible] = useState<boolean>(false)
+  const [navVisible, setNavVisible] = useState<boolean>(false);
 
   // ** Toggle Functions
-  const toggleNavVisibility = () => setNavVisible(!navVisible)
+  const toggleNavVisibility = () => setNavVisible(!navVisible);
 
   // ** Auth
-  const { status } = useSession()
+  const { status } = useSession();
 
   // ** Queries
   const { data: profileIsComplete, isLoading } = api.user.getProfileIsComplete.useQuery(undefined, {
-    enabled: status === 'authenticated',
+    enabled: status === 'authenticated'
   });
 
-  const showNavigation = profileIsComplete && status === 'authenticated' || isLoading || status === 'loading';
+  const showNavigation = (profileIsComplete && status === 'authenticated') || isLoading || status === 'loading';
 
   return (
     <>
       <VerticalLayoutWrapper className='layout-wrapper'>
         {/* Navigation Menu */}
-        {showNavigation ? <Navigation
+        {showNavigation ? (
+          <Navigation
             navWidth={navWidth}
             navVisible={navVisible}
             setNavVisible={setNavVisible}
@@ -93,9 +93,8 @@ const VerticalLayout = (props: LayoutProps) => {
             afterNavMenuContent={verticalLayoutProps.navMenu.afterContent}
             beforeNavMenuContent={verticalLayoutProps.navMenu.beforeContent}
             {...props}
-          /> : (
-          null
-        )}
+          />
+        ) : null}
         <MainContentWrapper
           className='layout-content-wrapper'
           sx={{ ...(contentHeightFixed && { maxHeight: '100vh' }) }}
@@ -142,7 +141,7 @@ const VerticalLayout = (props: LayoutProps) => {
         </ScrollToTop>
       )}
     </>
-  )
-}
+  );
+};
 
-export default VerticalLayout
+export default VerticalLayout;

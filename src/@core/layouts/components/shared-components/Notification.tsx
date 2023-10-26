@@ -1,11 +1,11 @@
 import { Box, Typography, TypographyProps, styled } from '@mui/material';
 import { htmlToText } from 'html-to-text';
-import React from 'react'
+import React from 'react';
 import { getFormattedDate } from 'src/@core/utils/get-formatted-date';
-import { NotificationWithAssociatedData } from 'src/server/api/routers/notifications'
-import { CustomAvatarProps } from 'src/@core/components/mui/avatar/types'
-import CustomAvatar from 'src/@core/components/mui/avatar'
-import { getInitials } from 'src/@core/utils/get-initials'
+import { NotificationWithAssociatedData } from 'src/server/api/routers/notifications';
+import { CustomAvatarProps } from 'src/@core/components/mui/avatar/types';
+import CustomAvatar from 'src/@core/components/mui/avatar';
+import { getInitials } from 'src/@core/utils/get-initials';
 import { StyledMenuItem } from './NotificationDropdown';
 import { useRouter } from 'next/router';
 import { BUCKET_URL } from 'src/shared/constants';
@@ -19,7 +19,7 @@ const MenuItemTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
   marginBottom: theme.spacing(0.75)
-}))
+}));
 
 // ** Styled component for the subtitle in MenuItems
 const MenuItemSubtitle = styled(Typography)<TypographyProps>({
@@ -27,17 +27,17 @@ const MenuItemSubtitle = styled(Typography)<TypographyProps>({
   overflow: 'hidden',
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis'
-})
+});
 
 // ** Styled Avatar component
 const Avatar = styled(CustomAvatar)<CustomAvatarProps>({
   width: 38,
   height: 38,
   fontSize: '1.125rem'
-})
+});
 
 const RenderAvatar = ({ notification }: { notification: NotificationWithAssociatedData }) => {
-  const { notifierUser, type } = notification
+  const { notifierUser, type } = notification;
 
   if ((type === 'RAP_COMMENT' || type === 'FOLLOW') && notifierUser?.profileImageUrl) {
     return <Avatar alt='notification-avatar' src={`${BUCKET_URL}/${notifierUser.profileImageUrl}`} />;
@@ -47,23 +47,21 @@ const RenderAvatar = ({ notification }: { notification: NotificationWithAssociat
     <Avatar skin='light' color='info'>
       {getInitials(notifierUser?.username as string)}
     </Avatar>
-  )
-}
+  );
+};
 
 interface NotificationProps {
-  notification: NotificationWithAssociatedData
+  notification: NotificationWithAssociatedData;
   closeDropdown: () => void;
 }
 
 function Notification({ notification, closeDropdown }: NotificationProps) {
-
   const router = useRouter();
 
   let title = '';
   if (notification.type === 'RAP_COMMENT') {
     title = `${notification.notifierUser?.username} commented on ${notification.rap?.title}`;
-  }
-  else if (notification.type === 'FOLLOW') {
+  } else if (notification.type === 'FOLLOW') {
     title = `${notification.notifierUser?.username} is now following you`;
   }
   let subtitle = '';
@@ -71,22 +69,21 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
     subtitle = notification.comment ? htmlToText(notification.comment.content) : '';
   }
 
-  const notificationDate = getFormattedDate(notification.createdAt)
+  const notificationDate = getFormattedDate(notification.createdAt);
 
   const onClickHandler = async () => {
-    closeDropdown()
+    closeDropdown();
     if (notification.type === 'RAP_COMMENT') {
-      router.push(`/rap/${notification.rap?.id}/?commentId=${notification.comment?.id}`)
+      router.push(`/rap/${notification.rap?.id}/?commentId=${notification.comment?.id}`);
     } else if (notification.type === 'FOLLOW') {
-      router.push(`/u/${notification.notifierUser?.username}`)
+      router.push(`/u/${notification.notifierUser?.username}`);
     }
-  }
+  };
 
   return (
     <StyledMenuItem key={notification.id} onClick={onClickHandler}>
       <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-        <RenderAvatar
-          notification={notification} />
+        <RenderAvatar notification={notification} />
         <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
           <MenuItemTitle>{title}</MenuItemTitle>
           <MenuItemSubtitle variant='body2'>{subtitle}</MenuItemSubtitle>
@@ -96,7 +93,7 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
         </Typography>
       </Box>
     </StyledMenuItem>
-  )
+  );
 }
 
-export default Notification
+export default Notification;

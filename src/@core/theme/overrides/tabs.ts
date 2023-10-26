@@ -1,5 +1,5 @@
 // ** Type Import
-import { OwnerStateThemeType } from './'
+import { OwnerStateThemeType } from './';
 
 const Tabs = () => {
   return {
@@ -24,7 +24,7 @@ const Tabs = () => {
         })
       }
     }
-  }
-}
+  };
+};
 
-export default Tabs
+export default Tabs;

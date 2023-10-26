@@ -1,8 +1,8 @@
 import { Icon } from '@iconify/react';
-import { Avatar, Box, CircularProgress, IconButton, useTheme } from '@mui/material'
+import { Avatar, Box, CircularProgress, IconButton, useTheme } from '@mui/material';
 import { User } from '@prisma/client';
-import React, { useRef, useState } from 'react'
-import { BUCKET_URL } from 'src/shared/constants'
+import React, { useRef, useState } from 'react';
+import { BUCKET_URL } from 'src/shared/constants';
 import { useGCloudDelete } from 'src/shared/useGCloudDelete';
 import { useGCloudUpload } from 'src/shared/useGCloudUpload';
 import { api } from 'src/utils/api';
@@ -13,7 +13,6 @@ interface EditableProfilePhotoProps {
 }
 
 function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProps) {
-
   const { id, profileImageUrl } = userData;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -27,32 +26,32 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
   // Invalidaters
   const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
 
-  const { deleteFile } = useGCloudDelete({ url: profileImageUrl || '' })
+  const { deleteFile } = useGCloudDelete({ url: profileImageUrl || '' });
 
   const { isUploading } = useGCloudUpload({
     path: `user/${id}`,
     filename: 'profile-img',
     file,
-    onUploadSuccess: async (url) => {
+    onUploadSuccess: async url => {
       await updateUser({ profileImageUrl: url });
       invalidateUserQuery();
       setFile(null);
       deleteFile();
     }
-  })
+  });
 
   const theme = useTheme();
 
   return (
     <>
       <input
-        accept="image/jpeg, image/png"
-        id="image-button-file"
-        type="file"
+        accept='image/jpeg, image/png'
+        id='image-button-file'
+        type='file'
         ref={fileInputRef}
-        onChange={(e) => {
+        onChange={e => {
           if (e.target.files) {
-            setFile(e.target.files[0])
+            setFile(e.target.files[0]);
           }
         }}
         hidden
@@ -68,11 +67,12 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
                 top: '50%',
                 left: '50%',
                 translate: '-50% -50%',
-                zIndex: 1,
-              }} />
+                zIndex: 1
+              }}
+            />
           )}
           <Avatar
-            {...(profileImageUrl && {src: `${BUCKET_URL}/${profileImageUrl}`})}
+            {...(profileImageUrl && { src: `${BUCKET_URL}/${profileImageUrl}` })}
             alt='profile-picture'
             sx={{
               width: 120,
@@ -90,14 +90,15 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
             position='absolute'
             right='0'
             bottom='0'
-            sx={(theme) => ({
+            sx={theme => ({
               [theme.breakpoints.down('md')]: {
-                bottom: '1rem',
-              },
-            })}>
+                bottom: '1rem'
+              }
+            })}
+          >
             <IconButton
               onClick={() => fileInputRef?.current?.click()}
-              sx={(theme) => ({
+              sx={theme => ({
                 background: theme.palette.background.paper,
                 color: theme.palette.text.primary,
                 opacity: 0.6,
@@ -113,7 +114,7 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
         )}
       </Box>
     </>
-  )
+  );
 }
 
-export default EditableProfilePhoto
+export default EditableProfilePhoto;
