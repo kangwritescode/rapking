@@ -65,8 +65,6 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
     mode: 'all'
   });
 
-  console.log(errors);
-
   const onSubmit = async ({ username, sex, dob }: {
     username: string;
     sex: string;
@@ -80,7 +78,6 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
       onSuccess: () => {
         closeDialogHandler();
         invalidateUserQuery();
-        router.push(`/u/${username}/profile`)
       }
     })
   }

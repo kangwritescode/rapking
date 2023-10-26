@@ -92,14 +92,14 @@ const VerticalNavLink = ({
   const { navCollapsed } = settings
 
   // ** Session
-  const session = useSession();
+  const { data: sessionData, status } = useSession();
 
-  // logic for profile icon
-  const isUserPage = item.path?.includes('profile');
   const { data: userData } = api.user.getCurrentUser.useQuery(undefined, {
-    enabled: !!session.data?.user?.id,
+    enabled: !!sessionData?.user?.id,
   });
-  const showProfileIcon = isUserPage;
+
+  const isProfileIcon = item.path?.includes('/u/')
+  const showUserIcon = status === 'authenticated' && userData?.profileImageUrl && isProfileIcon
 
   const icon = parent && !item.icon ? themeConfig.navSubItemIcon : item.icon
 
@@ -155,11 +155,11 @@ const VerticalNavLink = ({
             }}
           >
 
-           {showProfileIcon ? ( <Avatar sx={{
+            {showUserIcon ? (<Avatar sx={{
               width: 26,
               height: 26,
             }}
-            {...(userData?.profileImageUrl ? { src: `${BUCKET_URL}/${userData?.profileImageUrl}` } : {})}
+              {...(userData?.profileImageUrl ? { src: `${BUCKET_URL}/${userData?.profileImageUrl}` } : {})}
             />) : <UserIcon icon={icon as string} />}
           </ListItemIcon>
         )}

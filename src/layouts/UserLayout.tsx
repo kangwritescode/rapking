@@ -67,7 +67,7 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
   if (userData) {
     navItems.splice(0, 0, {
       title: userData.username || 'Profile',
-      path: `/u/${userData.username}/profile`,
+      path: `/u/${userData.username}`,
       icon: 'gg:profile'
     })
   }

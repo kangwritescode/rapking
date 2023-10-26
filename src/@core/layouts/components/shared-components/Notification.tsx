@@ -78,7 +78,7 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
     if (notification.type === 'RAP_COMMENT') {
       router.push(`/rap/${notification.rap?.id}/?commentId=${notification.comment?.id}`)
     } else if (notification.type === 'FOLLOW') {
-      router.push(`/u/${notification.notifierUser?.username}/profile`)
+      router.push(`/u/${notification.notifierUser?.username}`)
     }
   }
 

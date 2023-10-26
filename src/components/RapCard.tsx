@@ -34,7 +34,7 @@ function RapCard({ rap, sx, hideAvatar, hideUsername }: RapCardProps) {
   const isMediumView = useMediaQuery(theme.breakpoints.down('md'));
 
   const navigateToProfile = () => {
-    router.push(`/u/${userData?.username}/profile`);
+    router.push(`/u/${userData?.username}`);
   }
 
   const navigateToRap = () => {
