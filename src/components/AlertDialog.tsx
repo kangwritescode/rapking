@@ -1,11 +1,11 @@
-import * as React from 'react';
+import { LoadingButton } from '@mui/lab';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { LoadingButton } from '@mui/lab';
+import * as React from 'react';
 
 interface AlertDialogProps {
   isOpen: boolean;
@@ -30,33 +30,24 @@ export default function AlertDialog({
   actionButtonText,
   isLoading
 }: AlertDialogProps) {
-
   return (
     <Dialog
       open={isOpen}
       onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
+      aria-labelledby='alert-dialog-title'
+      aria-describedby='alert-dialog-description'
     >
-      <DialogTitle id="alert-dialog-title">
-        {dialogTitle}
-      </DialogTitle>
+      <DialogTitle id='alert-dialog-title'>{dialogTitle}</DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          {dialogText}
-        </DialogContentText>
+        <DialogContentText id='alert-dialog-description'>{dialogText}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button
-          color='inherit'
-          onClick={handleClose}
-          {...cancelButtonProps}
-        >
+        <Button color='inherit' onClick={handleClose} {...cancelButtonProps}>
           Cancel
         </Button>
         <LoadingButton
           loading={isLoading}
-          {...onSubmitHandler && { onClick: onSubmitHandler }}
+          {...(onSubmitHandler && { onClick: onSubmitHandler })}
           autoFocus
           {...submitButtonProps}
         >
