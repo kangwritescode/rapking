@@ -109,7 +109,7 @@ function RapCard({ rap, sx, hideAvatar, hideUsername, showMenu }: RapCardProps) 
           >
             {formattedContent}
           </Typography>
-          <Stack direction='row' justifyContent='end'>
+          <Stack direction='row' justifyContent='end' height='2rem'>
             {showMenu && <RapCardMenu rapId={rap.id} />}
           </Stack>
         </Box>

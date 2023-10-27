@@ -30,6 +30,8 @@ const UserProfile = () => {
     enabled: !!session.data?.user?.id
   });
 
+  const isCurrentUser = currentUserData?.id === userData?.id;
+
   const [value, setValue] = useState('raps');
 
   const handleTabsChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -53,7 +55,7 @@ const UserProfile = () => {
         <Tabs value={value} onChange={handleTabsChange} textColor='primary' indicatorColor='primary'>
           <Tab value='raps' label='Raps' />
         </Tabs>
-        {value === 'raps' && <RapsTab raps={rapsData} />}
+        {value === 'raps' && <RapsTab raps={rapsData} isCurrentUser={isCurrentUser} />}
       </Grid>
     </Grid>
   );
@@ -61,14 +63,14 @@ const UserProfile = () => {
 
 export default UserProfile;
 
+import { Tab, Tabs, useTheme } from '@mui/material';
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import { GetServerSidePropsContext } from 'next';
-import { appRouter } from 'src/server/api/root';
-import superjson from 'superjson';
-import { createTRPCContext } from 'src/server/api/trpc';
 import { useSession } from 'next-auth/react';
 import BioCard from 'src/components/UserPage/BioCard/BioCard';
-import { Tab, Tabs, useTheme } from '@mui/material';
+import { appRouter } from 'src/server/api/root';
+import { createTRPCContext } from 'src/server/api/trpc';
+import superjson from 'superjson';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { username } = context.query;
