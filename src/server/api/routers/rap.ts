@@ -117,10 +117,44 @@ export const rapRouter = createTRPCRouter({
     });
   }),
   deleteRap: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
-    return await ctx.prisma.rap.delete({
+    const rap = await ctx.prisma.rap.findUnique({
       where: {
         id: input.id
       }
     });
+
+    if (!rap) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'No rap with this id exists.'
+      });
+    }
+
+    if (rap.userId !== ctx.session.user.id) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'You do not have permission to delete this rap.'
+      });
+    }
+
+    await ctx.prisma.$transaction([
+      ctx.prisma.rap.delete({
+        where: {
+          id: input.id
+        }
+      }),
+      ctx.prisma.user.update({
+        where: {
+          id: rap.userId
+        },
+        data: {
+          points: {
+            decrement: rap.likesCount
+          }
+        }
+      })
+    ]);
+
+    return true;
   })
 });
