@@ -1,20 +1,20 @@
 import { Container } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import React, { useCallback, useState } from 'react';
-import RapEditor from '../../components/WritePage/RapEditor';
-import { api } from 'src/utils/api';
-import { toast } from 'react-hot-toast';
-import { useRouter } from 'next/router';
 import { Rap } from '@prisma/client';
-import WriteHeader from '../../components/WritePage/WriteHeader';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useCallback, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { CreateRapPayload } from 'src/server/api/routers/rap';
 import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
-import { useSession } from 'next-auth/react';
+import { api } from 'src/utils/api';
+import RapEditor from '../../components/WritePage/RapEditor';
+import WriteHeader from '../../components/WritePage/WriteHeader';
 
 const PageContainer = styled(Container)(() => ({
   display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'top',
+  justifyContent: 'top',
+  alignItems: 'center',
   flexDirection: 'column'
 }));
 
@@ -60,8 +60,15 @@ function WritePage() {
 
   return (
     <PageContainer>
-      <WriteHeader disabled={formIsInvalid || isLoading || isSuccess} onClickHandler={submitHandler} />
+      <WriteHeader
+        sx={{
+          width: '34rem'
+        }}
+        disabled={formIsInvalid || isLoading || isSuccess}
+        onClickHandler={submitHandler}
+      />
       <RapEditor
+        sx={{ width: '34rem' }}
         handleCreate={submitHandler}
         onDisabledStateChanged={(isDisabled: boolean) => setFormIsInvalid(isDisabled)}
         onRapChange={onRapChangeHandler}
