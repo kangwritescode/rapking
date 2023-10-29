@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Grid, SxProps, TextField, Typography } from '@mui/material';
+import { Box, Grid, SxProps, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Rap } from '@prisma/client';
 import TextAlign from '@tiptap/extension-text-align';
@@ -100,11 +100,6 @@ export default function RapEditor({ rapData, onDisabledStateChanged, onRapChange
               fullWidth
               error={Boolean(errors.title?.message)}
             />
-            {errors.title?.message && (
-              <Typography variant='caption' color='error'>
-                {errors.title?.message}
-              </Typography>
-            )}
             <RapTextEditor sx={{ marginTop: '1.5rem' }} editor={editor} />
           </Box>
         </Grid>

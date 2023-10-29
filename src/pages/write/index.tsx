@@ -1,21 +1,21 @@
-import { Container } from '@mui/material';
+import { Box, Button, Container, Stack, Switch, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Rap } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';
+import DropzoneInput from 'src/components/DropzoneInput';
 import { CreateRapPayload } from 'src/server/api/routers/rap';
 import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
 import { api } from 'src/utils/api';
 import RapEditor from '../../components/WritePage/RapEditor';
-import WriteHeader from '../../components/WritePage/WriteHeader';
 
 const PageContainer = styled(Container)(() => ({
   display: 'flex',
-  justifyContent: 'top',
-  alignItems: 'center',
-  flexDirection: 'column'
+  justifyContent: 'center',
+  alignItems: 'top',
+  flexDirection: 'row'
 }));
 
 function WritePage() {
@@ -60,19 +60,48 @@ function WritePage() {
 
   return (
     <PageContainer>
-      <WriteHeader
+      <Box width='34rem'>
+        <RapEditor
+          handleCreate={submitHandler}
+          onDisabledStateChanged={(isDisabled: boolean) => setFormIsInvalid(isDisabled)}
+          onRapChange={onRapChangeHandler}
+        />
+      </Box>
+      <Stack
         sx={{
-          width: '34rem'
+          ml: '1.5rem'
         }}
-        disabled={formIsInvalid || isLoading || isSuccess}
-        onClickHandler={submitHandler}
-      />
-      <RapEditor
-        sx={{ width: '34rem' }}
-        handleCreate={submitHandler}
-        onDisabledStateChanged={(isDisabled: boolean) => setFormIsInvalid(isDisabled)}
-        onRapChange={onRapChangeHandler}
-      />
+        gap='1rem'
+        width='16rem'
+      >
+        <Stack direction='row' justifyContent='space-between'>
+          <Button variant='outlined' color='secondary' sx={{ mr: '1rem' }}>
+            Settings
+          </Button>
+          <Button
+            onClick={submitHandler}
+            size='medium'
+            variant='contained'
+            disabled={formIsInvalid || isLoading || isSuccess}
+          >
+            Create Rap
+          </Button>
+        </Stack>
+        <Box sx={theme => ({ width: '100%', border: `1px solid ${theme.palette.grey[800]}`, padding: '.5rem' })}>
+          <Switch />{' '}
+          <Typography
+            component='span'
+            sx={{
+              pointerEvents: 'none'
+            }}
+          >
+            Publish
+          </Typography>
+        </Box>
+        <Box sx={theme => ({ border: `1px solid ${theme.palette.grey[800]}` })}>
+          <DropzoneInput />
+        </Box>
+      </Stack>
     </PageContainer>
   );
 }
