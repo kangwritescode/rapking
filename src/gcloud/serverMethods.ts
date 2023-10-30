@@ -13,3 +13,17 @@ export async function generateSignedUrl(fileName: string, action: 'read' | 'writ
 
   return url;
 }
+
+export async function moveGCloudFile(bucketName: string, srcFilename: string, destFilename: string) {
+  const bucket = gcloudStorage.bucket(bucketName);
+  const file = bucket.file(srcFilename);
+  try {
+    const response = file.move(destFilename);
+
+    console.log(response, 'serverMethods.ts line: 23');
+
+    return response;
+  } catch (error) {
+    return null;
+  }
+}

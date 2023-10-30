@@ -1,12 +1,16 @@
 import { z } from 'zod';
 
 import { TRPCError } from '@trpc/server';
+import path from 'path';
+import { moveGCloudFile } from 'src/gcloud/serverMethods';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 
 // Schemas
 const createRapPayloadSchema = z.object({
   title: z.string(),
-  content: z.string()
+  content: z.string(),
+  status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
+  coverArtDraftUrl: z.string().optional().nullable()
 });
 const updateRapPayloadSchema = z.object({
   id: z.string(),
@@ -54,13 +58,33 @@ export const rapRouter = createTRPCRouter({
       });
     }
 
-    return await ctx.prisma.rap.create({
+    let rap = await ctx.prisma.rap.create({
       data: {
         title: input.title,
         content: input.content,
+        status: input.status,
         userId: ctx.session.user.id
       }
     });
+
+    if (input.coverArtDraftUrl) {
+      const extension = path.extname(input.coverArtDraftUrl);
+      const newCoverArtUrl = `rap/${rap.id}/cover-art-${Date.now()}${extension}`;
+      const response = await moveGCloudFile('rapking', input.coverArtDraftUrl, newCoverArtUrl);
+      console.log(response, 'rap.ts line: 74');
+      if (response) {
+        rap = await ctx.prisma.rap.update({
+          where: {
+            id: rap.id
+          },
+          data: {
+            coverArtUrl: newCoverArtUrl
+          }
+        });
+      }
+    }
+
+    return rap;
   }),
   updateRap: protectedProcedure.input(updateRapPayloadSchema).mutation(async ({ input, ctx }) => {
     // check if a rap with the same title already exists
@@ -85,7 +109,7 @@ export const rapRouter = createTRPCRouter({
         ...(input.title && { title: input.title }),
         ...(input.content && { content: input.content }),
         ...(input.status && { status: input.status }),
-        ...(input.coverArtUrl && { coverArtUrl: input.coverArtUrl })
+        coverArtUrl: input.coverArtUrl
       }
     });
   }),
