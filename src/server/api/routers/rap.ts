@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
+import { Rap } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import path from 'path';
-import { moveGCloudFile } from 'src/gcloud/serverMethods';
+import { deleteGloudFile, moveGCloudFile } from 'src/gcloud/serverMethods';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 
 // Schemas
@@ -71,7 +72,6 @@ export const rapRouter = createTRPCRouter({
       const extension = path.extname(input.coverArtDraftUrl);
       const newCoverArtUrl = `rap/${rap.id}/cover-art-${Date.now()}${extension}`;
       const response = await moveGCloudFile('rapking', input.coverArtDraftUrl, newCoverArtUrl);
-      console.log(response, 'rap.ts line: 74');
       if (response) {
         rap = await ctx.prisma.rap.update({
           where: {
@@ -101,6 +101,8 @@ export const rapRouter = createTRPCRouter({
       });
     }
 
+    const newCoverArtUrl = await updateCoverArtUrl(input, existingRap);
+
     return await ctx.prisma.rap.update({
       where: {
         id: input.id
@@ -109,7 +111,7 @@ export const rapRouter = createTRPCRouter({
         ...(input.title && { title: input.title }),
         ...(input.content && { content: input.content }),
         ...(input.status && { status: input.status }),
-        coverArtUrl: input.coverArtUrl
+        coverArtUrl: newCoverArtUrl
       }
     });
   }),
@@ -182,3 +184,29 @@ export const rapRouter = createTRPCRouter({
     return true;
   })
 });
+
+async function updateCoverArtUrl(input: UpdateRapPayload, existingRap: Rap) {
+  const isDeleting = !input.coverArtUrl && existingRap.coverArtUrl;
+  const isNewUpload = input.coverArtUrl && !existingRap.coverArtUrl;
+  const isChanging = input.coverArtUrl && existingRap.coverArtUrl;
+
+  // If user is deleting or changing the cover art, delete the existing file
+  if (isDeleting || isChanging) {
+    await deleteGloudFile('rapking', existingRap.coverArtUrl!);
+  }
+
+  // If user is uploading or changing the cover art, move the new file
+  if (isNewUpload || isChanging) {
+    const extension = path.extname(input.coverArtUrl!);
+    const newCoverArtUrl = `rap/${existingRap.id}/cover-art-${Date.now()}${extension}`;
+    await moveGCloudFile('rapking', input.coverArtUrl!, newCoverArtUrl);
+
+    return newCoverArtUrl;
+  }
+
+  // If user deleted the cover art, return null
+  if (isDeleting) return null;
+
+  // If there are no changes, return the existing cover art URL
+  return existingRap.coverArtUrl;
+}

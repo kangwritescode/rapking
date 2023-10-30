@@ -20,7 +20,17 @@ export async function moveGCloudFile(bucketName: string, srcFilename: string, de
   try {
     const response = file.move(destFilename);
 
-    console.log(response, 'serverMethods.ts line: 23');
+    return response;
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function deleteGloudFile(bucketName: string, filename: string) {
+  const bucket = gcloudStorage.bucket(bucketName);
+  const file = bucket.file(filename);
+  try {
+    const response = file.delete();
 
     return response;
   } catch (error) {

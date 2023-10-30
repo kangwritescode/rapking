@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { CreateRapPayload, UpdateRapPayload } from 'src/server/api/routers/rap';
 import { z } from 'zod';
-import AddCovertArtField from '../AddCovertArtField';
+import AddCoverArtField from '../AddCoverArtField';
 import RapTextEditor from './RapTextEditor';
 
 const rapEditorFormSchema = z.object({
@@ -137,8 +137,8 @@ export default function RapEditor({ rapData, sx, createRap, isLoading, updateRap
             }}
           />
         </Box>
-        <AddCovertArtField
-          setNewCoverArtUrl={(url: string | null) =>
+        <AddCoverArtField
+          setCoverArtUrl={(url: string | null) =>
             setValue('coverArtUrl', url, { shouldValidate: true, shouldDirty: true })
           }
           rapData={rapData}
