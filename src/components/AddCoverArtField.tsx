@@ -1,5 +1,4 @@
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
-import { Rap } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { BUCKET_URL } from 'src/shared/constants';
@@ -8,13 +7,15 @@ import DropzoneInput from './DropzoneInput';
 
 interface AddCoverArtFieldProps {
   setCoverArtUrl: (url: string | null) => void;
-  rapData?: Rap | null;
+  coverArtUrlData?: string | null;
 }
 
-function AddCoverArtField({ setCoverArtUrl, rapData }: AddCoverArtFieldProps) {
+function AddCoverArtField({ setCoverArtUrl, coverArtUrlData }: AddCoverArtFieldProps) {
+  // ** Session
   const { data } = useSession();
   const currentUserId = data?.user?.id;
 
+  // ** State
   const [file, setFile] = useState<File | null>(null);
   const [displayedImage, setDisplayedImage] = useState<string | null>(null);
 
@@ -28,11 +29,12 @@ function AddCoverArtField({ setCoverArtUrl, rapData }: AddCoverArtFieldProps) {
     }
   });
 
+  // ** Effects
   useEffect(() => {
-    if (rapData?.coverArtUrl) {
-      setDisplayedImage(`${BUCKET_URL}/${rapData?.coverArtUrl}`);
+    if (coverArtUrlData) {
+      setDisplayedImage(`${BUCKET_URL}/${coverArtUrlData}`);
     }
-  }, [rapData]);
+  }, [coverArtUrlData]);
 
   const handleRemoveButtonClick = () => {
     setDisplayedImage(null);
@@ -40,13 +42,13 @@ function AddCoverArtField({ setCoverArtUrl, rapData }: AddCoverArtFieldProps) {
   };
 
   const handleResetButtonClick = () => {
-    setCoverArtUrl(rapData?.coverArtUrl || null);
-    if (rapData?.coverArtUrl) {
-      setDisplayedImage(`${BUCKET_URL}/${rapData?.coverArtUrl}`);
+    setCoverArtUrl(coverArtUrlData || null);
+    if (coverArtUrlData) {
+      setDisplayedImage(`${BUCKET_URL}/${coverArtUrlData}`);
     }
   };
 
-  const showResetButton = rapData?.coverArtUrl && !displayedImage?.includes(rapData?.coverArtUrl);
+  const showResetButton = coverArtUrlData && !displayedImage?.includes(coverArtUrlData);
   const showRemoveButton = Boolean(displayedImage);
 
   return (

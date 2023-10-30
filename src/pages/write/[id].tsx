@@ -28,7 +28,7 @@ const ExistingRap = () => {
           toast.error(error.message);
         },
         onSuccess: () => {
-          toast.success('Rap Updated Successfully!');
+          toast.success('Rap Updated Successfully');
           refetch();
         }
       });

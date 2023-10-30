@@ -48,6 +48,7 @@ export default function RapEditor({ rapData, sx, createRap, isLoading, updateRap
     mode: 'onTouched'
   });
 
+  // We receive fresh data onmount and after successful mutation - thus, reset form
   useEffect(() => {
     if (rapData) {
       reset({
@@ -141,7 +142,7 @@ export default function RapEditor({ rapData, sx, createRap, isLoading, updateRap
           setCoverArtUrl={(url: string | null) =>
             setValue('coverArtUrl', url, { shouldValidate: true, shouldDirty: true })
           }
-          rapData={rapData}
+          coverArtUrlData={rapData?.coverArtUrl}
         />
       </Stack>
     </Box>

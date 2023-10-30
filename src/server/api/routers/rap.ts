@@ -188,7 +188,7 @@ export const rapRouter = createTRPCRouter({
 async function updateCoverArtUrl(input: UpdateRapPayload, existingRap: Rap) {
   const isDeleting = !input.coverArtUrl && existingRap.coverArtUrl;
   const isNewUpload = input.coverArtUrl && !existingRap.coverArtUrl;
-  const isChanging = input.coverArtUrl && existingRap.coverArtUrl;
+  const isChanging = input.coverArtUrl && existingRap.coverArtUrl && input.coverArtUrl !== existingRap.coverArtUrl;
 
   // If user is deleting or changing the cover art, delete the existing file
   if (isDeleting || isChanging) {
@@ -199,6 +199,7 @@ async function updateCoverArtUrl(input: UpdateRapPayload, existingRap: Rap) {
   if (isNewUpload || isChanging) {
     const extension = path.extname(input.coverArtUrl!);
     const newCoverArtUrl = `rap/${existingRap.id}/cover-art-${Date.now()}${extension}`;
+
     await moveGCloudFile('rapking', input.coverArtUrl!, newCoverArtUrl);
 
     return newCoverArtUrl;
