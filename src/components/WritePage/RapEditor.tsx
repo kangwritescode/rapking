@@ -1,38 +1,15 @@
-import { styled } from '@mui/material/styles';
-import RapTextEditor from './RapTextEditor';
-import TitleBar from './TitleBar';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Rap } from '@prisma/client';
-import { Box, Grid } from '@mui/material';
-import StatusChanger from './StatusChanger';
-import EditableRapBanner from './EditableCoverArt';
-import { CreateRapPayload, UpdateRapPayload } from 'src/server/api/routers/rap';
+import { Box, Button, FormControlLabel, Stack, Switch, SxProps, TextField } from '@mui/material';
+import { Rap, RapStatus } from '@prisma/client';
+import TextAlign from '@tiptap/extension-text-align';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import TextAlign from '@tiptap/extension-text-align';
-
-const EditorContainer = styled('div')(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginRight: 16
-  },
-  [theme.breakpoints.down('sm')]: {
-    marginBottom: 16
-  }
-}));
-
-interface RapEditorProps {
-  handleUpdate?: (rap: UpdateRapPayload) => void;
-  handleCreate?: (rap: CreateRapPayload) => void;
-  rapData?: Rap | null;
-  onDisabledStateChanged?: (isDisabled: boolean) => void;
-  onRapChange?: (payload: any) => void;
-}
+import { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { CreateRapPayload, UpdateRapPayload } from 'src/server/api/routers/rap';
+import { z } from 'zod';
+import AddCoverArtField from '../AddCoverArtField';
+import RapTextEditor from './RapTextEditor';
 
 const rapEditorFormSchema = z.object({
   title: z
@@ -42,47 +19,57 @@ const rapEditorFormSchema = z.object({
   content: z.string().max(3000)
 });
 
+interface RapEditorProps {
+  createRap?: (payload: CreateRapPayload) => void;
+  updateRap?: (payload: UpdateRapPayload) => void;
+  rapData?: Rap | null;
+  sx?: SxProps;
+  isLoading?: boolean;
+  submitButtonIsDisabled?: boolean;
+}
+
 export type RapEditorFormValues = z.infer<typeof rapEditorFormSchema>;
 
-export default function RapEditor({ rapData, onDisabledStateChanged, onRapChange }: RapEditorProps) {
+export default function RapEditor({
+  rapData,
+  sx,
+  createRap,
+  isLoading,
+  updateRap,
+  submitButtonIsDisabled
+}: RapEditorProps) {
   const {
     register,
-    formState: { isValid, isSubmitting, isDirty, errors },
+    formState: { isValid, isDirty, errors },
     reset,
     setValue,
-    watch
+    watch,
+    control
   } = useForm({
-    defaultValues: { title: rapData?.title || '', content: rapData?.content || '' },
+    defaultValues: {
+      title: rapData?.title || '',
+      content: rapData?.content || '',
+      published: rapData?.status === RapStatus.PUBLISHED ? true : false,
+      coverArtUrl: rapData?.coverArtUrl || null
+    },
     resolver: zodResolver(rapEditorFormSchema),
     mode: 'onTouched'
   });
 
-  const { title, content } = watch();
-
+  // We receive fresh data onmount and after successful mutation - thus, reset form
   useEffect(() => {
-    if (onRapChange) {
-      onRapChange({
-        ...rapData,
-        content,
-        title
-      });
-    }
-  }, [onRapChange, title, content, rapData]);
-
-  useEffect(() => {
-    if (rapData?.content && rapData?.title) {
+    if (rapData) {
       reset({
         title: rapData.title,
-        content: rapData.content
+        content: rapData.content,
+        published: rapData?.status === RapStatus.PUBLISHED ? true : false,
+        coverArtUrl: rapData?.coverArtUrl || null
       });
     }
-  }, [rapData?.content, rapData?.title, reset]);
+  }, [rapData, reset]);
 
-  useEffect(() => {
-    if (onDisabledStateChanged) {
-      onDisabledStateChanged(!isValid || isSubmitting || !isDirty);
-    }
-  }, [isValid, isSubmitting, onDisabledStateChanged, isDirty]);
+  const { content, title, coverArtUrl, published } = watch();
+  const status = published ? RapStatus.PUBLISHED : RapStatus.DRAFT;
 
   const editor = useEditor({
     extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
@@ -92,22 +79,85 @@ export default function RapEditor({ rapData, onDisabledStateChanged, onRapChange
     }
   });
 
+  const handleSubmit = () => {
+    createRap?.({
+      title,
+      content,
+      status,
+      coverArtUrl
+    });
+    updateRap?.({
+      id: rapData?.id as string,
+      title,
+      content,
+      status,
+      coverArtUrl
+    });
+  };
+
   return (
-    <EditorContainer>
-      <Grid container wrap='nowrap' gap={6}>
-        <Grid item xs={rapData ? 7 : 12}>
-          <Box>
-            {rapData && <StatusChanger rapId={rapData.id} status={rapData.status} sx={{ mb: '1rem' }} />}
-            <TitleBar sx={{ mb: '2rem' }} register={register} errorMessage={errors.title?.message} />
-            <RapTextEditor editor={editor} />
-          </Box>
-        </Grid>
-        {rapData && (
-          <Grid item xs={5} pt={10}>
-            <EditableRapBanner rapData={rapData} isEditable />
-          </Grid>
-        )}
-      </Grid>
-    </EditorContainer>
+    <Box sx={{ ...sx, display: 'flex' }}>
+      <Box
+        sx={{
+          width: '30rem'
+        }}
+      >
+        <TextField
+          {...register?.('title')}
+          label='Title'
+          variant='filled'
+          size='small'
+          fullWidth
+          error={Boolean(errors.title?.message)}
+        />
+        <RapTextEditor sx={{ marginTop: '1.5rem' }} editor={editor} />
+      </Box>
+      <Stack
+        sx={{
+          ml: '1.5rem'
+        }}
+        gap='1rem'
+        width='16rem'
+      >
+        <Stack direction='row' justifyContent='space-between'>
+          <Button variant='outlined' color='secondary' sx={{ mr: '1rem' }}>
+            Settings
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            size='medium'
+            variant='contained'
+            disabled={!isValid || !isDirty || isLoading || submitButtonIsDisabled}
+          >
+            {createRap ? 'Create Rap' : 'Update Rap'}
+          </Button>
+        </Stack>
+        <Box sx={theme => ({ width: '100%', border: `1px solid ${theme.palette.grey[800]}`, py: '.5rem', px: '1rem' })}>
+          <Controller
+            name='published'
+            control={control}
+            render={({ field }) => {
+              return (
+                <FormControlLabel
+                  sx={{
+                    '.MuiFormControlLabel-label': {
+                      opacity: field.value ? 1 : 0.5
+                    }
+                  }}
+                  control={<Switch checked={field.value} onChange={field.onChange} />}
+                  label='Published'
+                />
+              );
+            }}
+          />
+        </Box>
+        <AddCoverArtField
+          setCoverArtUrl={(url: string | null) =>
+            setValue('coverArtUrl', url, { shouldValidate: true, shouldDirty: true })
+          }
+          coverArtUrlData={rapData?.coverArtUrl}
+        />
+      </Stack>
+    </Box>
   );
 }

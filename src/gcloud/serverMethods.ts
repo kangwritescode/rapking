@@ -13,3 +13,27 @@ export async function generateSignedUrl(fileName: string, action: 'read' | 'writ
 
   return url;
 }
+
+export async function moveGCloudFile(bucketName: string, srcFilename: string, destFilename: string) {
+  const bucket = gcloudStorage.bucket(bucketName);
+  const file = bucket.file(srcFilename);
+  try {
+    const response = file.move(destFilename);
+
+    return response;
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function deleteGloudFile(bucketName: string, filename: string) {
+  const bucket = gcloudStorage.bucket(bucketName);
+  const file = bucket.file(filename);
+  try {
+    const response = file.delete();
+
+    return response;
+  } catch (error) {
+    return null;
+  }
+}

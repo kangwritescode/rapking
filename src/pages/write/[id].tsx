@@ -1,66 +1,51 @@
+import { Container } from '@mui/material';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { toast } from 'react-hot-toast';
+import { UpdateRapPayload } from 'src/server/api/routers/rap';
 import { api } from 'src/utils/api';
 import RapEditor from '../../components/WritePage/RapEditor';
-import { toast } from 'react-hot-toast';
-import { useCallback, useState } from 'react';
-import { UpdateRapPayload } from 'src/server/api/routers/rap';
-import { Container, styled } from '@mui/material';
-import WriteHeader from '../../components/WritePage/WriteHeader';
-
-const PageContainer = styled(Container)(() => ({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'top',
-  flexDirection: 'column'
-}));
 
 const ExistingRap = () => {
   const router = useRouter();
   const { id } = router.query;
 
   // Queries
-  const { data: rapData } = api.rap.getRap.useQuery({ id: id as string });
+  const { data: rapData, refetch } = api.rap.getRap.useQuery({ id: id as string }, { enabled: false });
 
   // Mutations
-  const { mutate: updateRap, isLoading } = api.rap.updateRap.useMutation();
+  const { mutate, isLoading } = api.rap.updateRap.useMutation();
 
-  // State
-  const [updateRapPayload, setUpdateRapPayload] = useState<UpdateRapPayload | null>(null);
-  const [formIsInvalid, setFormIsInvalid] = useState(true);
+  // Effects
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
-  // Invalidaters
-  const { invalidate: invalidateRapQuery } = api.useContext().rap.getRap;
-
-  const submitHandler = () => {
-    if (updateRapPayload) {
-      updateRap(updateRapPayload, {
+  const updateRap = (rap: UpdateRapPayload) => {
+    if (rap) {
+      mutate(rap, {
         onError: error => {
           toast.error(error.message);
         },
         onSuccess: () => {
-          toast.success('Rap Updated Successfully!');
-          invalidateRapQuery({ id: id as string });
+          toast.success('Rap Updated Successfully');
+          refetch();
         }
       });
     }
   };
 
-  const onRapChangeHandler = useCallback((rapPayload: UpdateRapPayload) => {
-    setUpdateRapPayload(rapPayload);
-  }, []);
-
   return (
-    <PageContainer>
-      <WriteHeader disabled={formIsInvalid || isLoading} onClickHandler={submitHandler} rapData={rapData} />
-      {rapData && (
-        <RapEditor
-          handleUpdate={submitHandler}
-          rapData={rapData}
-          onRapChange={onRapChangeHandler}
-          onDisabledStateChanged={(isDisabled: boolean) => setFormIsInvalid(isDisabled)}
-        />
-      )}
-    </PageContainer>
+    <Container
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column'
+      }}
+    >
+      {rapData && <RapEditor updateRap={updateRap} rapData={rapData} isLoading={isLoading} />}
+    </Container>
   );
 };
 

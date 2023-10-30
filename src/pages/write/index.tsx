@@ -1,41 +1,31 @@
 import { Container } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import React, { useCallback, useState } from 'react';
-import RapEditor from '../../components/WritePage/RapEditor';
-import { api } from 'src/utils/api';
-import { toast } from 'react-hot-toast';
-import { useRouter } from 'next/router';
 import { Rap } from '@prisma/client';
-import WriteHeader from '../../components/WritePage/WriteHeader';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { toast } from 'react-hot-toast';
 import { CreateRapPayload } from 'src/server/api/routers/rap';
 import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
-import { useSession } from 'next-auth/react';
-
-const PageContainer = styled(Container)(() => ({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'top',
-  flexDirection: 'column'
-}));
+import { api } from 'src/utils/api';
+import RapEditor from '../../components/WritePage/RapEditor';
 
 function WritePage() {
   const router = useRouter();
   const { status } = useSession();
 
-  const { mutate: createRap, isLoading, isSuccess } = api.rap.createRap.useMutation();
-  const [formIsInvalid, setFormIsInvalid] = useState(true);
-  const [rap, setRap] = useState<CreateRapPayload | null>(null);
+  const { mutate, isLoading, isSuccess } = api.rap.createRap.useMutation();
 
-  const submitHandler = () => {
+  const createRap = (rap: CreateRapPayload) => {
     if (status === 'unauthenticated') {
       return toast.error('You must be logged in to create a rap.');
     }
     if (rap) {
       const editedContent = removeTrailingAndLeadingPElements(rap.content);
-      createRap(
+      mutate(
         {
           title: rap.title,
-          content: editedContent
+          content: editedContent,
+          status: rap.status,
+          coverArtUrl: rap.coverArtUrl
         },
         {
           onError: error => {
@@ -54,19 +44,17 @@ function WritePage() {
     }
   };
 
-  const onRapChangeHandler = useCallback((rap: CreateRapPayload) => {
-    setRap(rap);
-  }, []);
-
   return (
-    <PageContainer>
-      <WriteHeader disabled={formIsInvalid || isLoading || isSuccess} onClickHandler={submitHandler} />
-      <RapEditor
-        handleCreate={submitHandler}
-        onDisabledStateChanged={(isDisabled: boolean) => setFormIsInvalid(isDisabled)}
-        onRapChange={onRapChangeHandler}
-      />
-    </PageContainer>
+    <Container
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column'
+      }}
+    >
+      <RapEditor isLoading={isLoading} createRap={createRap} submitButtonIsDisabled={isSuccess} />
+    </Container>
   );
 }
 

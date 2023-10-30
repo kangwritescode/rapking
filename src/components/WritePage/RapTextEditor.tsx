@@ -1,23 +1,25 @@
 import { RichTextEditor } from '@mantine/tiptap';
-import { Editor } from '@tiptap/react';
 import { useTheme } from '@mui/material';
+import { Editor } from '@tiptap/react';
 
 interface RapTextEditorProps {
   editor: Editor | null;
+  sx?: any;
 }
 
-export default function RapTextEditor({ editor }: RapTextEditorProps) {
+export default function RapTextEditor({ editor, sx }: RapTextEditorProps) {
   const theme = useTheme();
 
   return (
     <RichTextEditor
+      style={{ ...sx }}
       editor={editor}
       styles={{
         content: {
           background: theme.palette.background.default,
           color: theme.palette.text.primary,
           width: '100%',
-          minHeight: '15rem'
+          minHeight: '36rem'
         },
         toolbar: {
           background: theme.palette.background.paper
@@ -40,10 +42,7 @@ export default function RapTextEditor({ editor }: RapTextEditorProps) {
         </RichTextEditor.ControlsGroup>
 
         <RichTextEditor.ControlsGroup>
-          <RichTextEditor.AlignLeft />
           <RichTextEditor.AlignCenter />
-          <RichTextEditor.AlignJustify />
-          <RichTextEditor.AlignRight />
         </RichTextEditor.ControlsGroup>
       </RichTextEditor.Toolbar>
 

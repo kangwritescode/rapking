@@ -1,12 +1,17 @@
 import { z } from 'zod';
 
+import { Rap } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import path from 'path';
+import { deleteGloudFile, moveGCloudFile } from 'src/gcloud/serverMethods';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 
 // Schemas
 const createRapPayloadSchema = z.object({
   title: z.string(),
-  content: z.string()
+  content: z.string(),
+  status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
+  coverArtUrl: z.string().optional().nullable()
 });
 const updateRapPayloadSchema = z.object({
   id: z.string(),
@@ -54,13 +59,32 @@ export const rapRouter = createTRPCRouter({
       });
     }
 
-    return await ctx.prisma.rap.create({
+    let rap = await ctx.prisma.rap.create({
       data: {
         title: input.title,
         content: input.content,
+        status: input.status,
         userId: ctx.session.user.id
       }
     });
+
+    if (input.coverArtUrl) {
+      const extension = path.extname(input.coverArtUrl);
+      const newCoverArtUrl = `rap/${rap.id}/cover-art-${Date.now()}${extension}`;
+      const response = await moveGCloudFile('rapking', input.coverArtUrl, newCoverArtUrl);
+      if (response) {
+        rap = await ctx.prisma.rap.update({
+          where: {
+            id: rap.id
+          },
+          data: {
+            coverArtUrl: newCoverArtUrl
+          }
+        });
+      }
+    }
+
+    return rap;
   }),
   updateRap: protectedProcedure.input(updateRapPayloadSchema).mutation(async ({ input, ctx }) => {
     // check if a rap with the same title already exists
@@ -77,6 +101,8 @@ export const rapRouter = createTRPCRouter({
       });
     }
 
+    const newCoverArtUrl = await updateCoverArtUrl(input, existingRap);
+
     return await ctx.prisma.rap.update({
       where: {
         id: input.id
@@ -85,7 +111,7 @@ export const rapRouter = createTRPCRouter({
         ...(input.title && { title: input.title }),
         ...(input.content && { content: input.content }),
         ...(input.status && { status: input.status }),
-        ...(input.coverArtUrl && { coverArtUrl: input.coverArtUrl })
+        coverArtUrl: newCoverArtUrl
       }
     });
   }),
@@ -117,10 +143,71 @@ export const rapRouter = createTRPCRouter({
     });
   }),
   deleteRap: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
-    return await ctx.prisma.rap.delete({
+    const rap = await ctx.prisma.rap.findUnique({
       where: {
         id: input.id
       }
     });
+
+    if (!rap) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'No rap with this id exists.'
+      });
+    }
+
+    if (rap.userId !== ctx.session.user.id) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'You do not have permission to delete this rap.'
+      });
+    }
+
+    await ctx.prisma.$transaction([
+      ctx.prisma.rap.delete({
+        where: {
+          id: input.id
+        }
+      }),
+      ctx.prisma.user.update({
+        where: {
+          id: rap.userId
+        },
+        data: {
+          points: {
+            decrement: rap.likesCount
+          }
+        }
+      })
+    ]);
+
+    return true;
   })
 });
+
+async function updateCoverArtUrl(input: UpdateRapPayload, existingRap: Rap) {
+  const isDeleting = !input.coverArtUrl && existingRap.coverArtUrl;
+  const isNewUpload = input.coverArtUrl && !existingRap.coverArtUrl;
+  const isChanging = input.coverArtUrl && existingRap.coverArtUrl && input.coverArtUrl !== existingRap.coverArtUrl;
+
+  // If user is deleting or changing the cover art, delete the existing file
+  if (isDeleting || isChanging) {
+    await deleteGloudFile('rapking', existingRap.coverArtUrl!);
+  }
+
+  // If user is uploading or changing the cover art, move the new file
+  if (isNewUpload || isChanging) {
+    const extension = path.extname(input.coverArtUrl!);
+    const newCoverArtUrl = `rap/${existingRap.id}/cover-art-${Date.now()}${extension}`;
+
+    await moveGCloudFile('rapking', input.coverArtUrl!, newCoverArtUrl);
+
+    return newCoverArtUrl;
+  }
+
+  // If user deleted the cover art, return null
+  if (isDeleting) return null;
+
+  // If there are no changes, return the existing cover art URL
+  return existingRap.coverArtUrl;
+}
