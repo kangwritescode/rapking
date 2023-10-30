@@ -1,3 +1,4 @@
+import sanitize from 'sanitize-html';
 import { z } from 'zod';
 
 import { Rap } from '@prisma/client';
@@ -61,8 +62,8 @@ export const rapRouter = createTRPCRouter({
 
     let rap = await ctx.prisma.rap.create({
       data: {
-        title: input.title,
-        content: input.content,
+        title: sanitize(input.title),
+        content: sanitize(input.content),
         status: input.status,
         userId: ctx.session.user.id
       }
@@ -108,8 +109,8 @@ export const rapRouter = createTRPCRouter({
         id: input.id
       },
       data: {
-        ...(input.title && { title: input.title }),
-        ...(input.content && { content: input.content }),
+        ...(input.title && { title: sanitize(input.title) }),
+        ...(input.content && { content: sanitize(input.content) }),
         ...(input.status && { status: input.status }),
         coverArtUrl: newCoverArtUrl
       }
