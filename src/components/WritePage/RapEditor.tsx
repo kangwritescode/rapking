@@ -59,7 +59,8 @@ export default function RapEditor({ rapData, sx, createRap, isLoading, updateRap
     }
   }, [rapData, reset]);
 
-  const { content } = watch();
+  const { content, title, coverArtUrl, published } = watch();
+  const status = published ? RapStatus.PUBLISHED : RapStatus.DRAFT;
 
   const editor = useEditor({
     extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
@@ -70,19 +71,18 @@ export default function RapEditor({ rapData, sx, createRap, isLoading, updateRap
   });
 
   const handleSubmit = () => {
-    const status = watch('published') === true ? RapStatus.PUBLISHED : RapStatus.DRAFT;
     createRap?.({
-      title: watch('title'),
-      content: watch('content'),
+      title,
+      content,
       status,
-      coverArtDraftUrl: watch('coverArtUrl')
+      coverArtUrl
     });
     updateRap?.({
       id: rapData?.id as string,
-      title: watch('title'),
-      content: watch('content'),
+      title,
+      content,
       status,
-      coverArtUrl: watch('coverArtUrl')
+      coverArtUrl
     });
   };
 

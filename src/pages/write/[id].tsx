@@ -21,7 +21,7 @@ const ExistingRap = () => {
     refetch();
   }, [refetch]);
 
-  const submitHandler = (rap: UpdateRapPayload) => {
+  const updateRap = (rap: UpdateRapPayload) => {
     if (rap) {
       mutate(rap, {
         onError: error => {
@@ -44,7 +44,7 @@ const ExistingRap = () => {
         flexDirection: 'column'
       }}
     >
-      {rapData && <RapEditor updateRap={submitHandler} rapData={rapData} isLoading={isLoading} />}
+      {rapData && <RapEditor updateRap={updateRap} rapData={rapData} isLoading={isLoading} />}
     </Container>
   );
 };

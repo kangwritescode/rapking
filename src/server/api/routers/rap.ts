@@ -11,7 +11,7 @@ const createRapPayloadSchema = z.object({
   title: z.string(),
   content: z.string(),
   status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
-  coverArtDraftUrl: z.string().optional().nullable()
+  coverArtUrl: z.string().optional().nullable()
 });
 const updateRapPayloadSchema = z.object({
   id: z.string(),
@@ -68,10 +68,10 @@ export const rapRouter = createTRPCRouter({
       }
     });
 
-    if (input.coverArtDraftUrl) {
-      const extension = path.extname(input.coverArtDraftUrl);
+    if (input.coverArtUrl) {
+      const extension = path.extname(input.coverArtUrl);
       const newCoverArtUrl = `rap/${rap.id}/cover-art-${Date.now()}${extension}`;
-      const response = await moveGCloudFile('rapking', input.coverArtDraftUrl, newCoverArtUrl);
+      const response = await moveGCloudFile('rapking', input.coverArtUrl, newCoverArtUrl);
       if (response) {
         rap = await ctx.prisma.rap.update({
           where: {

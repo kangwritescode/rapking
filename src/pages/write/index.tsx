@@ -25,7 +25,7 @@ function WritePage() {
           title: rap.title,
           content: editedContent,
           status: rap.status,
-          coverArtDraftUrl: rap.coverArtDraftUrl
+          coverArtUrl: rap.coverArtUrl
         },
         {
           onError: error => {
