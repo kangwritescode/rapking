@@ -25,11 +25,19 @@ interface RapEditorProps {
   rapData?: Rap | null;
   sx?: SxProps;
   isLoading?: boolean;
+  submitButtonIsDisabled?: boolean;
 }
 
 export type RapEditorFormValues = z.infer<typeof rapEditorFormSchema>;
 
-export default function RapEditor({ rapData, sx, createRap, isLoading, updateRap }: RapEditorProps) {
+export default function RapEditor({
+  rapData,
+  sx,
+  createRap,
+  isLoading,
+  updateRap,
+  submitButtonIsDisabled
+}: RapEditorProps) {
   const {
     register,
     formState: { isValid, isDirty, errors },
@@ -115,7 +123,12 @@ export default function RapEditor({ rapData, sx, createRap, isLoading, updateRap
           <Button variant='outlined' color='secondary' sx={{ mr: '1rem' }}>
             Settings
           </Button>
-          <Button onClick={handleSubmit} size='medium' variant='contained' disabled={!isValid || !isDirty || isLoading}>
+          <Button
+            onClick={handleSubmit}
+            size='medium'
+            variant='contained'
+            disabled={!isValid || !isDirty || isLoading || submitButtonIsDisabled}
+          >
             {createRap ? 'Create Rap' : 'Update Rap'}
           </Button>
         </Stack>

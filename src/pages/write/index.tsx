@@ -12,7 +12,7 @@ function WritePage() {
   const router = useRouter();
   const { status } = useSession();
 
-  const { mutate, isLoading } = api.rap.createRap.useMutation();
+  const { mutate, isLoading, isSuccess } = api.rap.createRap.useMutation();
 
   const createRap = (rap: CreateRapPayload) => {
     if (status === 'unauthenticated') {
@@ -53,7 +53,7 @@ function WritePage() {
         flexDirection: 'column'
       }}
     >
-      <RapEditor isLoading={isLoading} createRap={createRap} />
+      <RapEditor isLoading={isLoading} createRap={createRap} submitButtonIsDisabled={isSuccess} />
     </Container>
   );
 }

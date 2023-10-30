@@ -85,11 +85,11 @@ function RapCard({ rap, sx, hideAvatar, hideUsername, showMenu }: RapCardProps) 
       </Stack>
       <Stack direction='row' justifyContent='space-between'>
         <Box
-          pr={theme.spacing(12)}
+          pr={theme.spacing(8)}
           sx={{
-            wordBreak: 'keep-all'
+            wordWrap: 'break-word'
           }}
-          width='100%'
+          width='calc(100% - 120px)'
         >
           <Typography
             fontSize='1.25rem'

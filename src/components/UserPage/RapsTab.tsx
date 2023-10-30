@@ -1,5 +1,6 @@
-import { Box } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import { Rap, User } from '@prisma/client';
+import { Fragment } from 'react';
 import RapCard from '../RapCard';
 
 interface RapsTabProps {
@@ -11,7 +12,14 @@ function RapsTab({ raps, isCurrentUser }: RapsTabProps) {
   return (
     <Box py={6} px={2}>
       {raps?.map(rap => (
-        <RapCard key={rap.id} rap={rap} hideAvatar hideUsername showMenu={isCurrentUser} />
+        <Fragment key={rap.id}>
+          <RapCard rap={rap} showMenu={isCurrentUser} />
+          <Divider
+            sx={{
+              my: 8
+            }}
+          />
+        </Fragment>
       ))}
     </Box>
   );
