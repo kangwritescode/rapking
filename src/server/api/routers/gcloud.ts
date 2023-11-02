@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, protectedProcedure } from 'src/server/api/trpc';
 import { generateSignedUrl } from 'src/gcloud/serverMethods';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 
 export const gcloudRouter = createTRPCRouter({
-  generateWriteUrl: protectedProcedure
+  generateWriteUrl: publicProcedure
     .input(
       z.object({
         fileName: z.string()

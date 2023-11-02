@@ -128,6 +128,9 @@ export default function RapEditor({
             size='medium'
             variant='contained'
             disabled={!isValid || !isDirty || isLoading || submitButtonIsDisabled}
+            sx={{
+              whiteSpace: 'nowrap'
+            }}
           >
             {createRap ? 'Create Rap' : 'Update Rap'}
           </Button>
