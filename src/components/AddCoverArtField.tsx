@@ -20,7 +20,7 @@ function AddCoverArtField({ setCoverArtUrl, coverArtUrlData }: AddCoverArtFieldP
   const [displayedImage, setDisplayedImage] = useState<string | null>(null);
 
   const { isUploading } = useGCloudUpload({
-    path: `user/${currentUserId}/temp`,
+    path: `temp/user/${currentUserId}`,
     filename: 'draft-cover-art',
     file,
     onUploadSuccess: async url => {

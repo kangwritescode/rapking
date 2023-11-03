@@ -26,6 +26,8 @@ interface RapEditorProps {
   sx?: SxProps;
   isLoading?: boolean;
   submitButtonIsDisabled?: boolean;
+  storedRapDraft?: Partial<Rap>;
+  setStoredRapDraft?: (value: Partial<Rap>) => void;
 }
 
 export type RapEditorFormValues = z.infer<typeof rapEditorFormSchema>;
@@ -36,7 +38,9 @@ export default function RapEditor({
   createRap,
   isLoading,
   updateRap,
-  submitButtonIsDisabled
+  submitButtonIsDisabled,
+  storedRapDraft,
+  setStoredRapDraft
 }: RapEditorProps) {
   const {
     register,
@@ -47,10 +51,11 @@ export default function RapEditor({
     control
   } = useForm({
     defaultValues: {
-      title: rapData?.title || '',
-      content: rapData?.content || '',
-      published: rapData?.status === RapStatus.PUBLISHED ? true : false,
-      coverArtUrl: rapData?.coverArtUrl || null
+      title: rapData?.title || storedRapDraft?.title || '',
+      content: rapData?.content || storedRapDraft?.content || '',
+      published:
+        rapData?.status === RapStatus.PUBLISHED || storedRapDraft?.status === RapStatus.PUBLISHED ? true : false,
+      coverArtUrl: rapData?.coverArtUrl || storedRapDraft?.coverArtUrl || null
     },
     resolver: zodResolver(rapEditorFormSchema),
     mode: 'onTouched'
@@ -70,6 +75,18 @@ export default function RapEditor({
 
   const { content, title, coverArtUrl, published } = watch();
   const status = published ? RapStatus.PUBLISHED : RapStatus.DRAFT;
+
+  // Update Local Storage
+  useEffect(() => {
+    if (setStoredRapDraft) {
+      setStoredRapDraft({
+        title,
+        content,
+        status,
+        coverArtUrl
+      });
+    }
+  }, [content, title, coverArtUrl, setStoredRapDraft, status]);
 
   const editor = useEditor({
     extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
@@ -127,7 +144,7 @@ export default function RapEditor({
             onClick={handleSubmit}
             size='medium'
             variant='contained'
-            disabled={!isValid || !isDirty || isLoading || submitButtonIsDisabled}
+            disabled={!isValid || (!!updateRap && !isDirty) || isLoading || submitButtonIsDisabled}
             sx={{
               whiteSpace: 'nowrap'
             }}
@@ -158,7 +175,7 @@ export default function RapEditor({
           setCoverArtUrl={(url: string | null) =>
             setValue('coverArtUrl', url, { shouldValidate: true, shouldDirty: true })
           }
-          coverArtUrlData={rapData?.coverArtUrl}
+          coverArtUrlData={rapData?.coverArtUrl || storedRapDraft?.coverArtUrl || null}
         />
       </Stack>
     </Box>
