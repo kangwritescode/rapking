@@ -137,7 +137,7 @@ export default function RapEditor({
         width='16rem'
       >
         <Stack direction='row' justifyContent='space-between'>
-          <Button variant='outlined' color='secondary' sx={{ mr: '1rem' }}>
+          <Button variant='outlined' color='secondary' sx={{ mr: '1rem' }} disabled>
             Settings
           </Button>
           <Button
