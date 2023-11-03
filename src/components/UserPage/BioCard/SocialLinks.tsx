@@ -1,7 +1,6 @@
 import { Icon } from '@iconify/react';
 import { IconButton, Stack, useTheme } from '@mui/material';
 import { SocialLink } from '@prisma/client';
-import React from 'react';
 import CustomUrlButton from 'src/components/UserPage/CustomUrlButton';
 import { api } from 'src/utils/api';
 
@@ -51,8 +50,9 @@ function SocialLinks({ socialLinks }: SocialLinksProps) {
                   },
                   marginLeft: theme.spacing(1)
                 }}
+                onClick={() => removeButtonClickHandler(socialLink.id)}
               >
-                <Icon icon='si-glyph:button-remove' onClick={() => removeButtonClickHandler(socialLink.id)} />
+                <Icon icon='si-glyph:button-remove' />
               </IconButton>
             </Stack>
           );
