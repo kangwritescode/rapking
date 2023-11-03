@@ -18,34 +18,35 @@ function DropzoneInput({ sx, setFile }: DropzoneInputProps) {
   });
   const theme = useTheme();
 
-  const getColor = useCallback(
-    (props: any) => {
-      if (props.isDragAccept) {
-        return '#00e676';
-      }
-      if (props.isDragReject) {
-        return '#ff1744';
-      }
-      if (props.isFocused) {
-        return '#2196f3';
-      }
+  const getColor = useCallback(() => {
+    if (isDragAccept) {
+      return '#00e676';
+    }
+    if (isDragReject) {
+      return '#ff1744';
+    }
+    if (isFocused) {
+      return '#2196f3';
+    }
 
-      return theme.palette.grey[700];
-    },
-    [theme]
-  );
+    return theme.palette.grey[700];
+  }, [isDragAccept, isDragReject, isFocused, theme]);
+
+  // Only spread the necessary handlers, not the entire return value of getRootProps
+  const { ref, ...rootProps } = getRootProps();
 
   return (
     <Box sx={{ height: '100%', position: 'relative', ...sx }}>
       <Box
-        {...getRootProps({ isFocused, isDragAccept, isDragReject })}
+        {...rootProps}
+        ref={ref}
         sx={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           borderWidth: '1px',
-          borderColor: getColor({ isFocused, isDragAccept, isDragReject }),
+          borderColor: getColor(),
           borderStyle: 'dashed',
           outline: 'none',
           transition: 'border 0.24s ease-in-out',
