@@ -1,30 +1,17 @@
-import { Link } from '@mui/material';
-
 const Home = () => {
   return (
     <>
       <h1 style={{ marginBlockEnd: 0 }}>Welcome to RapKing (BETA)</h1>
-      <p style={{ marginBlockStart: 0 }}>10/26/2023</p>
+      <p style={{ marginBlockStart: 0 }}>11/19/2023</p>
       <p>Sup fam - Welcome to RapKing beta. </p>
       <p>
-        RapKing is a gamified social media platform where you'll be able to post your raps, view others, rate raps, get
-        points for your own, and see where you stand among others in your demographic (age, location, gender).
+        RapKing is a gamified social media platform where you'll be able to post your raps, view
+        others, rate raps, get points for your own, and see where you stand among others in your
+        demographic (age, location, gender).
       </p>
       <p>RapKing is still a work in progress, so expect it to be incomplete and have issues.</p>
-      <p>Features currently in the works: </p>
-      <ul>
-        <li>Notifications</li>
-        <li>Better RapEditor</li>
-      </ul>
-      <p>
-        For now, join the &nbsp;
-        <Link sx={{ color: 'gold' }} href='https://discord.gg/G5A3N4qm'>
-          Rapking Community
-        </Link>
-        &nbsp; here.
-      </p>
       <p>Checkback for updates homie - see you soon.</p>
-      <p>-RapKingpin</p>
+      <p>-Mello</p>
     </>
   );
 };
