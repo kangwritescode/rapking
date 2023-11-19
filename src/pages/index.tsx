@@ -1,3 +1,5 @@
+import { Divider } from '@mui/material';
+
 const Home = () => {
   return (
     <>
@@ -11,7 +13,8 @@ const Home = () => {
       </p>
       <p>RapKing is still a work in progress, so expect it to be incomplete and have issues.</p>
       <p>Checkback for updates homie - see you soon.</p>
-      <p>-Mello</p>
+      <p>- Mello</p>
+      <Divider />
     </>
   );
 };
