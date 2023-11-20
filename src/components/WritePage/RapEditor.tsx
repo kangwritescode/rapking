@@ -1,24 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Box,
-  Button,
-  FormControlLabel,
-  Stack,
-  Switch,
-  SxProps,
-  TextField,
-  useMediaQuery
-} from '@mui/material';
+import { Box, Button, Stack, SxProps, TextField, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/system';
 import { Rap, RapStatus } from '@prisma/client';
 import TextAlign from '@tiptap/extension-text-align';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { CreateRapPayload, UpdateRapPayload } from 'src/server/api/routers/rap';
 import { z } from 'zod';
 import AddCoverArtField from '../AddCoverArtField';
+import AddSCButton from './AddSCButton';
+import PublishedField from './PublishedField';
 import RapTextEditor from './RapTextEditor';
 
 const rapEditorFormSchema = z.object({
@@ -26,7 +19,9 @@ const rapEditorFormSchema = z.object({
     .string()
     .min(3, 'Title must contain at least 3 character(s)')
     .max(50, 'Title must contain at most 50 character(s)'),
-  content: z.string().max(3000)
+  content: z.string().max(3000),
+  published: z.boolean(),
+  coverArtUrl: z.string().nullable()
 });
 
 interface RapEditorProps {
@@ -195,23 +190,7 @@ export default function RapEditor({
             px: '1rem'
           })}
         >
-          <Controller
-            name='published'
-            control={control}
-            render={({ field }) => {
-              return (
-                <FormControlLabel
-                  sx={{
-                    '.MuiFormControlLabel-label': {
-                      opacity: field.value ? 1 : 0.5
-                    }
-                  }}
-                  control={<Switch checked={field.value} onChange={field.onChange} />}
-                  label='Published'
-                />
-              );
-            }}
-          />
+          <PublishedField control={control} />
         </Box>
         <AddCoverArtField
           setCoverArtUrl={(url: string | null) =>
@@ -222,6 +201,18 @@ export default function RapEditor({
           }
           coverArtUrlData={rapData?.coverArtUrl || storedRapDraft?.coverArtUrl || null}
         />
+        {/* <Box
+          sx={{
+            width: '100%',
+            border: `1px solid ${theme.palette.grey[800]}`,
+            py: '.5rem',
+            px: '1rem'
+          }}
+        >
+          <Typography variant='caption'>Add Soundcloud Link</Typography>
+          <TextField variant='filled' size='small' fullWidth />
+        </Box> */}
+        <AddSCButton />
       </Stack>
     </Box>
   );

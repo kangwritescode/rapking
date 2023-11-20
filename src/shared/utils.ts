@@ -36,3 +36,13 @@ export function debounce<T extends (...args: any[]) => any>(
     timeout = setTimeout(() => func(...args), delay);
   };
 }
+
+export function isValidUrl(url: string) {
+  try {
+    new URL(url);
+
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
