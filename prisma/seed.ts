@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -36,7 +36,7 @@ async function seedDatabase() {
         city: faker.location.city(),
         state: faker.location.state({ abbreviated: true }),
         region: faker.helpers.arrayElement(['ALL', 'WEST', 'MIDWEST', 'SOUTH', 'EAST']),
-        createdAt: faker.date.past(),
+        createdAt: faker.date.past()
       }
     });
 
@@ -60,7 +60,7 @@ async function seedDatabase() {
       const numberOfLikes = faker.number.int({ min: 0, max: 2 });
       for (let k = 0; k < numberOfLikes; k++) {
         const randomUserId = faker.helpers.arrayElement(
-          (await prisma.user.findMany()).map((user) => user.id)
+          (await prisma.user.findMany()).map(user => user.id)
         );
 
         const existingVote = await prisma.rapVote.findUnique({
@@ -120,7 +120,7 @@ async function main() {
 }
 
 main()
-  .catch((e) => {
+  .catch(e => {
     console.error(e);
     process.exit(1);
   })
