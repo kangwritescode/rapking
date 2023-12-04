@@ -201,17 +201,6 @@ export default function RapEditor({
           }
           coverArtUrlData={rapData?.coverArtUrl || storedRapDraft?.coverArtUrl || null}
         />
-        {/* <Box
-          sx={{
-            width: '100%',
-            border: `1px solid ${theme.palette.grey[800]}`,
-            py: '.5rem',
-            px: '1rem'
-          }}
-        >
-          <Typography variant='caption'>Add Soundcloud Link</Typography>
-          <TextField variant='filled' size='small' fullWidth />
-        </Box> */}
         <AddSCButton />
       </Stack>
     </Box>

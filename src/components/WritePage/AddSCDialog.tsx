@@ -1,7 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Icon } from '@iconify/react';
+import { LoadingButton } from '@mui/lab';
 import {
+  Box,
+  Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
@@ -27,7 +31,8 @@ const soundCloudUrlSchema = z.object({
 function AddSCDialog({ open = true, onClose }: AddSCDialogProps) {
   const {
     register,
-    formState: { errors }
+    formState: { errors, isValid },
+    watch
   } = useForm({
     defaultValues: {
       soundcloudUrl: ''
@@ -35,6 +40,9 @@ function AddSCDialog({ open = true, onClose }: AddSCDialogProps) {
     resolver: zodResolver(soundCloudUrlSchema),
     mode: 'all'
   });
+
+  const soundcloudUrl = watch('soundcloudUrl');
+  const slicedUrl = soundcloudUrl.split('?')[0];
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -79,13 +87,25 @@ function AddSCDialog({ open = true, onClose }: AddSCDialogProps) {
             {errors.soundcloudUrl.message}
           </Typography>
         )}
-        {/* <iframe
-          width='100%'
-          height='100px'
-          allow='autoplay'
-          src='https://w.soundcloud.com/player/?url=https://soundcloud.com/bsdu/d0000010wav-1?show_artwork=false&auto_play=false&hide_related=true&show_comments=true&show_user=true&show_reposts=false'
-        /> */}
+        {isValid ? (
+          <Box
+            mt='1rem'
+            component='iframe'
+            width='100%'
+            height='6.25rem'
+            allow='autoplay'
+            src={`https://w.soundcloud.com/player/?url=${slicedUrl}?show_artwork=true&auto_play=false&hide_related=true&show_comments=true&show_user=true&show_reposts=false`}
+          />
+        ) : undefined}
       </DialogContent>
+      <DialogActions>
+        <Button color='inherit' onClick={onClose}>
+          Cancel
+        </Button>
+        <LoadingButton loading={false} autoFocus variant='contained'>
+          Add Track
+        </LoadingButton>
+      </DialogActions>
     </Dialog>
   );
 }
