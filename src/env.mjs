@@ -25,9 +25,6 @@ const server = z.object({
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_CLIENT_SECRET: z.string(),
 
-  FACEBOOK_CLIENT_ID: z.string(),
-  FACEBOOK_CLIENT_SECRET: z.string(),
-
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
 
@@ -62,9 +59,6 @@ const processEnv = {
   GCLOUD_PRIVATE_KEY: process.env.GCLOUD_PRIVATE_KEY,
   GCLOUD_CLIENT_EMAIL: process.env.GCLOUD_CLIENT_EMAIL,
   GCLOUD_CLIENT_ID: process.env.GCLOUD_CLIENT_ID,
-
-  FACEBOOK_CLIENT_ID: process.env.FACEBOOK_CLIENT_ID,
-  FACEBOOK_CLIENT_SECRET: process.env.FACEBOOK_CLIENT_SECRET,
 
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
