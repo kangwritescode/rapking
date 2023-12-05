@@ -19,7 +19,8 @@ const updateRapPayloadSchema = z.object({
   title: z.string().optional(),
   content: z.string().optional(),
   status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
-  coverArtUrl: z.string().optional().nullable()
+  coverArtUrl: z.string().optional().nullable(),
+  soundcloudUrl: z.string().optional().nullable()
 });
 
 const sortBySchema = z.enum(['NEWEST', 'TOP']);
@@ -112,6 +113,7 @@ export const rapRouter = createTRPCRouter({
         ...(input.title && { title: sanitize(input.title) }),
         ...(input.content && { content: sanitize(input.content) }),
         ...(input.status && { status: input.status }),
+        ...(input.soundcloudUrl && { soundcloudUrl: input.soundcloudUrl }),
         coverArtUrl: newCoverArtUrl
       }
     });
@@ -133,67 +135,76 @@ export const rapRouter = createTRPCRouter({
         }
       });
     }),
-  getRapsByUser: protectedProcedure.input(z.object({ userId: z.string() })).query(async ({ ctx, input }) => {
-    return await ctx.prisma.rap.findMany({
-      where: {
-        userId: input.userId
-      },
-      include: {
-        user: true
-      }
-    });
-  }),
-  deleteRap: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
-    const rap = await ctx.prisma.rap.findUnique({
-      where: {
-        id: input.id
-      }
-    });
-
-    if (!rap) {
-      throw new TRPCError({
-        code: 'BAD_REQUEST',
-        message: 'No rap with this id exists.'
+  getRapsByUser: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.rap.findMany({
+        where: {
+          userId: input.userId
+        },
+        include: {
+          user: true
+        }
       });
-    }
-
-    if (rap.userId !== ctx.session.user.id) {
-      throw new TRPCError({
-        code: 'BAD_REQUEST',
-        message: 'You do not have permission to delete this rap.'
-      });
-    }
-
-    await ctx.prisma.$transaction([
-      ctx.prisma.rap.delete({
+    }),
+  deleteRap: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const rap = await ctx.prisma.rap.findUnique({
         where: {
           id: input.id
         }
-      }),
-      ctx.prisma.user.update({
-        where: {
-          id: rap.userId
-        },
-        data: {
-          points: {
-            decrement: rap.likesCount
-          }
-        }
-      })
-    ]);
+      });
 
-    return true;
-  })
+      if (!rap) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'No rap with this id exists.'
+        });
+      }
+
+      if (rap.userId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'You do not have permission to delete this rap.'
+        });
+      }
+
+      await ctx.prisma.$transaction([
+        ctx.prisma.rap.delete({
+          where: {
+            id: input.id
+          }
+        }),
+        ctx.prisma.user.update({
+          where: {
+            id: rap.userId
+          },
+          data: {
+            points: {
+              decrement: rap.likesCount
+            }
+          }
+        })
+      ]);
+
+      return true;
+    })
 });
 
 async function updateCoverArtUrl(input: UpdateRapPayload, existingRap: Rap) {
   const isDeleting = !input.coverArtUrl && existingRap.coverArtUrl;
   const isNewUpload = input.coverArtUrl && !existingRap.coverArtUrl;
-  const isChanging = input.coverArtUrl && existingRap.coverArtUrl && input.coverArtUrl !== existingRap.coverArtUrl;
+  const isChanging =
+    input.coverArtUrl && existingRap.coverArtUrl && input.coverArtUrl !== existingRap.coverArtUrl;
 
   // If user is deleting or changing the cover art, delete the existing file
   if (isDeleting || isChanging) {
-    await deleteGloudFile('rapking', existingRap.coverArtUrl!);
+    try {
+      await deleteGloudFile('rapking', existingRap.coverArtUrl!);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   // If user is uploading or changing the cover art, move the new file

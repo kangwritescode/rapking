@@ -21,7 +21,8 @@ const rapEditorFormSchema = z.object({
     .max(50, 'Title must contain at most 50 character(s)'),
   content: z.string().max(3000),
   published: z.boolean(),
-  coverArtUrl: z.string().nullable()
+  coverArtUrl: z.string().nullable(),
+  soundcloudUrl: z.string()
 });
 
 interface RapEditorProps {
@@ -44,7 +45,8 @@ const useRapEditorForm = (rapData?: Rap | null, storedRapDraft?: Partial<Rap>) =
       content: rapData?.content || storedRapDraft?.content || '',
       published:
         rapData?.status === RapStatus.PUBLISHED || storedRapDraft?.status === RapStatus.PUBLISHED,
-      coverArtUrl: rapData?.coverArtUrl || storedRapDraft?.coverArtUrl || null
+      coverArtUrl: rapData?.coverArtUrl || storedRapDraft?.coverArtUrl || null,
+      soundcloudUrl: rapData?.soundcloudUrl || storedRapDraft?.soundcloudUrl || ''
     },
     resolver: zodResolver(rapEditorFormSchema),
     mode: 'onTouched'
@@ -74,12 +76,13 @@ export default function RapEditor({
         title: rapData.title,
         content: rapData.content,
         published: rapData?.status === RapStatus.PUBLISHED ? true : false,
-        coverArtUrl: rapData?.coverArtUrl || null
+        coverArtUrl: rapData?.coverArtUrl || null,
+        soundcloudUrl: rapData?.soundcloudUrl || ''
       });
     }
   }, [rapData, reset]);
 
-  const { content, title, coverArtUrl, published } = watch();
+  const { content, title, coverArtUrl, published, soundcloudUrl } = watch();
   const status = published ? RapStatus.PUBLISHED : RapStatus.DRAFT;
 
   // Update Local Storage
@@ -89,10 +92,11 @@ export default function RapEditor({
         title,
         content,
         status,
-        coverArtUrl
+        coverArtUrl,
+        soundcloudUrl
       });
     }
-  }, [content, title, coverArtUrl, setStoredRapDraft, status]);
+  }, [content, title, coverArtUrl, setStoredRapDraft, status, soundcloudUrl]);
 
   const editor = useEditor({
     extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
@@ -201,7 +205,7 @@ export default function RapEditor({
           }
           coverArtUrlData={rapData?.coverArtUrl || storedRapDraft?.coverArtUrl || null}
         />
-        <AddSCButton />
+        <AddSCButton rapId={rapData?.id} soundCloudUrlData={rapData?.soundcloudUrl} />
       </Stack>
     </Box>
   );

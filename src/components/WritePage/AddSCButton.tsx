@@ -2,12 +2,22 @@ import { Box, Button } from '@mui/material';
 import { useState } from 'react';
 import AddSCDialog from './AddSCDialog';
 
-function AddSCButton() {
+interface AddSCButtonProps {
+  rapId?: string;
+  soundCloudUrlData?: string | null;
+}
+
+function AddSCButton({ rapId, soundCloudUrlData }: AddSCButtonProps) {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <AddSCDialog open={open} onClose={() => setOpen(false)} />
+      <AddSCDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        rapId={rapId}
+        soundCloudUrlData={soundCloudUrlData}
+      />
       <Button
         variant='outlined'
         color='secondary'
