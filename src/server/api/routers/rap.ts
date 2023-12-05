@@ -115,7 +115,7 @@ export const rapRouter = createTRPCRouter({
         ...(input.title && { title: sanitize(input.title) }),
         ...(input.content && { content: sanitize(input.content) }),
         ...(input.status && { status: input.status }),
-        ...(input.soundcloudUrl && { soundcloudUrl: input.soundcloudUrl }),
+        soundcloudUrl: input.soundcloudUrl,
         coverArtUrl: newCoverArtUrl
       }
     });

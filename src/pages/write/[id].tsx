@@ -11,7 +11,10 @@ const ExistingRap = () => {
   const { id } = router.query;
 
   // Queries
-  const { data: rapData, refetch } = api.rap.getRap.useQuery({ id: id as string }, { enabled: false });
+  const { data: rapData, refetch } = api.rap.getRap.useQuery(
+    { id: id as string },
+    { enabled: false }
+  );
 
   // Mutations
   const { mutate, isLoading } = api.rap.updateRap.useMutation();
