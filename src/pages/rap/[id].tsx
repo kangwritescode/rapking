@@ -1,10 +1,9 @@
 import { Avatar, CardMedia, Divider, Link, Stack, Typography, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
-import React from 'react';
 import { BUCKET_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
-import TipTapContent from '../../components/TipTapContent';
 import RapBar from '../../components/RapPage/RapBar';
+import TipTapContent from '../../components/TipTapContent';
 
 function RapPage() {
   const theme = useTheme();
@@ -21,7 +20,11 @@ function RapPage() {
         <CardMedia
           component='img'
           alt='profile-header'
-          image={rapData?.coverArtUrl ? `${BUCKET_URL}/${rapData?.coverArtUrl}` : `${BUCKET_URL}/default/cover-art.jpg`}
+          image={
+            rapData?.coverArtUrl
+              ? `${BUCKET_URL}/${rapData?.coverArtUrl}`
+              : `${BUCKET_URL}/default/cover-art.jpg`
+          }
           sx={{
             marginBottom: 10,
             height: {
@@ -66,7 +69,19 @@ function RapPage() {
         <Divider />
         <RapBar rapData={rapData} />
         <Divider />
-        {rapData?.content && <TipTapContent sx={{ marginTop: theme.spacing(2) }} content={rapData.content} />}
+        {rapData?.soundcloudUrl ? (
+          <SCPlayer
+            sx={{
+              mt: '1.75rem',
+              height: '7.25rem'
+            }}
+            showArtwork
+            url={rapData?.soundcloudUrl}
+          />
+        ) : undefined}
+        {rapData?.content && (
+          <TipTapContent sx={{ marginTop: theme.spacing(2) }} content={rapData.content} />
+        )}
       </Stack>
     </Stack>
   );
@@ -76,9 +91,10 @@ export default RapPage;
 
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import { GetServerSidePropsContext } from 'next';
+import SCPlayer from 'src/components/SCPlayer';
 import { appRouter } from 'src/server/api/root';
-import superjson from 'superjson';
 import { createTRPCContext } from 'src/server/api/trpc';
+import superjson from 'superjson';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { id } = context.query;
