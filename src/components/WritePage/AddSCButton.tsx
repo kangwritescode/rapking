@@ -3,11 +3,11 @@ import { useState } from 'react';
 import AddSCDialog from './AddSCDialog';
 
 interface AddSCButtonProps {
-  rapId?: string;
-  soundCloudUrlData?: string | null;
+  soundCloudUrlDefault?: string | null;
+  setSoundcloudUrl: (url: string) => void;
 }
 
-function AddSCButton({ rapId, soundCloudUrlData }: AddSCButtonProps) {
+function AddSCButton({ soundCloudUrlDefault, setSoundcloudUrl }: AddSCButtonProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -15,8 +15,8 @@ function AddSCButton({ rapId, soundCloudUrlData }: AddSCButtonProps) {
       <AddSCDialog
         open={open}
         onClose={() => setOpen(false)}
-        rapId={rapId}
-        soundCloudUrlData={soundCloudUrlData}
+        soundCloudUrlData={soundCloudUrlDefault}
+        onSubmitHandler={url => setSoundcloudUrl(url)}
       />
       <Button
         variant='outlined'

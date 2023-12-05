@@ -5,14 +5,14 @@ import { Rap, RapStatus } from '@prisma/client';
 import TextAlign from '@tiptap/extension-text-align';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { CreateRapPayload, UpdateRapPayload } from 'src/server/api/routers/rap';
 import { z } from 'zod';
 import AddCoverArtField from '../AddCoverArtField';
-import AddSCButton from './AddSCButton';
 import PublishedField from './PublishedField';
 import RapTextEditor from './RapTextEditor';
+import SoundcloudUrlField from './SoundcloudUrlField';
 
 const rapEditorFormSchema = z.object({
   title: z
@@ -121,7 +121,8 @@ export default function RapEditor({
       title,
       content,
       status,
-      coverArtUrl
+      coverArtUrl,
+      soundcloudUrl
     });
   };
 
@@ -205,7 +206,17 @@ export default function RapEditor({
           }
           coverArtUrlData={rapData?.coverArtUrl || storedRapDraft?.coverArtUrl || null}
         />
-        <AddSCButton rapId={rapData?.id} soundCloudUrlData={rapData?.soundcloudUrl} />
+        <SoundcloudUrlField
+          soundcloudUrl={rapData?.soundcloudUrl || storedRapDraft?.soundcloudUrl || ''}
+          setSoundcloudUrl={useCallback(
+            (url: string) =>
+              setValue('soundcloudUrl', url, {
+                shouldValidate: true,
+                shouldDirty: true
+              }),
+            [setValue]
+          )}
+        />
       </Stack>
     </Box>
   );

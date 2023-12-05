@@ -19,7 +19,7 @@ interface AddSCDialogProps {
   open: boolean;
   onClose: () => void;
   soundCloudUrlData?: string | null;
-  rapId?: string;
+  onSubmitHandler?: (url: string) => void;
 }
 
 const soundCloudUrlSchema = z.object({
@@ -30,7 +30,7 @@ const soundCloudUrlSchema = z.object({
       'Invalid SoundCloud URL format.'
     )
 });
-function AddSCDialog({ open, onClose, soundCloudUrlData, rapId }: AddSCDialogProps) {
+function AddSCDialog({ open, onClose, soundCloudUrlData, onSubmitHandler }: AddSCDialogProps) {
   const {
     register,
     formState: { errors, isValid },
@@ -47,7 +47,8 @@ function AddSCDialog({ open, onClose, soundCloudUrlData, rapId }: AddSCDialogPro
   const slicedUrl = soundcloudUrl.split('?')[0];
 
   const addTrackClickHandler = async () => {
-    if (!isValid || !rapId) return;
+    if (!isValid) return;
+    onSubmitHandler && onSubmitHandler(slicedUrl);
   };
 
   return (
@@ -93,7 +94,7 @@ function AddSCDialog({ open, onClose, soundCloudUrlData, rapId }: AddSCDialogPro
             {errors.soundcloudUrl.message}
           </Typography>
         )}
-        {isValid ? <SCPlayer url={slicedUrl} /> : undefined}
+        {isValid ? <SCPlayer url={slicedUrl} showArtwork sx={{ mt: '1rem' }} /> : undefined}
       </DialogContent>
       <DialogActions>
         <Button color='inherit' onClick={onClose}>

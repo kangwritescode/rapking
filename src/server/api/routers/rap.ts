@@ -12,7 +12,8 @@ const createRapPayloadSchema = z.object({
   title: z.string(),
   content: z.string(),
   status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
-  coverArtUrl: z.string().optional().nullable()
+  coverArtUrl: z.string().optional().nullable(),
+  soundcloudUrl: z.string().optional().nullable()
 });
 const updateRapPayloadSchema = z.object({
   id: z.string(),
@@ -66,7 +67,8 @@ export const rapRouter = createTRPCRouter({
         title: sanitize(input.title),
         content: sanitize(input.content),
         status: input.status,
-        userId: ctx.session.user.id
+        userId: ctx.session.user.id,
+        soundcloudUrl: input.soundcloudUrl
       }
     });
 

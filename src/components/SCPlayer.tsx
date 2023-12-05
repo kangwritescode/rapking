@@ -1,17 +1,24 @@
-import { Box } from '@mui/material';
+import { Box, SxProps } from '@mui/material';
 
 interface SCPlayerProps {
   url: string;
+  showArtwork?: boolean;
+  sx?: SxProps;
 }
 
-function SCPlayer({ url }: SCPlayerProps) {
+function SCPlayer({ url, showArtwork, sx }: SCPlayerProps) {
   return (
     <Box
-      mt='1rem'
+      sx={{
+        width: '100%',
+        height: '100%',
+        ...sx
+      }}
       component='iframe'
       width='100%'
-      height='6.25rem'
-      src={`https://w.soundcloud.com/player/?url=${url}?show_artwork=true&auto_play=false&hide_related=true&show_comments=true&show_user=true&show_reposts=false`}
+      src={`https://w.soundcloud.com/player/?url=${url}?show_artwork=${
+        showArtwork ?? false
+      }&auto_play=false&hide_related=true&show_comments=true&show_user=true&show_reposts=false`}
     />
   );
 }
