@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import { CircularProgress, Divider, Stack } from '@mui/material';
+import { useEffect } from 'react';
+import { Virtuoso } from 'react-virtuoso';
 import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 import { api } from 'src/utils/api';
 import RapCard from '../RapCard';
-import { CircularProgress, Divider, Stack } from '@mui/material';
-import { Virtuoso } from 'react-virtuoso';
 
 interface FeedProps {
   sortBy: SortByValue;

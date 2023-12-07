@@ -1,7 +1,8 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, publicProcedure } from 'src/server/api/trpc';
+import { RapStatus } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import { createTRPCRouter, publicProcedure } from 'src/server/api/trpc';
 
 // Schemas
 const createRapPayloadSchema = z.object({
@@ -87,7 +88,9 @@ export const feedRouter = createTRPCRouter({
       }
 
       // Filter logic
-      const where: any = {};
+      const where: any = {
+        status: RapStatus.PUBLISHED
+      };
 
       if (regionFilter !== 'ALL') {
         where.user = { region: regionFilter };
