@@ -19,7 +19,10 @@ export default function RapTextEditor({ editor, sx }: RapTextEditorProps) {
           background: theme.palette.background.default,
           color: theme.palette.text.primary,
           width: '100%',
-          minHeight: '36rem'
+          minHeight: '36rem',
+          '& > .ProseMirror': {
+            minHeight: '36rem'
+          }
         },
         toolbar: {
           background: theme.palette.background.paper
