@@ -1,11 +1,11 @@
-import { Box, IconButton, useTheme } from '@mui/material';
-import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
+import { Box, IconButton, useTheme } from '@mui/material';
 import { Rap, User } from '@prisma/client';
-import RapCommentDrawer from 'src/components/RapPage/RapCommentDrawer';
-import RapLikeButton from './RapLikeButton';
-import { api } from 'src/utils/api';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
+import RapCommentDrawer from 'src/components/RapPage/RapCommentDrawer';
+import { api } from 'src/utils/api';
+import RapLikeButton from './RapLikeButton';
 
 interface RapBarProps {
   rapData?:
@@ -53,6 +53,7 @@ function RapBar({ rapData }: RapBarProps) {
             sx={{
               pr: 1
             }}
+            disabled={rapData?.disableComments}
           >
             <Icon icon='prime:comment' />
           </IconButton>
