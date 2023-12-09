@@ -5,11 +5,12 @@ import { Rap, RapStatus } from '@prisma/client';
 import TextAlign from '@tiptap/extension-text-align';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { CreateRapPayload, UpdateRapPayload } from 'src/server/api/routers/rap';
 import { z } from 'zod';
 import AddCoverArtField from '../AddCoverArtField';
+import RapSettingsDialog from '../RapSettingsDialog';
 import PublishedField from './PublishedField';
 import RapTextEditor from './RapTextEditor';
 import SoundcloudUrlField from './SoundcloudUrlField';
@@ -22,7 +23,8 @@ const rapEditorFormSchema = z.object({
   content: z.string().max(3000),
   published: z.boolean(),
   coverArtUrl: z.string().nullable(),
-  soundcloudUrl: z.string()
+  soundcloudUrl: z.string(),
+  disableComments: z.boolean()
 });
 
 interface RapEditorProps {
@@ -46,7 +48,8 @@ const useRapEditorForm = (rapData?: Rap | null, storedRapDraft?: Partial<Rap>) =
       published:
         rapData?.status === RapStatus.PUBLISHED || storedRapDraft?.status === RapStatus.PUBLISHED,
       coverArtUrl: rapData?.coverArtUrl || storedRapDraft?.coverArtUrl || null,
-      soundcloudUrl: rapData?.soundcloudUrl || storedRapDraft?.soundcloudUrl || ''
+      soundcloudUrl: rapData?.soundcloudUrl || storedRapDraft?.soundcloudUrl || '',
+      disableComments: rapData?.disableComments || storedRapDraft?.disableComments || false
     },
     resolver: zodResolver(rapEditorFormSchema),
     mode: 'onTouched'
@@ -77,12 +80,13 @@ export default function RapEditor({
         content: rapData.content,
         published: rapData?.status === RapStatus.PUBLISHED ? true : false,
         coverArtUrl: rapData?.coverArtUrl || null,
-        soundcloudUrl: rapData?.soundcloudUrl || ''
+        soundcloudUrl: rapData?.soundcloudUrl || '',
+        disableComments: rapData?.disableComments || false
       });
     }
   }, [rapData, reset]);
 
-  const { content, title, coverArtUrl, published, soundcloudUrl } = watch();
+  const { content, title, coverArtUrl, published, soundcloudUrl, disableComments } = watch();
   const status = published ? RapStatus.PUBLISHED : RapStatus.DRAFT;
 
   // Update Local Storage
@@ -93,10 +97,11 @@ export default function RapEditor({
         content,
         status,
         coverArtUrl,
-        soundcloudUrl
+        soundcloudUrl,
+        disableComments
       });
     }
-  }, [content, title, coverArtUrl, setStoredRapDraft, status, soundcloudUrl]);
+  }, [content, title, coverArtUrl, setStoredRapDraft, status, soundcloudUrl, disableComments]);
 
   const editor = useEditor({
     extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
@@ -114,7 +119,9 @@ export default function RapEditor({
       title,
       content,
       status,
-      coverArtUrl
+      coverArtUrl,
+      soundcloudUrl,
+      disableComments
     });
     updateRap?.({
       id: rapData?.id as string,
@@ -122,7 +129,8 @@ export default function RapEditor({
       content,
       status,
       coverArtUrl,
-      soundcloudUrl
+      soundcloudUrl,
+      disableComments
     });
   };
 
@@ -132,7 +140,12 @@ export default function RapEditor({
       justifyContent={isTabletView ? 'flex-end' : 'space-between'}
       mb={isTabletView ? '1.5rem' : '0'}
     >
-      <Button variant='outlined' color='secondary' sx={{ mr: '1rem' }} disabled>
+      <Button
+        variant='outlined'
+        color='secondary'
+        sx={{ mr: '1rem' }}
+        onClick={() => setRapSettingsDialogOpen(true)}
+      >
         Settings
       </Button>
       <Button
@@ -152,72 +165,81 @@ export default function RapEditor({
   const theme = useTheme();
   const isTabletView = useMediaQuery(theme.breakpoints.down('md'));
 
+  const [rapSettingsDialogOpen, setRapSettingsDialogOpen] = useState(false);
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        ...(isTabletView && { flexDirection: 'column' }),
-        width: '100%',
-        justifyContent: 'center',
-        ...sx
-      }}
-    >
-      <Box>{isTabletView && renderSettingsAndSubmitButton()}</Box>
+    <>
       <Box
         sx={{
-          width: isTabletView ? '100%' : '30rem'
+          display: 'flex',
+          ...(isTabletView && { flexDirection: 'column' }),
+          width: '100%',
+          justifyContent: 'center',
+          ...sx
         }}
       >
-        <TextField
-          {...register?.('title')}
-          label='Title'
-          variant='filled'
-          size='small'
-          fullWidth
-          error={Boolean(errors.title?.message)}
-        />
-        <RapTextEditor sx={{ marginTop: '1.5rem' }} editor={editor} />
-      </Box>
-      <Stack
-        sx={{
-          ...(!isTabletView && { ml: '1.5rem' }),
-          ...(isTabletView && { mt: '1.5rem' })
-        }}
-        gap='1rem'
-        width={isTabletView ? '100%' : '16rem'}
-      >
-        {!isTabletView && renderSettingsAndSubmitButton()}
+        <Box>{isTabletView && renderSettingsAndSubmitButton()}</Box>
         <Box
-          sx={theme => ({
-            width: '100%',
-            border: `1px solid ${theme.palette.grey[800]}`,
-            py: '.5rem',
-            px: '1rem'
-          })}
+          sx={{
+            width: isTabletView ? '100%' : '30rem'
+          }}
         >
-          <PublishedField control={control} />
+          <TextField
+            {...register?.('title')}
+            label='Title'
+            variant='filled'
+            size='small'
+            fullWidth
+            error={Boolean(errors.title?.message)}
+          />
+          <RapTextEditor sx={{ marginTop: '1.5rem' }} editor={editor} />
         </Box>
-        <AddCoverArtField
-          setCoverArtUrl={(url: string | null) =>
-            setValue('coverArtUrl', url, {
-              shouldValidate: true,
-              shouldDirty: true
-            })
-          }
-          coverArtUrlData={rapData?.coverArtUrl || storedRapDraft?.coverArtUrl || null}
-        />
-        <SoundcloudUrlField
-          soundcloudUrl={rapData?.soundcloudUrl || storedRapDraft?.soundcloudUrl || ''}
-          setSoundcloudUrl={useCallback(
-            (url: string) =>
-              setValue('soundcloudUrl', url, {
+        <Stack
+          sx={{
+            ...(!isTabletView && { ml: '1.5rem' }),
+            ...(isTabletView && { mt: '1.5rem' })
+          }}
+          gap='1rem'
+          width={isTabletView ? '100%' : '16rem'}
+        >
+          {!isTabletView && renderSettingsAndSubmitButton()}
+          <Box
+            sx={theme => ({
+              width: '100%',
+              border: `1px solid ${theme.palette.grey[800]}`,
+              py: '.5rem',
+              px: '1rem'
+            })}
+          >
+            <PublishedField control={control} />
+          </Box>
+          <AddCoverArtField
+            setCoverArtUrl={(url: string | null) =>
+              setValue('coverArtUrl', url, {
                 shouldValidate: true,
                 shouldDirty: true
-              }),
-            [setValue]
-          )}
-        />
-      </Stack>
-    </Box>
+              })
+            }
+            coverArtUrlData={rapData?.coverArtUrl || storedRapDraft?.coverArtUrl || null}
+          />
+          <SoundcloudUrlField
+            soundcloudUrl={rapData?.soundcloudUrl || storedRapDraft?.soundcloudUrl || ''}
+            setSoundcloudUrl={useCallback(
+              (url: string) =>
+                setValue('soundcloudUrl', url, {
+                  shouldValidate: true,
+                  shouldDirty: true
+                }),
+              [setValue]
+            )}
+          />
+        </Stack>
+      </Box>
+      <RapSettingsDialog
+        control={control}
+        open={rapSettingsDialogOpen}
+        onClose={() => setRapSettingsDialogOpen(false)}
+      />
+    </>
   );
 }

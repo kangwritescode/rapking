@@ -86,19 +86,20 @@ model UserFollows {
 }
 
 model Rap {
-  id            String         @id @default(cuid())
-  title         String
-  content       String
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        String
-  coverArtUrl   String?
-  status        RapStatus      @default(DRAFT)
-  dateCreated   DateTime       @default(now())
-  likesCount    Int            @default(0)
-  soundcloudUrl String?
-  votes         RapVote[]
-  comments      RapComment[]
-  Notification  Notification[]
+  id              String         @id @default(cuid())
+  title           String
+  content         String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+  coverArtUrl     String?
+  status          RapStatus      @default(DRAFT)
+  dateCreated     DateTime       @default(now())
+  likesCount      Int            @default(0)
+  soundcloudUrl   String?
+  disableComments Boolean        @default(false)
+  votes           RapVote[]
+  comments        RapComment[]
+  Notification    Notification[]
 
   @@index([userId, dateCreated(sort: Desc)])
 }

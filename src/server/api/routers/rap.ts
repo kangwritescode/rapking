@@ -13,7 +13,8 @@ const createRapPayloadSchema = z.object({
   content: z.string(),
   status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
   coverArtUrl: z.string().optional().nullable(),
-  soundcloudUrl: z.string().optional().nullable()
+  soundcloudUrl: z.string().optional().nullable(),
+  disableComments: z.boolean().optional()
 });
 const updateRapPayloadSchema = z.object({
   id: z.string(),
@@ -21,7 +22,8 @@ const updateRapPayloadSchema = z.object({
   content: z.string().optional(),
   status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
   coverArtUrl: z.string().optional().nullable(),
-  soundcloudUrl: z.string().optional().nullable()
+  soundcloudUrl: z.string().optional().nullable(),
+  disableComments: z.boolean().optional()
 });
 
 const sortBySchema = z.enum(['NEWEST', 'TOP']);
@@ -68,7 +70,8 @@ export const rapRouter = createTRPCRouter({
         content: sanitize(input.content),
         status: input.status,
         userId: ctx.session.user.id,
-        soundcloudUrl: input.soundcloudUrl
+        soundcloudUrl: input.soundcloudUrl,
+        disableComments: input.disableComments
       }
     });
 
@@ -116,7 +119,8 @@ export const rapRouter = createTRPCRouter({
         ...(input.content && { content: sanitize(input.content) }),
         ...(input.status && { status: input.status }),
         soundcloudUrl: input.soundcloudUrl,
-        coverArtUrl: newCoverArtUrl
+        coverArtUrl: newCoverArtUrl,
+        disableComments: input.disableComments
       }
     });
   }),
