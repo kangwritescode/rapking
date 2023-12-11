@@ -29,7 +29,9 @@ function WritePage() {
           title: rap.title,
           content: editedContent,
           status: rap.status,
-          coverArtUrl: rap.coverArtUrl
+          coverArtUrl: rap.coverArtUrl,
+          soundcloudUrl: rap.soundcloudUrl,
+          youtubeVideoId: rap.youtubeVideoId
         },
         {
           onError: error => {
