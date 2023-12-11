@@ -2,9 +2,9 @@ import { Icon } from '@iconify/react';
 import { Box, IconButton, Menu, MenuItem, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import React from 'react';
-import AlertDialog from '../AlertDialog';
-import { api } from 'src/utils/api';
 import toast from 'react-hot-toast';
+import { api } from 'src/utils/api';
+import AlertDialog from '../AlertDialog';
 
 interface RapCardMenuProps {
   rapId: string;
@@ -34,12 +34,7 @@ function RapCardMenu({ rapId }: RapCardMenuProps) {
 
   return (
     <Box>
-      <IconButton
-        onClick={handleClick}
-        sx={{
-          mt: 4
-        }}
-      >
+      <IconButton onClick={handleClick}>
         <Icon icon='tdesign:ellipsis' />
       </IconButton>
       <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>

@@ -62,7 +62,7 @@ function Feed({ sortBy, regionFilter, timeFilter, followingFilter, sexFilter }: 
       width='100%'
       itemContent={(_, rap) => (
         <>
-          <RapCard key={rap.id} rap={rap} sx={{ mt: 7, mb: 9 }} />
+          <RapCard key={rap.id} rap={rap} showChips sx={{ mt: 7, mb: 9 }} />
           <Divider />
         </>
       )}

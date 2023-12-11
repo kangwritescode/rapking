@@ -1,9 +1,19 @@
-import { Avatar, Box, CardMedia, Stack, SxProps, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  CardMedia,
+  Stack,
+  SxProps,
+  Typography,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
 import { Rap, User } from '@prisma/client';
 import dayjs from 'dayjs';
 import { convert } from 'html-to-text';
 import { useRouter } from 'next/router';
 import { BUCKET_URL } from 'src/shared/constants';
+import RapCardChip from './RapCardChip';
 import RapCardMenu from './UserPage/RapCardMenu';
 
 interface RapCardProps {
@@ -12,6 +22,7 @@ interface RapCardProps {
   hideAvatar?: boolean;
   hideUsername?: boolean;
   showMenu?: boolean;
+  showChips?: boolean;
 }
 
 function formatDate(dateObj: Date) {
@@ -25,7 +36,7 @@ function formatDate(dateObj: Date) {
   }
 }
 
-function RapCard({ rap, sx, hideAvatar, hideUsername, showMenu }: RapCardProps) {
+function RapCard({ rap, sx, hideAvatar, hideUsername, showMenu, showChips }: RapCardProps) {
   const { id, title, dateCreated, coverArtUrl, content, user: userData } = rap;
 
   const theme = useTheme();
@@ -109,15 +120,18 @@ function RapCard({ rap, sx, hideAvatar, hideUsername, showMenu }: RapCardProps) 
           >
             {formattedContent}
           </Typography>
-          <Stack direction='row' justifyContent='end' height='2rem'>
-            {showMenu && <RapCardMenu rapId={rap.id} />}
+          <Stack direction='row' justifyContent='space-between' height='2rem' mt='2rem'>
+            <Box>{showChips && <RapCardChip label={userData.region || ''} />}</Box>
+            <Box>{showMenu && <RapCardMenu rapId={rap.id} />}</Box>
           </Stack>
         </Box>
         <CardMedia
           component='img'
           alt='rap-cover-art'
           onClick={navigateToRap}
-          image={coverArtUrl ? `${BUCKET_URL}/${coverArtUrl}` : `${BUCKET_URL}/default/cover-art.jpg`}
+          image={
+            coverArtUrl ? `${BUCKET_URL}/${coverArtUrl}` : `${BUCKET_URL}/default/cover-art.jpg`
+          }
           sx={{
             height: 100,
             width: 100,
