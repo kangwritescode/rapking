@@ -42,7 +42,6 @@ export default function RapTextEditor({ editor, sx }: RapTextEditorProps) {
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold />
           <RichTextEditor.Italic />
-          <RichTextEditor.Underline />
         </RichTextEditor.ControlsGroup>
 
         <RichTextEditor.ControlsGroup>
