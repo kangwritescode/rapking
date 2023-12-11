@@ -2,7 +2,6 @@ import {
   Avatar,
   CardMedia,
   Divider,
-  Link,
   Stack,
   Typography,
   useMediaQuery,
@@ -56,21 +55,31 @@ function RapPage() {
           justifyContent='space-between'
         >
           <Stack direction='row'>
-            <Avatar
-              {...(userData?.profileImageUrl && {
-                src: `${BUCKET_URL}/${userData.profileImageUrl}`
-              })}
-              alt='profile-picture'
-              onClick={() => router.push(`/u/${userData?.username}/raps`)}
-              sx={{
-                mr: theme.spacing(4),
-                width: 50,
-                height: 50,
-                cursor: 'pointer'
-              }}
-            />
+            <Link
+              onClick={() => router.push(`/u/${userData?.username}`)}
+              style={{ textDecoration: 'none' }}
+              href={`/u/${userData?.username}`}
+            >
+              <Avatar
+                {...(userData?.profileImageUrl && {
+                  src: `${BUCKET_URL}/${userData.profileImageUrl}`
+                })}
+                alt='profile-picture'
+                onClick={() => router.push(`/u/${userData?.username}`)}
+                sx={{
+                  mr: theme.spacing(4),
+                  width: 50,
+                  height: 50,
+                  cursor: 'pointer'
+                }}
+              />
+            </Link>
             <Stack>
-              <Link>
+              <Link
+                onClick={() => router.push(`/u/${userData?.username}`)}
+                style={{ textDecoration: 'none' }}
+                href={`/u/${userData?.username}`}
+              >
                 <Typography fontWeight='bold'>{userData?.username}</Typography>
               </Link>
               <Typography>{rapData?.dateCreated.toLocaleDateString()}</Typography>
@@ -111,6 +120,7 @@ export default RapPage;
 
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import { GetServerSidePropsContext } from 'next';
+import Link from 'next/link';
 import SCPlayer from 'src/components/SCPlayer';
 import YTPlayer from 'src/components/YTPlayer';
 import { appRouter } from 'src/server/api/root';

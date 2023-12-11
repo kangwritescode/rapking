@@ -12,7 +12,8 @@ function SCPlayer({ url, showArtwork, sx }: SCPlayerProps) {
       sx={{
         width: '100%',
         height: '100%',
-        ...sx
+        ...sx,
+        border: 'none'
       }}
       component='iframe'
       width='100%'
