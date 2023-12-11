@@ -1,4 +1,13 @@
-import { Avatar, CardMedia, Divider, Link, Stack, Typography, useTheme } from '@mui/material';
+import {
+  Avatar,
+  CardMedia,
+  Divider,
+  Link,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
 import { useRouter } from 'next/router';
 import { BUCKET_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
@@ -13,6 +22,8 @@ function RapPage() {
   const { data: rapData } = api.rap.getRap.useQuery({ id: id as string }, { enabled: Boolean(id) });
 
   const userData = rapData?.user;
+
+  const isMobileView = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Stack direction='column' alignItems='center'>
@@ -79,6 +90,15 @@ function RapPage() {
             url={rapData?.soundcloudUrl}
           />
         ) : undefined}
+        {rapData?.youtubeVideoId ? (
+          <YTPlayer
+            sx={{
+              mt: '1.75rem',
+              height: isMobileView ? '15rem' : '24rem'
+            }}
+            videoId={rapData?.youtubeVideoId}
+          />
+        ) : undefined}
         {rapData?.content && (
           <TipTapContent sx={{ marginTop: theme.spacing(2) }} content={rapData.content} />
         )}
@@ -92,6 +112,7 @@ export default RapPage;
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import { GetServerSidePropsContext } from 'next';
 import SCPlayer from 'src/components/SCPlayer';
+import YTPlayer from 'src/components/YTPlayer';
 import { appRouter } from 'src/server/api/root';
 import { createTRPCContext } from 'src/server/api/trpc';
 import superjson from 'superjson';

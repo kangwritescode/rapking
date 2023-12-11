@@ -94,8 +94,6 @@ export default function RapEditor({
     watch();
   const status = published ? RapStatus.PUBLISHED : RapStatus.DRAFT;
 
-  console.log(youtubeVideoId, 'youtubeVideoId');
-
   // Update Local Storage
   useEffect(() => {
     if (setStoredRapDraft) {
