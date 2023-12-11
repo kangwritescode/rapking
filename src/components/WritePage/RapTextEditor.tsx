@@ -42,9 +42,11 @@ export default function RapTextEditor({ editor, sx }: RapTextEditorProps) {
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold />
           <RichTextEditor.Italic />
+          <RichTextEditor.Underline />
         </RichTextEditor.ControlsGroup>
 
         <RichTextEditor.ControlsGroup>
+          <RichTextEditor.AlignLeft />
           <RichTextEditor.AlignCenter />
         </RichTextEditor.ControlsGroup>
       </RichTextEditor.Toolbar>
