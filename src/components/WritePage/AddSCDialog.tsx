@@ -71,9 +71,11 @@ function AddSCDialog({ open, onClose, soundCloudUrlData, onSubmitHandler }: AddS
         <Icon icon='mdi:close' />
       </IconButton>
       <DialogContent
-        sx={{
-          width: '30rem'
-        }}
+        sx={theme => ({
+          [theme.breakpoints.up('sm')]: {
+            width: '30rem'
+          }
+        })}
       >
         <TextField
           {...register('soundcloudUrl')}
