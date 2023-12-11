@@ -96,6 +96,7 @@ model Rap {
   dateCreated     DateTime       @default(now())
   likesCount      Int            @default(0)
   soundcloudUrl   String?
+  youtubeVideoId  String?
   disableComments Boolean        @default(false)
   votes           RapVote[]
   comments        RapComment[]

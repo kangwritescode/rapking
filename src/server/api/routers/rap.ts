@@ -14,6 +14,7 @@ const createRapPayloadSchema = z.object({
   status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
   coverArtUrl: z.string().optional().nullable(),
   soundcloudUrl: z.string().optional().nullable(),
+  youtubeVideoId: z.string().optional().nullable(),
   disableComments: z.boolean().optional()
 });
 const updateRapPayloadSchema = z.object({
@@ -23,6 +24,7 @@ const updateRapPayloadSchema = z.object({
   status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
   coverArtUrl: z.string().optional().nullable(),
   soundcloudUrl: z.string().optional().nullable(),
+  youtubeVideoId: z.string().optional().nullable(),
   disableComments: z.boolean().optional()
 });
 
@@ -71,6 +73,7 @@ export const rapRouter = createTRPCRouter({
         status: input.status,
         userId: ctx.session.user.id,
         soundcloudUrl: input.soundcloudUrl,
+        youtubeVideoId: input.youtubeVideoId,
         disableComments: input.disableComments
       }
     });
@@ -119,6 +122,7 @@ export const rapRouter = createTRPCRouter({
         ...(input.content && { content: sanitize(input.content) }),
         ...(input.status && { status: input.status }),
         soundcloudUrl: input.soundcloudUrl,
+        youtubeVideoId: input.youtubeVideoId,
         coverArtUrl: newCoverArtUrl,
         disableComments: input.disableComments
       }

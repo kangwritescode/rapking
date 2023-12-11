@@ -14,6 +14,7 @@ import RapSettingsDialog from '../RapSettingsDialog';
 import PublishedField from './PublishedField';
 import RapTextEditor from './RapTextEditor';
 import SoundcloudUrlField from './SoundcloudUrlField';
+import YoutubeVideoIdField from './YoutubeUrlField';
 
 const rapEditorFormSchema = z.object({
   title: z
@@ -24,6 +25,7 @@ const rapEditorFormSchema = z.object({
   published: z.boolean(),
   coverArtUrl: z.string().nullable(),
   soundcloudUrl: z.string(),
+  youtubeVideoId: z.string(),
   disableComments: z.boolean()
 });
 
@@ -49,7 +51,8 @@ const useRapEditorForm = (rapData?: Rap | null, storedRapDraft?: Partial<Rap>) =
         rapData?.status === RapStatus.PUBLISHED || storedRapDraft?.status === RapStatus.PUBLISHED,
       coverArtUrl: rapData?.coverArtUrl || storedRapDraft?.coverArtUrl || null,
       soundcloudUrl: rapData?.soundcloudUrl || storedRapDraft?.soundcloudUrl || '',
-      disableComments: rapData?.disableComments || storedRapDraft?.disableComments || false
+      disableComments: rapData?.disableComments || storedRapDraft?.disableComments || false,
+      youtubeVideoId: rapData?.youtubeVideoId || storedRapDraft?.youtubeVideoId || ''
     },
     resolver: zodResolver(rapEditorFormSchema),
     mode: 'onTouched'
@@ -81,13 +84,17 @@ export default function RapEditor({
         published: rapData?.status === RapStatus.PUBLISHED ? true : false,
         coverArtUrl: rapData?.coverArtUrl || null,
         soundcloudUrl: rapData?.soundcloudUrl || '',
+        youtubeVideoId: rapData?.youtubeVideoId || '',
         disableComments: rapData?.disableComments || false
       });
     }
   }, [rapData, reset]);
 
-  const { content, title, coverArtUrl, published, soundcloudUrl, disableComments } = watch();
+  const { content, title, coverArtUrl, published, soundcloudUrl, disableComments, youtubeVideoId } =
+    watch();
   const status = published ? RapStatus.PUBLISHED : RapStatus.DRAFT;
+
+  console.log(youtubeVideoId, 'youtubeVideoId');
 
   // Update Local Storage
   useEffect(() => {
@@ -98,10 +105,20 @@ export default function RapEditor({
         status,
         coverArtUrl,
         soundcloudUrl,
+        youtubeVideoId,
         disableComments
       });
     }
-  }, [content, title, coverArtUrl, setStoredRapDraft, status, soundcloudUrl, disableComments]);
+  }, [
+    content,
+    title,
+    coverArtUrl,
+    setStoredRapDraft,
+    status,
+    soundcloudUrl,
+    disableComments,
+    youtubeVideoId
+  ]);
 
   const editor = useEditor({
     extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
@@ -121,6 +138,7 @@ export default function RapEditor({
       status,
       coverArtUrl,
       soundcloudUrl,
+      youtubeVideoId,
       disableComments
     });
     updateRap?.({
@@ -130,6 +148,7 @@ export default function RapEditor({
       status,
       coverArtUrl,
       soundcloudUrl,
+      youtubeVideoId,
       disableComments
     });
   };
@@ -227,6 +246,17 @@ export default function RapEditor({
             setSoundcloudUrl={useCallback(
               (url: string) =>
                 setValue('soundcloudUrl', url, {
+                  shouldValidate: true,
+                  shouldDirty: true
+                }),
+              [setValue]
+            )}
+          />
+          <YoutubeVideoIdField
+            youtubeVideoId={rapData?.youtubeVideoId || storedRapDraft?.youtubeVideoId || ''}
+            setYoutubeVideoId={useCallback(
+              (url: string) =>
+                setValue('youtubeVideoId', url, {
                   shouldValidate: true,
                   shouldDirty: true
                 }),
