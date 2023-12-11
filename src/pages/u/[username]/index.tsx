@@ -43,7 +43,7 @@ const UserProfile = () => {
       <Grid item xs={12}>
         <UserProfileHeader userData={userData} currentUserData={currentUserData} />
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={12} md={4}>
         <BioCard
           userData={userData}
           sx={{
@@ -51,8 +51,13 @@ const UserProfile = () => {
           }}
         />
       </Grid>
-      <Grid item xs={8}>
-        <Tabs value={value} onChange={handleTabsChange} textColor='primary' indicatorColor='primary'>
+      <Grid item xs={12} md={8}>
+        <Tabs
+          value={value}
+          onChange={handleTabsChange}
+          textColor='primary'
+          indicatorColor='primary'
+        >
           <Tab value='raps' label='Raps' />
         </Tabs>
         {value === 'raps' && <RapsTab raps={rapsData} isCurrentUser={isCurrentUser} />}
