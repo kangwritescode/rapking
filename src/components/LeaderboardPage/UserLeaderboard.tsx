@@ -1,10 +1,8 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { SxProps, useMediaQuery, useTheme } from '@mui/material';
+import { SxProps, useTheme } from '@mui/material';
 import { Region, User } from '@prisma/client';
+import { useCallback, useEffect, useState } from 'react';
 import { api } from 'src/utils/api';
-import { v4 } from 'uuid';
-import UserLeaderboardGridStyles from './styles/UserLeaderboardGridStyles';
+import LeaderboardUserCard from './LeaderboardUserCard';
 
 interface RowData {
   id: string;
@@ -23,78 +21,19 @@ const PAGE_SIZE = 10;
 
 export default function UserLeaderboard({ sx }: DataGridDemoProps) {
   const theme = useTheme();
-  const isSmallBreakpoint = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const columns = useMemo(() => {
-    const defaultColumnProps: Partial<GridColDef> = {
-      headerAlign: 'center',
-      align: 'center',
-      disableColumnMenu: true,
-      sortable: false,
-      headerClassName: 'user-leaderboard-header'
-    };
-
-    const baseColumns: GridColDef[] = [
-      {
-        field: 'points',
-        headerName: isSmallBreakpoint ? 'Pts' : 'Score',
-        headerClassName: 'user-leaderboard-points-header',
-        cellClassName: 'user-leaderboard-points-cell',
-        width: isSmallBreakpoint ? 70 : 120
-      },
-      {
-        field: 'username',
-        headerName: 'Username',
-        width: 150
-      },
-      {
-        field: 'location',
-        headerName: isSmallBreakpoint ? 'State' : 'Location',
-        type: 'number',
-        width: isSmallBreakpoint ? 76 : 170
-      },
-      {
-        field: 'region',
-        headerName: 'Region',
-        type: 'number'
-      },
-      {
-        field: 'sex',
-        headerName: 'Sex',
-        type: 'number',
-        width: isSmallBreakpoint ? 76 : undefined
-      }
-    ];
-
-    return baseColumns.map(column => {
-      // Assuming 150 as a default width if not provided
-      return { ...defaultColumnProps, ...column };
-    });
-  }, [isSmallBreakpoint]);
-
-  const convertUserDataToRowData = useCallback(
-    (userData: User) => {
-      const { username, city, state, region, sex, points } = userData;
-
-      return {
-        id: v4(),
-        username: username || '',
-        location: isSmallBreakpoint ? state || '' : `${city}, ${state}` || '',
-        region: region || 'WEST',
-        sex: sex ? (sex === 'male' ? 'M' : 'F') : '',
-        points: points || 0
-      };
-    },
-    [isSmallBreakpoint]
-  );
+  // const isSmallBreakpoint = useMediaQuery(theme.breakpoints.down('sm'));
 
   // State
-  const [rowsData, setRowsData] = useState<RowData[]>([]);
+  const [rowsData, setRowsData] = useState<User[]>([]);
   const [rowCount, setRowCount] = useState<number>(0);
   const [page, setPage] = useState(0);
 
   // Queries
-  const { refetch } = api.leaderboard.getTopUsersByPoints.useQuery({ page, pageSize: PAGE_SIZE }, { enabled: false });
+  const { refetch } = api.leaderboard.getTopUsersByPoints.useQuery(
+    { page, pageSize: PAGE_SIZE },
+    { enabled: false }
+  );
 
   // Handlers
   const loadPage = useCallback(async () => {
@@ -102,14 +41,13 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
       const { data } = await refetch();
       if (data) {
         const { rowData, rowCount } = data;
-        const newRowsData = rowData.map(convertUserDataToRowData);
-        setRowsData(newRowsData);
+        setRowsData(rowData);
         setRowCount(rowCount);
       }
     } catch (err) {
       console.log(err);
     }
-  }, [refetch, convertUserDataToRowData]);
+  }, [refetch]);
 
   // Effects
   useEffect(() => {
@@ -117,20 +55,11 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
   }, [page, loadPage]);
 
   return (
-    <UserLeaderboardGridStyles sx={sx}>
-      <DataGrid
-        rows={rowsData}
-        columns={columns}
-        disableRowSelectionOnClick
-        autoPageSize
-        paginationModel={{
-          page,
-          pageSize: PAGE_SIZE
-        }}
-        paginationMode='server'
-        onPaginationModelChange={({ page }) => setPage(page)}
-        rowCount={rowCount}
-      />
-    </UserLeaderboardGridStyles>
+    <>
+      {rowsData.length &&
+        rowsData.map(u => {
+          return <LeaderboardUserCard key={u.id} userData={u} sx={{ mb: '.75rem' }} />;
+        })}
+    </>
   );
 }

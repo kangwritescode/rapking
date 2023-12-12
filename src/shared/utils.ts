@@ -46,3 +46,20 @@ export function isValidUrl(url: string) {
     return false;
   }
 }
+
+export function getOrdinalSuffix(number: number): string {
+  if (10 <= number % 100 && number % 100 <= 20) {
+    return 'th';
+  } else {
+    const lastDigit = number % 10;
+    if (lastDigit === 1) {
+      return 'st';
+    } else if (lastDigit === 2) {
+      return 'nd';
+    } else if (lastDigit === 3) {
+      return 'rd';
+    } else {
+      return 'th';
+    }
+  }
+}

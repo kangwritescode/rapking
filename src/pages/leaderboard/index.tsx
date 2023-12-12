@@ -9,7 +9,7 @@ function LeaderboardPage() {
           mx: 'auto',
           mt: '4rem'
         }}
-        width={['100%', '630px']}
+        width={['100%', '40rem']}
       >
         <UserLeaderboard />
       </Box>
