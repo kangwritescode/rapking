@@ -1,12 +1,12 @@
 import { Box, CardMedia } from '@mui/material';
-import React from 'react';
 
 interface VideoBackgroundProps {
   videoSrc: string;
   imageSrc: string;
+  filterColor?: string;
 }
 
-function VideoBackground({ videoSrc, imageSrc }: VideoBackgroundProps) {
+function VideoBackground({ videoSrc, imageSrc, filterColor }: VideoBackgroundProps) {
   return (
     <Box
       sx={{
@@ -23,7 +23,7 @@ function VideoBackground({ videoSrc, imageSrc }: VideoBackgroundProps) {
           position: 'absolute',
           width: '100%',
           height: '100%',
-          backgroundColor: 'rgba(36, 24, 3, 0.664)',
+          backgroundColor: filterColor ?? 'rgba(36, 24, 3, 0.664)',
           zIndex: -1
         }}
       />
