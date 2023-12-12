@@ -1,33 +1,18 @@
-import { SxProps, useTheme } from '@mui/material';
-import { Region, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { useCallback, useEffect, useState } from 'react';
 import { api } from 'src/utils/api';
 import LeaderboardUserCard from './LeaderboardUserCard';
 
-interface RowData {
-  id: string;
-  username: string;
-  location: string;
-  region: Region;
-  sex: string;
-  points: number;
-}
-
-interface DataGridDemoProps {
-  sx?: SxProps;
-}
-
 const PAGE_SIZE = 10;
 
-export default function UserLeaderboard({ sx }: DataGridDemoProps) {
-  const theme = useTheme();
-
-  // const isSmallBreakpoint = useMediaQuery(theme.breakpoints.down('sm'));
-
+export default function UserLeaderboard() {
   // State
   const [rowsData, setRowsData] = useState<User[]>([]);
   const [rowCount, setRowCount] = useState<number>(0);
   const [page, setPage] = useState(0);
+
+  // TODO: Remove once pagination is implemented
+  console.log(rowCount, setPage);
 
   // Queries
   const { refetch } = api.leaderboard.getTopUsersByPoints.useQuery(
@@ -56,10 +41,11 @@ export default function UserLeaderboard({ sx }: DataGridDemoProps) {
 
   return (
     <>
-      {rowsData.length &&
-        rowsData.map(u => {
-          return <LeaderboardUserCard key={u.id} userData={u} sx={{ mb: '.75rem' }} />;
-        })}
+      {rowsData.length
+        ? rowsData.map(u => {
+            return <LeaderboardUserCard key={u.id} userData={u} sx={{ mb: '.75rem' }} />;
+          })
+        : undefined}
     </>
   );
 }
