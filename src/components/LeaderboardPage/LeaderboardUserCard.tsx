@@ -14,8 +14,7 @@ function LeaderboardUserCard({ userData, sx }: LeaderboardUserCardProps) {
   return (
     <Card
       sx={{
-        pr: '1rem',
-        pl: '2.5rem',
+        px: '2rem',
         py: '1.25rem',
         height: 'fit-content',
         ...sx,

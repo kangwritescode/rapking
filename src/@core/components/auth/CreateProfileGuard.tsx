@@ -38,7 +38,7 @@ const CreateProfileGuard: React.FC<CreateProfileGuardProps> = ({ children }) => 
     <>
       <VideoBackground
         videoSrc='/videos/nafla-blows.webm'
-        imageSrc='/images/joey.png'
+        imageSrc='/images/nafla-blows.jpg'
         filterColor='rgba(19, 13, 3, 0.8)'
       />
       <Stack alignItems='center' height='100vh' justifyContent='center'>
