@@ -1,15 +1,23 @@
-import { Avatar, Box, Card, Stack, SxProps, Typography } from '@mui/material';
+import { Avatar, Card, Stack, SxProps, Typography } from '@mui/material';
 import { User } from '@prisma/client';
 import { BUCKET_URL } from 'src/shared/constants';
 import RapCardChip from '../RapCardChip';
 
 interface LeaderboardUserCardProps {
-  userData?: User | null;
+  userData: User | null;
   sx?: SxProps;
+  userClickHandler?: (userId: string) => void;
 }
-function LeaderboardUserCard({ userData, sx }: LeaderboardUserCardProps) {
+function LeaderboardUserCard({ userData, sx, userClickHandler }: LeaderboardUserCardProps) {
   const formattedAge = userData?.dob ?? new Date();
   const age = new Date().getFullYear() - new Date(formattedAge).getFullYear();
+
+  const onCardClick = () => {
+    const userId = userData?.id;
+    if (userClickHandler && userId) {
+      userClickHandler(userId);
+    }
+  };
 
   return (
     <Card
@@ -17,9 +25,11 @@ function LeaderboardUserCard({ userData, sx }: LeaderboardUserCardProps) {
         px: '2rem',
         py: '1.25rem',
         height: 'fit-content',
+        minHeight: '8.5rem',
         ...sx,
         position: 'relative'
       }}
+      onClick={userClickHandler ? onCardClick : undefined}
     >
       <Stack direction='row' alignItems='center' height='100%'>
         <Avatar
@@ -34,19 +44,10 @@ function LeaderboardUserCard({ userData, sx }: LeaderboardUserCardProps) {
             <Typography variant='body1' fontSize='1.25rem' fontWeight='bold'>
               {userData?.username}
             </Typography>
-            <Box mb='1rem'>
-              <Typography variant='caption' fontWeight='bold'>
-                {userData?.sex === 'male' ? 'M' : 'F'}
-              </Typography>
-              {' | '}
-              <Typography variant='caption' fontWeight='bold'>
-                {age}
-              </Typography>
-              {' | '}
-              <Typography variant='caption' fontWeight='bold'>
-                {`${userData?.city}, ${userData?.state}`}
-              </Typography>
-            </Box>
+            <Typography variant='caption' fontWeight='bold' mt='.25rem' mb='1rem'>
+              {userData?.sex === 'male' ? 'M' : 'F'} | {age} |{' '}
+              {`${userData?.city}, ${userData?.state}`}
+            </Typography>
             <RapCardChip
               size='small'
               label={userData?.region || ''}

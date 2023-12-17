@@ -1,68 +1,63 @@
 import { Box, MenuItem, Select, Stack, SxProps, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
+import { RegionFilter, SexFilter, TimeFilter } from 'src/server/api/routers/rap';
 
-interface FeedBarProps {
+interface LeaderboardBarProps {
   sx?: SxProps;
   onSortAndFilterChange?: ({
-    sortBy,
     regionFilter,
     timeFilter,
     sexFilter
   }: {
-    sortBy: SortByValue;
     regionFilter: RegionFilter;
     timeFilter: TimeFilter;
     sexFilter: SexFilter;
   }) => void;
 }
 
-function FeedBar({ sx, onSortAndFilterChange }: FeedBarProps) {
-  const [sortBy, setSortBy] = useState<SortByValue>('NEWEST');
+function LeaderboardBar({ sx, onSortAndFilterChange }: LeaderboardBarProps) {
   const [regionFilter, setRegionFilter] = useState<RegionFilter>('ALL');
-  const [timeFilter, setTimeFilter] = useState<TimeFilter>('ALL');
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>('THIS_WEEK');
   const [sexFilter, setSexFilter] = useState<SexFilter>('ANY');
 
   useEffect(() => {
     if (onSortAndFilterChange) {
       onSortAndFilterChange({
-        sortBy,
         regionFilter,
         timeFilter,
         sexFilter
       });
     }
-  }, [sortBy, regionFilter, timeFilter, sexFilter, onSortAndFilterChange]);
+  }, [, regionFilter, timeFilter, sexFilter, onSortAndFilterChange]);
 
   return (
     <Box
       width='100%'
       display='flex'
-      alignItems={['left', 'center']}
+      alignItems='center'
       justifyContent='flex-end'
-      flexDirection={['column-reverse', 'row']}
+      flexDirection='row'
       sx={sx}
     >
-      <Stack direction='row' alignItems='center'>
-        <Typography variant='body2'>Sort By: &nbsp;</Typography>
+      <Stack direction='row' alignItems='center' mb={[2, 'unset']}>
+        <Typography variant='body2'>Filter By: &nbsp;</Typography>
         <Select
-          defaultValue='NEWEST'
+          defaultValue='THIS_WEEK'
           size='small'
           sx={{
-            width: '4.25rem',
+            width: timeFilter === 'ALL' ? '5.5rem' : '8rem',
             borderRadius: '20px',
-            fontSize: '0.75rem'
+            fontSize: '0.75rem',
+            mr: '.5rem'
           }}
-          value={sortBy}
-          onChange={e => setSortBy(e.target.value as SortByValue)}
+          value={timeFilter}
+          onChange={e => setTimeFilter(e.target.value as TimeFilter)}
         >
-          <MenuItem value='NEWEST'>New</MenuItem>
+          <MenuItem value='TODAY'>Today</MenuItem>
+          <MenuItem value='THIS_WEEK'>This Week</MenuItem>
+          <MenuItem value='THIS_MONTH'>This Month</MenuItem>
+          <MenuItem value='THIS_YEAR'>This Year</MenuItem>
         </Select>
-      </Stack>
-      <Stack direction='row' alignItems='center' mb={[2, 'unset']}>
-        <Typography variant='body2' ml={['', '1rem']}>
-          Filter By: &nbsp;
-        </Typography>
         <Select
           defaultValue='ALL'
           size='small'
@@ -80,25 +75,6 @@ function FeedBar({ sx, onSortAndFilterChange }: FeedBarProps) {
           <MenuItem value='EAST'>East</MenuItem>
           <MenuItem value='MIDWEST'>Midwest</MenuItem>
           <MenuItem value='SOUTH'>South</MenuItem>
-        </Select>
-        <Select
-          defaultValue='ALL'
-          size='small'
-          sx={{
-            width: timeFilter === 'ALL' ? '5.5rem' : '8rem',
-            borderRadius: '20px',
-            fontSize: '0.75rem',
-            mr: '.5rem'
-          }}
-          value={timeFilter}
-          onChange={e => setTimeFilter(e.target.value as TimeFilter)}
-        >
-          <MenuItem value='ALL'>All Time</MenuItem>
-          <MenuItem value='24HOURS'>Last 24 Hours</MenuItem>
-          <MenuItem value='7DAYS'>Last 7 Days</MenuItem>
-          <MenuItem value='30DAYS'>Last 30 Days</MenuItem>
-          <MenuItem value='6MONTHS'>Last 6 Months</MenuItem>
-          <MenuItem value='12MONTHS'>Last 12 Months</MenuItem>
         </Select>
         <Select
           defaultValue='ANY'
@@ -120,4 +96,4 @@ function FeedBar({ sx, onSortAndFilterChange }: FeedBarProps) {
   );
 }
 
-export default FeedBar;
+export default LeaderboardBar;

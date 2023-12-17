@@ -1,8 +1,8 @@
 // ** Next Imports
-import Head from 'next/head';
-import { Router } from 'next/router';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
+import { Router } from 'next/router';
 
 // ** NextAuth
 import { SessionProvider } from 'next-auth/react';
@@ -14,12 +14,12 @@ import NProgress from 'nprogress';
 import themeConfig from 'src/configs/themeConfig';
 
 // ** Third Party Import
-import { Toaster } from 'react-hot-toast';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Toaster } from 'react-hot-toast';
 
 // ** Component Imports
-import UserLayout from 'src/layouts/UserLayout';
 import ThemeComponent from 'src/@core/theme/ThemeComponent';
+import UserLayout from 'src/layouts/UserLayout';
 
 import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsContext';
 
@@ -32,9 +32,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 // ** Prismjs Styles
 import 'prismjs';
-import 'prismjs/themes/prism-tomorrow.css';
 import 'prismjs/components/prism-jsx';
 import 'prismjs/components/prism-tsx';
+import 'prismjs/themes/prism-tomorrow.css';
 
 // ** React Perfect Scrollbar Style
 import 'react-perfect-scrollbar/dist/css/styles.css';
@@ -42,9 +42,9 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 import 'src/iconify-bundle/icons-bundle-react';
 
 // ** Global css styles
-import '../../styles/globals.css';
-import { api } from 'src/utils/api';
 import CreateProfileGuard from 'src/@core/components/auth/CreateProfileGuard';
+import { api } from 'src/utils/api';
+import '../../styles/globals.css';
 
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
@@ -74,7 +74,8 @@ const App: any = (props: ExtendedAppProps) => {
   // Variables
   const contentHeightFixed = Component.contentHeightFixed ?? false;
   const getLayout =
-    Component.getLayout ?? (page => <UserLayout contentHeightFixed={contentHeightFixed}>{page}</UserLayout>);
+    Component.getLayout ??
+    (page => <UserLayout contentHeightFixed={contentHeightFixed}>{page}</UserLayout>);
   const setConfig = Component.setConfig ?? undefined;
 
   return (
@@ -98,7 +99,10 @@ const App: any = (props: ExtendedAppProps) => {
                     </CreateProfileGuard>
                   </LocalizationProvider>
                   <ReactHotToast>
-                    <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
+                    <Toaster
+                      position={settings.toastPosition}
+                      toastOptions={{ className: 'react-hot-toast' }}
+                    />
                   </ReactHotToast>
                 </ThemeComponent>
               );
