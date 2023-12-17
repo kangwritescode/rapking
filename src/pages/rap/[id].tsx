@@ -7,7 +7,10 @@ import {
   useMediaQuery,
   useTheme
 } from '@mui/material';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import SCPlayer from 'src/components/SCPlayer';
+import YTPlayer from 'src/components/YTPlayer';
 import { BUCKET_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
 import RapBar from '../../components/RapPage/RapBar';
@@ -117,30 +120,3 @@ function RapPage() {
 }
 
 export default RapPage;
-
-import { createServerSideHelpers } from '@trpc/react-query/server';
-import { GetServerSidePropsContext } from 'next';
-import Link from 'next/link';
-import SCPlayer from 'src/components/SCPlayer';
-import YTPlayer from 'src/components/YTPlayer';
-import { appRouter } from 'src/server/api/root';
-import { createTRPCContext } from 'src/server/api/trpc';
-import superjson from 'superjson';
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { id } = context.query;
-
-  const helpers = createServerSideHelpers({
-    router: appRouter,
-    ctx: await createTRPCContext(context),
-    transformer: superjson
-  });
-
-  await helpers.rap.getRap.prefetch({ id });
-
-  return {
-    props: {
-      trpcState: helpers.dehydrate()
-    }
-  };
-}

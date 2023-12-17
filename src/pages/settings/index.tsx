@@ -1,6 +1,6 @@
 import { Button, Typography, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import AlertDialog from 'src/components/AlertDialog';
 import { api } from 'src/utils/api';
 
@@ -41,23 +41,3 @@ function SettingsPage() {
 }
 
 export default SettingsPage;
-
-import { getSession } from 'next-auth/react';
-import { GetServerSideProps } from 'next/types';
-
-export const getServerSideProps: GetServerSideProps = async context => {
-  const session = await getSession(context);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false
-      }
-    };
-  }
-
-  return {
-    props: {} // Add props if needed
-  };
-};

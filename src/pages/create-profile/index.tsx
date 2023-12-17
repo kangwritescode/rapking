@@ -3,12 +3,12 @@ import { useState } from 'react';
 
 // ** MUI Imports
 import Card from '@mui/material/Card';
-import Step from '@mui/material/Step';
-import Stepper from '@mui/material/Stepper';
-import StepLabel from '@mui/material/StepLabel';
-import CardHeader from '@mui/material/CardHeader';
-import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Stepper from '@mui/material/Stepper';
+import Typography from '@mui/material/Typography';
 
 // ** Third Party Imports
 import clsx from 'clsx';
@@ -19,9 +19,10 @@ import StepperCustomDot from '../../components/CreateProfilePage/StepperCustomDo
 
 // ** Styled Components
 import StepperWrapper from 'src/@core/styles/mui/stepper';
-import UsernameStep from '../../components/CreateProfilePage/UsernameStep';
-import PersonalStep from '../../components/CreateProfilePage/SexAgeStep';
+import { api } from 'src/utils/api';
 import LocationStep from '../../components/CreateProfilePage/LocationStep';
+import PersonalStep from '../../components/CreateProfilePage/SexAgeStep';
+import UsernameStep from '../../components/CreateProfilePage/UsernameStep';
 
 const steps = [
   {
@@ -75,9 +76,14 @@ const CompleteProfilePage = () => {
                     </div>
                   </StepLabel>
                   {activeStep === 0 && <UsernameStep handleNext={handleNext} />}
-                  {activeStep === 1 && <PersonalStep handleBack={handleBack} handleNext={handleNext} />}
+                  {activeStep === 1 && (
+                    <PersonalStep handleBack={handleBack} handleNext={handleNext} />
+                  )}
                   {activeStep === 2 && (
-                    <LocationStep handleBack={handleBack} handleCreateProfile={handleCreateProfile} />
+                    <LocationStep
+                      handleBack={handleBack}
+                      handleCreateProfile={handleCreateProfile}
+                    />
                   )}
                 </Step>
               );
@@ -90,25 +96,3 @@ const CompleteProfilePage = () => {
 };
 
 export default CompleteProfilePage;
-
-import { createServerSideHelpers } from '@trpc/react-query/server';
-import { GetServerSidePropsContext } from 'next';
-import { appRouter } from 'src/server/api/root';
-import superjson from 'superjson';
-import { createTRPCContext } from 'src/server/api/trpc';
-import { api } from 'src/utils/api';
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const helpers = createServerSideHelpers({
-    router: appRouter,
-    ctx: await createTRPCContext(context),
-    transformer: superjson
-  });
-  helpers.user.getProfileIsComplete.fetch();
-
-  return {
-    props: {
-      trpcState: helpers.dehydrate()
-    }
-  };
-}

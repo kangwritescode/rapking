@@ -2,12 +2,15 @@
 import { useState } from 'react';
 
 // ** Next Import
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 // ** MUI Components
+import { Tab, Tabs, useTheme } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
 // ** Components
+import BioCard from 'src/components/UserPage/BioCard/BioCard';
 import { api } from 'src/utils/api';
 import RapsTab from '../../../components/UserPage/RapsTab';
 import UserProfileHeader from '../../../components/UserPage/UserProfileHeader';
@@ -67,29 +70,3 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
-
-import { Tab, Tabs, useTheme } from '@mui/material';
-import { createServerSideHelpers } from '@trpc/react-query/server';
-import { GetServerSidePropsContext } from 'next';
-import { useSession } from 'next-auth/react';
-import BioCard from 'src/components/UserPage/BioCard/BioCard';
-import { appRouter } from 'src/server/api/root';
-import { createTRPCContext } from 'src/server/api/trpc';
-import superjson from 'superjson';
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { username } = context.query;
-
-  const helpers = createServerSideHelpers({
-    router: appRouter,
-    ctx: await createTRPCContext(context),
-    transformer: superjson
-  });
-  await helpers.user.findByUsername.prefetch({ username });
-
-  return {
-    props: {
-      trpcState: helpers.dehydrate()
-    }
-  };
-}
