@@ -45,7 +45,7 @@ function LeaderboardBar({ sx, onSortAndFilterChange }: LeaderboardBarProps) {
           defaultValue='THIS_WEEK'
           size='small'
           sx={{
-            width: timeFilter === 'ALL' ? '5.5rem' : '8rem',
+            width: timeFilter === 'TODAY' ? '5.5rem' : '6.8rem',
             borderRadius: '20px',
             fontSize: '0.75rem',
             mr: '.5rem'
@@ -62,7 +62,7 @@ function LeaderboardBar({ sx, onSortAndFilterChange }: LeaderboardBarProps) {
           defaultValue='ALL'
           size='small'
           sx={{
-            maxWidth: regionFilter !== 'MIDWEST' ? '5rem' : '5.5rem',
+            maxWidth: regionFilter !== 'MIDWEST' ? '5rem' : '5.75rem',
             borderRadius: '20px',
             fontSize: '0.75rem',
             mr: '.5rem'

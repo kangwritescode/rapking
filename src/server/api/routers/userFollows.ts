@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, publicProcedure, protectedProcedure } from 'src/server/api/trpc';
 import { NotificationType } from '@prisma/client';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 
 export const userFollows = createTRPCRouter({
   getFollow: publicProcedure
@@ -88,5 +88,22 @@ export const userFollows = createTRPCRouter({
       }
 
       return follow;
+    }),
+  getFollowersCount: publicProcedure
+    .input(
+      z.object({
+        userId: z.string()
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const { userId } = input;
+
+      const followersCount = await ctx.prisma.userFollows.count({
+        where: {
+          followedId: userId
+        }
+      });
+
+      return followersCount;
     })
 });

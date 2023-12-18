@@ -1,4 +1,13 @@
-import { Avatar, Button, Card, CardMedia, Stack, Typography } from '@mui/material';
+import {
+  Avatar,
+  Button,
+  Card,
+  CardMedia,
+  CircularProgress,
+  Stack,
+  Typography
+} from '@mui/material';
+import { useRouter } from 'next/router';
 import { BUCKET_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
 
@@ -7,8 +16,16 @@ interface SpotlightCardProps {
 }
 
 function SpotlightCard({ userId }: SpotlightCardProps) {
-  const { data: userData } = api.user.findById.useQuery(
-    { id: userId ?? '' },
+  const router = useRouter();
+
+  const {
+    data: userData,
+    isLoading,
+    fetchStatus
+  } = api.user.findById.useQuery({ id: userId ?? '' }, { enabled: !!userId });
+
+  const { data: followersCount } = api.userFollows.getFollowersCount.useQuery(
+    { userId: userId ?? '' },
     { enabled: !!userId }
   );
 
@@ -21,6 +38,7 @@ function SpotlightCard({ userId }: SpotlightCardProps) {
     <Card
       sx={{
         height: 'fit-content',
+        minHeight: '18rem',
         width: '20rem',
         display: 'flex',
         flexDirection: 'column',
@@ -43,6 +61,11 @@ function SpotlightCard({ userId }: SpotlightCardProps) {
           position: 'absolute',
           top: 0
         }}
+        onError={e => {
+          const target = e.target as HTMLImageElement; // Type assertion
+          target.onerror = null; // Prevents looping
+          target.src = `${BUCKET_URL}/default/profile-banner.jpg`; // Fallback to a transparent image
+        }}
       />
       <Avatar
         sx={{
@@ -55,37 +78,61 @@ function SpotlightCard({ userId }: SpotlightCardProps) {
           src: `${BUCKET_URL}/${userData.profileImageUrl}`
         })}
       />
-      <Typography fontSize='1.25rem' fontWeight='bold' mb='.10rem'>
-        {userData?.username}
-      </Typography>
-      <Typography variant='caption' fontWeight='bold' mb='1.4rem'>
-        {userData?.sex === 'male' ? 'M' : 'F'} | {age} | {`${userData?.city}, ${userData?.state}`}
-      </Typography>
-      <Stack direction='row' alignItems='top' justifyContent='center' gap='3rem' mb='.5rem'>
-        <Stack alignItems='center'>
-          <Typography fontWeight='bold' fontSize='18px' fontFamily='PressStart2P'>
-            {userData?.points}
-          </Typography>
-          <Typography variant='caption'>POINTS</Typography>
-        </Stack>
-        <Stack alignItems='center'>
-          <Typography fontWeight='bold' fontSize='1.4rem' lineHeight='1.55rem' mb='.2rem'>
-            26
-          </Typography>
-          <Typography variant='caption'>FOLLOWERS</Typography>
-        </Stack>
-      </Stack>
-      <Stack direction='row'>
-        <Button
+      {fetchStatus !== 'idle' && isLoading ? (
+        <CircularProgress
           sx={{
-            mt: '1rem'
+            mt: '1rem',
+            color: 'inherit'
           }}
-          variant='contained'
-          size='small'
+        />
+      ) : userData ? (
+        <>
+          <Typography fontSize='1.25rem' fontWeight='bold' mb='.10rem'>
+            {userData?.username}
+          </Typography>
+          <Typography variant='caption' fontWeight='bold' mb='1.4rem'>
+            {userData?.sex === 'male' ? 'M' : 'F'} | {age} |{' '}
+            {`${userData?.city}, ${userData?.state}`}
+          </Typography>
+          <Stack direction='row' alignItems='top' justifyContent='center' gap='3rem' mb='.5rem'>
+            <Stack alignItems='center'>
+              <Typography fontWeight='bold' fontSize='18px' fontFamily='PressStart2P'>
+                {userData?.points}
+              </Typography>
+              <Typography variant='caption'>POINTS</Typography>
+            </Stack>
+            <Stack alignItems='center'>
+              <Typography fontWeight='bold' fontSize='1.4rem' lineHeight='1.55rem' mb='.2rem'>
+                {followersCount}
+              </Typography>
+              <Typography variant='caption'>FOLLOWERS</Typography>
+            </Stack>
+          </Stack>
+          <Stack direction='row'>
+            <Button
+              sx={{
+                mt: '1rem'
+              }}
+              variant='contained'
+              size='small'
+              onClick={() => router.push(`/u/${userData?.username}`)}
+            >
+              View Profile
+            </Button>
+          </Stack>
+        </>
+      ) : (
+        <Typography
+          sx={{
+            mt: '1.25rem'
+          }}
+          variant='body2'
+          fontWeight='bold'
+          fontSize='1.25rem'
         >
-          View Profile
-        </Button>
-      </Stack>
+          Select a user
+        </Typography>
+      )}
     </Card>
   );
 }

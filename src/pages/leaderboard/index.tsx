@@ -7,27 +7,31 @@ function LeaderboardPage() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   return (
-    <Stack px={[0, '6rem']} alignItems='center' height='100%'>
+    <Stack alignItems='center' height='100%' width='100%' mx='auto'>
       <Typography
         component='h1'
-        sx={{ fontSize: '2.5rem', mb: '2rem', fontWeight: 600 }}
+        width='63.5rem'
         textAlign='left'
+        fontSize='1.5rem'
+        fontWeight={600}
+        mb='1rem'
       >
         Leaderboard
       </Typography>
-      <Stack direction='row' gap='1.5rem' height='fit-content'>
+      <Stack direction='row' gap='1.5rem' height='100%'>
         <Box
           sx={theme => ({
-            p: '2rem 1.5rem 1.5rem 2.5rem',
-            height: 'calc(100% - 8rem)',
+            p: '1rem 1rem 2rem 2rem',
+            height: 'calc(100vh - 9em)',
             overflow: 'hidden',
             border: `1px solid ${theme.palette.grey[800]}`,
             borderRadius: '1rem',
             position: 'relative'
           })}
-          width={['42rem']}
+          width='42rem'
         >
           <UserLeaderboard
+            selectedUserId={selectedUserId}
             userClickHandler={userId => {
               setSelectedUserId(userId);
             }}

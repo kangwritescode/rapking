@@ -1,16 +1,22 @@
-import { Avatar, Card, Stack, SxProps, Typography } from '@mui/material';
+import { Avatar, Card, Stack, SxProps, Typography, useTheme } from '@mui/material';
 import { User } from '@prisma/client';
 import { BUCKET_URL } from 'src/shared/constants';
-import RapCardChip from '../RapCardChip';
 
 interface LeaderboardUserCardProps {
   userData: User | null;
   sx?: SxProps;
   userClickHandler?: (userId: string) => void;
+  place: number;
+  selected: boolean;
 }
-function LeaderboardUserCard({ userData, sx, userClickHandler }: LeaderboardUserCardProps) {
-  const formattedAge = userData?.dob ?? new Date();
-  const age = new Date().getFullYear() - new Date(formattedAge).getFullYear();
+function LeaderboardUserCard({
+  userData,
+  sx,
+  userClickHandler,
+  place,
+  selected
+}: LeaderboardUserCardProps) {
+  const theme = useTheme();
 
   const onCardClick = () => {
     const userId = userData?.id;
@@ -19,42 +25,57 @@ function LeaderboardUserCard({ userData, sx, userClickHandler }: LeaderboardUser
     }
   };
 
+  const backgroundColor =
+    place === 1 ? '#9d8600' : place === 2 ? '#9d9d9d' : place === 3 ? '#764d24fc' : 'grey.800';
+  const placeIsEven = place % 2 === 0;
+
   return (
     <Card
       sx={{
         px: '2rem',
-        py: '1.25rem',
+        py: '1.75rem',
         height: 'fit-content',
-        minHeight: '8.5rem',
-        ...sx,
-        position: 'relative'
+        position: 'relative',
+        backgroundColor: placeIsEven ? '#333333' : '#262626',
+        outline: selected ? `2px solid ${theme.palette.grey[500]}` : 'none',
+        '&:hover': {
+          cursor: 'pointer',
+          backgroundColor: placeIsEven ? '#444444' : '#333333'
+        },
+        ...sx
       }}
       onClick={userClickHandler ? onCardClick : undefined}
     >
       <Stack direction='row' alignItems='center' height='100%'>
+        <Stack
+          alignItems='center'
+          justifyContent='center'
+          mr='1.5rem'
+          sx={{
+            borderRadius: '50%',
+            backgroundColor,
+            width: '1.75rem',
+            height: '1.75rem'
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: '1rem'
+            }}
+          >
+            {String(place)}
+          </Typography>
+        </Stack>
         <Avatar
-          alt='Profile avatar */'
+          alt='Profile avatar'
           {...(userData?.profileImageUrl && {
             src: `${BUCKET_URL}/${userData.profileImageUrl}`
           })}
-          sx={{ width: '6rem', height: '6rem' }}
+          sx={{ width: '2.5rem', height: '2.5rem' }}
         />
-        <Stack ml='1rem' height='100%' justifyContent='space-between'>
-          <Stack>
-            <Typography variant='body1' fontSize='1.25rem' fontWeight='bold'>
-              {userData?.username}
-            </Typography>
-            <Typography variant='caption' fontWeight='bold' mt='.25rem' mb='1rem'>
-              {userData?.sex === 'male' ? 'M' : 'F'} | {age} |{' '}
-              {`${userData?.city}, ${userData?.state}`}
-            </Typography>
-            <RapCardChip
-              size='small'
-              label={userData?.region || ''}
-              sx={{ width: 'fit-content' }}
-            />
-          </Stack>
-        </Stack>
+        <Typography variant='body1' fontSize='1.25rem' fontWeight='bold' ml='1rem'>
+          {userData?.username}
+        </Typography>
         <Stack
           direction='row'
           alignItems='center'
@@ -70,7 +91,7 @@ function LeaderboardUserCard({ userData, sx, userClickHandler }: LeaderboardUser
             sx={{
               fontFamily: 'PressStart2P'
             }}
-            fontSize='2.5rem'
+            fontSize='1.5rem'
           >
             {String(userData?.points)}
           </Typography>

@@ -2,9 +2,9 @@
 import { useState } from 'react';
 
 // ** MUI Imports
+import Box, { BoxProps } from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
 import { styled } from '@mui/material/styles';
-import Box, { BoxProps } from '@mui/material/Box';
 
 // ** Theme Config Import
 import themeConfig from 'src/configs/themeConfig';
@@ -13,13 +13,13 @@ import themeConfig from 'src/configs/themeConfig';
 import { LayoutProps } from 'src/@core/layouts/types';
 
 // ** Components
+import { Icon } from '@iconify/react';
+import { useSession } from 'next-auth/react';
+import ScrollToTop from 'src/@core/components/scroll-to-top';
+import { api } from 'src/utils/api';
+import Footer from './components/shared-components/footer';
 import AppBar from './components/vertical/appBar';
 import Navigation from './components/vertical/navigation';
-import Footer from './components/shared-components/footer';
-import ScrollToTop from 'src/@core/components/scroll-to-top';
-import { Icon } from '@iconify/react';
-import { api } from 'src/utils/api';
-import { useSession } from 'next-auth/react';
 
 const VerticalLayoutWrapper = styled('div')({
   height: '100%',
@@ -37,7 +37,8 @@ const MainContentWrapper = styled(Box)<BoxProps>({
 const ContentWrapper = styled('main')(({ theme }) => ({
   flexGrow: 1,
   width: '100%',
-  padding: theme.spacing(6),
+
+  // padding: theme.spacing(6),
   transition: 'padding .25s ease-in-out',
   [theme.breakpoints.down('sm')]: {
     paddingLeft: theme.spacing(4),
@@ -47,7 +48,8 @@ const ContentWrapper = styled('main')(({ theme }) => ({
 
 const VerticalLayout = (props: LayoutProps) => {
   // ** Props
-  const { settings, children, scrollToTop, footerProps, contentHeightFixed, verticalLayoutProps } = props;
+  const { settings, children, scrollToTop, footerProps, contentHeightFixed, verticalLayoutProps } =
+    props;
 
   // ** Vars
   const { skin, contentWidth } = settings;
@@ -70,7 +72,8 @@ const VerticalLayout = (props: LayoutProps) => {
     enabled: status === 'authenticated'
   });
 
-  const showNavigation = (profileIsComplete && status === 'authenticated') || isLoading || status === 'loading';
+  const showNavigation =
+    (profileIsComplete && status === 'authenticated') || isLoading || status === 'loading';
 
   return (
     <>

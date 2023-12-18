@@ -5,13 +5,17 @@ import { api } from 'src/utils/api';
 import LeaderboardBar from './LeaderboardBar';
 import LeaderboardUserCard from './LeaderboardUserCard';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 interface UserLeaderboardProps {
   userClickHandler?: (userId: string) => void;
+  selectedUserId: string | null;
 }
 
-export default function UserLeaderboard({ userClickHandler }: UserLeaderboardProps) {
+export default function UserLeaderboard({
+  userClickHandler,
+  selectedUserId
+}: UserLeaderboardProps) {
   // State
   const [rowsData, setRowsData] = useState<User[]>([]);
   const [rowCount, setRowCount] = useState<number>(0);
@@ -46,28 +50,46 @@ export default function UserLeaderboard({ userClickHandler }: UserLeaderboardPro
   }, [page, loadPage]);
 
   return (
-    <>
+    <Stack height='100%'>
       <LeaderboardBar sx={{ mb: '1rem', position: 'relative', right: '1rem' }} />
       <Stack
-        sx={{
-          height: 'calc(100% - 3rem)',
+        sx={theme => ({
+          height: '100%',
           overflowY: 'auto',
-          pr: '1rem'
-        }}
+          pr: '1.2rem',
+          pl: '.2rem',
+          py: '.1rem',
+          '&::-webkit-scrollbar': {
+            width: '.25rem'
+          },
+          '&::-webkit-scrollbar-track': {
+            background: theme.palette.grey[800]
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: '#888',
+            '&:hover': {
+              background: '#555'
+            }
+          }
+        })}
       >
         {rowsData.length
-          ? rowsData.map(u => {
+          ? rowsData.map((u, index) => {
+              const place = index + 1 + page * PAGE_SIZE;
+
               return (
                 <LeaderboardUserCard
                   key={u.id}
+                  selected={u.id === selectedUserId}
                   userData={u}
-                  sx={{ mb: '.75rem' }}
                   userClickHandler={userClickHandler}
+                  place={place}
+                  sx={{ mb: '.75rem' }}
                 />
               );
             })
           : undefined}
       </Stack>
-    </>
+    </Stack>
   );
 }
