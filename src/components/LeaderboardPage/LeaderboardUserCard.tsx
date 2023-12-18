@@ -34,7 +34,7 @@ function LeaderboardUserCard({
       sx={{
         px: '2rem',
         py: '1.75rem',
-        height: 'fit-content',
+        height: '3.5rem',
         position: 'relative',
         backgroundColor: placeIsEven ? '#333333' : '#262626',
         outline: selected ? `2px solid ${theme.palette.grey[500]}` : 'none',

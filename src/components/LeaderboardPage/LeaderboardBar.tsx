@@ -1,6 +1,11 @@
 import { Box, MenuItem, Select, Stack, SxProps, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { RegionFilter, SexFilter, TimeFilter } from 'src/server/api/routers/rap';
+import {
+  LeaderboardRegionFilter,
+  LeaderboardSexFilter,
+  LeaderboardTimeFilter
+} from 'src/server/api/routers/leaderboard';
+import { RegionFilter, SexFilter } from 'src/server/api/routers/rap';
 
 interface LeaderboardBarProps {
   sx?: SxProps;
@@ -9,16 +14,16 @@ interface LeaderboardBarProps {
     timeFilter,
     sexFilter
   }: {
-    regionFilter: RegionFilter;
-    timeFilter: TimeFilter;
-    sexFilter: SexFilter;
+    regionFilter: LeaderboardRegionFilter;
+    timeFilter: LeaderboardTimeFilter;
+    sexFilter: LeaderboardSexFilter;
   }) => void;
 }
 
 function LeaderboardBar({ sx, onSortAndFilterChange }: LeaderboardBarProps) {
-  const [regionFilter, setRegionFilter] = useState<RegionFilter>('ALL');
-  const [timeFilter, setTimeFilter] = useState<TimeFilter>('THIS_WEEK');
-  const [sexFilter, setSexFilter] = useState<SexFilter>('ANY');
+  const [regionFilter, setRegionFilter] = useState<LeaderboardRegionFilter>('ALL');
+  const [timeFilter, setTimeFilter] = useState<LeaderboardTimeFilter>('ALL_TIME');
+  const [sexFilter, setSexFilter] = useState<LeaderboardSexFilter>('ANY');
 
   useEffect(() => {
     if (onSortAndFilterChange) {
@@ -42,7 +47,7 @@ function LeaderboardBar({ sx, onSortAndFilterChange }: LeaderboardBarProps) {
       <Stack direction='row' alignItems='center' mb={[2, 'unset']}>
         <Typography variant='body2'>Filter By: &nbsp;</Typography>
         <Select
-          defaultValue='THIS_WEEK'
+          defaultValue='ALL_TIME'
           size='small'
           sx={{
             width: timeFilter === 'TODAY' ? '5.5rem' : '6.8rem',
@@ -51,12 +56,13 @@ function LeaderboardBar({ sx, onSortAndFilterChange }: LeaderboardBarProps) {
             mr: '.5rem'
           }}
           value={timeFilter}
-          onChange={e => setTimeFilter(e.target.value as TimeFilter)}
+          onChange={e => setTimeFilter(e.target.value as LeaderboardTimeFilter)}
         >
           <MenuItem value='TODAY'>Today</MenuItem>
           <MenuItem value='THIS_WEEK'>This Week</MenuItem>
           <MenuItem value='THIS_MONTH'>This Month</MenuItem>
           <MenuItem value='THIS_YEAR'>This Year</MenuItem>
+          <MenuItem value='ALL_TIME'>All Time</MenuItem>
         </Select>
         <Select
           defaultValue='ALL'

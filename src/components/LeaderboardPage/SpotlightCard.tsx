@@ -39,7 +39,7 @@ function SpotlightCard({ userId }: SpotlightCardProps) {
       sx={{
         height: 'fit-content',
         minHeight: '18rem',
-        width: '20rem',
+        width: '18rem',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
