@@ -107,7 +107,7 @@ export default function LeaderboardCards({
                 mb: '.74rem',
                 width: 'calc(100% - .8rem)',
                 mr: 'auto',
-                mt: '.1rem',
+                mt: '.2rem',
                 ml: '.2rem'
               }}
             />

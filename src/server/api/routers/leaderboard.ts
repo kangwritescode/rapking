@@ -71,6 +71,11 @@ export const leaderboardRouter = createTRPCRouter({
         where.createdAt = { gte: filterDate };
       }
 
+      // filter out users with incomplete profiles
+      where.region = {
+        not: null
+      };
+
       const users = await ctx.prisma.user.findMany({
         orderBy: {
           points: 'desc'

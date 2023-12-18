@@ -35,7 +35,7 @@ function LeaderboardPage() {
             height: '100%',
             overflow: 'hidden',
             border: `1px solid ${theme.palette.grey[800]}`,
-            borderRadius: '1rem',
+            borderRadius: '.5rem',
             position: 'relative'
           })}
           width='42rem'
