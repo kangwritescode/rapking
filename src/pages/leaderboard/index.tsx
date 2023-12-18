@@ -31,8 +31,8 @@ function LeaderboardPage() {
       <Stack direction='row' gap='1.5rem' height='100%'>
         <Box
           sx={theme => ({
-            p: '2.5rem 2rem 2rem 2rem',
-            height: 'calc(100vh - 9em)',
+            p: '2rem',
+            height: '100%',
             overflow: 'hidden',
             border: `1px solid ${theme.palette.grey[800]}`,
             borderRadius: '1rem',
