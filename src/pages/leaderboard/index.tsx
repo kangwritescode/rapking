@@ -31,7 +31,7 @@ function LeaderboardPage() {
       <Stack direction='row' gap='1.5rem' height='100%'>
         <Box
           sx={theme => ({
-            p: '2rem',
+            p: '1.4rem 1.6rem 2rem 2.2rem',
             height: '100%',
             overflow: 'hidden',
             border: `1px solid ${theme.palette.grey[800]}`,
@@ -41,7 +41,7 @@ function LeaderboardPage() {
           width='42rem'
         >
           <LeaderboardBar
-            sx={{ mb: '1rem', position: 'relative' }}
+            sx={{ mb: '1rem', position: 'relative', pr: '.7rem' }}
             onSortAndFilterChange={({ regionFilter, timeFilter, sexFilter }) => {
               setRegionFilter(regionFilter);
               setTimeFilter(timeFilter);

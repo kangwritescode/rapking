@@ -1,4 +1,4 @@
-import { CircularProgress, Stack } from '@mui/material';
+import { Box, CircularProgress, Stack } from '@mui/material';
 import { useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import {
@@ -55,48 +55,83 @@ export default function LeaderboardCards({
   }, [regionFilter, timeFilter, sexFilter, refetch]);
 
   return (
-    <Virtuoso
-      data={usersData}
-      totalCount={usersData.length}
-      endReached={() => {
-        if (hasNextPage) {
-          fetchNextPage();
+    <Box
+      height='100%'
+      sx={{
+        "& div[data-test-id='virtuoso-scroller']": {
+          // Set the width of the scrollbar
+          '&::-webkit-scrollbar': {
+            width: '.4rem',
+            position: 'relative'
+          },
+
+          // Style the scrollbar track (the part the thumb scrolls within)
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'grey',
+            borderRadius: '1rem'
+          },
+
+          // Style the scrollbar thumb (the part you drag)
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'darkgrey',
+            borderRadius: '1rem'
+          },
+
+          // Firefox scrollbar styles
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'darkgrey grey'
         }
       }}
-      overscan={200}
-      width='100%'
-      itemContent={(index, u) => {
-        const place = index + 1;
+    >
+      <Virtuoso
+        data={usersData}
+        totalCount={usersData.length}
+        endReached={() => {
+          if (hasNextPage) {
+            fetchNextPage();
+          }
+        }}
+        overscan={200}
+        width='100%'
+        itemContent={(index, u) => {
+          const place = index + 1;
 
-        return (
-          <LeaderboardUserCard
-            key={u.id}
-            selected={u.id === selectedUserId}
-            userData={u}
-            userClickHandler={userClickHandler}
-            place={place}
-            sx={{ mb: '.74rem', width: 'calc(100% - .5rem)', mx: 'auto', mt: '.1rem' }}
-          />
-        );
-      }}
-      components={{
-        ...(usersAreLoading && {
-          Header: () => (
-            <Stack alignItems='center' justifyContent='center' height='5rem'>
-              <CircularProgress color='inherit' size={20} />
+          return (
+            <LeaderboardUserCard
+              key={u.id}
+              selected={u.id === selectedUserId}
+              userData={u}
+              userClickHandler={userClickHandler}
+              place={place}
+              sx={{
+                mb: '.74rem',
+                width: 'calc(100% - .8rem)',
+                mr: 'auto',
+                mt: '.1rem',
+                ml: '.2rem'
+              }}
+            />
+          );
+        }}
+        components={{
+          ...(usersAreLoading && {
+            Header: () => (
+              <Stack alignItems='center' justifyContent='center' height='5rem'>
+                <CircularProgress color='inherit' size={20} />
+              </Stack>
+            )
+          }),
+          Footer: () => (
+            <Stack
+              alignItems='center'
+              justifyContent='center'
+              height={hasNextPage ? '5rem' : '1.75rem'}
+            >
+              {hasNextPage && <CircularProgress color='inherit' size={20} />}
             </Stack>
           )
-        }),
-        Footer: () => (
-          <Stack
-            alignItems='center'
-            justifyContent='center'
-            height={hasNextPage ? '5rem' : '1.75rem'}
-          >
-            {hasNextPage && <CircularProgress color='inherit' size={20} />}
-          </Stack>
-        )
-      }}
-    />
+        }}
+      />
+    </Box>
   );
 }
