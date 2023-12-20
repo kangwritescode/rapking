@@ -32,7 +32,10 @@ function LeaderboardUserCard({
   return (
     <Card
       sx={{
-        px: '2rem',
+        px: {
+          xs: '1rem',
+          md: '2rem'
+        },
         py: '1.75rem',
         height: '3.5rem',
         position: 'relative',
@@ -50,7 +53,10 @@ function LeaderboardUserCard({
         <Stack
           alignItems='center'
           justifyContent='center'
-          mr='1.5rem'
+          mr={{
+            xs: '1rem',
+            md: '1.5rem'
+          }}
           sx={{
             borderRadius: '50%',
             backgroundColor,
@@ -83,7 +89,10 @@ function LeaderboardUserCard({
             position: 'absolute',
             top: '50%',
             transform: 'translateY(-50%)',
-            right: '3.5rem'
+            right: {
+              xs: '1.5rem',
+              md: '3.5rem'
+            }
           }}
         >
           <Typography

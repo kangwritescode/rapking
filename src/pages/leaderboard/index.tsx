@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Theme, Typography, useMediaQuery } from '@mui/material';
 import { useState } from 'react';
 import LeaderboardBar from 'src/components/LeaderboardPage/LeaderboardBar';
 import SpotlightCard from 'src/components/LeaderboardPage/SpotlightCard';
@@ -16,32 +16,51 @@ function LeaderboardPage() {
   const [timeFilter, setTimeFilter] = useState<LeaderboardTimeFilter>('ALL_TIME');
   const [sexFilter, setSexFilter] = useState<LeaderboardSexFilter>('ANY');
 
+  const isTablet = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+
   return (
-    <Stack alignItems='center' height='100%' width='100%' mx='auto'>
-      <Typography
-        component='h1'
-        width='61.5rem'
-        textAlign='left'
-        fontSize='1.5rem'
-        fontWeight={600}
-        mb='1rem'
-      >
+    <Stack
+      width={{
+        xs: '100%',
+        md: 'fit-content'
+      }}
+      height='100%'
+      mx='auto'
+    >
+      <Typography component='h1' textAlign='left' fontSize='1.5rem' fontWeight={600} mb='1rem'>
         Leaderboard
       </Typography>
-      <Stack direction='row' gap='1.5rem' height='100%'>
+      <Stack direction='row' gap='1.5rem' height='100%' justifyContent='center' width='100%'>
         <Box
           sx={theme => ({
-            p: '1.4rem 1.6rem 2rem 2.2rem',
+            p: {
+              xs: 0,
+              md: '1.4rem 1.6rem 2rem 2.2rem'
+            },
             height: '100%',
             overflow: 'hidden',
-            border: `1px solid ${theme.palette.grey[800]}`,
+            border: {
+              xs: 'none',
+              md: `1px solid ${theme.palette.grey[800]}`
+            },
             borderRadius: '.5rem',
             position: 'relative'
           })}
-          width='42rem'
+          width={{
+            xs: '100%',
+            md: '40rem'
+          }}
         >
           <LeaderboardBar
-            sx={{ mb: '1rem', position: 'relative', pr: '.7rem' }}
+            sx={{
+              mb: '1rem',
+              position: 'relative',
+              pr: '.7rem',
+              justifyContent: {
+                xs: 'flex-start',
+                md: 'flex-end'
+              }
+            }}
             onSortAndFilterChange={({ regionFilter, timeFilter, sexFilter }) => {
               setRegionFilter(regionFilter);
               setTimeFilter(timeFilter);
@@ -58,7 +77,7 @@ function LeaderboardPage() {
             sexFilter={sexFilter}
           />
         </Box>
-        <SpotlightCard userId={selectedUserId} />
+        {!isTablet ? <SpotlightCard userId={selectedUserId} /> : undefined}
       </Stack>
     </Stack>
   );
