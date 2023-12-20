@@ -1,5 +1,15 @@
-import { Avatar, Card, Stack, SxProps, Typography, useTheme } from '@mui/material';
+import {
+  Avatar,
+  Card,
+  Stack,
+  SxProps,
+  Theme,
+  Typography,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
 import { User } from '@prisma/client';
+import { useRouter } from 'next/router';
 import { BUCKET_URL } from 'src/shared/constants';
 
 interface LeaderboardUserCardProps {
@@ -17,11 +27,16 @@ function LeaderboardUserCard({
   selected
 }: LeaderboardUserCardProps) {
   const theme = useTheme();
+  const router = useRouter();
+
+  const isMobileView = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   const onCardClick = () => {
     const userId = userData?.id;
-    if (userClickHandler && userId) {
+    if (userClickHandler && userId && !isMobileView) {
       userClickHandler(userId);
+    } else {
+      router.push(`/u/${userData?.username}`);
     }
   };
 
@@ -47,7 +62,7 @@ function LeaderboardUserCard({
         },
         ...sx
       }}
-      onClick={userClickHandler ? onCardClick : undefined}
+      onClick={onCardClick}
     >
       <Stack direction='row' alignItems='center' height='100%'>
         <Stack
