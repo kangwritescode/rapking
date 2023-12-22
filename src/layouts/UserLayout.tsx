@@ -51,16 +51,19 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       icon: 'mdi:earth'
     },
     {
-      title: 'Write',
-      path: '/write',
-      icon: 'ph:note-pencil-bold'
-    },
-    {
       title: 'Leaderboard',
       path: '/leaderboard',
       icon: 'ph:crown-bold'
     }
   ];
+
+  if (!userData) {
+    navItems.splice(2, 0, {
+      title: 'Write',
+      path: '/write',
+      icon: 'ph:note-pencil-bold'
+    });
+  }
 
   if (userData) {
     navItems.splice(0, 0, {

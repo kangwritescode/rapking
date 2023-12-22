@@ -4,6 +4,7 @@ import { Button } from '@mui/material';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 // ** Type Import
 import { Settings } from 'src/@core/context/settingsContext';
@@ -29,8 +30,12 @@ const AppBarContent = (props: Props) => {
     enabled: status === 'authenticated'
   });
 
+  const router = useRouter();
+
   return (
-    <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <Box
+      sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+    >
       <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
         {(!profileIsComplete && status === 'authenticated') || !hidden ? null : (
           <IconButton color='inherit' sx={{ ml: -2.75 }} onClick={toggleNavVisibility}>
@@ -45,6 +50,17 @@ const AppBarContent = (props: Props) => {
       )}
       {status === 'authenticated' && (
         <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
+          <Button
+            sx={{
+              textTransform: 'unset'
+            }}
+            color='inherit'
+            variant='text'
+            startIcon={<Icon icon='ph:note-pencil-bold' />}
+            onClick={() => router.push('/write')}
+          >
+            Write
+          </Button>
           <NotificationDropdown settings={settings} />
           <UserDropdown settings={settings} />
         </Box>
