@@ -31,6 +31,9 @@ const server = z.object({
   GCLOUD_PRIVATE_KEY: z.string(),
   GCLOUD_CLIENT_EMAIL: z.string(),
   GCLOUD_CLIENT_ID: z.string(),
+
+  MUUT_API_KEY: z.string(),
+  MUUT_SECRET_KEY: z.string(),
 })
 
 /**
@@ -62,6 +65,9 @@ const processEnv = {
 
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+
+  MUUT_API_KEY: process.env.MUUT_API_KEY,
+  MUUT_SECRET_KEY: process.env.MUUT_SECRET_KEY,
 
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 }

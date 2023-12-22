@@ -13,9 +13,9 @@ import Layout from 'src/@core/layouts/Layout';
 import VerticalAppBarContent from './components/vertical/AppBarContent';
 
 // ** Hook Import
+import { useSession } from 'next-auth/react';
 import { useSettings } from 'src/@core/hooks/useSettings';
 import { api } from 'src/utils/api';
-import { useSession } from 'next-auth/react';
 
 interface Props {
   children: ReactNode;
@@ -67,6 +67,11 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       title: userData.username || 'Profile',
       path: `/u/${userData.username}`,
       icon: 'gg:profile'
+    });
+    navItems.splice(navItems.length, 0, {
+      title: 'Forum',
+      path: '/forum',
+      icon: 'material-symbols:forum'
     });
   }
 

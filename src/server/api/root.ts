@@ -1,16 +1,17 @@
-import { createTRPCRouter } from 'src/server/api/trpc';
 import { userRouter } from 'src/server/api/routers/user';
-import { geoDBRouter } from './routers/geoDB';
-import { rapRouter } from './routers/rap';
+import { createTRPCRouter } from 'src/server/api/trpc';
+import { commentVoteRouter } from './routers/commentVote';
+import { feedRouter } from './routers/feed';
 import { gcloudRouter } from './routers/gcloud';
+import { geoDBRouter } from './routers/geoDB';
+import { leaderboardRouter } from './routers/leaderboard';
+import { muutRouter } from './routers/muut';
+import { notificationsRouter } from './routers/notifications';
+import { rapRouter } from './routers/rap';
+import { rapComment } from './routers/rapComment';
+import { rapVote } from './routers/rapVote';
 import { socialLinkRouter } from './routers/socialLink';
 import { userFollows } from './routers/userFollows';
-import { rapVote } from './routers/rapVote';
-import { rapComment } from './routers/rapComment';
-import { commentVoteRouter } from './routers/commentVote';
-import { leaderboardRouter } from './routers/leaderboard';
-import { feedRouter } from './routers/feed';
-import { notificationsRouter } from './routers/notifications';
 
 /**
  * This is the primary router for your server.
@@ -29,7 +30,8 @@ export const appRouter = createTRPCRouter({
   commentVote: commentVoteRouter,
   leaderboard: leaderboardRouter,
   feed: feedRouter,
-  notifications: notificationsRouter
+  notifications: notificationsRouter,
+  muut: muutRouter
 });
 
 // export type definition of API
