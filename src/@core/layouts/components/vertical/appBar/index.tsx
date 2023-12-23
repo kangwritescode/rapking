@@ -40,7 +40,8 @@ const Toolbar = styled(MuiToolbar)<ToolbarProps>(({ theme }) => ({
   borderBottomRightRadius: 10,
   padding: `${theme.spacing(0)} !important`,
   minHeight: `${theme.mixins.toolbar.minHeight}px !important`,
-  transition: 'padding .25s ease-in-out, box-shadow .25s ease-in-out, backdrop-filter .25s ease-in-out'
+  transition:
+    'padding .25s ease-in-out, box-shadow .25s ease-in-out, backdrop-filter .25s ease-in-out'
 }));
 
 const LayoutAppBar = (props: Props) => {
@@ -64,7 +65,10 @@ const LayoutAppBar = (props: Props) => {
       boxShadow: skin === 'bordered' ? 0 : 3,
       ...(appBarBlur && { backdropFilter: 'blur(8px)' }),
       backgroundColor: hexToRGBA(theme.palette.background.paper, appBarBlur ? 0.85 : 1),
-      ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}`, borderTopWidth: 0 })
+      ...(skin === 'bordered' && {
+        border: `1px solid ${theme.palette.divider}`,
+        borderTopWidth: 0
+      })
     };
   };
 

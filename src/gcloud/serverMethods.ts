@@ -1,7 +1,11 @@
 import { GetSignedUrlConfig } from '@google-cloud/storage';
 import { gcloudStorage } from './storage';
 
-export async function generateSignedUrl(fileName: string, action: 'read' | 'write' | 'delete', contentType?: string) {
+export async function generateSignedUrl(
+  fileName: string,
+  action: 'read' | 'write' | 'delete',
+  contentType?: string
+) {
   const options = {
     version: 'v4',
     action: action,
@@ -14,7 +18,11 @@ export async function generateSignedUrl(fileName: string, action: 'read' | 'writ
   return url;
 }
 
-export async function moveGCloudFile(bucketName: string, srcFilename: string, destFilename: string) {
+export async function moveGCloudFile(
+  bucketName: string,
+  srcFilename: string,
+  destFilename: string
+) {
   const bucket = gcloudStorage.bucket(bucketName);
   const file = bucket.file(srcFilename);
   try {

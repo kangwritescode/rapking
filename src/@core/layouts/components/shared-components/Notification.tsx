@@ -40,7 +40,9 @@ const RenderAvatar = ({ notification }: { notification: NotificationWithAssociat
   const { notifierUser, type } = notification;
 
   if ((type === 'RAP_COMMENT' || type === 'FOLLOW') && notifierUser?.profileImageUrl) {
-    return <Avatar alt='notification-avatar' src={`${BUCKET_URL}/${notifierUser.profileImageUrl}`} />;
+    return (
+      <Avatar alt='notification-avatar' src={`${BUCKET_URL}/${notifierUser.profileImageUrl}`} />
+    );
   }
 
   return (
@@ -84,7 +86,9 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
     <StyledMenuItem key={notification.id} onClick={onClickHandler}>
       <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
         <RenderAvatar notification={notification} />
-        <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
+        <Box
+          sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}
+        >
           <MenuItemTitle>{title}</MenuItemTitle>
           <MenuItemSubtitle variant='body2'>{subtitle}</MenuItemSubtitle>
         </Box>

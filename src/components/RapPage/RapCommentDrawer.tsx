@@ -30,7 +30,9 @@ function RapCommentDrawer({ onCloseHandler, isOpen, rapId }: RapCommentDrawerPro
     <Drawer anchor='right' open={isOpen} onClose={onCloseHandler}>
       <Box width='24rem' maxWidth='24rem' px={6} pt={6}>
         <Box display='flex' justifyContent='space-between' alignItems='center'>
-          <Typography variant='h6'>Comments {rapCommentsCount ? `(${rapCommentsCount})` : ''}</Typography>
+          <Typography variant='h6'>
+            Comments {rapCommentsCount ? `(${rapCommentsCount})` : ''}
+          </Typography>
           <IconButton onClick={onCloseHandler}>
             <Icon icon='mdi:close' />
           </IconButton>

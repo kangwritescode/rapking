@@ -97,7 +97,10 @@ const VerticalNavHeader = (props: Props) => {
       ) : (
         <LinkStyled href='/'>
           <Icon icon='tabler:crown' color={theme.palette.secondary.main} />
-          <HeaderTitle variant='h6' sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 3 }) }}>
+          <HeaderTitle
+            variant='h6'
+            sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 3 }) }}
+          >
             {themeConfig.templateName}
           </HeaderTitle>
         </LinkStyled>

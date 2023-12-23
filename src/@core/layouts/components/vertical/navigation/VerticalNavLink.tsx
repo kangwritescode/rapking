@@ -104,7 +104,11 @@ const VerticalNavLink = ({
   const icon = parent && !item.icon ? themeConfig.navSubItemIcon : item.icon;
 
   const isNavLinkActive = () => {
-    if (router.pathname === item.path || handleURLQueries(router, item.path) || item.path?.includes('username')) {
+    if (
+      router.pathname === item.path ||
+      handleURLQueries(router, item.path) ||
+      item.path?.includes('username')
+    ) {
       return true;
     } else {
       return false;
@@ -136,8 +140,12 @@ const VerticalNavLink = ({
         sx={{
           py: 2.25,
           ...(item.disabled ? { pointerEvents: 'none' } : { cursor: 'pointer' }),
-          pl: navCollapsed && !navHover ? (collapsedNavWidth - navigationBorderWidth - 24) / 8 : 5.5,
-          pr: navCollapsed && !navHover ? ((collapsedNavWidth - navigationBorderWidth - 24) / 2 - 5) / 4 : 3.5
+          pl:
+            navCollapsed && !navHover ? (collapsedNavWidth - navigationBorderWidth - 24) / 8 : 5.5,
+          pr:
+            navCollapsed && !navHover
+              ? ((collapsedNavWidth - navigationBorderWidth - 24) / 2 - 5) / 4
+              : 3.5
         }}
       >
         {isSubToSub ? null : (
@@ -160,7 +168,9 @@ const VerticalNavLink = ({
                   width: 26,
                   height: 26
                 }}
-                {...(userData?.profileImageUrl ? { src: `${BUCKET_URL}/${userData?.profileImageUrl}` } : {})}
+                {...(userData?.profileImageUrl
+                  ? { src: `${BUCKET_URL}/${userData?.profileImageUrl}` }
+                  : {})}
               />
             ) : (
               <UserIcon icon={icon as string} />
@@ -175,7 +185,8 @@ const VerticalNavLink = ({
           }}
         >
           <Typography
-            {...((themeConfig.menuTextTruncate || (!themeConfig.menuTextTruncate && navCollapsed && !navHover)) && {
+            {...((themeConfig.menuTextTruncate ||
+              (!themeConfig.menuTextTruncate && navCollapsed && !navHover)) && {
               noWrap: true
             })}
           >

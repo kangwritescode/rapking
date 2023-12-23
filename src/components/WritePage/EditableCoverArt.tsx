@@ -95,7 +95,9 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
           <CardMedia
             component='img'
             alt='rap-cover-art'
-            image={coverArtUrl ? `${BUCKET_URL}/${coverArtUrl}` : `${BUCKET_URL}/default/cover-art.jpg`}
+            image={
+              coverArtUrl ? `${BUCKET_URL}/${coverArtUrl}` : `${BUCKET_URL}/default/cover-art.jpg`
+            }
             sx={theme => ({
               border: `1px solid ${theme.palette.grey[700]}`,
               height: {

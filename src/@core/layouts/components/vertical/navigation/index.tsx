@@ -70,7 +70,13 @@ const StyledBoxForShadow = styled(Box)<BoxProps>(({ theme }) => ({
 
 const Navigation = (props: Props) => {
   // ** Props
-  const { hidden, settings, afterNavMenuContent, beforeNavMenuContent, navMenuContent: userNavMenuContent } = props;
+  const {
+    hidden,
+    settings,
+    afterNavMenuContent,
+    beforeNavMenuContent,
+    navMenuContent: userNavMenuContent
+  } = props;
 
   // ** States
   const [navHover, setNavHover] = useState<boolean>(false);

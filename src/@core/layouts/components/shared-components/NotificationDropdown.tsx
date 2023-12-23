@@ -35,7 +35,13 @@ export type NotificationsType = {
   title: string;
   subtitle: string;
 } & (
-  | { avatarAlt: string; avatarImg: string; avatarText?: never; avatarColor?: never; avatarIcon?: never }
+  | {
+      avatarAlt: string;
+      avatarImg: string;
+      avatarText?: never;
+      avatarColor?: never;
+      avatarIcon?: never;
+    }
   | {
       avatarAlt?: never;
       avatarImg?: never;
@@ -88,7 +94,11 @@ const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: bool
   if (hidden) {
     return <Box sx={{ maxHeight: 349, overflowY: 'auto', overflowX: 'hidden' }}>{children}</Box>;
   } else {
-    return <PerfectScrollbar options={{ wheelPropagation: false, suppressScrollX: true }}>{children}</PerfectScrollbar>;
+    return (
+      <PerfectScrollbar options={{ wheelPropagation: false, suppressScrollX: true }}>
+        {children}
+      </PerfectScrollbar>
+    );
   }
 };
 
@@ -111,10 +121,12 @@ const NotificationDropdown = (props: Props) => {
 
   // ** Mutations
   const { mutate: markAllAsRead } = api.notifications.markAllNotificationsAsRead.useMutation();
-  const { mutate: deleteAllUserNotifications, isLoading } = api.notifications.deleteAllUserNotifications.useMutation();
+  const { mutate: deleteAllUserNotifications, isLoading } =
+    api.notifications.deleteAllUserNotifications.useMutation();
 
   // ** Invalidators
-  const { invalidate: invalidateNotifications } = api.useContext().notifications.getUserNotifications;
+  const { invalidate: invalidateNotifications } =
+    api.useContext().notifications.getUserNotifications;
 
   const handleDropdownOpen = (event: SyntheticEvent) => {
     setAnchorEl(event.currentTarget);
@@ -140,13 +152,22 @@ const NotificationDropdown = (props: Props) => {
 
   return (
     <Fragment>
-      <IconButton color='inherit' aria-haspopup='true' onClick={handleDropdownOpen} aria-controls='customized-menu'>
+      <IconButton
+        color='inherit'
+        aria-haspopup='true'
+        onClick={handleDropdownOpen}
+        aria-controls='customized-menu'
+      >
         <Badge
           color='error'
           variant='dot'
           invisible={!hasUnreadNotifications}
           sx={{
-            '& .MuiBadge-badge': { top: 4, right: 4, boxShadow: theme => `0 0 0 2px ${theme.palette.background.paper}` }
+            '& .MuiBadge-badge': {
+              top: 4,
+              right: 4,
+              boxShadow: theme => `0 0 0 2px ${theme.palette.background.paper}`
+            }
           }}
         >
           <Icon icon='mdi:bell-outline' />
@@ -164,7 +185,14 @@ const NotificationDropdown = (props: Props) => {
           disableTouchRipple
           sx={{ cursor: 'default', userSelect: 'auto', backgroundColor: 'transparent !important' }}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '100%'
+            }}
+          >
             <Typography sx={{ cursor: 'text', fontWeight: 600 }}>Notifications</Typography>
             <CustomChip
               skin='light'
@@ -177,7 +205,11 @@ const NotificationDropdown = (props: Props) => {
         </StyledMenuItem>
         <ScrollWrapper hidden={hidden}>
           {notifications?.map(notification => (
-            <Notification closeDropdown={handleDropdownClose} key={notification.id} notification={notification} />
+            <Notification
+              closeDropdown={handleDropdownClose}
+              key={notification.id}
+              notification={notification}
+            />
           ))}
           {!notifications?.length && !getNotificationsIsLoading && (
             <StyledMenuItem

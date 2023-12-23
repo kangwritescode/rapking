@@ -21,16 +21,17 @@ function CommentLikeButton({ rapCommentId, sx }: CommentLikeButtonProps) {
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   // Queries
-  const { data: commentLikesCount, refetch: refetchCommentLikesCount } = api.commentVote.getCommentLikesCount.useQuery(
-    {
-      commentId: rapCommentId as string
-    },
-    {
-      enabled: Boolean(rapCommentId),
-      refetchOnMount: false,
-      refetchOnWindowFocus: false
-    }
-  );
+  const { data: commentLikesCount, refetch: refetchCommentLikesCount } =
+    api.commentVote.getCommentLikesCount.useQuery(
+      {
+        commentId: rapCommentId as string
+      },
+      {
+        enabled: Boolean(rapCommentId),
+        refetchOnMount: false,
+        refetchOnWindowFocus: false
+      }
+    );
 
   const { data: likeExists, refetch: refetchLikeExists } = api.commentVote.likeExists.useQuery(
     {

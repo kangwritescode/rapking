@@ -71,10 +71,15 @@ function UsernameAvailabilityField({
               inputProps={{ maxLength: 20 }}
               sx={{ mr: 3 }}
             />
-            {status === 'loading' && value && value.length > 2 && usernameIsAvailable === undefined ? (
+            {status === 'loading' &&
+            value &&
+            value.length > 2 &&
+            usernameIsAvailable === undefined ? (
               <CircularProgress color='secondary' size={24} />
             ) : undefined}
-            {usernameIsAvailable && <Icon color='green' icon='material-symbols:check-circle-rounded' width={24} />}
+            {usernameIsAvailable && (
+              <Icon color='green' icon='material-symbols:check-circle-rounded' width={24} />
+            )}
             {usernameIsAvailable === false && <Icon color='red' icon='ph:x-circle' width={24} />}
           </Box>
         );

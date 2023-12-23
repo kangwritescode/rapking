@@ -8,7 +8,15 @@ import { Direction } from '@mui/material';
 import themeConfig from 'src/configs/themeConfig';
 
 // ** Types Import
-import { Skin, Mode, AppBar, Footer, ThemeColor, ContentWidth, VerticalNavToggle } from 'src/@core/layouts/types';
+import {
+  Skin,
+  Mode,
+  AppBar,
+  Footer,
+  ThemeColor,
+  ContentWidth,
+  VerticalNavToggle
+} from 'src/@core/layouts/types';
 
 export type Settings = {
   skin: Skin;
@@ -24,7 +32,13 @@ export type Settings = {
   layout?: 'vertical' | 'horizontal';
   lastLayout?: 'vertical' | 'horizontal';
   verticalNavToggleType: VerticalNavToggle;
-  toastPosition?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
+  toastPosition?:
+    | 'top-left'
+    | 'top-center'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-center'
+    | 'bottom-right';
 };
 
 export type PageSpecificSettings = {
@@ -41,7 +55,13 @@ export type PageSpecificSettings = {
   layout?: 'vertical' | 'horizontal';
   lastLayout?: 'vertical' | 'horizontal';
   verticalNavToggleType?: VerticalNavToggle;
-  toastPosition?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
+  toastPosition?:
+    | 'top-left'
+    | 'top-center'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-center'
+    | 'bottom-right';
 };
 export type SettingsContextValue = {
   settings: Settings;
@@ -67,7 +87,10 @@ const initialSettings: Settings = {
   contentWidth: themeConfig.contentWidth,
   toastPosition: themeConfig.toastPosition,
   verticalNavToggleType: themeConfig.verticalNavToggleType,
-  appBar: themeConfig.layout === 'horizontal' && themeConfig.appBar === 'hidden' ? 'fixed' : themeConfig.appBar
+  appBar:
+    themeConfig.layout === 'horizontal' && themeConfig.appBar === 'hidden'
+      ? 'fixed'
+      : themeConfig.appBar
 };
 
 const staticSettings = {
@@ -149,7 +172,11 @@ export const SettingsProvider = ({ children, pageSettings }: SettingsProviderPro
     setSettings(updatedSettings);
   };
 
-  return <SettingsContext.Provider value={{ settings, saveSettings }}>{children}</SettingsContext.Provider>;
+  return (
+    <SettingsContext.Provider value={{ settings, saveSettings }}>
+      {children}
+    </SettingsContext.Provider>
+  );
 };
 
 export const SettingsConsumer = SettingsContext.Consumer;

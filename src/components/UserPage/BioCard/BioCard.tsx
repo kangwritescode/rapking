@@ -30,9 +30,16 @@ function BioCard({ userData, sx }: BioCardProps) {
 
   return (
     <>
-      <AddSocialDialog isOpen={socialsModalIsOpen} onCloseHandler={() => setSocialsModalIsOpen(false)} />
+      <AddSocialDialog
+        isOpen={socialsModalIsOpen}
+        onCloseHandler={() => setSocialsModalIsOpen(false)}
+      />
       {userData && bioModalIsOpen && (
-        <EditBioDialog userData={userData} isOpen={true} onCloseHandler={() => setBioModalIsOpen(false)} />
+        <EditBioDialog
+          userData={userData}
+          isOpen={true}
+          onCloseHandler={() => setBioModalIsOpen(false)}
+        />
       )}
       <Card
         sx={{

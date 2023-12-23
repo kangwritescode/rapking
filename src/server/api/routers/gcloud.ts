@@ -12,9 +12,11 @@ export const gcloudRouter = createTRPCRouter({
     )
     .query(async ({ input }) => {
       const { fileName } = input;
-      const signedUrl = await generateSignedUrl(fileName, 'write', 'application/octet-stream').catch(err =>
-        console.log(err)
-      );
+      const signedUrl = await generateSignedUrl(
+        fileName,
+        'write',
+        'application/octet-stream'
+      ).catch(err => console.log(err));
 
       return signedUrl;
     }),

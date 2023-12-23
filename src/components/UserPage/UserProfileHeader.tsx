@@ -37,8 +37,10 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
   );
 
   // Mutations
-  const { mutate: createFollow, isLoading: createFollowIsLoading } = api.userFollows.createFollow.useMutation();
-  const { mutate: deleteFollow, isLoading: deleteFollowIsLoading } = api.userFollows.deleteFollow.useMutation();
+  const { mutate: createFollow, isLoading: createFollowIsLoading } =
+    api.userFollows.createFollow.useMutation();
+  const { mutate: deleteFollow, isLoading: deleteFollowIsLoading } =
+    api.userFollows.deleteFollow.useMutation();
 
   // Invalidators
   const { invalidate: invalidateFollowsQuery } = api.useContext().userFollows;
@@ -101,7 +103,14 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
               justifyContent: ['center', 'space-between']
             }}
           >
-            <Box sx={{ mb: [6, 0], display: 'flex', flexDirection: 'column', alignItems: ['center', 'flex-start'] }}>
+            <Box
+              sx={{
+                mb: [6, 0],
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: ['center', 'flex-start']
+              }}
+            >
               <Typography variant='h5' sx={{ mb: 2 }}>
                 {userData?.username}
               </Typography>
@@ -112,19 +121,39 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
                   justifyContent: ['center', 'flex-start']
                 }}
               >
-                <Box sx={{ mr: 4, display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
+                <Box
+                  sx={{
+                    mr: 4,
+                    display: 'flex',
+                    alignItems: 'center',
+                    '& svg': { mr: 1, color: 'text.secondary' }
+                  }}
+                >
                   <Icon icon='material-symbols:male' />
                   <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>
                     {userData.sex === 'male' ? 'Male' : 'Female'}
                   </Typography>
                 </Box>
-                <Box sx={{ mr: 5, display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
+                <Box
+                  sx={{
+                    mr: 5,
+                    display: 'flex',
+                    alignItems: 'center',
+                    '& svg': { mr: 1, color: 'text.secondary' }
+                  }}
+                >
                   <Icon icon='mdi:map-marker-outline' />
                   <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>
                     {userData?.city + ', ' + userData?.state}
                   </Typography>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'text.secondary' } }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    '& svg': { mr: 1, color: 'text.secondary' }
+                  }}
+                >
                   <Icon icon='mdi:calendar-blank' />
                   <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>
                     Joined {userData?.createdAt && userData.createdAt.toLocaleDateString()}
@@ -144,17 +173,26 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
                 Edit Profile
               </Button>
             ) : followData ? (
-              <FollowingButton isLoading={deleteFollowIsLoading} unfollowClickHandler={unfollowButonClickHandler} />
+              <FollowingButton
+                isLoading={deleteFollowIsLoading}
+                unfollowClickHandler={unfollowButonClickHandler}
+              />
             ) : (
               <Button
                 variant='contained'
                 color='primary'
                 onClick={followButtonClickHandler}
                 disabled={createFollowIsLoading}
-                {...(!createFollowIsLoading ? { startIcon: <Icon icon='mdi:account-plus-outline' /> } : {})}
+                {...(!createFollowIsLoading
+                  ? { startIcon: <Icon icon='mdi:account-plus-outline' /> }
+                  : {})}
                 sx={{ minWidth: '8rem' }}
               >
-                {createFollowIsLoading ? <CircularProgress color='inherit' size='1.5rem' /> : 'Follow'}
+                {createFollowIsLoading ? (
+                  <CircularProgress color='inherit' size='1.5rem' />
+                ) : (
+                  'Follow'
+                )}
               </Button>
             )}
           </Box>

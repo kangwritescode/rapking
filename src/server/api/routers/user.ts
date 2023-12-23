@@ -5,13 +5,15 @@ import { TRPCError } from '@trpc/server';
 import { stateToRegionMap } from 'src/shared/constants';
 
 export const userRouter = createTRPCRouter({
-  findByUsername: publicProcedure.input(z.object({ username: z.string() })).query(({ input, ctx }) => {
-    return ctx.prisma.user.findUnique({
-      where: {
-        username: input.username
-      }
-    });
-  }),
+  findByUsername: publicProcedure
+    .input(z.object({ username: z.string() }))
+    .query(({ input, ctx }) => {
+      return ctx.prisma.user.findUnique({
+        where: {
+          username: input.username
+        }
+      });
+    }),
   getCurrentUser: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findUnique({
       where: {

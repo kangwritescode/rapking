@@ -71,9 +71,15 @@ const PerfectScrollbar = styled(PerfectScrollbarComponent)({
 
 const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: boolean }) => {
   if (hidden) {
-    return <Box sx={{ maxHeight: '30rem', overflowY: 'auto', overflowX: 'hidden' }}>{children}</Box>;
+    return (
+      <Box sx={{ maxHeight: '30rem', overflowY: 'auto', overflowX: 'hidden' }}>{children}</Box>
+    );
   } else {
-    return <PerfectScrollbar options={{ wheelPropagation: false, suppressScrollX: true }}>{children}</PerfectScrollbar>;
+    return (
+      <PerfectScrollbar options={{ wheelPropagation: false, suppressScrollX: true }}>
+        {children}
+      </PerfectScrollbar>
+    );
   }
 };
 
@@ -100,7 +106,12 @@ const ShortcutsDropdown = (props: Props) => {
 
   return (
     <Fragment>
-      <IconButton color='inherit' aria-haspopup='true' onClick={handleDropdownOpen} aria-controls='customized-menu'>
+      <IconButton
+        color='inherit'
+        aria-haspopup='true'
+        onClick={handleDropdownOpen}
+        aria-controls='customized-menu'
+      >
         <Icon icon='mdi:view-grid-outline' />
       </IconButton>
       <Menu
@@ -115,8 +126,17 @@ const ShortcutsDropdown = (props: Props) => {
           disableTouchRipple
           sx={{ cursor: 'default', userSelect: 'auto', backgroundColor: 'transparent !important' }}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-            <Typography sx={{ fontSize: '1.125rem', color: 'text.secondary', fontWeight: 600 }}>Shortcuts</Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '100%'
+            }}
+          >
+            <Typography sx={{ fontSize: '1.125rem', color: 'text.secondary', fontWeight: 600 }}>
+              Shortcuts
+            </Typography>
             <Tooltip title='Add Shortcut' placement='top'>
               <IconButton disableRipple>
                 <Icon icon='mdi:plus-circle-outline' />
@@ -157,10 +177,16 @@ const ShortcutsDropdown = (props: Props) => {
                     justifyContent: 'center'
                   }}
                 >
-                  <CustomAvatar skin='light' color='secondary' sx={{ mb: 2, width: 50, height: 50 }}>
+                  <CustomAvatar
+                    skin='light'
+                    color='secondary'
+                    sx={{ mb: 2, width: 50, height: 50 }}
+                  >
                     <Icon icon={shortcut.icon} />
                   </CustomAvatar>
-                  <Typography sx={{ fontWeight: 600, color: 'text.secondary' }}>{shortcut.title}</Typography>
+                  <Typography sx={{ fontWeight: 600, color: 'text.secondary' }}>
+                    {shortcut.title}
+                  </Typography>
                   <Typography variant='body2' sx={{ color: 'text.disabled' }}>
                     {shortcut.subtitle}
                   </Typography>

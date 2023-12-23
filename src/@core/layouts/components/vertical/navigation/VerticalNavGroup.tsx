@@ -188,7 +188,8 @@ const VerticalNavGroup = (props: Props) => {
       >
         <ListItemButton
           className={clsx({
-            'Mui-selected': groupActive.includes(item.title) || currentActiveGroup.includes(item.title)
+            'Mui-selected':
+              groupActive.includes(item.title) || currentActiveGroup.includes(item.title)
           })}
           sx={{
             py: 2.25,
@@ -196,8 +197,14 @@ const VerticalNavGroup = (props: Props) => {
             borderTopRightRadius: 100,
             borderBottomRightRadius: 100,
             transition: 'padding-left .25s ease-in-out',
-            pl: navCollapsed && !navHover ? (collapsedNavWidth - navigationBorderWidth - 24) / 8 : 5.5,
-            pr: navCollapsed && !navHover ? ((collapsedNavWidth - navigationBorderWidth - 24) / 2 - 5) / 4 : 3.5,
+            pl:
+              navCollapsed && !navHover
+                ? (collapsedNavWidth - navigationBorderWidth - 24) / 8
+                : 5.5,
+            pr:
+              navCollapsed && !navHover
+                ? ((collapsedNavWidth - navigationBorderWidth - 24) / 2 - 5) / 4
+                : 3.5,
             '&.Mui-selected': {
               backgroundColor: 'action.hover',
               '&:hover': {
@@ -225,9 +232,12 @@ const VerticalNavGroup = (props: Props) => {
               <UserIcon icon={icon as string} {...(parent && { fontSize: '0.875rem' })} />
             </ListItemIcon>
           )}
-          <MenuItemTextWrapper sx={{ ...menuGroupCollapsedStyles, ...(isSubToSub ? { ml: 9 } : {}) }}>
+          <MenuItemTextWrapper
+            sx={{ ...menuGroupCollapsedStyles, ...(isSubToSub ? { ml: 9 } : {}) }}
+          >
             <Typography
-              {...((themeConfig.menuTextTruncate || (!themeConfig.menuTextTruncate && navCollapsed && !navHover)) && {
+              {...((themeConfig.menuTextTruncate ||
+                (!themeConfig.menuTextTruncate && navCollapsed && !navHover)) && {
                 noWrap: true
               })}
             >

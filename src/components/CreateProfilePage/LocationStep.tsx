@@ -1,4 +1,12 @@
-import { Alert, Autocomplete, Box, Button, CircularProgress, StepContent, TextField } from '@mui/material';
+import {
+  Alert,
+  Autocomplete,
+  Box,
+  Button,
+  CircularProgress,
+  StepContent,
+  TextField
+} from '@mui/material';
 import * as yup from 'yup';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -39,12 +47,21 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
   // initial values
   const initialLocation: Option | null =
     userData?.state && userData?.city
-      ? { state: userData?.state, city: userData?.city, label: `${userData?.city}, ${userData?.state}` }
+      ? {
+          state: userData?.state,
+          city: userData?.city,
+          label: `${userData?.city}, ${userData?.state}`
+        }
       : null;
 
   useEffect(() => {
     if (locationsData && locationsData.length > 0) {
-      setOptions(locationsData.map((location: getLocationsResult) => ({ state: location.state, city: location.city })));
+      setOptions(
+        locationsData.map((location: getLocationsResult) => ({
+          state: location.state,
+          city: location.city
+        }))
+      );
     } else {
       setOptions([]);
     }
@@ -116,7 +133,12 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
                 getOptionLabel={option => `${option.city}, ${option.state}`}
                 filterOptions={x => x}
                 renderInput={params => (
-                  <TextField {...params} sx={{ width: '100%' }} placeholder='Enter ZIP Code' size='small' />
+                  <TextField
+                    {...params}
+                    sx={{ width: '100%' }}
+                    placeholder='Enter ZIP Code'
+                    size='small'
+                  />
                 )}
                 isOptionEqualToValue={(option, value) => option.city === value.city}
                 onChange={(_, newValue) => onChange(newValue)}

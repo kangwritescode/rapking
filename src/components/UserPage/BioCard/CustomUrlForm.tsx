@@ -21,7 +21,12 @@ interface CustomUrlFormProps {
   onSuccess?: () => void;
 }
 
-function CustomUrlForm({ isValidChangedHandler, submitButtonRef, onSuccess, setIsLoading }: CustomUrlFormProps) {
+function CustomUrlForm({
+  isValidChangedHandler,
+  submitButtonRef,
+  onSuccess,
+  setIsLoading
+}: CustomUrlFormProps) {
   const theme = useTheme();
 
   const { mutate } = api.socialLink.postSocialLink.useMutation();
@@ -76,8 +81,18 @@ function CustomUrlForm({ isValidChangedHandler, submitButtonRef, onSuccess, setI
   return (
     <>
       <CustomUrlButton sx={{ pointerEvents: 'none', mb: theme.spacing(4) }} />
-      <Box component='form' display='flex' flexDirection='column' onSubmit={handleSubmit(createSocialLink)}>
-        <TextField {...register('displayText')} size='small' placeholder='Display text' error={!!errors?.displayText} />
+      <Box
+        component='form'
+        display='flex'
+        flexDirection='column'
+        onSubmit={handleSubmit(createSocialLink)}
+      >
+        <TextField
+          {...register('displayText')}
+          size='small'
+          placeholder='Display text'
+          error={!!errors?.displayText}
+        />
         {errors?.displayText && (
           <Typography sx={{ mt: 1 }} variant='caption' color='error'>
             {errors?.displayText?.message}

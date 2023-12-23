@@ -59,7 +59,15 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
     mode: 'all'
   });
 
-  const onSubmit = async ({ username, sex, dob }: { username: string; sex: string; dob: dayjs.Dayjs | string }) => {
+  const onSubmit = async ({
+    username,
+    sex,
+    dob
+  }: {
+    username: string;
+    sex: string;
+    dob: dayjs.Dayjs | string;
+  }) => {
     updateUser(
       {
         username,
@@ -91,7 +99,9 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
           mb: theme.spacing(2)
         }}
         errorMessage={errors.username?.message}
-        availabilityChangedHandler={(isAvailable: boolean | undefined) => setUsernameIsAvailable(isAvailable)}
+        availabilityChangedHandler={(isAvailable: boolean | undefined) =>
+          setUsernameIsAvailable(isAvailable)
+        }
       />
       <Typography mt={6} mb={1}>
         Date of Birth
@@ -100,7 +110,11 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
       <Typography mt={6}>Sex</Typography>
       <SexField control={control} errorMessage={errors.sex?.message} />
       <Box display='flex' justifyContent={'flex-end'}>
-        <Button variant='contained' type='submit' disabled={!isValid || !isDirty || !usernameIsAvailable}>
+        <Button
+          variant='contained'
+          type='submit'
+          disabled={!isValid || !isDirty || !usernameIsAvailable}
+        >
           Update
         </Button>
       </Box>

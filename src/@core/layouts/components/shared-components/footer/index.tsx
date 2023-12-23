@@ -50,7 +50,9 @@ const Footer = (props: Props) => {
             ? { px: [4, 6] }
             : {
                 backgroundColor: 'background.paper',
-                ...(skin === 'bordered' ? { borderTop: `1px solid ${theme.palette.divider}` } : { boxShadow: 6 })
+                ...(skin === 'bordered'
+                  ? { borderTop: `1px solid ${theme.palette.divider}` }
+                  : { boxShadow: 6 })
               })
         }),
         ...footerStyles
@@ -71,7 +73,9 @@ const Footer = (props: Props) => {
                 px: [5, 6],
                 ...(contentWidth === 'boxed' &&
                   layout === 'vertical' && {
-                    '@media (min-width:1440px)': { maxWidth: `calc(1440px - ${theme.spacing(6)} * 2)` }
+                    '@media (min-width:1440px)': {
+                      maxWidth: `calc(1440px - ${theme.spacing(6)} * 2)`
+                    }
                   }),
                 ...(layout === 'vertical' && {
                   ...(skin === 'bordered'

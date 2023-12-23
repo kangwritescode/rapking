@@ -20,16 +20,16 @@ interface Props {
 }
 
 // ** Styled Components
-const ListSubheader = styled((props: ListSubheaderProps) => <MuiListSubheader component='li' {...props} />)(
-  ({ theme }) => ({
-    lineHeight: 1,
-    display: 'flex',
-    position: 'static',
-    marginTop: theme.spacing(7),
-    marginBottom: theme.spacing(2),
-    backgroundColor: 'transparent'
-  })
-);
+const ListSubheader = styled((props: ListSubheaderProps) => (
+  <MuiListSubheader component='li' {...props} />
+))(({ theme }) => ({
+  lineHeight: 1,
+  display: 'flex',
+  position: 'static',
+  marginTop: theme.spacing(7),
+  marginBottom: theme.spacing(2),
+  backgroundColor: 'transparent'
+}));
 
 const TypographyHeaderText = styled(Typography)<TypographyProps>(({ theme }) => ({
   fontSize: '0.75rem',

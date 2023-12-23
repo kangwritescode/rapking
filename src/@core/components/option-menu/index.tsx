@@ -20,7 +20,13 @@ import { OptionType, OptionsMenuType, OptionMenuItemType } from './types';
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings';
 
-const MenuItemWrapper = ({ children, option }: { children: ReactNode; option: OptionMenuItemType }) => {
+const MenuItemWrapper = ({
+  children,
+  option
+}: {
+  children: ReactNode;
+  option: OptionMenuItemType;
+}) => {
   if (option.href) {
     return (
       <Box
@@ -97,7 +103,9 @@ const OptionsMenu = (props: OptionsMenuType) => {
                 {...(option.href && { sx: { p: 0 } })}
                 onClick={e => {
                   handleClose();
-                  option.menuItemProps && option.menuItemProps.onClick ? option.menuItemProps.onClick(e) : null;
+                  option.menuItemProps && option.menuItemProps.onClick
+                    ? option.menuItemProps.onClick(e)
+                    : null;
                 }}
               >
                 <MenuItemWrapper option={option}>

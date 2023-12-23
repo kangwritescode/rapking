@@ -36,7 +36,12 @@ export const useGCloudUpload = ({
   // Queries and Mutations
   const { data: presignedWriteUrl } = api.gcloud.generateWriteUrl.useQuery(
     { fileName: newFileUrl },
-    { enabled: !!newFileUrl, refetchOnMount: false, refetchOnReconnect: false, refetchOnWindowFocus: false }
+    {
+      enabled: !!newFileUrl,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false
+    }
   );
 
   useEffect(() => {

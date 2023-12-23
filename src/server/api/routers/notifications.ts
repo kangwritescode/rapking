@@ -65,18 +65,20 @@ export const notificationsRouter = createTRPCRouter({
 
     return true;
   }),
-  markNotificationAsRead: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
-    await ctx.prisma.notification.update({
-      where: {
-        id: input.id
-      },
-      data: {
-        read: true
-      }
-    });
+  markNotificationAsRead: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.notification.update({
+        where: {
+          id: input.id
+        },
+        data: {
+          read: true
+        }
+      });
 
-    return true;
-  }),
+      return true;
+    }),
   deleteAllUserNotifications: protectedProcedure.mutation(async ({ ctx }) => {
     await ctx.prisma.notification.deleteMany({
       where: {

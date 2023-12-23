@@ -25,9 +25,10 @@ const Card = (skin: Skin) => {
       styleOverrides: {
         root: ({ theme }: OwnerStateThemeType) => ({
           padding: theme.spacing(5),
-          '& + .MuiCardContent-root, & + .MuiCardActions-root, & + .MuiCollapse-root .MuiCardContent-root': {
-            paddingTop: 0
-          },
+          '& + .MuiCardContent-root, & + .MuiCardActions-root, & + .MuiCollapse-root .MuiCardContent-root':
+            {
+              paddingTop: 0
+            },
           '& .MuiCardHeader-subheader': {
             fontSize: '0.875rem',
             color: theme.palette.text.secondary

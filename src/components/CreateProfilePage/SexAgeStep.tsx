@@ -75,7 +75,11 @@ function PersonalStep({ handleNext, handleBack }: PersonalStepProps) {
   return (
     <StepContent>
       <form key={1} onSubmit={handleSubmit(formValues => updateUser(formValues))}>
-        <DateofBirthField control={control} errorMessage={errors.dob?.message} label='Date of Birth' />
+        <DateofBirthField
+          control={control}
+          errorMessage={errors.dob?.message}
+          label='Date of Birth'
+        />
         <SexField control={control} errorMessage={errors.sex?.message} label='Sex' />
         <div className='button-wrapper'>
           <Button size='small' variant='outlined' color='secondary' onClick={handleBack}>

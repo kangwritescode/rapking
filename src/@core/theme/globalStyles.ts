@@ -49,12 +49,14 @@ const GlobalStyles = (theme: Theme) => {
       right: '0 !important',
       left: 'auto !important',
       '&:hover, &:focus, &.ps--clicking': {
-        backgroundColor: theme.palette.mode === 'light' ? '#E4E5EB !important' : '#423D5D !important'
+        backgroundColor:
+          theme.palette.mode === 'light' ? '#E4E5EB !important' : '#423D5D !important'
       },
       '& .ps__thumb-y': {
         right: '3px !important',
         left: 'auto !important',
-        backgroundColor: theme.palette.mode === 'light' ? '#C2C4D1 !important' : '#504B6D !important'
+        backgroundColor:
+          theme.palette.mode === 'light' ? '#C2C4D1 !important' : '#504B6D !important'
       },
       '.layout-vertical-nav &': {
         '& .ps__thumb-y': {

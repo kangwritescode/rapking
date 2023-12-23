@@ -20,7 +20,10 @@ const Avatar = forwardRef((props: CustomAvatarProps, ref: Ref<any>) => {
   const theme = useTheme();
   const bgColors: UseBgColorType = useBgColor();
 
-  const getAvatarStyles = (skin: 'filled' | 'light' | 'light-static' | undefined, skinColor: ThemeColor) => {
+  const getAvatarStyles = (
+    skin: 'filled' | 'light' | 'light-static' | undefined,
+    skinColor: ThemeColor
+  ) => {
     let avatarStyles;
 
     if (skin === 'light') {
@@ -46,7 +49,13 @@ const Avatar = forwardRef((props: CustomAvatarProps, ref: Ref<any>) => {
     info: getAvatarStyles(skin, 'info')
   };
 
-  return <MuiAvatar ref={ref} {...props} sx={!src && skin && color ? Object.assign(colors[color], sx) : sx} />;
+  return (
+    <MuiAvatar
+      ref={ref}
+      {...props}
+      sx={!src && skin && color ? Object.assign(colors[color], sx) : sx}
+    />
+  );
 });
 
 Avatar.defaultProps = {

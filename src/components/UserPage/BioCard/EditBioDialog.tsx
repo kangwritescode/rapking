@@ -78,7 +78,12 @@ function EditBioDialog({ isOpen, onCloseHandler, userData }: EditBioDialogProps)
         >
           <Icon icon='ph:x' />
         </IconButton>
-        <DialogTitle display='flex' justifyContent='center' alignItems='center' sx={{ p: theme.spacing(3) }}>
+        <DialogTitle
+          display='flex'
+          justifyContent='center'
+          alignItems='center'
+          sx={{ p: theme.spacing(3) }}
+        >
           Edit Bio
         </DialogTitle>
         <Divider />
