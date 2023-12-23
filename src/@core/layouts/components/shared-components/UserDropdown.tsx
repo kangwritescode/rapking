@@ -1,27 +1,27 @@
 // ** React Imports
-import { useState, SyntheticEvent, Fragment } from 'react';
+import { Fragment, SyntheticEvent, useState } from 'react';
 
 // ** Next Import
 import { useRouter } from 'next/router';
 
 // ** MUI Imports
-import Box from '@mui/material/Box';
-import Menu from '@mui/material/Menu';
-import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
+import Badge from '@mui/material/Badge';
+import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
+import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
 
 // ** Icon Imports
 import { Icon } from '@iconify/react';
 
 // ** Type Imports
-import { Settings } from 'src/@core/context/settingsContext';
 import { signOut, useSession } from 'next-auth/react';
-import { api } from 'src/utils/api';
+import { Settings } from 'src/@core/context/settingsContext';
 import { BUCKET_URL } from 'src/shared/constants';
+import { api } from 'src/utils/api';
 
 interface Props {
   settings: Settings;
@@ -88,6 +88,8 @@ const UserDropdown = (props: Props) => {
     signOut({ callbackUrl: '/' });
   };
 
+  const isCreateProfilePage = router.pathname === '/create-profile';
+
   return (
     <Fragment>
       <Badge
@@ -141,19 +143,23 @@ const UserDropdown = (props: Props) => {
           </Box>
         </Box>
         <Divider sx={{ mb: 1 }} />
-        <MenuItem
-          sx={{ p: 0 }}
-          onClick={() => {
-            handleDropdownClose();
-            router.push('/settings');
-          }}
-        >
-          <Box sx={styles}>
-            <Icon icon='mdi:cog-outline' />
-            Settings
-          </Box>
-        </MenuItem>
-        <Divider />
+        {!isCreateProfilePage && (
+          <>
+            <MenuItem
+              sx={{ p: 0 }}
+              onClick={() => {
+                handleDropdownClose();
+                router.push('/settings');
+              }}
+            >
+              <Box sx={styles}>
+                <Icon icon='mdi:cog-outline' />
+                Settings
+              </Box>
+            </MenuItem>
+            <Divider />
+          </>
+        )}
         <MenuItem
           onClick={handleLogout}
           sx={{ py: 2, '& svg': { mr: 2, fontSize: '1.375rem', color: 'text.primary' } }}

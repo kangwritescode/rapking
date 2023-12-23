@@ -32,6 +32,8 @@ const AppBarContent = (props: Props) => {
 
   const router = useRouter();
 
+  const isCreateProfilePage = router.pathname === '/create-profile';
+
   return (
     <Box
       sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
@@ -50,18 +52,20 @@ const AppBarContent = (props: Props) => {
       )}
       {status === 'authenticated' && (
         <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
-          <Button
-            sx={{
-              textTransform: 'unset'
-            }}
-            color='inherit'
-            variant='text'
-            startIcon={<Icon icon='ph:note-pencil-bold' />}
-            onClick={() => router.push('/write')}
-          >
-            Write
-          </Button>
-          <NotificationDropdown settings={settings} />
+          {!isCreateProfilePage && (
+            <Button
+              sx={{
+                textTransform: 'unset'
+              }}
+              color='inherit'
+              variant='text'
+              startIcon={<Icon icon='ph:note-pencil-bold' />}
+              onClick={() => router.push('/write')}
+            >
+              Write
+            </Button>
+          )}
+          {!isCreateProfilePage && <NotificationDropdown settings={settings} />}
           <UserDropdown settings={settings} />
         </Box>
       )}
