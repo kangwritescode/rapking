@@ -1,20 +1,22 @@
 import { Box, Button, Stack, Theme, Typography, useMediaQuery } from '@mui/material';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import BoxOutlineButton from 'src/components/BoxOutlinedButton';
 import BannerContainer from 'src/components/LandingPage/BannerContainer';
 import LandingNav from 'src/components/LandingPage/LandingNav';
 
-const Home = () => {
+const LandingPage = () => {
   const isTablet = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+  const router = useRouter();
 
   const checkOutButtonsData = [
     {
       title: 'West Coast',
-      path: '/explore'
+      path: '/explore?us-region=WEST'
     },
     {
       title: 'East Coast',
-      path: '/explore'
+      path: '/explore?us-region=EAST'
     }
   ];
 
@@ -24,8 +26,7 @@ const Home = () => {
       <BannerContainer
         sx={{
           height: {
-            xs: '20rem',
-            sm: '25rem',
+            xs: '25rem',
             md: '36rem'
           }
         }}
@@ -74,12 +75,21 @@ const Home = () => {
           >
             {isTablet ? 'Join Rapking' : 'Join the RapKing Community'}
           </BoxOutlineButton>
-          <Stack direction='row' mt='2.5rem' alignItems='center'>
+          <Stack
+            direction='row'
+            alignItems='center'
+            sx={{
+              mt: {
+                xs: '2rem',
+                md: '2.5rem'
+              }
+            }}
+          >
             <Typography component='span' mr='.25rem'>
               {' '}
               Check out bars from:{' '}
             </Typography>
-            {checkOutButtonsData.map(({ title }) => {
+            {checkOutButtonsData.map(({ title, path }) => {
               return (
                 <Button
                   key={title}
@@ -94,6 +104,7 @@ const Home = () => {
                     background: theme.palette.grey[900],
                     textTransform: 'none'
                   })}
+                  onClick={() => router.push(path)}
                 >
                   {title}
                 </Button>
@@ -106,6 +117,6 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default LandingPage;
 
-Home.getLayout = (page: React.ReactNode) => page;
+LandingPage.getLayout = (page: React.ReactNode) => page;

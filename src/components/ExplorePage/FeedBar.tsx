@@ -1,4 +1,5 @@
 import { Box, MenuItem, Select, Stack, SxProps, Typography } from '@mui/material';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 
@@ -18,8 +19,11 @@ interface FeedBarProps {
 }
 
 function FeedBar({ sx, onSortAndFilterChange }: FeedBarProps) {
+  const { query } = useRouter();
+  const queryRegionFilter = query['us-region'] as RegionFilter;
+
   const [sortBy, setSortBy] = useState<SortByValue>('NEWEST');
-  const [regionFilter, setRegionFilter] = useState<RegionFilter>('ALL');
+  const [regionFilter, setRegionFilter] = useState<RegionFilter>(queryRegionFilter || 'ALL');
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('ALL');
   const [sexFilter, setSexFilter] = useState<SexFilter>('ANY');
 

@@ -4,11 +4,14 @@ import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api
 import FeedBar from '../../components/ExplorePage/FeedBar';
 
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import Feed from '../../components/ExplorePage/Feed';
 
 function ExplorePage() {
   const theme = useTheme();
   const { status } = useSession();
+  const { query } = useRouter();
+  const queryRegionFilter = query['us-region'] as RegionFilter;
 
   // Tabs
   const [tab, setTab] = useState(0);
@@ -19,7 +22,7 @@ function ExplorePage() {
 
   // Feed
   const [sortByValue, setSortByValue] = useState<SortByValue>('NEWEST');
-  const [regionFilter, setRegionFilter] = useState<RegionFilter>('ALL');
+  const [regionFilter, setRegionFilter] = useState<RegionFilter>(queryRegionFilter || 'ALL');
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('ALL');
   const [sexFilter, setSexFilter] = useState<SexFilter>('ANY');
   const followingFilter = tab === 1;

@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react';
-import { Button, Stack, Typography, useTheme } from '@mui/material';
+import { Button, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Theme } from '@mui/system';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
@@ -27,6 +28,8 @@ const LandingNav = () => {
 
   const router = useRouter();
 
+  const isTablet = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+
   return (
     <Stack
       width='100%'
@@ -37,13 +40,17 @@ const LandingNav = () => {
       position='relative'
       sx={{
         px: {
-          xs: '1rem',
+          xs: '1.5rem',
           md: '2rem'
         }
       }}
     >
       <Stack direction='row' alignItems='center'>
-        <Icon icon='tabler:crown' color={theme.palette.secondary.main} fontSize='1.5rem' />
+        <Icon
+          icon='tabler:crown'
+          color={theme.palette.secondary.main}
+          fontSize={isTablet ? '2rem' : '1.5rem'}
+        />
         <Typography
           variant='h6'
           sx={{
