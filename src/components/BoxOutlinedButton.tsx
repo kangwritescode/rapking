@@ -1,11 +1,13 @@
-import { Box } from '@mui/material';
+import { Box, SxProps } from '@mui/material';
 
 export default function BoxOutlineButton({
   children,
-  onClick
+  onClick,
+  sx
 }: {
   children: React.ReactNode | string;
   onClick?: () => void;
+  sx?: SxProps;
 }) {
   return (
     <Box
@@ -49,7 +51,8 @@ export default function BoxOutlineButton({
           backgroundColor: 'white',
           transition: '0.2s',
           zIndex: -1
-        }
+        },
+        ...sx
       }}
     >
       {children}

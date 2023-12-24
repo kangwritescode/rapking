@@ -1,119 +1,105 @@
-import { Icon } from '@iconify/react';
-import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, Stack, Theme, Typography, useMediaQuery } from '@mui/material';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/router';
 import BoxOutlineButton from 'src/components/BoxOutlinedButton';
 import BannerContainer from 'src/components/LandingPage/BannerContainer';
-
-const navButtons = [
-  {
-    title: 'Explore',
-    path: '/explore'
-  },
-  {
-    title: 'Write',
-    path: '/write'
-  },
-  {
-    title: 'Leaderboard',
-    path: '/leaderboard'
-  },
-  {
-    title: 'Forum',
-    path: '/forum'
-  }
-];
-
-const NavBar = () => {
-  const theme = useTheme();
-
-  const router = useRouter();
-
-  return (
-    <Stack
-      width='100%'
-      height='4em'
-      direction='row'
-      alignItems='center'
-      justifyContent='space-between'
-      position='relative'
-      px='2rem'
-    >
-      <Stack direction='row' alignItems='center'>
-        <Icon icon='tabler:crown' color={theme.palette.secondary.main} fontSize='1.5rem' />
-        <Typography
-          variant='h6'
-          sx={{
-            fontWeight: 600,
-            lineHeight: 'normal',
-            textTransform: 'uppercase',
-            color: theme.palette.text.primary,
-            transition: 'opacity .25s ease-in-out, margin .25s ease-in-out',
-            ml: '0.5rem'
-          }}
-        >
-          RapKing
-        </Typography>
-      </Stack>
-      <Stack direction='row' alignItems='center' justifyContent='space-evenly' width='34rem'>
-        {navButtons.map(({ title, path }) => {
-          const onClick = path === '/forum' ? () => void signIn() : () => router.push(path);
-
-          return (
-            <Button
-              key={title}
-              sx={{
-                color: theme.palette.text.primary,
-                textTransform: 'none',
-                fontSize: '1rem',
-                mr: '.5rem'
-              }}
-              onClick={onClick}
-            >
-              {title}
-            </Button>
-          );
-        })}
-      </Stack>
-      <Button variant='contained' onClick={() => void signIn()}>
-        Sign In
-      </Button>
-    </Stack>
-  );
-};
+import LandingNav from 'src/components/LandingPage/LandingNav';
 
 const Home = () => {
+  const isTablet = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+
+  const checkOutButtonsData = [
+    {
+      title: 'West Coast',
+      path: '/explore'
+    },
+    {
+      title: 'East Coast',
+      path: '/explore'
+    }
+  ];
+
   return (
     <Box>
-      <NavBar />
+      <LandingNav />
       <BannerContainer
         sx={{
-          height: '36rem'
+          height: {
+            xs: '20rem',
+            sm: '25rem',
+            md: '36rem'
+          }
         }}
       >
         <Stack
           sx={{
             position: 'relative',
             zIndex: 5,
-            width: 'fit-content',
-            left: {
-              xs: '16%'
+            width: {
+              xs: '100%',
+              md: 'fit-content'
             },
-            alignItems: 'left'
+            left: {
+              xs: 'unset',
+              md: '16%'
+            },
+            alignItems: {
+              xs: 'center',
+              md: 'flex-start'
+            }
           }}
         >
           <Typography
             component='h1'
             color='grey.200'
             fontFamily='impact'
-            fontSize='4.5rem'
+            fontSize={{
+              xs: '3rem',
+              md: '4.5rem'
+            }}
             mb='1rem'
           >
             Write. Judge. Discuss.
           </Typography>
-          <BoxOutlineButton onClick={() => void signIn()}>
-            Join the RapKing Community
+          <BoxOutlineButton
+            onClick={() => void signIn()}
+            sx={{
+              fontSize: {
+                xs: '1.5rem'
+              },
+              padding: {
+                xs: '.5rem 1.5rem',
+                md: '1rem 2rem'
+              }
+            }}
+          >
+            {isTablet ? 'Join Rapking' : 'Join the RapKing Community'}
           </BoxOutlineButton>
+          <Stack direction='row' mt='2.5rem' alignItems='center'>
+            <Typography component='span' mr='.25rem'>
+              {' '}
+              Check out bars from:{' '}
+            </Typography>
+            {checkOutButtonsData.map(({ title }) => {
+              return (
+                <Button
+                  key={title}
+                  size='small'
+                  variant='outlined'
+                  color='inherit'
+                  sx={theme => ({
+                    borderRadius: '1rem',
+                    ml: '.75rem',
+                    border: `2px solid ${theme.palette.grey[600]}`,
+                    color: 'white',
+                    background: theme.palette.grey[900],
+                    textTransform: 'none'
+                  })}
+                >
+                  {title}
+                </Button>
+              );
+            })}
+          </Stack>
         </Stack>
       </BannerContainer>
     </Box>
