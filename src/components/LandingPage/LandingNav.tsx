@@ -89,7 +89,7 @@ const LandingNav = () => {
             <Button
               key={title}
               sx={{
-                color: theme.palette.text.primary,
+                color: theme.palette.text.secondary,
                 textTransform: 'none',
                 fontSize: '1rem',
                 px: {

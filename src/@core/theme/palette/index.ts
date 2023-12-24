@@ -35,7 +35,7 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
       return '#312D4B';
     } else if (mode === 'light') {
       return '#F4F5FA';
-    } else return '#080808';
+    } else return '#121212';
   };
 
   return {
