@@ -27,7 +27,7 @@ const LandingPage = () => {
         sx={{
           height: {
             xs: '25rem',
-            md: '36rem'
+            md: '33rem'
           }
         }}
       >
