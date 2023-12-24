@@ -54,10 +54,14 @@ const LandingPage = () => {
             color='grey.200'
             fontFamily='impact'
             fontSize={{
-              xs: '3rem',
+              xs: '2.25rem',
+              sm: '3rem',
               md: '4.5rem'
             }}
             mb='1rem'
+            sx={{
+              transition: 'font-size .25s ease-in-out'
+            }}
           >
             Write. Judge. Discuss.
           </Typography>
@@ -65,7 +69,8 @@ const LandingPage = () => {
             onClick={() => void signIn()}
             sx={{
               fontSize: {
-                xs: '1.5rem'
+                xs: '1rem',
+                sm: '1.5rem'
               },
               padding: {
                 xs: '.5rem 1.5rem',
@@ -76,8 +81,8 @@ const LandingPage = () => {
             {isTablet ? 'Join Rapking' : 'Join the RapKing Community'}
           </BoxOutlineButton>
           <Stack
-            direction='row'
             alignItems='center'
+            direction={['column', 'row']}
             sx={{
               mt: {
                 xs: '2rem',
@@ -85,31 +90,40 @@ const LandingPage = () => {
               }
             }}
           >
-            <Typography component='span' mr='.25rem'>
+            <Typography
+              component='span'
+              mr='.25rem'
+              mb={{
+                xs: '.5rem',
+                md: 'unset'
+              }}
+            >
               {' '}
               Check out bars from:{' '}
             </Typography>
-            {checkOutButtonsData.map(({ title, path }) => {
-              return (
-                <Button
-                  key={title}
-                  size='small'
-                  variant='outlined'
-                  color='inherit'
-                  sx={theme => ({
-                    borderRadius: '1rem',
-                    ml: '.75rem',
-                    border: `2px solid ${theme.palette.grey[600]}`,
-                    color: 'white',
-                    background: theme.palette.grey[900],
-                    textTransform: 'none'
-                  })}
-                  onClick={() => router.push(path)}
-                >
-                  {title}
-                </Button>
-              );
-            })}
+            <Box>
+              {checkOutButtonsData.map(({ title, path }) => {
+                return (
+                  <Button
+                    key={title}
+                    size='small'
+                    variant='outlined'
+                    color='inherit'
+                    sx={theme => ({
+                      borderRadius: '1rem',
+                      ml: '.75rem',
+                      border: `2px solid ${theme.palette.grey[600]}`,
+                      color: 'white',
+                      background: theme.palette.grey[900],
+                      textTransform: 'none'
+                    })}
+                    onClick={() => router.push(path)}
+                  >
+                    {title}
+                  </Button>
+                );
+              })}
+            </Box>
           </Stack>
         </Stack>
       </BannerContainer>

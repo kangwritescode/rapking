@@ -17,10 +17,6 @@ export default function BoxOutlineButton({
         onClick && onClick();
       }}
       sx={{
-        position: 'relative',
-        width: 'fit-content',
-        display: 'inline-block',
-        textDecoration: 'none',
         color: 'white',
         fontFamily: 'impact',
         fontSize: '1.5rem',
@@ -31,26 +27,10 @@ export default function BoxOutlineButton({
         borderColor: 'white',
         overflow: 'hidden',
         transition: '0.2s',
-        zIndex: 5,
         cursor: 'pointer',
         '&:hover': {
           color: 'black',
-          backgroundColor: 'white',
-          '&::before': {
-            transform: 'translateX(0%)'
-          }
-        },
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: '-100%',
-
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'white',
-          transition: '0.2s',
-          zIndex: -1
+          backgroundColor: 'white'
         },
         ...sx
       }}

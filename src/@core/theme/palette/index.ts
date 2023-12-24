@@ -35,7 +35,7 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
       return '#312D4B';
     } else if (mode === 'light') {
       return '#F4F5FA';
-    } else return '#121212';
+    } else return '#080808';
   };
 
   return {
@@ -109,9 +109,9 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
       A700: '#616161'
     },
     text: {
-      primary: `rgba(${mainColor}, 0.87)`,
-      secondary: `rgba(${mainColor}, 0.6)`,
-      disabled: `rgba(${mainColor}, 0.38)`
+      primary: `rgba(${mainColor}, 1)`,
+      secondary: `rgba(${mainColor}, 0.8)`,
+      disabled: `rgba(${mainColor}, 0.4)`
     },
     divider: `rgba(${mainColor}, 0.12)`,
     background: {

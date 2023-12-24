@@ -40,7 +40,8 @@ const LandingNav = () => {
       position='relative'
       sx={{
         px: {
-          xs: '1.5rem',
+          xs: '1.25rem',
+          sm: '1.5rem',
           md: '2rem'
         }
       }}
@@ -75,8 +76,10 @@ const LandingNav = () => {
         justifyContent='space-evenly'
         sx={{
           width: {
-            md: '34rem'
-          }
+            sm: '26rem',
+            md: '50%'
+          },
+          transition: 'width .25s ease-in-out'
         }}
       >
         {navButtons.map(({ title, path }) => {
@@ -89,6 +92,10 @@ const LandingNav = () => {
                 color: theme.palette.text.primary,
                 textTransform: 'none',
                 fontSize: '1rem',
+                px: {
+                  xs: '.25rem',
+                  md: '1rem'
+                },
                 mr: {
                   sm: 0,
                   md: '.5rem'
@@ -107,7 +114,7 @@ const LandingNav = () => {
         sx={{
           display: {
             xs: 'none',
-            md: 'block'
+            sm: 'block'
           }
         }}
       >
