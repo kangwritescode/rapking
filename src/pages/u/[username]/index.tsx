@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 // ** MUI Components
-import { Tab, Tabs, useTheme } from '@mui/material';
+import { Box, Tab, Tabs, useTheme } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
 // ** Components
@@ -42,30 +42,41 @@ const UserProfile = () => {
   };
 
   return (
-    <Grid container spacing={6}>
-      <Grid item xs={12}>
-        <UserProfileHeader userData={userData} currentUserData={currentUserData} />
+    <Box
+      sx={{
+        padding: theme.spacing(6),
+        transition: 'padding .25s ease-in-out',
+        [theme.breakpoints.down('sm')]: {
+          paddingLeft: theme.spacing(4),
+          paddingRight: theme.spacing(4)
+        }
+      }}
+    >
+      <Grid container spacing={6}>
+        <Grid item xs={12}>
+          <UserProfileHeader userData={userData} currentUserData={currentUserData} />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <BioCard
+            userData={userData}
+            sx={{
+              p: theme.spacing(5)
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} md={8}>
+          <Tabs
+            value={value}
+            onChange={handleTabsChange}
+            textColor='primary'
+            indicatorColor='primary'
+          >
+            <Tab value='raps' label='Raps' />
+          </Tabs>
+          {value === 'raps' && <RapsTab raps={rapsData} isCurrentUser={isCurrentUser} />}
+        </Grid>
       </Grid>
-      <Grid item xs={12} md={4}>
-        <BioCard
-          userData={userData}
-          sx={{
-            p: theme.spacing(5)
-          }}
-        />
-      </Grid>
-      <Grid item xs={12} md={8}>
-        <Tabs
-          value={value}
-          onChange={handleTabsChange}
-          textColor='primary'
-          indicatorColor='primary'
-        >
-          <Tab value='raps' label='Raps' />
-        </Tabs>
-        {value === 'raps' && <RapsTab raps={rapsData} isCurrentUser={isCurrentUser} />}
-      </Grid>
-    </Grid>
+    </Box>
   );
 };
 

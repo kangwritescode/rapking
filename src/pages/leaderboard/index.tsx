@@ -1,4 +1,4 @@
-import { Box, Stack, Theme, Typography, useMediaQuery } from '@mui/material';
+import { Box, Stack, Theme, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useState } from 'react';
 import LeaderboardBar from 'src/components/LeaderboardPage/LeaderboardBar';
 import SpotlightCard from 'src/components/LeaderboardPage/SpotlightCard';
@@ -18,6 +18,8 @@ function LeaderboardPage() {
 
   const isTablet = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
+  const theme = useTheme();
+
   return (
     <Stack
       width={{
@@ -26,6 +28,14 @@ function LeaderboardPage() {
       }}
       height='100%'
       mx='auto'
+      sx={{
+        padding: theme.spacing(6),
+        transition: 'padding .25s ease-in-out',
+        [theme.breakpoints.down('sm')]: {
+          paddingLeft: theme.spacing(4),
+          paddingRight: theme.spacing(4)
+        }
+      }}
     >
       <Typography component='h1' textAlign='left' fontSize='1.5rem' fontWeight={600} mb='1rem'>
         Leaderboard

@@ -39,6 +39,10 @@ const ForumPage = () => {
       sx={{
         '& .m-me > .m-face': {
           display: 'none'
+        },
+        '& #moot-logo > a': {
+          opacity: 0,
+          pointerEvents: 'none'
         }
       }}
     >

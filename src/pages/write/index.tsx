@@ -53,12 +53,18 @@ function WritePage() {
 
   return (
     <Container
-      sx={{
+      sx={theme => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'column'
-      }}
+        flexDirection: 'column',
+        padding: theme.spacing(6),
+        transition: 'padding .25s ease-in-out',
+        [theme.breakpoints.down('sm')]: {
+          paddingLeft: theme.spacing(4),
+          paddingRight: theme.spacing(4)
+        }
+      })}
     >
       <RapEditor
         isLoading={isLoading}

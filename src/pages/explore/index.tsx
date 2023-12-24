@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
 import { Box, Stack, Tab, Tabs, useTheme } from '@mui/material';
-import FeedBar from '../../components/ExplorePage/FeedBar';
+import React, { useState } from 'react';
 import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
+import FeedBar from '../../components/ExplorePage/FeedBar';
 
-import Feed from '../../components/ExplorePage/Feed';
 import { useSession } from 'next-auth/react';
+import Feed from '../../components/ExplorePage/Feed';
 
 function ExplorePage() {
   const theme = useTheme();
@@ -31,7 +31,13 @@ function ExplorePage() {
         width: ['100%', '90%', '80%'],
         maxWidth: '45rem',
         margin: 'auto',
-        height: '100%'
+        height: '100%',
+        padding: theme.spacing(6),
+        transition: 'padding .25s ease-in-out',
+        [theme.breakpoints.down('sm')]: {
+          paddingLeft: theme.spacing(4),
+          paddingRight: theme.spacing(4)
+        }
       }}
     >
       <Box

@@ -39,6 +39,7 @@ code[class*='language-'] {
 }
 
 /* Muut */
-.muut-messaging {
+.muut-messaging,
+.muut-messaging.m-loaded {
   display: none !important;
 }
