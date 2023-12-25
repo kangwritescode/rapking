@@ -3,6 +3,8 @@ import { Button, Stack, Typography, useMediaQuery, useTheme } from '@mui/materia
 import { Theme } from '@mui/system';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useRef } from 'react';
+import LandingMobileNav from './LandingMobileNav';
 
 const navButtons = [
   {
@@ -29,6 +31,7 @@ const LandingNav = () => {
   const router = useRouter();
 
   const isTablet = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+  const signInButtonRef = useRef<HTMLButtonElement>(null);
 
   return (
     <Stack
@@ -40,18 +43,30 @@ const LandingNav = () => {
       position='relative'
       sx={{
         px: {
-          xs: '1.25rem',
+          xs: '1rem',
           sm: '1.5rem',
           md: '2rem'
         }
       }}
     >
       <Stack direction='row' alignItems='center'>
-        <Icon
-          icon='tabler:crown'
-          color={theme.palette.secondary.main}
-          fontSize={isTablet ? '2rem' : '1.5rem'}
+        <LandingMobileNav
+          sx={{
+            display: {
+              md: 'none'
+            }
+          }}
+          onForumClick={() => {
+            signInButtonRef.current?.click();
+          }}
         />
+        {!isTablet ? (
+          <Icon
+            icon='tabler:crown'
+            color={theme.palette.secondary.main}
+            fontSize={isTablet ? '2rem' : '1.5rem'}
+          />
+        ) : null}
         <Typography
           variant='h6'
           sx={{
@@ -79,6 +94,10 @@ const LandingNav = () => {
             sm: '26rem',
             md: '50%'
           },
+          display: {
+            xs: 'none',
+            md: 'flex'
+          },
           transition: 'width .25s ease-in-out'
         }}
       >
@@ -99,7 +118,8 @@ const LandingNav = () => {
                 mr: {
                   sm: 0,
                   md: '.5rem'
-                }
+                },
+                fontFamily: 'impact'
               }}
               onClick={onClick}
             >
@@ -108,16 +128,7 @@ const LandingNav = () => {
           );
         })}
       </Stack>
-      <Button
-        variant='contained'
-        onClick={() => void signIn()}
-        sx={{
-          display: {
-            xs: 'none',
-            sm: 'block'
-          }
-        }}
-      >
+      <Button variant='contained' onClick={() => void signIn()} ref={signInButtonRef}>
         Sign In
       </Button>
     </Stack>
