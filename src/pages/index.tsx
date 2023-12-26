@@ -1,14 +1,26 @@
 import { Box, Button, Stack, Theme, Typography, useMediaQuery } from '@mui/material';
-import { signIn } from 'next-auth/react';
+import { Session } from 'next-auth';
+import { getSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next/types';
 import BoxOutlineButton from 'src/components/BoxOutlinedButton';
 import BannerContainer from 'src/components/LandingPage/BannerContainer';
 import LandingNav from 'src/components/LandingPage/LandingNav';
 import LatestRapsSection from 'src/components/LandingPage/LatestRapsSection';
+import { prisma } from 'src/server/db';
+import { api } from 'src/utils/api';
 
 const LandingPage = () => {
   const isTablet = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const router = useRouter();
+
+  const { data: userData } = api.user.getCurrentUser.useQuery();
+
+  if (userData?.username) {
+    router.push(`/u/${userData.username}`);
+
+    return null;
+  }
 
   const checkOutButtonsData = [
     {
@@ -131,6 +143,28 @@ const LandingPage = () => {
       <LatestRapsSection />
     </Box>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async context => {
+  const session: Session | null = await getSession(context);
+  const userData = await prisma.user.findUnique({
+    where: {
+      id: session?.user.id || ''
+    }
+  });
+
+  if (session && userData?.username) {
+    return {
+      redirect: {
+        destination: `/u/${userData.username}`,
+        permanent: false
+      }
+    };
+  }
+
+  return {
+    props: {} // will be passed to the page component as props
+  };
 };
 
 export default LandingPage;
