@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import BoxOutlineButton from 'src/components/BoxOutlinedButton';
 import BannerContainer from 'src/components/LandingPage/BannerContainer';
 import LandingNav from 'src/components/LandingPage/LandingNav';
+import LatestRapsSection from 'src/components/LandingPage/LatestRapsSection';
 
 const LandingPage = () => {
   const isTablet = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
@@ -26,8 +27,8 @@ const LandingPage = () => {
       <BannerContainer
         sx={{
           height: {
-            xs: '25rem',
-            md: '33rem'
+            xs: '26rem',
+            md: '40rem'
           }
         }}
       >
@@ -127,6 +128,7 @@ const LandingPage = () => {
           </Stack>
         </Stack>
       </BannerContainer>
+      <LatestRapsSection />
     </Box>
   );
 };

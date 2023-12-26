@@ -35,7 +35,7 @@ function ExplorePage() {
         maxWidth: '45rem',
         margin: 'auto',
         height: '100%',
-        padding: theme.spacing(6),
+        padding: `0 ${theme.spacing(6)}`,
         transition: 'padding .25s ease-in-out',
         [theme.breakpoints.down('sm')]: {
           paddingLeft: theme.spacing(4),

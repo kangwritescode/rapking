@@ -14,7 +14,6 @@ import NProgress from 'nprogress';
 import themeConfig from 'src/configs/themeConfig';
 
 // ** Third Party Import
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
 
 // ** Component Imports
@@ -95,7 +94,7 @@ const App: any = (props: ExtendedAppProps) => {
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <CreateProfileGuard>
                       {getLayout(<Component {...pageProps} />)}
-                      <ReactQueryDevtools initialIsOpen={false} />
+                      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
                     </CreateProfileGuard>
                   </LocalizationProvider>
                   <ReactHotToast>

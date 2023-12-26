@@ -23,6 +23,7 @@ interface RapCardProps {
   hideUsername?: boolean;
   showMenu?: boolean;
   showChips?: boolean;
+  contentMaxLength?: number;
 }
 
 function formatDate(dateObj: Date) {
@@ -36,7 +37,15 @@ function formatDate(dateObj: Date) {
   }
 }
 
-function RapCard({ rap, sx, hideAvatar, hideUsername, showMenu, showChips }: RapCardProps) {
+function RapCard({
+  rap,
+  sx,
+  hideAvatar,
+  hideUsername,
+  showMenu,
+  showChips,
+  contentMaxLength
+}: RapCardProps) {
   const { id, title, dateCreated, coverArtUrl, content, user: userData } = rap;
 
   const theme = useTheme();
@@ -53,7 +62,13 @@ function RapCard({ rap, sx, hideAvatar, hideUsername, showMenu, showChips }: Rap
   };
 
   let formattedContent = convert(content);
-  const maxLength = isMobileView ? 50 : isMediumView ? 100 : 160;
+  const maxLength = contentMaxLength
+    ? contentMaxLength
+    : isMobileView
+    ? 50
+    : isMediumView
+    ? 100
+    : 160;
 
   if (formattedContent.length > maxLength) {
     formattedContent = `${formattedContent.slice(0, maxLength)}...`;
