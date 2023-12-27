@@ -29,7 +29,7 @@ function LatestRapsSection() {
 
   return (
     <Box component='section' p='2rem 2rem 6rem'>
-      <Typography variant='h4' sx={{ mb: '2rem' }} fontFamily='impact'>
+      <Typography component='h2' sx={{ mb: '2rem', fontSize: '2rem' }} fontFamily='impact'>
         Latest Raps
       </Typography>
       <Stack

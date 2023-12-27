@@ -114,6 +114,7 @@
     "@iconify/tools": "2.2.6",
     "@iconify/types": "2.0.0",
     "@iconify/utils": "2.1.4",
+    "@mui/utils": "^5.15.2",
     "@testing-library/react": "^14.1.2",
     "@types/cleave.js": "1.4.7",
     "@types/draft-js": "0.11.9",
