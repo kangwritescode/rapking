@@ -1,10 +1,11 @@
-import { Box, Button, Stack, Theme, Typography, useMediaQuery } from '@mui/material';
+import { Box, Button, Divider, Stack, Theme, Typography, useMediaQuery } from '@mui/material';
 import { Session } from 'next-auth';
 import { getSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next/types';
 import BoxOutlineButton from 'src/components/BoxOutlinedButton';
 import BannerContainer from 'src/components/LandingPage/BannerContainer';
+import LandingFooter from 'src/components/LandingPage/LandingFooter';
 import LandingNav from 'src/components/LandingPage/LandingNav';
 import LatestRapsSection from 'src/components/LandingPage/LatestRapsSection';
 import { prisma } from 'src/server/db';
@@ -141,6 +142,8 @@ const LandingPage = () => {
         </Stack>
       </BannerContainer>
       <LatestRapsSection />
+      <Divider />
+      <LandingFooter />
     </Box>
   );
 };

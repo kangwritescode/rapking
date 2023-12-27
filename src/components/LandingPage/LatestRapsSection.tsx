@@ -28,7 +28,7 @@ function LatestRapsSection() {
   }, [refetch]);
 
   return (
-    <Box component='section' p='2rem 2rem 4.5rem'>
+    <Box component='section' p='2rem 2rem 6rem'>
       <Typography variant='h4' sx={{ mb: '2rem' }} fontFamily='impact'>
         Latest Raps
       </Typography>
