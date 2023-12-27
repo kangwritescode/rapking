@@ -10,7 +10,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Layout from 'src/@core/layouts/Layout';
 
 // ** Navigation Imports
-import VerticalAppBarContent from './components/vertical/AppBarContent';
+import AppBarContent from './components/vertical/AppBarContent';
 
 // ** Hook Import
 import { useSession } from 'next-auth/react';
@@ -54,7 +54,7 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
     {
       title: 'Leaderboard',
       path: '/leaderboard',
-      icon: 'ph:crown-bold'
+      icon: 'ic:twotone-leaderboard'
     }
   ];
 
@@ -73,7 +73,7 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       {
         title: 'RapKings',
         path: '/rapkings',
-        icon: 'ic:twotone-leaderboard'
+        icon: 'ph:crown-bold'
       },
       {
         title: 'Blog',
@@ -114,7 +114,7 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
         },
         appBar: {
           content: props => (
-            <VerticalAppBarContent
+            <AppBarContent
               hidden={hidden}
               settings={settings}
               saveSettings={saveSettings}

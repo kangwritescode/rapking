@@ -29,7 +29,7 @@ function LeaderboardPage() {
       height='100%'
       mx='auto'
       sx={{
-        padding: theme.spacing(6),
+        padding: `3rem ${theme.spacing(6)} 2rem`,
         transition: 'padding .25s ease-in-out',
         [theme.breakpoints.down('sm')]: {
           paddingLeft: theme.spacing(4),

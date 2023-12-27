@@ -28,7 +28,14 @@ function RapPage() {
   const isMobileView = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <Stack direction='column' alignItems='center'>
+    <Stack
+      direction='column'
+      alignItems='center'
+      padding={{
+        xs: '2rem 1rem',
+        md: '4rem'
+      }}
+    >
       <Stack width={{ xs: '100%', md: '40rem' }}>
         <CardMedia
           component='img'

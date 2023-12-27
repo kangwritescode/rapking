@@ -1,14 +1,12 @@
 // ** MUI Imports
-import { styled, useTheme } from '@mui/material/styles';
-import useScrollTrigger from '@mui/material/useScrollTrigger';
 import MuiAppBar, { AppBarProps } from '@mui/material/AppBar';
 import MuiToolbar, { ToolbarProps } from '@mui/material/Toolbar';
+import { styled, useTheme } from '@mui/material/styles';
 
 // ** Type Imports
 import { LayoutProps } from 'src/@core/layouts/types';
 
 // ** Util Import
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba';
 import { useRouter } from 'next/router';
 
 interface Props {
@@ -50,27 +48,13 @@ const LayoutAppBar = (props: Props) => {
 
   // ** Hooks
   const theme = useTheme();
-  const scrollTrigger = useScrollTrigger({ threshold: 0, disableHysteresis: true });
 
   // ** Vars
-  const { skin, appBar, appBarBlur, contentWidth } = settings;
+  const { appBar } = settings;
 
   // ** Router
   const router = useRouter();
   const isLeaderboardPage = router.pathname.includes('/leaderboard');
-
-  const appBarFixedStyles = () => {
-    return {
-      px: `${theme.spacing(5)} !important`,
-      boxShadow: skin === 'bordered' ? 0 : 3,
-      ...(appBarBlur && { backdropFilter: 'blur(8px)' }),
-      backgroundColor: hexToRGBA(theme.palette.background.paper, appBarBlur ? 0.85 : 1),
-      ...(skin === 'bordered' && {
-        border: `1px solid ${theme.palette.divider}`,
-        borderTopWidth: 0
-      })
-    };
-  };
 
   if (appBar === 'hidden') {
     return null;
@@ -90,7 +74,8 @@ const LayoutAppBar = (props: Props) => {
       className='layout-navbar'
       sx={{
         ...userAppBarStyle,
-        ...(isLeaderboardPage ? { backgroundColor: 'background.default' } : {})
+        ...(isLeaderboardPage ? { backgroundColor: 'background.default' } : {}),
+        borderBottom: `1px solid ${theme.palette.divider}`
       }}
       position={appBar === 'fixed' ? 'sticky' : 'static'}
       {...userAppBarProps}
@@ -98,10 +83,7 @@ const LayoutAppBar = (props: Props) => {
       <Toolbar
         className='navbar-content-container'
         sx={{
-          ...(appBar === 'fixed' && scrollTrigger && { ...appBarFixedStyles() }),
-          ...(contentWidth === 'boxed' && {
-            '@media (min-width:1440px)': { maxWidth: `calc(1440px - ${theme.spacing(6)} * 2)` }
-          })
+          backgroundColor: `${theme.palette.background.default}`
         }}
       >
         {(userAppBarContent && userAppBarContent(props)) || null}

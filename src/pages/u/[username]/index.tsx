@@ -44,7 +44,7 @@ const UserProfile = () => {
   return (
     <Box
       sx={{
-        padding: theme.spacing(6),
+        padding: `3rem 2rem`,
         transition: 'padding .25s ease-in-out',
         [theme.breakpoints.down('sm')]: {
           paddingLeft: theme.spacing(4),

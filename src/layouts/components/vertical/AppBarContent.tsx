@@ -12,6 +12,7 @@ import { Settings } from 'src/@core/context/settingsContext';
 // ** Components
 import NotificationDropdown from 'src/@core/layouts/components/shared-components/NotificationDropdown';
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown';
+import GlobalSearch from 'src/components/GlobalSearch';
 import { api } from 'src/utils/api';
 
 interface Props {
@@ -36,7 +37,13 @@ const AppBarContent = (props: Props) => {
 
   return (
     <Box
-      sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+      sx={{
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        position: 'relative'
+      }}
     >
       <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
         {(!profileIsComplete && status === 'authenticated') || !hidden ? null : (
@@ -45,6 +52,11 @@ const AppBarContent = (props: Props) => {
           </IconButton>
         )}
       </Box>
+      <GlobalSearch
+        sx={{
+          position: 'absolute'
+        }}
+      />
       {status === 'unauthenticated' && (
         <Button variant='contained' onClick={() => void signIn()}>
           Sign In
