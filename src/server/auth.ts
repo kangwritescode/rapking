@@ -16,16 +16,16 @@ declare module 'next-auth' {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      username: string | null;
 
       // ...other properties
       // role: UserRole;
     } & DefaultSession['user'];
   }
 
-  //   interface User {
-  //     // ...other properties
-  //     // role: UserRole;
-  //   }
+  interface User {
+    username: string | null;
+  }
 }
 
 /**
@@ -35,11 +35,10 @@ declare module 'next-auth' {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session({ session, user }) {
+    session: async ({ session, user }) => {
       if (session.user) {
         session.user.id = user.id;
-
-        // session.user.role = user.role; <-- put other properties on the session here
+        session.user.username = user.username;
       }
 
       return session;

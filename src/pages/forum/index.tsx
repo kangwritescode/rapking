@@ -1,4 +1,8 @@
 import { Box } from '@mui/material';
+import { Session } from 'next-auth';
+import { getSession, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next/types';
 import { useEffect } from 'react';
 import { api } from 'src/utils/api';
 
@@ -10,6 +14,8 @@ declare global {
 
 const ForumPage = () => {
   const muutCredentialsQuery = api.muut.generateMuutCredentials.useQuery();
+  const session = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     if (muutCredentialsQuery.data) {
@@ -25,6 +31,10 @@ const ForumPage = () => {
       });
     }
   }, [muutCredentialsQuery.data]);
+
+  if (!session.data?.user) {
+    return router.push(`/`);
+  }
 
   if (muutCredentialsQuery.isLoading) {
     return <Box>Loading Rapking forums...</Box>;
@@ -52,3 +62,20 @@ const ForumPage = () => {
 };
 
 export default ForumPage;
+
+export const getServerSideProps: GetServerSideProps = async context => {
+  const session: Session | null = await getSession(context);
+
+  if (!session?.user) {
+    return {
+      redirect: {
+        destination: `/`,
+        permanent: false
+      }
+    };
+  }
+
+  return {
+    props: {} // will be passed to the page component as props
+  };
+};

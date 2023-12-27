@@ -102,7 +102,13 @@ const LandingNav = () => {
         }}
       >
         {navButtons.map(({ title, path }) => {
-          const onClick = path === '/forum' ? () => void signIn() : () => router.push(path);
+          const onClick =
+            path === '/forum'
+              ? () =>
+                  void signIn(undefined, {
+                    callbackUrl: '/forum'
+                  })
+              : () => router.push(path);
 
           return (
             <Button

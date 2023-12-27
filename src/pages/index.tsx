@@ -8,7 +8,6 @@ import BannerContainer from 'src/components/LandingPage/BannerContainer';
 import LandingFooter from 'src/components/LandingPage/LandingFooter';
 import LandingNav from 'src/components/LandingPage/LandingNav';
 import LatestRapsSection from 'src/components/LandingPage/LatestRapsSection';
-import { prisma } from 'src/server/db';
 import { api } from 'src/utils/api';
 
 const LandingPage = () => {
@@ -150,19 +149,17 @@ const LandingPage = () => {
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const session: Session | null = await getSession(context);
-  const userData = await prisma.user.findUnique({
-    where: {
-      id: session?.user.id || ''
-    }
-  });
 
-  if (session && userData?.username) {
-    return {
-      redirect: {
-        destination: `/u/${userData.username}`,
-        permanent: false
-      }
-    };
+  if (session?.user) {
+    const username = session.user.username;
+    if (username) {
+      return {
+        redirect: {
+          destination: `/u/${username}`,
+          permanent: false
+        }
+      };
+    }
   }
 
   return {
