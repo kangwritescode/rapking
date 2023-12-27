@@ -15,6 +15,7 @@ import VerticalAppBarContent from './components/vertical/AppBarContent';
 // ** Hook Import
 import { useSession } from 'next-auth/react';
 import { useSettings } from 'src/@core/hooks/useSettings';
+import { NavLink, NavSectionTitle } from 'src/@core/layouts/types';
 import { api } from 'src/utils/api';
 
 interface Props {
@@ -44,7 +45,7 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
     settings.layout = 'vertical';
   }
 
-  const navItems = [
+  const navItems: Array<NavLink | NavSectionTitle> = [
     {
       title: 'Explore',
       path: '/explore',
@@ -65,12 +66,35 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
     });
   }
 
+  navItems.splice(
+    navItems.length,
+    0,
+    ...[
+      {
+        title: 'RapKings',
+        path: '/rapkings',
+        icon: 'ic:twotone-leaderboard'
+      },
+      {
+        title: 'Blog',
+        path: '/blog',
+        icon: 'grommet-icons:blog'
+      },
+      {
+        title: 'Guides',
+        path: '/guides',
+        icon: 'ph:brain-duotone'
+      }
+    ]
+  );
+
   if (userData) {
     navItems.splice(0, 0, {
       title: userData.username || 'Profile',
       path: `/u/${userData.username}`,
       icon: 'gg:profile'
     });
+
     navItems.splice(navItems.length, 0, {
       title: 'Forum',
       path: '/forum',

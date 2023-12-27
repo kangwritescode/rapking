@@ -2,9 +2,9 @@
 import { useRef, useState } from 'react';
 
 // ** MUI Imports
+import Box from '@mui/material/Box';
 import List from '@mui/material/List';
-import Box, { BoxProps } from '@mui/material/Box';
-import { createTheme, responsiveFontSizes, styled, ThemeProvider } from '@mui/material/styles';
+import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
 
 // ** Third Party Components
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -17,14 +17,13 @@ import themeConfig from 'src/configs/themeConfig';
 
 // ** Component Imports
 import Drawer from './Drawer';
-import VerticalNavItems from './VerticalNavItems';
 import VerticalNavHeader from './VerticalNavHeader';
+import VerticalNavItems from './VerticalNavItems';
 
 // ** Theme Options
 import themeOptions from 'src/@core/theme/ThemeOptions';
 
 // ** Util Import
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba';
 
 interface Props {
   navWidth: number;
@@ -46,27 +45,6 @@ interface Props {
   afterNavMenuContent: LayoutProps['verticalLayoutProps']['navMenu']['afterContent'];
   beforeNavMenuContent: LayoutProps['verticalLayoutProps']['navMenu']['beforeContent'];
 }
-
-const StyledBoxForShadow = styled(Box)<BoxProps>(({ theme }) => ({
-  top: 60,
-  left: -8,
-  zIndex: 2,
-  opacity: 0,
-  position: 'absolute',
-  pointerEvents: 'none',
-  width: 'calc(100% + 15px)',
-  height: theme.mixins.toolbar.minHeight,
-  transition: 'opacity .15s ease-in-out',
-  background: `linear-gradient(${theme.palette.background.default} ${
-    theme.direction === 'rtl' ? '95%' : '5%'
-  },${hexToRGBA(theme.palette.background.default, 0.85)} 30%,${hexToRGBA(
-    theme.palette.background.default,
-    0.5
-  )} 65%,${hexToRGBA(theme.palette.background.default, 0.3)} 75%,transparent)`,
-  '&.scrolled': {
-    opacity: 1
-  }
-}));
 
 const Navigation = (props: Props) => {
   // ** Props
@@ -148,9 +126,6 @@ const Navigation = (props: Props) => {
         {beforeNavMenuContent && beforeVerticalNavMenuContentPosition === 'fixed'
           ? beforeNavMenuContent(navMenuContentProps)
           : null}
-        {(beforeVerticalNavMenuContentPosition === 'static' || !beforeNavMenuContent) && (
-          <StyledBoxForShadow ref={shadowRef} />
-        )}
         <Box sx={{ position: 'relative', overflow: 'hidden' }}>
           {/* @ts-ignore */}
           <ScrollWrapper
