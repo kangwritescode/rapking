@@ -1,10 +1,4 @@
-// lib/redis.js
 import Redis from 'ioredis';
+import { env } from 'src/env.mjs';
 
-const redis = new Redis({
-  username: process.env.REDIS_USERNAME,
-  password: process.env.REDIS_PASSWORD,
-  host: process.env.REDIS_HOST,
-  port: Number(process.env.REDIS_PORT)
-});
-module.exports = redis;
+export const redis = new Redis(env.REDIS_CONNECTION_STRING);

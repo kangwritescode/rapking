@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 import { NotificationType, RapComment, User } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import rateLimit from 'src/redis/rateLimit';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 
 export type RapCommentWithUserData = RapComment & {
   user: User;
@@ -74,6 +75,21 @@ export const rapComment = createTRPCRouter({
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: "Rap doesn't exist"
+        });
+      }
+
+      const rateLimitResult = await rateLimit({
+        userId: ctx.session.user.id,
+        maxRequests: 2,
+        window: 60 * 60,
+        keyString: `rapComment-${rapId}-${userId}`
+      });
+
+      if (typeof rateLimitResult === 'number') {
+        const resetTime = Math.ceil(rateLimitResult / 60); // Convert to minutes
+        throw new TRPCError({
+          code: 'TOO_MANY_REQUESTS',
+          message: `You are doing that too much. Please try again in ${resetTime} minutes.`
         });
       }
 
