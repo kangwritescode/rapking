@@ -2,7 +2,7 @@
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { Router } from 'next/router';
+import { Router, useRouter } from 'next/router';
 
 // ** NextAuth
 import { SessionProvider } from 'next-auth/react';
@@ -70,6 +70,9 @@ const App: any = (props: ExtendedAppProps) => {
     pageProps: { session, ...pageProps }
   } = props;
 
+  const router = useRouter();
+  const isForumPage = router.pathname === '/forum';
+
   // Variables
   const contentHeightFixed = Component.contentHeightFixed ?? false;
   const getLayout =
@@ -80,10 +83,44 @@ const App: any = (props: ExtendedAppProps) => {
   return (
     <>
       <Head>
-        <title>{`${themeConfig.templateName}`}</title>
+        <title>{`${themeConfig.templateName} | World's #1 Spot to Write, Judge, and Discuss Raps`}</title>
         <meta name='description' content={`${themeConfig.templateName} meta content`} />
-        <meta name='keywords' content='RapKing, Share Raps, Write Raps, Get Ranked' />
+        <meta
+          name='description'
+          content={`RapKing - the ultimate platform for rap enthusiasts! Dive into a world where you can write, share, and explore creative rap content. Engage with a vibrant community, comment on and judge rap battles, connect with fellow artists, and discover a hub of rap culture. Whether you're an aspiring rapper or a seasoned lyricist, RapKing is your go-to destination for all things rap. Join now to express yourself, collaborate, and elevate your rap skills!`}
+        />
         <meta name='viewport' content='initial-scale=1, width=device-width' />
+
+        {/* OG Tags */}
+        <meta property='og:title' content={`World's #1 Spot to Write, Judge, and Discuss Raps`} />
+        <meta
+          property='og:description'
+          content='Join RapKing to engage with a community of rap enthusiasts. Write, share, judge, and discuss raps. Connect with artists worldwide.'
+        />
+        <meta property='og:image' content='/images/crown.svg' />
+        <meta property='og:url' content='https://www.rapking.io' />
+        <meta property='og:type' content='website' />
+
+        {/* Twitter Tags */}
+        <meta name='twitter:title' content={`World's #1 Spot to Write, Judge, and Discuss Raps`} />
+        <meta
+          name='twitter:description'
+          content='Join RapKing to engage with a community of rap enthusiasts. Write, share, judge, and discuss raps. Connect with artists worldwide.'
+        />
+        <meta name='twitter:image' content='/images/crown.svg' />
+        <meta name='twitter:card' content='summary_large_image' />
+
+        {/* Canonical Tag */}
+        <link rel='canonical' href='https://www.rapking.io' />
+
+        {isForumPage ? (
+          <>
+            <script async src='//code.jquery.com/jquery-1.11.2.min.js' />
+            <script async src='//cdn.muut.com/1/moot.min.js' />
+            {/* eslint-disable-next-line @next/next/no-css-tags */}
+            <link rel='stylesheet' href='//cdn.muut.com/1/moot.css' />
+          </>
+        ) : undefined}
       </Head>
       <SessionProvider session={session}>
         <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>

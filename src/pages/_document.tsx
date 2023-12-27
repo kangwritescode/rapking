@@ -19,13 +19,9 @@ class CustomDocument extends Document {
             rel='stylesheet'
             href='https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'
           />
-          <link rel='apple-touch-icon' sizes='180x180' href='/images/apple-touch-icon.png' />
+          <link rel='apple-touch-icon' sizes='180x180' href='/images/crown.svg' />
           <link rel='shortcut icon' href='/images/crown.svg' />
-
-          <script async src='//code.jquery.com/jquery-1.11.2.min.js' />
-          <script async src='//cdn.muut.com/1/moot.min.js' />
-          {/* eslint-disable-next-line @next/next/no-css-tags */}
-          <link rel='stylesheet' href='//cdn.muut.com/1/moot.css' />
+          <link rel='favicon' href='/images/crown.svg' />
         </Head>
         <body>
           <Main />
