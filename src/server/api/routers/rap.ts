@@ -5,6 +5,7 @@ import { Rap } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import path from 'path';
 import { deleteGloudFile, moveGCloudFile } from 'src/gcloud/serverMethods';
+import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 
 // Schemas
@@ -63,6 +64,21 @@ export const rapRouter = createTRPCRouter({
       throw new TRPCError({
         code: 'BAD_REQUEST',
         message: 'A rap with this title already exists.'
+      });
+    }
+
+    const rateLimitResult = await rateLimit({
+      userId: ctx.session.user.id,
+      maxRequests: 3,
+      window: 60 * 60 * 24, // 24 hours
+      keyString: `rap-${ctx.session.user.id}`
+    });
+
+    if (typeof rateLimitResult === 'number') {
+      const resetTime = Math.ceil(rateLimitResult / (60 * 60)); // Convert to hours
+      throw new TRPCError({
+        code: 'TOO_MANY_REQUESTS',
+        message: `You can post 5 raps per day. Please try again in ${resetTime} hours.`
       });
     }
 
