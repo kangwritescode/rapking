@@ -174,6 +174,20 @@ export const rapRouter = createTRPCRouter({
         }
       });
     }),
+  searchRapsByTitle: publicProcedure
+    .input(z.object({ text: z.string() }))
+    .query(({ input, ctx }) => {
+      return ctx.prisma.rap.findMany({
+        where: {
+          title: {
+            contains: input.text,
+            mode: 'insensitive'
+          },
+          status: 'PUBLISHED'
+        },
+        take: 3
+      });
+    }),
   deleteRap: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {

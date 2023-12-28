@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 import { TRPCError } from '@trpc/server';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 import { stateToRegionMap } from 'src/shared/constants';
 
 export const userRouter = createTRPCRouter({
@@ -21,7 +21,22 @@ export const userRouter = createTRPCRouter({
       }
     });
   }),
-
+  searchUserByUsername: publicProcedure
+    .input(z.object({ text: z.string() }))
+    .query(({ input, ctx }) => {
+      return ctx.prisma.user.findMany({
+        where: {
+          username: {
+            contains: input.text,
+            mode: 'insensitive'
+          },
+          country: {
+            not: null
+          }
+        },
+        take: 3
+      });
+    }),
   findById: publicProcedure.input(z.object({ id: z.string() })).query(({ input, ctx }) => {
     return ctx.prisma.user.findUnique({
       where: {
