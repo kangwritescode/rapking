@@ -22,7 +22,7 @@ export const userRouter = createTRPCRouter({
     });
   }),
   searchUserByUsername: publicProcedure
-    .input(z.object({ text: z.string() }))
+    .input(z.object({ text: z.string(), limit: z.number().optional() }))
     .query(({ input, ctx }) => {
       return ctx.prisma.user.findMany({
         where: {
@@ -34,7 +34,7 @@ export const userRouter = createTRPCRouter({
             not: null
           }
         },
-        take: 3
+        take: input.limit || 10
       });
     }),
   findById: publicProcedure.input(z.object({ id: z.string() })).query(({ input, ctx }) => {

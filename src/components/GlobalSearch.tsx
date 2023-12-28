@@ -29,10 +29,12 @@ const GlobalSearch = ({ sx }: GlobalSearchProps) => {
   const popoverRef = useRef<HTMLDivElement>(null);
 
   const { data: usersData } = api.user.searchUserByUsername.useQuery({
-    text: debouncedSearchText
+    text: debouncedSearchText,
+    limit: 3
   });
   const { data: rapsData } = api.rap.searchRapsByTitle.useQuery({
-    text: debouncedSearchText
+    text: debouncedSearchText,
+    limit: 3
   });
 
   useEffect(() => {

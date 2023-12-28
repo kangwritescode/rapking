@@ -175,7 +175,7 @@ export const rapRouter = createTRPCRouter({
       });
     }),
   searchRapsByTitle: publicProcedure
-    .input(z.object({ text: z.string() }))
+    .input(z.object({ text: z.string(), limit: z.number().optional() }))
     .query(({ input, ctx }) => {
       return ctx.prisma.rap.findMany({
         where: {
@@ -185,7 +185,7 @@ export const rapRouter = createTRPCRouter({
           },
           status: 'PUBLISHED'
         },
-        take: 3
+        take: input.limit || 10
       });
     }),
   deleteRap: protectedProcedure
