@@ -119,54 +119,58 @@ const UserDropdown = (props: Props) => {
         anchorOrigin={{ vertical: 'bottom', horizontal: direction === 'ltr' ? 'right' : 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: direction === 'ltr' ? 'right' : 'left' }}
       >
-        <Box sx={{ pt: 2, pb: 3, px: 4 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Badge
-              overlap='circular'
-              badgeContent={<BadgeContentSpan />}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right'
-              }}
-            >
-              <Avatar
-                alt='Profile avatar */'
-                {...(userData?.profileImageUrl && {
-                  src: `${BUCKET_URL}/${userData.profileImageUrl}`
-                })}
-                sx={{ width: '2.5rem', height: '2.5rem' }}
-              />
-            </Badge>
-            <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 600 }}>{userData?.username || ''}</Typography>
+        <Box>
+          <Box sx={{ pt: 2, pb: 3, px: 4 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Badge
+                overlap='circular'
+                badgeContent={<BadgeContentSpan />}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right'
+                }}
+              >
+                <Avatar
+                  alt='Profile avatar */'
+                  {...(userData?.profileImageUrl && {
+                    src: `${BUCKET_URL}/${userData.profileImageUrl}`
+                  })}
+                  sx={{ width: '2.5rem', height: '2.5rem' }}
+                />
+              </Badge>
+              <Box
+                sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}
+              >
+                <Typography sx={{ fontWeight: 600 }}>{userData?.username || ''}</Typography>
+              </Box>
             </Box>
           </Box>
+          <Divider sx={{ mb: 1 }} />
+          {!isCreateProfilePage && (
+            <>
+              <MenuItem
+                sx={{ p: 0 }}
+                onClick={() => {
+                  handleDropdownClose();
+                  router.push('/settings');
+                }}
+              >
+                <Box sx={styles}>
+                  <Icon icon='mdi:cog-outline' />
+                  Settings
+                </Box>
+              </MenuItem>
+              <Divider />
+            </>
+          )}
+          <MenuItem
+            onClick={handleLogout}
+            sx={{ py: 2, '& svg': { mr: 2, fontSize: '1.375rem', color: 'text.primary' } }}
+          >
+            <Icon icon='mdi:logout-variant' />
+            Logout
+          </MenuItem>
         </Box>
-        <Divider sx={{ mb: 1 }} />
-        {!isCreateProfilePage && (
-          <>
-            <MenuItem
-              sx={{ p: 0 }}
-              onClick={() => {
-                handleDropdownClose();
-                router.push('/settings');
-              }}
-            >
-              <Box sx={styles}>
-                <Icon icon='mdi:cog-outline' />
-                Settings
-              </Box>
-            </MenuItem>
-            <Divider />
-          </>
-        )}
-        <MenuItem
-          onClick={handleLogout}
-          sx={{ py: 2, '& svg': { mr: 2, fontSize: '1.375rem', color: 'text.primary' } }}
-        >
-          <Icon icon='mdi:logout-variant' />
-          Logout
-        </MenuItem>
       </Menu>
     </Fragment>
   );

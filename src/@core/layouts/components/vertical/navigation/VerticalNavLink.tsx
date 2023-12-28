@@ -136,6 +136,8 @@ const VerticalNavLink = ({
             e.stopPropagation();
           }
           if (item.path?.includes('community')) {
+            e.preventDefault();
+            e.stopPropagation();
             window.open('https://discord.gg/zxCrUhvq', '_blank');
           }
           if (navVisible) {
