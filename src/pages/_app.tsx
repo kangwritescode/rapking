@@ -29,16 +29,8 @@ import ReactHotToast from 'src/@core/styles/libs/react-hot-toast';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-// ** Prismjs Styles
-import 'prismjs';
-import 'prismjs/components/prism-jsx';
-import 'prismjs/components/prism-tsx';
-import 'prismjs/themes/prism-tomorrow.css';
-
 // ** React Perfect Scrollbar Style
 import 'react-perfect-scrollbar/dist/css/styles.css';
-
-import 'src/iconify-bundle/icons-bundle-react';
 
 // ** Global css styles
 import CreateProfileGuard from 'src/@core/components/auth/CreateProfileGuard';
