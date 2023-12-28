@@ -96,9 +96,9 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
     });
 
     navItems.splice(navItems.length, 0, {
-      title: 'Forum',
-      path: '/forum',
-      icon: 'material-symbols:forum'
+      title: 'Community',
+      path: '/community',
+      icon: 'ic:baseline-discord'
     });
   }
 

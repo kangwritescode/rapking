@@ -115,6 +115,8 @@ const VerticalNavLink = ({
     }
   };
 
+  const menuNavLinkHref = item.path === undefined ? '/' : `${item.path}`;
+
   return (
     <ListItem
       disablePadding
@@ -126,12 +128,15 @@ const VerticalNavLink = ({
         component={Link}
         {...(item.disabled && { tabIndex: -1 })}
         className={isNavLinkActive() ? 'active' : ''}
-        href={item.path === undefined ? '/' : `${item.path}`}
+        href={menuNavLinkHref}
         {...(item.openInNewTab ? { target: '_blank' } : null)}
         onClick={e => {
           if (item.path === undefined) {
             e.preventDefault();
             e.stopPropagation();
+          }
+          if (item.path?.includes('community')) {
+            window.open('https://discord.gg/zxCrUhvq', '_blank');
           }
           if (navVisible) {
             toggleNavVisibility();

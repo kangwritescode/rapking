@@ -6,7 +6,7 @@ function GuidesPage() {
   return (
     <Box
       sx={{
-        padding: `0 ${theme.spacing(6)}`,
+        padding: `2rem ${theme.spacing(6)}`,
         transition: 'padding .25s ease-in-out',
         [theme.breakpoints.down('sm')]: {
           paddingLeft: theme.spacing(4),
@@ -16,16 +16,10 @@ function GuidesPage() {
         height: '100%'
       }}
     >
-      <Typography
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)'
-        }}
-      >
-        Coming Soon!
+      <Typography component='h1' fontSize='2rem' fontFamily='impact' mb='1rem'>
+        Guides
       </Typography>
+      <Typography>Coming Soon!</Typography>
     </Box>
   );
 }
