@@ -1,8 +1,6 @@
-import { CircularProgress, Stack } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect } from 'react';
-import VideoBackground from 'src/components/UI/VideoBackground';
 import { api } from 'src/utils/api';
 
 interface CreateProfileGuardProps {
@@ -34,27 +32,7 @@ const CreateProfileGuard: React.FC<CreateProfileGuardProps> = ({ children }) => 
     }
   }, [status, profileIsComplete, router, isDataLoading]);
 
-  return isDataLoading ? (
-    <>
-      <VideoBackground
-        videoSrc='/videos/nafla-blows.webm'
-        imageSrc='/images/nafla-blows.jpg'
-        filterColor='rgba(19, 13, 3, 0.8)'
-      />
-      <Stack alignItems='center' height='100vh' justifyContent='center'>
-        <CircularProgress
-          disableShrink
-          color='inherit'
-          sx={{
-            mb: 3
-          }}
-        />
-        Loading RapKing...
-      </Stack>
-    </>
-  ) : (
-    children
-  );
+  return children;
 };
 
 export default CreateProfileGuard;
