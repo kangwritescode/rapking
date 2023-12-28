@@ -32,9 +32,6 @@ const server = z.object({
   GCLOUD_CLIENT_EMAIL: z.string(),
   GCLOUD_CLIENT_ID: z.string(),
 
-  MUUT_API_KEY: z.string(),
-  MUUT_SECRET_KEY: z.string(),
-
   REDIS_CONNECTION_STRING: z.string().url(),
 });
 
