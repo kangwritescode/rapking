@@ -5,7 +5,6 @@ import { feedRouter } from './routers/feed';
 import { gcloudRouter } from './routers/gcloud';
 import { geoDBRouter } from './routers/geoDB';
 import { leaderboardRouter } from './routers/leaderboard';
-import { muutRouter } from './routers/muut';
 import { notificationsRouter } from './routers/notifications';
 import { rapRouter } from './routers/rap';
 import { rapComment } from './routers/rapComment';
@@ -30,8 +29,7 @@ export const appRouter = createTRPCRouter({
   commentVote: commentVoteRouter,
   leaderboard: leaderboardRouter,
   feed: feedRouter,
-  notifications: notificationsRouter,
-  muut: muutRouter
+  notifications: notificationsRouter
 });
 
 // export type definition of API

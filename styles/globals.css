@@ -37,9 +37,3 @@ code[class*='language-'] {
 * {
   box-sizing: border-box;
 }
-
-/* Muut */
-.muut-messaging,
-.muut-messaging.m-loaded {
-  display: none !important;
-}

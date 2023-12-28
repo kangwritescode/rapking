@@ -2,7 +2,7 @@
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { Router, useRouter } from 'next/router';
+import { Router } from 'next/router';
 
 // ** NextAuth
 import { SessionProvider } from 'next-auth/react';
@@ -63,7 +63,7 @@ if (themeConfig.routingLoader) {
   });
 }
 
-const NextJsHead = (isForumPage: { isForumPage: boolean }) => {
+const NextJsHead = () => {
   return (
     <Head>
       <title>{`${themeConfig.templateName} | World's #1 Spot to Write, Judge, and Discuss Raps`}</title>
@@ -95,15 +95,6 @@ const NextJsHead = (isForumPage: { isForumPage: boolean }) => {
 
       {/* Canonical Tag */}
       <link rel='canonical' href='https://www.rapking.io' />
-
-      {isForumPage ? (
-        <>
-          <script async src='//code.jquery.com/jquery-1.11.2.min.js' />
-          <script async src='//cdn.muut.com/1/moot.min.js' />
-          {/* eslint-disable-next-line @next/next/no-css-tags */}
-          <link rel='stylesheet' href='//cdn.muut.com/1/moot.css' />
-        </>
-      ) : undefined}
     </Head>
   );
 };
@@ -115,9 +106,6 @@ const App: any = (props: ExtendedAppProps) => {
     pageProps: { session, ...pageProps }
   } = props;
 
-  const router = useRouter();
-  const isForumPage = router.pathname === '/forum';
-
   // Variables
   const contentHeightFixed = Component.contentHeightFixed ?? false;
   const getLayout =
@@ -127,7 +115,7 @@ const App: any = (props: ExtendedAppProps) => {
 
   return (
     <>
-      <NextJsHead isForumPage={isForumPage} />
+      <NextJsHead />
       <SessionProvider session={session}>
         <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
           <SettingsConsumer>
