@@ -55,6 +55,26 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       title: 'Leaderboard',
       path: '/leaderboard',
       icon: 'ic:twotone-leaderboard'
+    },
+    {
+      title: 'RapKings',
+      path: '/rapkings',
+      icon: 'ph:crown-bold'
+    },
+    {
+      title: 'Blog',
+      path: '/blog',
+      icon: 'grommet-icons:blog'
+    },
+    {
+      title: 'Guides',
+      path: '/guides',
+      icon: 'ph:brain-duotone'
+    },
+    {
+      title: 'Community',
+      path: '/community',
+      icon: 'ic:baseline-discord'
     }
   ];
 
@@ -66,39 +86,11 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
     });
   }
 
-  navItems.splice(
-    navItems.length,
-    0,
-    ...[
-      {
-        title: 'RapKings',
-        path: '/rapkings',
-        icon: 'ph:crown-bold'
-      },
-      {
-        title: 'Blog',
-        path: '/blog',
-        icon: 'grommet-icons:blog'
-      },
-      {
-        title: 'Guides',
-        path: '/guides',
-        icon: 'ph:brain-duotone'
-      }
-    ]
-  );
-
   if (userData) {
     navItems.splice(0, 0, {
       title: userData.username || 'Profile',
       path: `/u/${userData.username}`,
       icon: 'gg:profile'
-    });
-
-    navItems.splice(navItems.length, 0, {
-      title: 'Community',
-      path: '/community',
-      icon: 'ic:baseline-discord'
     });
   }
 
