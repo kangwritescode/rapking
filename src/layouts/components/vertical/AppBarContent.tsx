@@ -54,7 +54,15 @@ const AppBarContent = (props: Props) => {
       </Box>
       <GlobalSearch
         sx={{
-          position: 'absolute'
+          position: 'absolute',
+          left: {
+            md: '3.5rem',
+            lg: 'unset'
+          },
+          display: {
+            xs: 'none',
+            md: 'block'
+          }
         }}
       />
       {status === 'unauthenticated' && (
