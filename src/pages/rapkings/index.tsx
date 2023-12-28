@@ -1,4 +1,4 @@
-import { Box, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 
 function RapKingsPage() {
   const theme = useTheme();
@@ -11,10 +11,21 @@ function RapKingsPage() {
         [theme.breakpoints.down('sm')]: {
           paddingLeft: theme.spacing(4),
           paddingRight: theme.spacing(4)
-        }
+        },
+        position: 'relative',
+        height: '100%'
       }}
     >
-      Coming Soon!
+      <Typography
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)'
+        }}
+      >
+        Coming Soon!
+      </Typography>
     </Box>
   );
 }

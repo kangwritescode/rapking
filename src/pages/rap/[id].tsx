@@ -33,7 +33,7 @@ function RapPage() {
       alignItems='center'
       padding={{
         xs: '2rem 1rem',
-        md: '4rem'
+        md: '2.5rem'
       }}
     >
       <Stack width={{ xs: '100%', md: '40rem' }}>
