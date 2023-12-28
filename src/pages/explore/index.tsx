@@ -4,8 +4,29 @@ import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api
 import FeedBar from '../../components/ExplorePage/FeedBar';
 
 import { useSession } from 'next-auth/react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Feed from '../../components/ExplorePage/Feed';
+
+const ExploreHead = () => (
+  <Head>
+    <title key='title'>Explore - RapKing</title>
+    <meta name='description' content='Write, judge, and discuss raps.' />
+    <meta property='og:title' content='Explore - RapKing' />
+    <meta property='og:description' content='Write, judge, and discuss raps.' />
+    <meta property='og:url' content='https://rapking.io/explore' />
+    <meta property='og:image' content='https://rapking.io/images/crown.svg' />
+    <meta property='og:type' content='website' />
+    <meta property='og:site_name' content='RapKing' />
+    <meta property='og:locale' content='en_US' />
+    <meta name='twitter:card' content='summary_large_image' />
+    <meta name='twitter:title' content='Explore - RapKing' />
+    <meta name='twitter:description' content='Write, judge, and discuss raps.' />
+    <meta name='twitter:image' content='https://rapking.io/images/crown.svg' />
+    <meta name='twitter:domain' content='rapking.io' />
+    <link rel='canonical' href='https://rapking.io/explore' />
+  </Head>
+);
 
 function ExplorePage() {
   const theme = useTheme();
@@ -28,62 +49,65 @@ function ExplorePage() {
   const followingFilter = tab === 1;
 
   return (
-    <Stack
-      alignItems='center'
-      sx={{
-        width: ['100%', '90%', '80%'],
-        maxWidth: '45rem',
-        margin: 'auto',
-        height: '100%',
-        padding: `1.5rem ${theme.spacing(6)}`,
-        transition: 'padding .25s ease-in-out',
-        [theme.breakpoints.down('sm')]: {
-          paddingLeft: theme.spacing(4),
-          paddingRight: theme.spacing(4)
-        }
-      }}
-    >
-      <Box
+    <>
+      <ExploreHead />
+      <Stack
+        alignItems='center'
         sx={{
-          borderBottom: 1,
-          borderColor: 'divider',
-          width: '100%',
-          mb: '1rem'
+          width: ['100%', '90%', '80%'],
+          maxWidth: '45rem',
+          margin: 'auto',
+          height: '100%',
+          padding: `1.5rem ${theme.spacing(6)}`,
+          transition: 'padding .25s ease-in-out',
+          [theme.breakpoints.down('sm')]: {
+            paddingLeft: theme.spacing(4),
+            paddingRight: theme.spacing(4)
+          }
         }}
       >
-        <Tabs
-          value={tab}
-          onChange={handleChange}
+        <Box
           sx={{
-            ['& .Mui-selected']: {
-              color: theme.palette.grey[100] + ' !important'
-            },
-            ['& .MuiTabs-indicator']: {
-              backgroundColor: theme.palette.grey[100]
-            }
+            borderBottom: 1,
+            borderColor: 'divider',
+            width: '100%',
+            mb: '1rem'
           }}
         >
-          <Tab label='All' />
-          {status === 'authenticated' && <Tab label='Following' />}
-        </Tabs>
-      </Box>
-      <FeedBar
-        sx={{ mb: '2rem' }}
-        onSortAndFilterChange={({ sortBy, regionFilter, timeFilter, sexFilter }) => {
-          setSortByValue(sortBy);
-          setRegionFilter(regionFilter);
-          setTimeFilter(timeFilter);
-          setSexFilter(sexFilter);
-        }}
-      />
-      <Feed
-        sortBy={sortByValue}
-        regionFilter={regionFilter}
-        timeFilter={timeFilter}
-        followingFilter={followingFilter}
-        sexFilter={sexFilter}
-      />
-    </Stack>
+          <Tabs
+            value={tab}
+            onChange={handleChange}
+            sx={{
+              ['& .Mui-selected']: {
+                color: theme.palette.grey[100] + ' !important'
+              },
+              ['& .MuiTabs-indicator']: {
+                backgroundColor: theme.palette.grey[100]
+              }
+            }}
+          >
+            <Tab label='All' />
+            {status === 'authenticated' && <Tab label='Following' />}
+          </Tabs>
+        </Box>
+        <FeedBar
+          sx={{ mb: '2rem' }}
+          onSortAndFilterChange={({ sortBy, regionFilter, timeFilter, sexFilter }) => {
+            setSortByValue(sortBy);
+            setRegionFilter(regionFilter);
+            setTimeFilter(timeFilter);
+            setSexFilter(sexFilter);
+          }}
+        />
+        <Feed
+          sortBy={sortByValue}
+          regionFilter={regionFilter}
+          timeFilter={timeFilter}
+          followingFilter={followingFilter}
+          sexFilter={sexFilter}
+        />
+      </Stack>
+    </>
   );
 }
 
