@@ -16,7 +16,10 @@ function ArticlePage() {
       <Box
         sx={{
           position: 'absolute',
-          left: '.5rem'
+          left: {
+            xs: '1rem',
+            sm: '.5rem'
+          }
         }}
       >
         <Link
