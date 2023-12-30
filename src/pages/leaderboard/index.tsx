@@ -37,7 +37,14 @@ function LeaderboardPage() {
         }
       }}
     >
-      <Typography component='h1' textAlign='left' fontSize='1.5rem' fontWeight={600} mb='1rem'>
+      <Typography
+        component='h1'
+        textAlign='left'
+        fontSize='2rem'
+        fontWeight={600}
+        mb='1rem'
+        fontFamily='impact'
+      >
         Leaderboard
       </Typography>
       <Stack direction='row' gap='1.5rem' height='100%' justifyContent='center' width='100%'>

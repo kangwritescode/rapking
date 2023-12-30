@@ -6,9 +6,6 @@ import { styled, useTheme } from '@mui/material/styles';
 // ** Type Imports
 import { LayoutProps } from 'src/@core/layouts/types';
 
-// ** Util Import
-import { useRouter } from 'next/router';
-
 interface Props {
   hidden: LayoutProps['hidden'];
   toggleNavVisibility: () => void;
@@ -52,10 +49,6 @@ const LayoutAppBar = (props: Props) => {
   // ** Vars
   const { appBar } = settings;
 
-  // ** Router
-  const router = useRouter();
-  const isLeaderboardPage = router.pathname.includes('/leaderboard');
-
   if (appBar === 'hidden') {
     return null;
   }
@@ -74,7 +67,7 @@ const LayoutAppBar = (props: Props) => {
       className='layout-navbar'
       sx={{
         ...userAppBarStyle,
-        ...(isLeaderboardPage ? { backgroundColor: 'background.default' } : {}),
+        backgroundColor: 'background.default',
         borderBottom: `1px solid ${theme.palette.divider}`
       }}
       position={appBar === 'fixed' ? 'sticky' : 'static'}

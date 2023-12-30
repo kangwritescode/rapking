@@ -72,6 +72,7 @@ model User {
   commentVotes          CommentVote[]
   sentNotifications     Notification[] @relation("NotifierRelation")
   receivedNotifications Notification[] @relation("UserRelation")
+  Article               Article[]
 }
 
 model UserFollows {
@@ -209,6 +210,19 @@ model Notification {
   commentVote   CommentVote? @relation(fields: [commentVoteId], references: [id], onDelete: Cascade)
 
   @@index([recipientId, createdAt(sort: Desc)])
+}
+
+model Article {
+  id          Int      @id @default(autoincrement())
+  title       String
+  subtitle    String
+  content     String   @db.Text
+  bannerImage String
+  publishedAt DateTime @default(now())
+  viewCount   Int      @default(0)
+  slug        String   @unique
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
 
 enum RapStatus {
