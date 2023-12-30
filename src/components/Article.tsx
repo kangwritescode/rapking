@@ -1,12 +1,14 @@
-import { Box, CardMedia, Divider, Typography } from '@mui/material';
+import { Icon } from '@iconify/react';
+import { Box, CardMedia, Divider, Stack, Typography } from '@mui/material';
 import { Article } from '@prisma/client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import sanitize from 'sanitize-html';
 import { BUCKET_URL } from 'src/shared/constants';
+import { api } from 'src/utils/api';
 
 interface Props {
   children?: React.ReactNode;
-  articleData?: Article | null;
+  articleData?: Article;
 }
 
 export function ArticleContainer({ children }: { children: React.ReactNode }) {
@@ -34,11 +36,22 @@ export function ArticleContainer({ children }: { children: React.ReactNode }) {
 }
 
 function Article({ articleData }: Props) {
+  const { content, bannerImage, title, subtitle, slug } = articleData || {};
+
+  const sanitizedContent = sanitize(content || '');
+
+  const { mutate: incrementArticleView } = api.articles.incrementViews.useMutation();
+
+  useEffect(() => {
+    try {
+      incrementArticleView({ slug: slug! });
+    } catch (err) {
+      console.error(err);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (!articleData) return null;
-
-  const { content, bannerImage, title, subtitle } = articleData;
-
-  const sanitizedContent = sanitize(content);
 
   return (
     <ArticleContainer>
@@ -60,7 +73,13 @@ function Article({ articleData }: Props) {
       <Typography component='h2' fontSize='1.5rem' mt='-1.5rem' fontWeight={600}>
         {subtitle}
       </Typography>
-      <Divider sx={{ mt: '.5rem', mb: '3rem' }} />
+      <Divider sx={{ mt: '2rem' }} />
+      <Stack direction='row' pl='.75rem' py='.5rem' alignItems='center'>
+        <Icon icon='gg:eye' fontSize='1.25rem' style={{ marginRight: '.5rem' }} />
+
+        {articleData.viewCount}
+      </Stack>
+      <Divider sx={{ mb: '3rem' }} />
       <Box
         component='div'
         dangerouslySetInnerHTML={{

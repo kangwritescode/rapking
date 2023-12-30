@@ -74,7 +74,7 @@ function ArticlePage() {
             &nbsp; {article?.title}
           </Typography>
         </Box>
-        <Article articleData={article} />
+        {article && <Article articleData={article} />}
       </Box>
     </>
   );

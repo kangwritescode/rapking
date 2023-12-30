@@ -34,5 +34,27 @@ export const articlesRouter = createTRPCRouter({
       });
 
       return articles;
+    }),
+  incrementViews: publicProcedure
+    .input(
+      z.object({
+        slug: z.string()
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { slug } = input;
+
+      const updatedArticle = await ctx.prisma.article.update({
+        where: {
+          slug
+        },
+        data: {
+          viewCount: {
+            increment: 1
+          }
+        }
+      });
+
+      return updatedArticle;
     })
 });
