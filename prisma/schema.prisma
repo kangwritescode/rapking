@@ -213,16 +213,23 @@ model Notification {
 }
 
 model Article {
-  id          Int      @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   title       String
   subtitle    String
-  content     String   @db.Text
+  content     String       @db.Text
   bannerImage String
-  publishedAt DateTime @default(now())
-  viewCount   Int      @default(0)
-  slug        String   @unique
+  publishedAt DateTime     @default(now())
+  viewCount   Int          @default(0)
+  slug        String       @unique
   authorId    String
-  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author      User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tags        ArticleTag[]
+}
+
+model ArticleTag {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  articles Article[]
 }
 
 enum RapStatus {
