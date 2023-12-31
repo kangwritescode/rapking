@@ -13,7 +13,7 @@ const ArticleHead = ({ article }: { article: Article }) => {
       <meta name='description' content={article?.content} />
       <meta property='og:title' content={article?.title} />
       <meta property='og:description' content={article?.content} />
-      <meta property='og:url' content={`https://rapking.io/guides/${article?.slug}`} />
+      <meta property='og:url' content={`https://rapking.io/insights/${article?.slug}`} />
       <meta property='og:image' content={`${BUCKET_URL}/${article?.bannerImage}`} />
       <meta property='og:type' content='website' />
       <meta property='og:site_name' content='RapKing' />
@@ -23,7 +23,7 @@ const ArticleHead = ({ article }: { article: Article }) => {
       <meta name='twitter:description' content={article?.content} />
       <meta name='twitter:image' content={`${BUCKET_URL}/${article?.bannerImage}`} />
       <meta name='twitter:domain' content='rapking.io' />
-      <link rel='canonical' href={`https://rapking.io/guides/${article?.slug}`} />
+      <link rel='canonical' href={`https://rapking.io/insights/${article?.slug}`} />
     </Head>
   );
 };
@@ -49,7 +49,7 @@ function ArticlePage() {
           }}
         >
           <Link
-            href='/guides'
+            href='/insights'
             style={{
               textDecoration: 'none'
             }}
@@ -61,7 +61,7 @@ function ArticlePage() {
                 color: theme.palette.grey[700]
               }}
             >
-              Guides &nbsp; /
+              Insights &nbsp; /
             </Typography>
           </Link>
           <Typography

@@ -62,13 +62,13 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       icon: 'ph:crown-bold'
     },
     {
-      title: 'Blog',
-      path: '/blog',
+      title: 'Pulse',
+      path: '/pulse',
       icon: 'grommet-icons:blog'
     },
     {
-      title: 'Guides',
-      path: '/guides',
+      title: 'Insights',
+      path: '/insights',
       icon: 'ph:brain-duotone'
     },
     {

@@ -64,7 +64,7 @@ function Article({ articleData }: Props) {
           }
         }}
         component='img'
-        alt='Rap Guides'
+        alt='Article Banner'
         image={`${BUCKET_URL}/${bannerImage}`}
       />
       <Typography component='h1' fontSize='3rem' fontFamily='impact' mb='1rem' mt='1.5rem'>
