@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Article from 'src/components/Article';
+import { prisma } from 'src/server/db';
 import { BUCKET_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
 
@@ -81,3 +82,35 @@ function ArticlePage() {
 }
 
 export default ArticlePage;
+
+export async function getStaticPaths() {
+  const articles = await prisma.article.findMany({
+    select: {
+      slug: true
+    }
+  });
+  const paths = articles.map(article => ({
+    params: { slug: article.slug }
+  }));
+
+  return { paths, fallback: false };
+}
+
+export async function getStaticProps({ params }: { params: { slug: string } }) {
+  const article = await prisma.article.findUnique({
+    where: {
+      slug: params.slug
+    }
+  });
+
+  const serializableArticle = {
+    ...article,
+    publishedAt: article!.publishedAt.toISOString()
+  };
+
+  return {
+    props: {
+      article: serializableArticle
+    }
+  };
+}
