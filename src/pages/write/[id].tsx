@@ -1,4 +1,4 @@
-import { Container } from '@mui/material';
+import { Container, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { toast } from 'react-hot-toast';
@@ -7,6 +7,7 @@ import { api } from 'src/utils/api';
 import RapEditor from '../../components/WritePage/RapEditor';
 
 const ExistingRap = () => {
+  const theme = useTheme();
   const router = useRouter();
   const { id } = router.query;
 
@@ -21,8 +22,10 @@ const ExistingRap = () => {
 
   // Effects
   useEffect(() => {
-    refetch();
-  }, [refetch]);
+    if (id) {
+      refetch();
+    }
+  }, [refetch, id]);
 
   const updateRap = (rap: UpdateRapPayload) => {
     if (rap) {
@@ -44,7 +47,13 @@ const ExistingRap = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        padding: ` 2.5rem ${theme.spacing(6)}`,
+        transition: 'padding .25s ease-in-out',
+        [theme.breakpoints.down('sm')]: {
+          paddingLeft: theme.spacing(4),
+          paddingRight: theme.spacing(4)
+        }
       }}
     >
       {rapData && <RapEditor updateRap={updateRap} rapData={rapData} isLoading={isLoading} />}
