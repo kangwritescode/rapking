@@ -48,7 +48,7 @@ const ExistingRap = () => {
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
-        padding: ` 2.5rem ${theme.spacing(6)}`,
+        padding: `2.5rem ${theme.spacing(6)}`,
         transition: 'padding .25s ease-in-out',
         [theme.breakpoints.down('sm')]: {
           paddingLeft: theme.spacing(4),
