@@ -7,6 +7,7 @@ import path from 'path';
 import { deleteGloudFile, moveGCloudFile } from 'src/gcloud/serverMethods';
 import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
+import { containsBannedWords } from 'src/shared/bannedWords';
 
 // Schemas
 const createRapPayloadSchema = z.object({
@@ -42,12 +43,6 @@ export type SortByValue = z.infer<typeof sortBySchema>;
 export type TimeFilter = z.infer<typeof timeFilterSchema>;
 export type RegionFilter = z.infer<typeof regionFilterSchema>;
 export type SexFilter = z.infer<typeof sexFilterSchema>;
-
-const bannedWords = ['nigger', 'niggers'];
-
-function containsBannedWords(inputText: string) {
-  return bannedWords.some(word => inputText.toLowerCase().includes(word));
-}
 
 export const rapRouter = createTRPCRouter({
   createRap: protectedProcedure.input(createRapPayloadSchema).mutation(async ({ input, ctx }) => {

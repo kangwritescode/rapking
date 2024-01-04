@@ -1,3 +1,4 @@
+import sanitize from 'sanitize-html';
 import { z } from 'zod';
 
 import { TRPCError } from '@trpc/server';
@@ -105,6 +106,11 @@ export const userRouter = createTRPCRouter({
 
       const region = input.state ? stateToRegionMap[input.state] : null;
 
+      const sanitizedBio = sanitize(input.bio ?? '', {
+        allowedTags: [],
+        allowedAttributes: {}
+      });
+
       // updates user
       const updatedUser = await ctx.prisma.user.update({
         where: {
@@ -119,7 +125,7 @@ export const userRouter = createTRPCRouter({
           ...(input.city ? { city: input.city } : {}),
           ...(input.bannerUrl ? { bannerUrl: input.bannerUrl } : {}),
           ...(input.profileImageUrl ? { profileImageUrl: input.profileImageUrl } : {}),
-          ...(input.bio ? { bio: input.bio } : {})
+          ...(input.bio ? { bio: sanitizedBio } : {})
         }
       });
 
