@@ -1,3 +1,4 @@
+import sanitize from 'sanitize-html';
 import { z } from 'zod';
 
 import { NotificationType, RapComment, User } from '@prisma/client';
@@ -93,9 +94,14 @@ export const rapComment = createTRPCRouter({
         });
       }
 
+      const sanitizedContent = sanitize(content, {
+        allowedTags: [],
+        allowedAttributes: {}
+      });
+
       const rapComment = await ctx.prisma.rapComment.create({
         data: {
-          content,
+          content: sanitizedContent,
           userId,
           rapId
         }
@@ -124,7 +130,8 @@ export const rapComment = createTRPCRouter({
 
       const rapComment = await ctx.prisma.rapComment.delete({
         where: {
-          id
+          id,
+          userId: ctx.session.user.id
         }
       });
 
