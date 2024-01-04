@@ -12,7 +12,7 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/serve
 const createRapPayloadSchema = z.object({
   title: z.string(),
   content: z.string(),
-  status: z.enum(['DRAFT', 'PUBLISHED']),
+  status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
   coverArtUrl: z.string().optional().nullable(),
   soundcloudUrl: z.string().optional().nullable(),
   youtubeVideoId: z.string().optional().nullable(),
@@ -20,9 +20,9 @@ const createRapPayloadSchema = z.object({
 });
 const updateRapPayloadSchema = z.object({
   id: z.string(),
-  title: z.string(),
-  content: z.string(),
-  status: z.enum(['DRAFT', 'PUBLISHED']),
+  title: z.string().optional(),
+  content: z.string().optional(),
+  status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
   coverArtUrl: z.string().optional().nullable(),
   soundcloudUrl: z.string().optional().nullable(),
   youtubeVideoId: z.string().optional().nullable(),
