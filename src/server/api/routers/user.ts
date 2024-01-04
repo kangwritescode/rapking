@@ -82,12 +82,10 @@ export const userRouter = createTRPCRouter({
         where: { id: ctx.session.user.id }
       });
 
-      // creates user if it doesn't exist
       if (!existingUser) {
-        await ctx.prisma.user.create({
-          data: {
-            id: ctx.session.user.id
-          }
+        throw new TRPCError({
+          code: 'UNPROCESSABLE_CONTENT',
+          message: 'User not found'
         });
       }
 
