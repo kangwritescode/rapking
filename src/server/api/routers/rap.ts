@@ -85,8 +85,8 @@ export const rapRouter = createTRPCRouter({
 
     let rap = await ctx.prisma.rap.create({
       data: {
-        title: sanitize(input.title),
-        content: sanitize(input.content),
+        title: sanitize(input.title, { allowedTags: [], allowedAttributes: {} }),
+        content: sanitize(input.content, { allowedTags: [], allowedAttributes: {} }),
         status: input.status,
         userId: ctx.session.user.id,
         soundcloudUrl: input.soundcloudUrl,
@@ -128,6 +128,14 @@ export const rapRouter = createTRPCRouter({
       });
     }
 
+    // Authorization check
+    if (existingRap.userId !== ctx.session.user.id) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'You are not authorized to update this rap.'
+      });
+    }
+
     const newCoverArtUrl = await updateCoverArtUrl(input, existingRap);
 
     return await ctx.prisma.rap.update({
@@ -135,8 +143,18 @@ export const rapRouter = createTRPCRouter({
         id: input.id
       },
       data: {
-        ...(input.title && { title: sanitize(input.title) }),
-        ...(input.content && { content: sanitize(input.content) }),
+        ...(input.title && {
+          title: sanitize(input.title, {
+            allowedTags: [],
+            allowedAttributes: {}
+          })
+        }),
+        ...(input.content && {
+          content: sanitize(input.content, {
+            allowedTags: [],
+            allowedAttributes: {}
+          })
+        }),
         ...(input.status && { status: input.status }),
         soundcloudUrl: input.soundcloudUrl,
         youtubeVideoId: input.youtubeVideoId,
