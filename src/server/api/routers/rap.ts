@@ -43,6 +43,12 @@ export type TimeFilter = z.infer<typeof timeFilterSchema>;
 export type RegionFilter = z.infer<typeof regionFilterSchema>;
 export type SexFilter = z.infer<typeof sexFilterSchema>;
 
+const bannedWords = ['nigger', 'niggers'];
+
+function containsBannedWords(inputText: string) {
+  return bannedWords.some(word => inputText.includes(word));
+}
+
 export const rapRouter = createTRPCRouter({
   createRap: protectedProcedure.input(createRapPayloadSchema).mutation(async ({ input, ctx }) => {
     if (input.title.length < 3) {
@@ -64,6 +70,14 @@ export const rapRouter = createTRPCRouter({
       throw new TRPCError({
         code: 'BAD_REQUEST',
         message: 'A rap with this title already exists.'
+      });
+    }
+
+    // * Content Moderation
+    if (containsBannedWords(input.title) || containsBannedWords(input.content)) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Your rap has innapropriate content.'
       });
     }
 
@@ -133,6 +147,14 @@ export const rapRouter = createTRPCRouter({
       throw new TRPCError({
         code: 'FORBIDDEN',
         message: 'You are not authorized to update this rap.'
+      });
+    }
+
+    // * Content Moderation
+    if (containsBannedWords(input.title!) || containsBannedWords(input.content!)) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Your rap has innapropriate content.'
       });
     }
 
