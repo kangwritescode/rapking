@@ -10,14 +10,14 @@ export const userRouter = createTRPCRouter({
   findByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(({ input, ctx }) => {
-      return ctx.prisma.user.findUnique({
+      return ctx.prisma.user.findUniqueOrThrow({
         where: {
           username: input.username
         }
       });
     }),
   getCurrentUser: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.user.findUnique({
+    return ctx.prisma.user.findUniqueOrThrow({
       where: {
         id: ctx.session.user.id
       }
@@ -91,17 +91,9 @@ export const userRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      // checks if user exists
-      const existingUser = await ctx.prisma.user.findUnique({
+      await ctx.prisma.user.findUniqueOrThrow({
         where: { id: ctx.session.user.id }
       });
-
-      if (!existingUser) {
-        throw new TRPCError({
-          code: 'UNPROCESSABLE_CONTENT',
-          message: 'User not found'
-        });
-      }
 
       // checks if username is already taken
       if (input.username) {
@@ -159,17 +151,11 @@ export const userRouter = createTRPCRouter({
     return true;
   }),
   getProfileIsComplete: protectedProcedure.query(async ({ ctx }) => {
-    const user = await ctx.prisma.user.findUnique({
+    const user = await ctx.prisma.user.findUniqueOrThrow({
       where: {
         id: ctx.session.user.id
       }
     });
-    if (!user) {
-      throw new TRPCError({
-        code: 'UNPROCESSABLE_CONTENT',
-        message: 'User not found'
-      });
-    }
 
     const profileIsComplete =
       user !== null &&
