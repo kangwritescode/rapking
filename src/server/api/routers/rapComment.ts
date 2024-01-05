@@ -135,14 +135,26 @@ export const rapComment = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { id } = input;
 
-      const rapComment = await ctx.prisma.rapComment.delete({
+      const commentToDelete = await ctx.prisma.rapComment.findUniqueOrThrow({
         where: {
-          id,
-          userId: ctx.session.user.id
+          id
         }
       });
 
-      return rapComment;
+      if (commentToDelete.userId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: "You don't have permission to do that."
+        });
+      }
+
+      const deleteResponse = await ctx.prisma.rapComment.delete({
+        where: {
+          id
+        }
+      });
+
+      return deleteResponse;
     }),
   getRapCommentsCount: publicProcedure
     .input(
