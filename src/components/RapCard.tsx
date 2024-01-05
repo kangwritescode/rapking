@@ -12,6 +12,7 @@ import { Rap, User } from '@prisma/client';
 import dayjs from 'dayjs';
 import { convert } from 'html-to-text';
 import { useRouter } from 'next/router';
+import sanitize from 'sanitize-html';
 import { BUCKET_URL } from 'src/shared/constants';
 import RapCardChip from './RapCardChip';
 import RapCardMenu from './UserPage/RapCardMenu';
@@ -61,7 +62,10 @@ function RapCard({
     router.push(`/rap/${id}`);
   };
 
-  let formattedContent = convert(content);
+  const sanitizedContent = sanitize(content, {
+    allowedTags: ['p', 'br', 'b', 'i', 'strong', 'u', 'a']
+  });
+  let formattedContent = convert(sanitizedContent);
   const maxLength = contentMaxLength
     ? contentMaxLength
     : isMobileView

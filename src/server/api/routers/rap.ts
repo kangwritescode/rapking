@@ -11,8 +11,11 @@ import { containsBannedWords } from 'src/shared/bannedWords';
 
 // Schemas
 const createRapPayloadSchema = z.object({
-  title: z.string(),
-  content: z.string(),
+  title: z
+    .string()
+    .min(3, 'Title must contain at least 3 character(s)')
+    .max(50, 'Title must contain at most 50 character(s)'),
+  content: z.string().max(3000),
   status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
   coverArtUrl: z.string().optional().nullable(),
   soundcloudUrl: z.string().optional().nullable(),
@@ -21,8 +24,12 @@ const createRapPayloadSchema = z.object({
 });
 const updateRapPayloadSchema = z.object({
   id: z.string(),
-  title: z.string().optional(),
-  content: z.string().optional(),
+  title: z
+    .string()
+    .min(3, 'Title must contain at least 3 character(s)')
+    .max(50, 'Title must contain at most 50 character(s)')
+    .optional(),
+  content: z.string().max(3000).optional(),
   status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
   coverArtUrl: z.string().optional().nullable(),
   soundcloudUrl: z.string().optional().nullable(),

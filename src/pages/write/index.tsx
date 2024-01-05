@@ -3,6 +3,7 @@ import { Rap } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { toast } from 'react-hot-toast';
+import sanitize from 'sanitize-html';
 import { CreateRapPayload } from 'src/server/api/routers/rap';
 import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
 import { api } from 'src/utils/api';
@@ -24,10 +25,13 @@ function WritePage() {
     }
     if (rap) {
       const editedContent = removeTrailingAndLeadingPElements(rap.content);
+      const sanitizedContent = sanitize(editedContent, {
+        allowedTags: ['p', 'br', 'b', 'i', 'strong', 'u', 'a']
+      });
       mutate(
         {
           title: rap.title,
-          content: editedContent,
+          content: sanitizedContent,
           status: rap.status,
           coverArtUrl: rap.coverArtUrl,
           soundcloudUrl: rap.soundcloudUrl,
