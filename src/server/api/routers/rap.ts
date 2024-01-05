@@ -138,7 +138,7 @@ export const rapRouter = createTRPCRouter({
     // check if a rap with the same title already exists
     const existingRap = await ctx.prisma.rap.findUnique({
       where: {
-        id: input.id
+        id: ctx.session.user.id
       }
     });
 
@@ -169,7 +169,8 @@ export const rapRouter = createTRPCRouter({
 
     return await ctx.prisma.rap.update({
       where: {
-        id: input.id
+        id: input.id,
+        userId: ctx.session.user.id
       },
       data: {
         ...(input.title && {
@@ -242,7 +243,8 @@ export const rapRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const rap = await ctx.prisma.rap.findUnique({
         where: {
-          id: input.id
+          id: input.id,
+          userId: ctx.session.user.id
         }
       });
 
@@ -263,7 +265,8 @@ export const rapRouter = createTRPCRouter({
       await ctx.prisma.$transaction([
         ctx.prisma.rap.delete({
           where: {
-            id: input.id
+            id: input.id,
+            userId: ctx.session.user.id
           }
         }),
         ctx.prisma.user.update({
