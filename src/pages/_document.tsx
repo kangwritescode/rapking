@@ -33,7 +33,7 @@ class CustomDocument extends Document {
               base-uri 'self';
               font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
               connect-src 'self' https://api.iconify.design;
-              frame-src 'self' https://www.youtube.com https://www.soundcloud.com https://w.soundcloud.com;
+              frame-src 'self' https://www.youtube.com https://www.soundcloud.com https://w.soundcloud.com https://giphy.com/;
               ${
                 env.NODE_ENV === 'development'
                   ? `script-src 'self' 'unsafe-eval';`
