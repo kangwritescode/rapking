@@ -34,17 +34,6 @@ declare module 'next-auth' {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
-  cookies: {
-    sessionToken: {
-      name: `__Secure-next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'strict',
-        path: '/',
-        secure: true
-      }
-    }
-  },
   callbacks: {
     session: async ({ session, user }) => {
       if (session.user) {
