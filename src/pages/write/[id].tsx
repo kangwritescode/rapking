@@ -2,6 +2,7 @@ import { Container, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { toast } from 'react-hot-toast';
+import sanitize from 'sanitize-html';
 import { UpdateRapPayload } from 'src/server/api/routers/rap';
 import { api } from 'src/utils/api';
 import RapEditor from '../../components/WritePage/RapEditor';
@@ -28,8 +29,14 @@ const ExistingRap = () => {
   }, [refetch, id]);
 
   const updateRap = (rap: UpdateRapPayload) => {
+    const updatedRap = {
+      ...rap,
+      content: sanitize(rap.content ?? '', {
+        allowedTags: ['p', 'br', 'b', 'i', 'strong', 'u', 'a']
+      })
+    };
     if (rap) {
-      mutate(rap, {
+      mutate(updatedRap, {
         onError: error => {
           toast.error(error.message);
         },

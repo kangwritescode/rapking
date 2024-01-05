@@ -102,7 +102,12 @@ export const rapRouter = createTRPCRouter({
     let rap = await ctx.prisma.rap.create({
       data: {
         title: sanitize(input.title, { allowedTags: [], allowedAttributes: {} }),
-        content: sanitize(input.content, { allowedTags: [], allowedAttributes: {} }),
+        content: sanitize(input.content, {
+          allowedTags: ['p', 'br', 'b', 'strong', 'i', 'em', 'u'],
+          allowedAttributes: {
+            a: ['href']
+          }
+        }),
         status: input.status,
         userId: ctx.session.user.id,
         soundcloudUrl: input.soundcloudUrl,
@@ -175,8 +180,10 @@ export const rapRouter = createTRPCRouter({
         }),
         ...(input.content && {
           content: sanitize(input.content, {
-            allowedTags: [],
-            allowedAttributes: {}
+            allowedTags: ['p', 'br', 'b', 'strong', 'i', 'em', 'u'],
+            allowedAttributes: {
+              a: ['href']
+            }
           })
         }),
         ...(input.status && { status: input.status }),
