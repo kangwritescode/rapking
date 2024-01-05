@@ -35,13 +35,17 @@ function EditBioDialog({ isOpen, onCloseHandler, userData }: EditBioDialogProps)
     onCloseHandler();
   };
 
+  const sanitizedDefaultBio = sanitize(userData.bio ?? '', {
+    allowedTags: []
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid }
   } = useForm({
     defaultValues: {
-      bio: userData.bio || ''
+      bio: sanitizedDefaultBio
     },
     resolver: zodResolver(
       z.object({

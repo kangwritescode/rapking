@@ -7,6 +7,7 @@ import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import sanitize from 'sanitize-html';
 import { CreateRapPayload, UpdateRapPayload } from 'src/server/api/routers/rap';
 import { z } from 'zod';
 import AddCoverArtField from '../AddCoverArtField';
@@ -43,10 +44,21 @@ interface RapEditorProps {
 export type RapEditorFormValues = z.infer<typeof rapEditorFormSchema>;
 
 const useRapEditorForm = (rapData?: Rap | null, storedRapDraft?: Partial<Rap>) => {
+  const sanitizedDefaultContent = sanitize(rapData?.content ?? storedRapDraft?.content ?? '', {
+    allowedTags: ['p', 'br', 'b', 'strong', 'i'],
+    allowedAttributes: {
+      div: ['style']
+    }
+  });
+  const sanitizedDefaultTitle = sanitize(rapData?.title ?? storedRapDraft?.title ?? '', {
+    allowedTags: [],
+    allowedAttributes: {}
+  });
+
   return useForm({
     defaultValues: {
-      title: rapData?.title || storedRapDraft?.title || '',
-      content: rapData?.content || storedRapDraft?.content || '',
+      title: sanitizedDefaultTitle,
+      content: sanitizedDefaultContent,
       published:
         rapData?.status === RapStatus.PUBLISHED || storedRapDraft?.status === RapStatus.PUBLISHED,
       coverArtUrl: rapData?.coverArtUrl || storedRapDraft?.coverArtUrl || null,

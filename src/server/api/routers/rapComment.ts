@@ -5,6 +5,7 @@ import { NotificationType, RapComment, User } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
+import { containsBannedWords } from 'src/shared/bannedWords';
 
 export type RapCommentWithUserData = RapComment & {
   user: User;
@@ -80,7 +81,6 @@ export const rapComment = createTRPCRouter({
       }
 
       const rateLimitResult = await rateLimit({
-        userId: ctx.session.user.id,
         maxRequests: 2,
         window: 60 * 60,
         keyString: `rapComment-${rapId}-${userId}`
@@ -95,9 +95,16 @@ export const rapComment = createTRPCRouter({
       }
 
       const sanitizedContent = sanitize(content, {
-        allowedTags: [],
+        allowedTags: ['br', 'b', 'strong', 'i'],
         allowedAttributes: {}
       });
+
+      if (containsBannedWords(sanitizedContent)) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Your comment contains inappropriate content.'
+        });
+      }
 
       const rapComment = await ctx.prisma.rapComment.create({
         data: {
