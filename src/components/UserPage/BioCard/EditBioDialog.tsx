@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { User } from '@prisma/client';
 import { useForm } from 'react-hook-form';
+import sanitize from 'sanitize-html';
 import { api } from 'src/utils/api';
 import { z } from 'zod';
 
@@ -51,9 +52,12 @@ function EditBioDialog({ isOpen, onCloseHandler, userData }: EditBioDialogProps)
   });
 
   const updateUser = (values: { bio: string }) => {
+    const sanitizedBio = sanitize(values.bio, {
+      allowedTags: []
+    });
     mutate(
       {
-        bio: values.bio
+        bio: sanitizedBio
       },
       {
         onSuccess: () => {
