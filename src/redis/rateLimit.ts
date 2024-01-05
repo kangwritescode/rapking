@@ -1,7 +1,6 @@
 import { redis } from './redis';
 
 export interface RateLimitOptions {
-  userId: string;
   maxRequests: number;
   window: number;
   keyString: string;

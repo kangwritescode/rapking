@@ -2,6 +2,7 @@ import sanitize from 'sanitize-html';
 import { z } from 'zod';
 
 import { TRPCError } from '@trpc/server';
+import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 import { stateToRegionMap } from 'src/shared/constants';
 
@@ -57,6 +58,19 @@ export const userRouter = createTRPCRouter({
           username: input.text
         }
       });
+      const rateLimitResult = await rateLimit({
+        maxRequests: 20,
+        window: 60 * 60, // 1 hour
+        keyString: `user-username-availability-${ctx.session.user.id}`
+      });
+
+      if (typeof rateLimitResult === 'number') {
+        const resetTime = Math.ceil(rateLimitResult / (60 * 60)); // Convert to hours
+        throw new TRPCError({
+          code: 'TOO_MANY_REQUESTS',
+          message: `You can check 20 usernames every hour. Please try again in ${resetTime} hours.`
+        });
+      }
 
       return {
         isAvailable: userWithUsername === null || userWithUsername.id === ctx.session.user.id
@@ -130,6 +144,12 @@ export const userRouter = createTRPCRouter({
       return updatedUser;
     }),
   deleteUser: protectedProcedure.mutation(async ({ ctx }) => {
+    if (!ctx.session.user.id) {
+      throw new TRPCError({
+        code: 'UNPROCESSABLE_CONTENT',
+        message: 'User not found'
+      });
+    }
     await ctx.prisma.user.delete({
       where: {
         id: ctx.session.user.id
