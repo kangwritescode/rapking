@@ -22,6 +22,10 @@ class CustomDocument extends Document {
           <link rel='apple-touch-icon' sizes='180x180' href='/images/crown.svg' />
           <link rel='shortcut icon' href='/images/crown.svg' />
           <link rel='favicon' href='/images/crown.svg' />
+          <meta
+            http-equiv='Content-Security-Policy'
+            content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self';"
+          />
         </Head>
         <body>
           <Main />
