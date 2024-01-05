@@ -14,7 +14,7 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "CommonJS", // when seeding, change to "CommonJS" else "ESNext"
+    "module": "ESNext", // when seeding, change to "CommonJS" else "ESNext"
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
