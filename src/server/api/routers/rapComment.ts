@@ -67,18 +67,11 @@ export const rapComment = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { content, userId, rapId } = input;
 
-      const rap = await ctx.prisma.rap.findUnique({
+      const rap = await ctx.prisma.rap.findUniqueOrThrow({
         where: {
           id: rapId
         }
       });
-
-      if (!rap) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: "Rap doesn't exist"
-        });
-      }
 
       const rateLimitResult = await rateLimit({
         maxRequests: 2,

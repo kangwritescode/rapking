@@ -53,13 +53,6 @@ export type SexFilter = z.infer<typeof sexFilterSchema>;
 
 export const rapRouter = createTRPCRouter({
   createRap: protectedProcedure.input(createRapPayloadSchema).mutation(async ({ input, ctx }) => {
-    if (input.title.length < 3) {
-      throw new TRPCError({
-        code: 'BAD_REQUEST',
-        message: 'Title must be at least 3 characters.'
-      });
-    }
-
     // check if a rap with the same title already exists
     const existingRap = await ctx.prisma.rap.findFirst({
       where: {
