@@ -134,19 +134,12 @@ export const rapRouter = createTRPCRouter({
     return rap;
   }),
   updateRap: protectedProcedure.input(updateRapPayloadSchema).mutation(async ({ input, ctx }) => {
-    // check if a rap with the same title already exists
-    const existingRap = await ctx.prisma.rap.findUnique({
+    const existingRap = await ctx.prisma.rap.findFirstOrThrow({
       where: {
-        id: ctx.session.user.id
+        id: input.id,
+        userId: ctx.session.user.id
       }
     });
-
-    if (!existingRap) {
-      throw new TRPCError({
-        code: 'BAD_REQUEST',
-        message: 'No rap with this id exists.'
-      });
-    }
 
     // Authorization check
     if (existingRap.userId !== ctx.session.user.id) {
@@ -168,8 +161,7 @@ export const rapRouter = createTRPCRouter({
 
     return await ctx.prisma.rap.update({
       where: {
-        id: input.id,
-        userId: ctx.session.user.id
+        id: input.id
       },
       data: {
         ...(input.title && {
@@ -240,19 +232,11 @@ export const rapRouter = createTRPCRouter({
   deleteRap: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const rap = await ctx.prisma.rap.findUnique({
+      const rap = await ctx.prisma.rap.findUniqueOrThrow({
         where: {
-          id: input.id,
-          userId: ctx.session.user.id
+          id: input.id
         }
       });
-
-      if (!rap) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'No rap with this id exists.'
-        });
-      }
 
       if (rap.userId !== ctx.session.user.id) {
         throw new TRPCError({
@@ -264,8 +248,7 @@ export const rapRouter = createTRPCRouter({
       await ctx.prisma.$transaction([
         ctx.prisma.rap.delete({
           where: {
-            id: input.id,
-            userId: ctx.session.user.id
+            id: input.id
           }
         }),
         ctx.prisma.user.update({
