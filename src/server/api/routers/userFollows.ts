@@ -105,5 +105,22 @@ export const userFollows = createTRPCRouter({
       });
 
       return followersCount;
+    }),
+  getFollowingCount: publicProcedure
+    .input(
+      z.object({
+        userId: z.string()
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const { userId } = input;
+
+      const followingCount = await ctx.prisma.userFollows.count({
+        where: {
+          followerId: userId
+        }
+      });
+
+      return followingCount;
     })
 });

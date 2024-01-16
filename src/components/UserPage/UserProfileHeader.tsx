@@ -35,6 +35,18 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
       enabled: !!currentUserData?.id && !!userData?.id
     }
   );
+  const { data: userFollowsData } = api.userFollows.getFollowersCount.useQuery(
+    { userId: userData?.id || '' },
+    {
+      enabled: !!userData?.id
+    }
+  );
+  const { data: userFollowersData } = api.userFollows.getFollowersCount.useQuery(
+    { userId: userData?.id || '' },
+    {
+      enabled: !!userData?.id
+    }
+  );
 
   // Mutations
   const { mutate: createFollow, isLoading: createFollowIsLoading } =
@@ -97,21 +109,34 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
             sx={{
               width: '100%',
               display: 'flex',
+              flexDirection: {
+                xs: 'column',
+                md: 'row'
+              },
               ml: { xs: 0, md: 6 },
-              alignItems: 'flex-end',
+              alignItems: {
+                xs: 'center',
+                md: 'flex-end'
+              },
               flexWrap: ['wrap', 'nowrap'],
               justifyContent: ['center', 'space-between']
             }}
           >
             <Box
               sx={{
-                mb: [6, 0],
+                mb: {
+                  xs: 6,
+                  md: 0
+                },
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: ['center', 'flex-start']
+                alignItems: {
+                  xs: 'center',
+                  md: 'flex-start'
+                }
               }}
             >
-              <Typography variant='h5' sx={{ mb: 2 }}>
+              <Typography variant='h5' sx={{ mb: 0 }}>
                 {userData?.username}
               </Typography>
               <Box
@@ -123,41 +148,24 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
               >
                 <Box
                   sx={{
-                    mr: 4,
+                    mr: 2,
                     display: 'flex',
-                    alignItems: 'center',
-                    '& svg': { mr: 1, color: 'text.secondary' }
+                    alignItems: 'center'
                   }}
                 >
-                  <Icon icon='material-symbols:male' />
-                  <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>
-                    {userData.sex === 'male' ? 'Male' : 'Female'}
-                  </Typography>
+                  <Typography variant='caption'>{userFollowsData || 0} Followers</Typography>
                 </Box>
-                <Box
-                  sx={{
-                    mr: 5,
-                    display: 'flex',
-                    alignItems: 'center',
-                    '& svg': { mr: 1, color: 'text.secondary' }
-                  }}
-                >
-                  <Icon icon='mdi:map-marker-outline' />
-                  <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>
-                    {userData?.city + ', ' + userData?.state}
-                  </Typography>
-                </Box>
+                <Typography mr='.5rem' color='gray'>
+                  |
+                </Typography>
                 <Box
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    '& svg': { mr: 1, color: 'text.secondary' }
+                    '& svg': { color: 'text.secondary' }
                   }}
                 >
-                  <Icon icon='mdi:calendar-blank' />
-                  <Typography sx={{ ml: 1, color: 'text.secondary', fontWeight: 600 }}>
-                    Joined {userData?.createdAt && userData.createdAt.toLocaleDateString()}
-                  </Typography>
+                  <Typography variant='caption'>{userFollowersData} Following</Typography>
                 </Box>
               </Box>
             </Box>
