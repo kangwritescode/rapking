@@ -28,6 +28,7 @@ import UserIcon from 'src/layouts/components/UserIcon';
 // ** Util Import
 import { Avatar } from '@mui/material';
 import { useSession } from 'next-auth/react';
+import toast from 'react-hot-toast';
 import { handleURLQueries } from 'src/@core/layouts/utils';
 import { BUCKET_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
@@ -138,7 +139,8 @@ const VerticalNavLink = ({
           if (item.path?.includes('community')) {
             e.preventDefault();
             e.stopPropagation();
-            window.open('https://discord.gg/zxCrUhvq', '_blank');
+            // window.open('https://discord.gg/zxCrUhvq', '_blank');
+            toast.error('RapKing Discord Coming Soon!');
           }
           if (navVisible) {
             toggleNavVisibility();
