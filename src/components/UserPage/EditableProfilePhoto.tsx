@@ -1,19 +1,19 @@
 import { Icon } from '@iconify/react';
 import { Avatar, Box, CircularProgress, IconButton, useTheme } from '@mui/material';
 import { User } from '@prisma/client';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { BUCKET_URL } from 'src/shared/constants';
 import { useGCloudDelete } from 'src/shared/useGCloudDelete';
 import { useGCloudUpload } from 'src/shared/useGCloudUpload';
 import { api } from 'src/utils/api';
 
 interface EditableProfilePhotoProps {
-  userData: User;
+  userData?: User | null;
   isEditable?: boolean;
 }
 
 function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProps) {
-  const { id, profileImageUrl } = userData;
+  const { id, profileImageUrl } = userData || {};
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 

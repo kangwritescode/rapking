@@ -11,13 +11,31 @@ import Typography from '@mui/material/Typography';
 import { Icon } from '@iconify/react';
 import { CircularProgress } from '@mui/material';
 import { User } from '@prisma/client';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
+import FollowersModal from '../FollowersModal/FollowersModal';
 import EditProfileDialog from './EditProfileDialog';
 import EditableBanner from './EditableBanner';
 import EditableProfilePhoto from './EditableProfilePhoto';
 import FollowingButton from './FollowingButton';
+
+const FollowersText = ({ text, onClick }: { text: string | ReactNode; onClick: () => void }) => {
+  return (
+    <Typography
+      onClick={onClick}
+      variant='caption'
+      sx={{
+        ':hover': {
+          cursor: 'pointer',
+          textDecoration: 'underline'
+        }
+      }}
+    >
+      {text}
+    </Typography>
+  );
+};
 
 interface UserProfileHeaderProps {
   userData?: User | null;
@@ -27,6 +45,8 @@ interface UserProfileHeaderProps {
 const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps) => {
   // State
   const [modalIsOpen, setIsModalIsOpen] = useState<boolean>(false);
+  const [followingUser, setFollowingUser] = useState<User | null>();
+  const [followedUser, setFollowedUser] = useState<User | null>();
 
   // Queries
   const { data: followData } = api.userFollows.getFollow.useQuery(
@@ -35,13 +55,13 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
       enabled: !!currentUserData?.id && !!userData?.id
     }
   );
-  const { data: userFollowsData } = api.userFollows.getFollowersCount.useQuery(
+  const { data: userFollowsCount } = api.userFollows.getFollowersCount.useQuery(
     { userId: userData?.id || '' },
     {
       enabled: !!userData?.id
     }
   );
-  const { data: userFollowersData } = api.userFollows.getFollowersCount.useQuery(
+  const { data: userFollowersCount } = api.userFollows.getFollowersCount.useQuery(
     { userId: userData?.id || '' },
     {
       enabled: !!userData?.id
@@ -89,9 +109,18 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
 
   const isCurrentUser = currentUserData?.id === userData?.id;
 
-  return userData ? (
+  return (
     <>
       <EditProfileDialog isOpen={modalIsOpen} handleClose={() => setIsModalIsOpen(false)} />
+      <FollowersModal
+        isOpen={!!followedUser || !!followingUser}
+        followedUser={followedUser}
+        followingUser={followingUser}
+        handleClose={() => {
+          setFollowedUser(undefined);
+          setFollowingUser(undefined);
+        }}
+      />
       <Card>
         <EditableBanner isEditable={isCurrentUser} userData={userData} />
         <CardContent
@@ -136,7 +165,12 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
                 }
               }}
             >
-              <Typography variant='h5' sx={{ mb: 0 }}>
+              <Typography
+                variant='h5'
+                sx={{
+                  mb: 0
+                }}
+              >
                 {userData?.username}
               </Typography>
               <Box
@@ -153,7 +187,10 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
                     alignItems: 'center'
                   }}
                 >
-                  <Typography variant='caption'>{userFollowsData || 0} Followers</Typography>
+                  <FollowersText
+                    text={`${userFollowsCount || 0} Followers`}
+                    onClick={() => setFollowedUser(userData)}
+                  />
                 </Box>
                 <Typography mr='.5rem' color='gray'>
                   |
@@ -165,7 +202,7 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
                     '& svg': { color: 'text.secondary' }
                   }}
                 >
-                  <Typography variant='caption'>{userFollowersData} Following</Typography>
+                  <FollowersText text={`${userFollowersCount} Following`} onClick={() => {}} />
                 </Box>
               </Box>
             </Box>
@@ -207,7 +244,7 @@ const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps
         </CardContent>
       </Card>
     </>
-  ) : null;
+  );
 };
 
 export default UserProfileHeader;

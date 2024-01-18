@@ -2,20 +2,20 @@
 import { Icon } from '@iconify/react';
 import { Box, CardMedia, CircularProgress, IconButton } from '@mui/material';
 import { User } from '@prisma/client';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { BUCKET_URL } from 'src/shared/constants';
-import { api } from 'src/utils/api';
-import { useGCloudUpload } from 'src/shared/useGCloudUpload';
 import { useGCloudDelete } from 'src/shared/useGCloudDelete';
+import { useGCloudUpload } from 'src/shared/useGCloudUpload';
+import { api } from 'src/utils/api';
 
 interface EditableBannerProps {
   isEditable?: boolean;
-  userData: User;
+  userData?: User | null;
 }
 
 function EditableBanner({ isEditable, userData }: EditableBannerProps) {
-  const { id, bannerUrl } = userData;
+  const { id, bannerUrl } = userData || {};
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
