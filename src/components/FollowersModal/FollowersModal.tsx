@@ -25,6 +25,7 @@ function FollowersModal({ isOpen, handleClose, followedUser, followingUser }: Fo
       setUser(followedUser || followingUser);
     }
   }, [followedUser, followingUser]);
+
   return (
     <Dialog open={isOpen} onClose={handleClose}>
       <IconButton

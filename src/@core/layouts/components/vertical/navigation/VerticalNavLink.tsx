@@ -139,6 +139,7 @@ const VerticalNavLink = ({
           if (item.path?.includes('community')) {
             e.preventDefault();
             e.stopPropagation();
+
             // window.open('https://discord.gg/zxCrUhvq', '_blank');
             toast.error('RapKing Discord Coming Soon!');
           }

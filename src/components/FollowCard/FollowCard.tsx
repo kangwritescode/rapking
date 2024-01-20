@@ -15,6 +15,7 @@ function FollowCard({ userData, onCardClick }: FollowCardProps) {
       onCardClick();
     }
   };
+
   return (
     <>
       <Link
