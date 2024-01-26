@@ -1,13 +1,14 @@
-import { Button, CircularProgress, StepContent } from '@mui/material';
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Button, CircularProgress, StepContent } from '@mui/material';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import UsernameAvailabilityField from 'src/components/FormComponents/UsernameAvailabilityField';
 import { api } from 'src/utils/api';
 import { z } from 'zod';
-import UsernameAvailabilityField from 'src/components/FormComponents/UsernameAvailabilityField';
 
 export type UsernameStepProps = {
   handleNext: () => void;
+  handleBack: () => void;
 };
 
 const usernameSchema = z.object({
@@ -18,7 +19,7 @@ const usernameSchema = z.object({
     .regex(/^(.*[a-zA-Z]){3}/, 'Must include at least three letters')
 });
 
-function UsernameStep({ handleNext }: UsernameStepProps) {
+function UsernameStep({ handleNext, handleBack }: UsernameStepProps) {
   // queries
   const { data: userData } = api.user.getCurrentUser.useQuery();
 
@@ -66,12 +67,15 @@ function UsernameStep({ handleNext }: UsernameStepProps) {
           }
         />
         <div className='button-wrapper'>
+          <Button size='small' variant='outlined' color='secondary' onClick={handleBack}>
+            Back
+          </Button>
           <Button
             disabled={!isValid || !usernameIsAvailable || isLoading}
             type='submit'
             size='small'
             variant='contained'
-            sx={{ minHeight: '1.8rem' }}
+            sx={{ ml: 4, minHeight: '1.8rem' }}
           >
             {isLoading ? <CircularProgress color='inherit' size='1.3rem' /> : 'Next'}
           </Button>

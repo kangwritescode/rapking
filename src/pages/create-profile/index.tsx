@@ -19,12 +19,17 @@ import StepperCustomDot from '../../components/CreateProfilePage/StepperCustomDo
 
 // ** Styled Components
 import StepperWrapper from 'src/@core/styles/mui/stepper';
+import InviteCodeStep from 'src/components/CreateProfilePage/InviteCodeStep';
 import { api } from 'src/utils/api';
 import LocationStep from '../../components/CreateProfilePage/LocationStep';
 import PersonalStep from '../../components/CreateProfilePage/SexAgeStep';
 import UsernameStep from '../../components/CreateProfilePage/UsernameStep';
 
 const steps = [
+  {
+    title: 'Invite Code',
+    subtitle: 'Enter your invite code.'
+  },
   {
     title: 'Choose a username',
     subtitle: 'Pick a username for your new account. You can always change it later.'
@@ -75,11 +80,14 @@ const CompleteProfilePage = () => {
                       </div>
                     </div>
                   </StepLabel>
-                  {activeStep === 0 && <UsernameStep handleNext={handleNext} />}
+                  {activeStep === 0 && <InviteCodeStep handleNext={handleNext} />}
                   {activeStep === 1 && (
-                    <PersonalStep handleBack={handleBack} handleNext={handleNext} />
+                    <UsernameStep handleNext={handleNext} handleBack={handleBack} />
                   )}
                   {activeStep === 2 && (
+                    <PersonalStep handleBack={handleBack} handleNext={handleNext} />
+                  )}
+                  {activeStep === 3 && (
                     <LocationStep
                       handleBack={handleBack}
                       handleCreateProfile={handleCreateProfile}

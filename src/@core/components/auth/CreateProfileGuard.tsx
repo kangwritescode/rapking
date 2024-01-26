@@ -17,6 +17,7 @@ const CreateProfileGuard: React.FC<CreateProfileGuardProps> = ({ children }) => 
   } = api.user.getProfileIsComplete.useQuery(undefined, {
     enabled: status === 'authenticated'
   });
+  const { data: isInWhitelist } = api.whitelist.userIsInWhitelist.useQuery();
 
   const isDataLoading = status === 'loading' || (fetchStatus !== 'idle' && isLoading);
 
@@ -24,13 +25,13 @@ const CreateProfileGuard: React.FC<CreateProfileGuardProps> = ({ children }) => 
     if (isDataLoading) return;
 
     if (status === 'authenticated') {
-      if (!profileIsComplete && router.asPath !== '/create-profile/') {
+      if ((!profileIsComplete || !isInWhitelist) && router.asPath !== '/create-profile/') {
         router.replace('/create-profile/');
       } else if (profileIsComplete && router.asPath === '/create-profile/') {
         router.replace('/');
       }
     }
-  }, [status, profileIsComplete, router, isDataLoading]);
+  }, [status, profileIsComplete, router, isDataLoading, isInWhitelist]);
 
   return children;
 };
