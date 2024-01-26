@@ -52,10 +52,7 @@ model User {
   username              String?        @unique
   sex                   String?
   dob                   DateTime?
-  country               String?
-  city                  String?
-  state                 String?
-  region                Region?
+  country               Country?
   createdAt             DateTime       @default(now())
   bannerUrl             String?
   profileImageUrl       String?
@@ -238,12 +235,10 @@ enum RapStatus {
   PUBLISHED
 }
 
-enum Region {
-  ALL
-  WEST
-  MIDWEST
-  SOUTH
-  EAST
+enum Country {
+  US
+  UK
+  CA
 }
 
 enum SocialPlatform {

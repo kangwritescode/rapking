@@ -1,12 +1,11 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, CircularProgress, StepContent } from '@mui/material';
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { api } from 'src/utils/api';
 import dayjs, { Dayjs } from 'dayjs';
+import { useForm } from 'react-hook-form';
 import DateofBirthField from 'src/components/FormComponents/DateofBirthField';
 import SexField from 'src/components/FormComponents/SexField';
+import { api } from 'src/utils/api';
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 export type PersonalStepProps = {
   handleBack: () => void;

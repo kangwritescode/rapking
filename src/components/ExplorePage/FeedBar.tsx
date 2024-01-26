@@ -1,18 +1,19 @@
 import { Box, MenuItem, Select, Stack, SxProps, Typography } from '@mui/material';
+import { Country } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
+import { CountryFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 
 interface FeedBarProps {
   sx?: SxProps;
   onSortAndFilterChange?: ({
     sortBy,
-    regionFilter,
+    countryFilter,
     timeFilter,
     sexFilter
   }: {
     sortBy: SortByValue;
-    regionFilter: RegionFilter;
+    countryFilter: CountryFilter;
     timeFilter: TimeFilter;
     sexFilter: SexFilter;
   }) => void;
@@ -20,10 +21,10 @@ interface FeedBarProps {
 
 function FeedBar({ sx, onSortAndFilterChange }: FeedBarProps) {
   const { query } = useRouter();
-  const queryRegionFilter = query['us-region'] as RegionFilter;
+  const queryCountryFilter = query['us-country'] as CountryFilter;
 
   const [sortBy, setSortBy] = useState<SortByValue>('NEWEST');
-  const [regionFilter, setRegionFilter] = useState<RegionFilter>(queryRegionFilter || 'ALL');
+  const [countryFilter, setCountryFilter] = useState<CountryFilter>(queryCountryFilter || 'ALL');
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('ALL');
   const [sexFilter, setSexFilter] = useState<SexFilter>('ANY');
 
@@ -31,12 +32,12 @@ function FeedBar({ sx, onSortAndFilterChange }: FeedBarProps) {
     if (onSortAndFilterChange) {
       onSortAndFilterChange({
         sortBy,
-        regionFilter,
+        countryFilter,
         timeFilter,
         sexFilter
       });
     }
-  }, [sortBy, regionFilter, timeFilter, sexFilter, onSortAndFilterChange]);
+  }, [sortBy, countryFilter, timeFilter, sexFilter, onSortAndFilterChange]);
 
   return (
     <Box
@@ -68,22 +69,21 @@ function FeedBar({ sx, onSortAndFilterChange }: FeedBarProps) {
           Filter By: &nbsp;
         </Typography>
         <Select
-          defaultValue='ALL'
+          defaultValue={'ALL'}
           size='small'
           sx={{
-            maxWidth: regionFilter !== 'MIDWEST' ? '5rem' : '5.5rem',
+            maxWidth: countryFilter === 'ALL' ? '7.5rem' : '4rem',
             borderRadius: '20px',
             fontSize: '0.75rem',
             mr: '.5rem'
           }}
-          value={regionFilter}
-          onChange={e => setRegionFilter(e.target.value as RegionFilter)}
+          value={countryFilter}
+          onChange={e => setCountryFilter(e.target.value as CountryFilter)}
         >
-          <MenuItem value='ALL'>All US</MenuItem>
-          <MenuItem value='WEST'>West</MenuItem>
-          <MenuItem value='EAST'>East</MenuItem>
-          <MenuItem value='MIDWEST'>Midwest</MenuItem>
-          <MenuItem value='SOUTH'>South</MenuItem>
+          <MenuItem value='ALL'>All Countries</MenuItem>
+          <MenuItem value={Country.US}>US</MenuItem>
+          <MenuItem value={Country.UK}>UK</MenuItem>
+          <MenuItem value={Country.CA}>CA</MenuItem>
         </Select>
         <Select
           defaultValue='ALL'

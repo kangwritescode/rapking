@@ -1,6 +1,6 @@
 import { Box, Stack, Tab, Tabs, useTheme } from '@mui/material';
 import React, { useState } from 'react';
-import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
+import { CountryFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 import FeedBar from '../../components/ExplorePage/FeedBar';
 
 import { useSession } from 'next-auth/react';
@@ -32,7 +32,7 @@ function ExplorePage() {
   const theme = useTheme();
   const { status } = useSession();
   const { query } = useRouter();
-  const queryRegionFilter = query['us-region'] as RegionFilter;
+  const queryCountryFilter = query['us-country'] as CountryFilter;
 
   // Tabs
   const [tab, setTab] = useState(0);
@@ -43,7 +43,7 @@ function ExplorePage() {
 
   // Feed
   const [sortByValue, setSortByValue] = useState<SortByValue>('NEWEST');
-  const [regionFilter, setRegionFilter] = useState<RegionFilter>(queryRegionFilter || 'ALL');
+  const [countryFilter, setCountryFilter] = useState<CountryFilter>(queryCountryFilter || 'ALL');
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('ALL');
   const [sexFilter, setSexFilter] = useState<SexFilter>('ANY');
   const followingFilter = tab === 1;
@@ -92,16 +92,16 @@ function ExplorePage() {
         </Box>
         <FeedBar
           sx={{ mb: '2rem' }}
-          onSortAndFilterChange={({ sortBy, regionFilter, timeFilter, sexFilter }) => {
+          onSortAndFilterChange={({ sortBy, countryFilter, timeFilter, sexFilter }) => {
             setSortByValue(sortBy);
-            setRegionFilter(regionFilter);
+            setCountryFilter(countryFilter);
             setTimeFilter(timeFilter);
             setSexFilter(sexFilter);
           }}
         />
         <Feed
           sortBy={sortByValue}
-          regionFilter={regionFilter}
+          countryFilter={countryFilter}
           timeFilter={timeFilter}
           followingFilter={followingFilter}
           sexFilter={sexFilter}

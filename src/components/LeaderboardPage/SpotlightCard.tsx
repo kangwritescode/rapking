@@ -29,10 +29,20 @@ function SpotlightCard({ userId }: SpotlightCardProps) {
     { enabled: !!userId }
   );
 
-  const { bannerUrl } = userData || {};
+  const { data: userFollowsCount } = api.userFollows.getFollowersCount.useQuery(
+    { userId: userData?.id || '' },
+    {
+      enabled: !!userData?.id
+    }
+  );
+  const { data: userFollowersCount } = api.userFollows.getFollowersCount.useQuery(
+    { userId: userData?.id || '' },
+    {
+      enabled: !!userData?.id
+    }
+  );
 
-  const formattedAge = userData?.dob ?? new Date();
-  const age = new Date().getFullYear() - new Date(formattedAge).getFullYear();
+  const { bannerUrl } = userData || {};
 
   return (
     <Card
@@ -91,8 +101,7 @@ function SpotlightCard({ userId }: SpotlightCardProps) {
             {userData?.username}
           </Typography>
           <Typography variant='caption' fontWeight='bold' mb='1.4rem'>
-            {userData?.sex === 'male' ? 'M' : 'F'} | {age} |{' '}
-            {`${userData?.city}, ${userData?.state}`}
+            {userFollowersCount} Followers | {userFollowsCount} Following
           </Typography>
           <Stack direction='row' alignItems='top' justifyContent='center' gap='3rem' mb='.5rem'>
             <Stack alignItems='center'>

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import LeaderboardBar from 'src/components/LeaderboardPage/LeaderboardBar';
 import SpotlightCard from 'src/components/LeaderboardPage/SpotlightCard';
 import {
-  LeaderboardRegionFilter,
+  LeaderboardCountryFilter,
   LeaderboardSexFilter,
   LeaderboardTimeFilter
 } from 'src/server/api/routers/leaderboard';
@@ -12,7 +12,7 @@ import LeaderboardCards from '../../components/LeaderboardPage/LeaderboardCards'
 function LeaderboardPage() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
-  const [regionFilter, setRegionFilter] = useState<LeaderboardRegionFilter>('ALL');
+  const [countryFilter, setCountryFilter] = useState<LeaderboardCountryFilter>('ALL');
   const [timeFilter, setTimeFilter] = useState<LeaderboardTimeFilter>('ALL_TIME');
   const [sexFilter, setSexFilter] = useState<LeaderboardSexFilter>('ANY');
 
@@ -78,8 +78,8 @@ function LeaderboardPage() {
                 md: 'flex-end'
               }
             }}
-            onSortAndFilterChange={({ regionFilter, timeFilter, sexFilter }) => {
-              setRegionFilter(regionFilter);
+            onSortAndFilterChange={({ countryFilter, timeFilter, sexFilter }) => {
+              setCountryFilter(countryFilter);
               setTimeFilter(timeFilter);
               setSexFilter(sexFilter);
             }}
@@ -89,7 +89,7 @@ function LeaderboardPage() {
             userClickHandler={userId => {
               setSelectedUserId(userId);
             }}
-            regionFilter={regionFilter}
+            countryFilter={countryFilter}
             timeFilter={timeFilter}
             sexFilter={sexFilter}
           />

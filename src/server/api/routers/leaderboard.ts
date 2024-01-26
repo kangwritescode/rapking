@@ -3,11 +3,11 @@ import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from 'src/server/api/trpc';
 
 const timeFilterSchema = z.enum(['TODAY', 'THIS_WEEK', 'THIS_MONTH', 'THIS_YEAR', 'ALL_TIME']);
-const regionFilterSchema = z.enum(['ALL', 'WEST', 'MIDWEST', 'EAST', 'SOUTH']);
+const countryFilterSchema = z.enum(['ALL', 'US', 'UK', 'CA']);
 const sexFilterSchema = z.enum(['ANY', 'MALE', 'FEMALE']);
 
 export type LeaderboardTimeFilter = z.infer<typeof timeFilterSchema>;
-export type LeaderboardRegionFilter = z.infer<typeof regionFilterSchema>;
+export type LeaderboardCountryFilter = z.infer<typeof countryFilterSchema>;
 export type LeaderboardSexFilter = z.infer<typeof sexFilterSchema>;
 
 // Utils
@@ -48,18 +48,18 @@ export const leaderboardRouter = createTRPCRouter({
         cursor: z.string().nullish(),
         limit: z.number().min(1).max(50),
         timeFilter: timeFilterSchema,
-        regionFilter: regionFilterSchema,
+        countryFilter: countryFilterSchema,
         sexFilter: sexFilterSchema
       })
     )
     .query(async ({ input, ctx }) => {
-      const { cursor, limit, regionFilter, sexFilter, timeFilter } = input;
+      const { cursor, limit, countryFilter, sexFilter, timeFilter } = input;
 
       // Filter logic
       const where: any = {};
 
-      if (regionFilter !== 'ALL') {
-        where.region = regionFilter;
+      if (countryFilter !== 'ALL') {
+        where.country = countryFilter;
       }
 
       if (sexFilter !== 'ANY') {
@@ -72,7 +72,7 @@ export const leaderboardRouter = createTRPCRouter({
       }
 
       // filter out users with incomplete profiles
-      where.region = {
+      where.country = {
         not: null
       };
 

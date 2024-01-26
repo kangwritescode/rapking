@@ -140,7 +140,7 @@ function RapCard({
             {formattedContent}
           </Typography>
           <Stack direction='row' justifyContent='space-between' height='2rem' mt='2rem'>
-            <Box>{showChips && <RapCardChip label={userData.region || ''} />}</Box>
+            <Box>{showChips && <RapCardChip label={userData.country || ''} />}</Box>
             <Box>{showMenu && <RapCardMenu rapId={rap.id} />}</Box>
           </Stack>
         </Box>

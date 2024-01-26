@@ -1,39 +1,40 @@
 import { Box, MenuItem, Select, Stack, SxProps, Typography } from '@mui/material';
+import { Country } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import {
-  LeaderboardRegionFilter,
+  LeaderboardCountryFilter,
   LeaderboardSexFilter,
   LeaderboardTimeFilter
 } from 'src/server/api/routers/leaderboard';
-import { RegionFilter, SexFilter } from 'src/server/api/routers/rap';
+import { CountryFilter, SexFilter } from 'src/server/api/routers/rap';
 
 interface LeaderboardBarProps {
   sx?: SxProps;
   onSortAndFilterChange?: ({
-    regionFilter,
+    countryFilter,
     timeFilter,
     sexFilter
   }: {
-    regionFilter: LeaderboardRegionFilter;
+    countryFilter: LeaderboardCountryFilter;
     timeFilter: LeaderboardTimeFilter;
     sexFilter: LeaderboardSexFilter;
   }) => void;
 }
 
 function LeaderboardBar({ sx, onSortAndFilterChange }: LeaderboardBarProps) {
-  const [regionFilter, setRegionFilter] = useState<LeaderboardRegionFilter>('ALL');
+  const [countryFilter, setCountryFilter] = useState<LeaderboardCountryFilter>('ALL');
   const [timeFilter, setTimeFilter] = useState<LeaderboardTimeFilter>('ALL_TIME');
   const [sexFilter, setSexFilter] = useState<LeaderboardSexFilter>('ANY');
 
   useEffect(() => {
     if (onSortAndFilterChange) {
       onSortAndFilterChange({
-        regionFilter,
+        countryFilter,
         timeFilter,
         sexFilter
       });
     }
-  }, [, regionFilter, timeFilter, sexFilter, onSortAndFilterChange]);
+  }, [, countryFilter, timeFilter, sexFilter, onSortAndFilterChange]);
 
   return (
     <Box
@@ -68,19 +69,18 @@ function LeaderboardBar({ sx, onSortAndFilterChange }: LeaderboardBarProps) {
           defaultValue='ALL'
           size='small'
           sx={{
-            maxWidth: regionFilter !== 'MIDWEST' ? '5rem' : '5.75rem',
+            maxWidth: countryFilter === 'ALL' ? '7.25rem' : '4.5rem',
             borderRadius: '20px',
             fontSize: '0.75rem',
             mr: '.5rem'
           }}
-          value={regionFilter}
-          onChange={e => setRegionFilter(e.target.value as RegionFilter)}
+          value={countryFilter}
+          onChange={e => setCountryFilter(e.target.value as CountryFilter)}
         >
-          <MenuItem value='ALL'>All US</MenuItem>
-          <MenuItem value='WEST'>West</MenuItem>
-          <MenuItem value='EAST'>East</MenuItem>
-          <MenuItem value='MIDWEST'>Midwest</MenuItem>
-          <MenuItem value='SOUTH'>South</MenuItem>
+          <MenuItem value='ALL'>All Countries</MenuItem>
+          <MenuItem value={Country.US}>US</MenuItem>
+          <MenuItem value={Country.UK}>UK</MenuItem>
+          <MenuItem value={Country.CA}>CA</MenuItem>
         </Select>
         <Select
           defaultValue='ANY'

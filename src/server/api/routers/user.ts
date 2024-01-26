@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
-import { stateToRegionMap } from 'src/shared/constants';
 
 export const userRouter = createTRPCRouter({
   findByUsername: publicProcedure
@@ -82,9 +81,7 @@ export const userRouter = createTRPCRouter({
         username: z.string().optional(),
         sex: z.string().optional(),
         dob: z.date().optional(),
-        country: z.string().optional(),
-        state: z.string().optional(),
-        city: z.string().optional(),
+        country: z.enum(['US', 'UK', 'CA']).optional(),
         bannerUrl: z.string().optional(),
         profileImageUrl: z.string().optional(),
         bio: z.string().max(200).optional()
@@ -108,8 +105,6 @@ export const userRouter = createTRPCRouter({
         }
       }
 
-      const region = input.state ? stateToRegionMap[input.state] : null;
-
       const sanitizedBio = sanitize(input.bio ?? '', {
         allowedTags: [],
         allowedAttributes: {}
@@ -125,8 +120,6 @@ export const userRouter = createTRPCRouter({
           ...(input.sex ? { sex: input.sex } : {}),
           ...(input.dob ? { dob: input.dob } : {}),
           ...(input.country ? { country: input.country } : {}),
-          ...(input.state ? { state: input.state, region } : {}),
-          ...(input.city ? { city: input.city } : {}),
           ...(input.bannerUrl ? { bannerUrl: input.bannerUrl } : {}),
           ...(input.profileImageUrl ? { profileImageUrl: input.profileImageUrl } : {}),
           ...(input.bio ? { bio: sanitizedBio } : {})
@@ -161,8 +154,6 @@ export const userRouter = createTRPCRouter({
       user !== null &&
       user.username !== null &&
       user.dob !== null &&
-      user.state !== null &&
-      user.city !== null &&
       user.country !== null &&
       user.sex !== null;
 

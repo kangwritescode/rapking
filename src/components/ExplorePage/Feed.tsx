@@ -1,13 +1,13 @@
 import { CircularProgress, Divider, Stack } from '@mui/material';
 import { useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { RegionFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
+import { CountryFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 import { api } from 'src/utils/api';
 import RapCard from '../RapCard';
 
 interface FeedProps {
   sortBy: SortByValue;
-  regionFilter: RegionFilter;
+  countryFilter: CountryFilter;
   timeFilter: TimeFilter;
   followingFilter: boolean;
   sexFilter: SexFilter;
@@ -15,7 +15,7 @@ interface FeedProps {
 
 const PAGE_SIZE = 10;
 
-function Feed({ sortBy, regionFilter, timeFilter, followingFilter, sexFilter }: FeedProps) {
+function Feed({ sortBy, countryFilter, timeFilter, followingFilter, sexFilter }: FeedProps) {
   const {
     data,
     fetchNextPage,
@@ -25,7 +25,7 @@ function Feed({ sortBy, regionFilter, timeFilter, followingFilter, sexFilter }: 
   } = api.feed.queryRaps.useInfiniteQuery(
     {
       sortBy,
-      regionFilter,
+      countryFilter,
       timeFilter,
       followingFilter,
       sexFilter,
@@ -44,7 +44,7 @@ function Feed({ sortBy, regionFilter, timeFilter, followingFilter, sexFilter }: 
 
   useEffect(() => {
     refetch();
-  }, [sortBy, regionFilter, timeFilter, followingFilter, sexFilter, refetch]);
+  }, [sortBy, countryFilter, timeFilter, followingFilter, sexFilter, refetch]);
 
   return (
     <Virtuoso

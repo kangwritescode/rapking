@@ -2,7 +2,7 @@ import { Box, CircularProgress, Stack } from '@mui/material';
 import { useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import {
-  LeaderboardRegionFilter,
+  LeaderboardCountryFilter,
   LeaderboardSexFilter,
   LeaderboardTimeFilter
 } from 'src/server/api/routers/leaderboard';
@@ -14,7 +14,7 @@ const PAGE_SIZE = 10;
 interface LeaderboardCardsProps {
   userClickHandler?: (userId: string) => void;
   selectedUserId: string | null;
-  regionFilter: LeaderboardRegionFilter;
+  countryFilter: LeaderboardCountryFilter;
   timeFilter: LeaderboardTimeFilter;
   sexFilter: LeaderboardSexFilter;
 }
@@ -22,7 +22,7 @@ interface LeaderboardCardsProps {
 export default function LeaderboardCards({
   userClickHandler,
   selectedUserId,
-  regionFilter,
+  countryFilter,
   timeFilter,
   sexFilter
 }: LeaderboardCardsProps) {
@@ -34,7 +34,7 @@ export default function LeaderboardCards({
     isLoading: usersAreLoading
   } = api.leaderboard.getTopUsersByPoints.useInfiniteQuery(
     {
-      regionFilter,
+      countryFilter,
       timeFilter,
       sexFilter,
       limit: PAGE_SIZE
@@ -52,7 +52,7 @@ export default function LeaderboardCards({
 
   useEffect(() => {
     refetch();
-  }, [regionFilter, timeFilter, sexFilter, refetch]);
+  }, [countryFilter, timeFilter, sexFilter, refetch]);
 
   return (
     <Box

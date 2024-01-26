@@ -7,7 +7,7 @@ function LatestRapsSection() {
   const { data, refetch } = api.feed.queryRaps.useInfiniteQuery(
     {
       sortBy: 'NEWEST',
-      regionFilter: 'ALL',
+      countryFilter: 'ALL',
       timeFilter: 'ALL',
       followingFilter: false,
       sexFilter: 'ANY',
