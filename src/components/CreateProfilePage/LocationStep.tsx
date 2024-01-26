@@ -24,8 +24,6 @@ interface FormValues {
 }
 
 function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
-  // queries
-  const { data: userData } = api.user.getCurrentUser.useQuery();
   const { mutateAsync: updateUser, isLoading } = api.user.updateUser.useMutation();
 
   const updateLocation = async (formValues: FormValues) => {
@@ -54,7 +52,7 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      country: userData?.country || Country.US
+      country: Country.US
     }
   });
 
@@ -74,9 +72,9 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
             name='country'
             render={({ field: { onChange, value } }) => (
               <Select variant='outlined' value={value} onChange={onChange}>
-                <MenuItem value='United States'>United States</MenuItem>
-                <MenuItem value='Canada'>Canada</MenuItem>
-                <MenuItem value='United Kingdom'>United Kingdom</MenuItem>
+                <MenuItem value='US'>United States</MenuItem>
+                <MenuItem value='CA'>Canada</MenuItem>
+                <MenuItem value='UK'>United Kingdom</MenuItem>
               </Select>
             )}
           />
