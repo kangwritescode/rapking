@@ -18,6 +18,7 @@ import toast from 'react-hot-toast';
 import StepperCustomDot from '../../components/CreateProfilePage/StepperCustomDot';
 
 // ** Styled Components
+import { Stack, useTheme } from '@mui/material';
 import StepperWrapper from 'src/@core/styles/mui/stepper';
 import InviteCodeStep from 'src/components/CreateProfilePage/InviteCodeStep';
 import { api } from 'src/utils/api';
@@ -28,7 +29,7 @@ import UsernameStep from '../../components/CreateProfilePage/UsernameStep';
 const steps = [
   {
     title: 'Invite Code',
-    subtitle: 'Enter your invite code.'
+    subtitle: 'RapKing is currently an exclusive community. You need an invite code to join.'
   },
   {
     title: 'Choose a username',
@@ -63,43 +64,61 @@ const CompleteProfilePage = () => {
     toast.success('Profile created successfully!');
   };
 
+  const theme = useTheme();
+
   return (
-    <Card>
-      <CardHeader title='Create Your Profile' />
-      <CardContent>
-        <StepperWrapper>
-          <Stepper activeStep={activeStep} orientation='vertical'>
-            {steps.map((step, index) => {
-              return (
-                <Step key={index} className={clsx({ active: activeStep === index })}>
-                  <StepLabel StepIconComponent={StepperCustomDot}>
-                    <div className='step-label'>
-                      <div>
-                        <Typography className='step-title'>{step.title}</Typography>
-                        <Typography className='step-subtitle'>{step.subtitle}</Typography>
+    <Stack
+      width={{
+        xs: '100%'
+      }}
+      height='100%'
+      mx='auto'
+      sx={{
+        padding: `3rem ${theme.spacing(6)} 2rem`,
+        transition: 'padding .25s ease-in-out',
+        [theme.breakpoints.down('sm')]: {
+          paddingLeft: theme.spacing(4),
+          paddingRight: theme.spacing(4)
+        }
+      }}
+    >
+      <Card>
+        <CardHeader title='Create Your Profile' />
+        <CardContent>
+          <StepperWrapper>
+            <Stepper activeStep={activeStep} orientation='vertical'>
+              {steps.map((step, index) => {
+                return (
+                  <Step key={index} className={clsx({ active: activeStep === index })}>
+                    <StepLabel StepIconComponent={StepperCustomDot}>
+                      <div className='step-label'>
+                        <div>
+                          <Typography className='step-title'>{step.title}</Typography>
+                          <Typography className='step-subtitle'>{step.subtitle}</Typography>
+                        </div>
                       </div>
-                    </div>
-                  </StepLabel>
-                  {activeStep === 0 && <InviteCodeStep handleNext={handleNext} />}
-                  {activeStep === 1 && (
-                    <UsernameStep handleNext={handleNext} handleBack={handleBack} />
-                  )}
-                  {activeStep === 2 && (
-                    <PersonalStep handleBack={handleBack} handleNext={handleNext} />
-                  )}
-                  {activeStep === 3 && (
-                    <LocationStep
-                      handleBack={handleBack}
-                      handleCreateProfile={handleCreateProfile}
-                    />
-                  )}
-                </Step>
-              );
-            })}
-          </Stepper>
-        </StepperWrapper>
-      </CardContent>
-    </Card>
+                    </StepLabel>
+                    {activeStep === 0 && <InviteCodeStep handleNext={handleNext} />}
+                    {activeStep === 1 && (
+                      <UsernameStep handleNext={handleNext} handleBack={handleBack} />
+                    )}
+                    {activeStep === 2 && (
+                      <PersonalStep handleBack={handleBack} handleNext={handleNext} />
+                    )}
+                    {activeStep === 3 && (
+                      <LocationStep
+                        handleBack={handleBack}
+                        handleCreateProfile={handleCreateProfile}
+                      />
+                    )}
+                  </Step>
+                );
+              })}
+            </Stepper>
+          </StepperWrapper>
+        </CardContent>
+      </Card>
+    </Stack>
   );
 };
 

@@ -52,19 +52,21 @@ const AppBarContent = (props: Props) => {
           </IconButton>
         )}
       </Box>
-      <GlobalSearch
-        sx={{
-          position: 'absolute',
-          left: {
-            md: '3.5rem',
-            lg: 'unset'
-          },
-          display: {
-            xs: 'none',
-            md: 'block'
-          }
-        }}
-      />
+      {router.asPath !== '/create-profile/' && (
+        <GlobalSearch
+          sx={{
+            position: 'absolute',
+            left: {
+              md: '3.5rem',
+              lg: 'unset'
+            },
+            display: {
+              xs: 'none',
+              md: 'block'
+            }
+          }}
+        />
+      )}
       {status === 'unauthenticated' && (
         <Button variant='contained' onClick={() => void signIn()}>
           Sign In

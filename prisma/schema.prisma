@@ -73,7 +73,7 @@ model User {
   sentNotifications     Notification[] @relation("NotifierRelation")
   receivedNotifications Notification[] @relation("UserRelation")
   Article               Article[]
-  WhiteList             WhiteList?
+  WhiteList             WhiteList[]
 }
 
 model UserFollows {
@@ -260,7 +260,7 @@ enum SocialPlatform {
 model WhiteList {
   id        Int      @id @default(autoincrement())
   userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 
