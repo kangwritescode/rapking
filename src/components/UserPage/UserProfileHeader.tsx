@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import { Icon } from '@iconify/react';
 import { CircularProgress } from '@mui/material';
 import { User } from '@prisma/client';
+import { useSession } from 'next-auth/react';
 import { ReactNode, useState } from 'react';
 import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
@@ -39,16 +40,22 @@ const FollowersText = ({ text, onClick }: { text: string | ReactNode; onClick: (
 
 interface UserProfileHeaderProps {
   userData?: User | null;
-  currentUserData?: User | null;
 }
 
-const UserProfileHeader = ({ userData, currentUserData }: UserProfileHeaderProps) => {
+const UserProfileHeader = ({ userData }: UserProfileHeaderProps) => {
+  const session = useSession();
+
   // State
   const [modalIsOpen, setIsModalIsOpen] = useState<boolean>(false);
   const [followingUser, setFollowingUser] = useState<User | null>();
   const [followedUser, setFollowedUser] = useState<User | null>();
 
   // Queries
+
+  const { data: currentUserData } = api.user.getCurrentUser.useQuery(undefined, {
+    enabled: !!session.data?.user?.id
+  });
+
   const { data: followData } = api.userFollows.getFollow.useQuery(
     { followerId: currentUserData?.id || '', followedId: userData?.id || '' },
     {

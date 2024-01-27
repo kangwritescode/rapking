@@ -22,18 +22,23 @@ const UserProfile = () => {
 
   const { username } = router.query;
 
+  // Get user that matches username
   const { data: userData } = api.user.findByUsername.useQuery(
     { username: username as string },
     {
       enabled: Boolean(username)
     }
   );
-  const { data: rapsData } = api.rap.getRapsByUser.useQuery({ userId: userData?.id || '' });
-  const { data: currentUserData } = api.user.getCurrentUser.useQuery(undefined, {
-    enabled: !!session.data?.user?.id
-  });
 
-  const isCurrentUser = currentUserData?.id === userData?.id;
+  // Check if current user is viewing their own profile
+  const isCurrentUser = userData?.id === session.data?.user?.id;
+
+  const { data: rapsData } = api.rap.getRapsByUser.useQuery(
+    { userId: userData?.id || '', publishedOnly: !isCurrentUser },
+    {
+      enabled: !!userData?.id && !!session.data?.user?.id
+    }
+  );
 
   const [value, setValue] = useState('raps');
 
@@ -54,7 +59,7 @@ const UserProfile = () => {
     >
       <Grid container spacing={6}>
         <Grid item xs={12}>
-          <UserProfileHeader userData={userData} currentUserData={currentUserData} />
+          <UserProfileHeader userData={userData} />
         </Grid>
         <Grid item xs={12} md={4}>
           <BioCard
