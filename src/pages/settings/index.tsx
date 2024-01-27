@@ -1,4 +1,4 @@
-import { Button, Typography, useTheme } from '@mui/material';
+import { Button, Stack, Typography, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import AlertDialog from 'src/components/AlertDialog';
@@ -12,7 +12,16 @@ function SettingsPage() {
   const router = useRouter();
 
   return (
-    <>
+    <Stack
+      sx={{
+        padding: `3rem ${theme.spacing(6)} 2rem`,
+        transition: 'padding .25s ease-in-out',
+        [theme.breakpoints.down('sm')]: {
+          paddingLeft: theme.spacing(4),
+          paddingRight: theme.spacing(4)
+        }
+      }}
+    >
       <Typography variant='h5' sx={{ mb: theme.spacing(4) }}>
         Settings
       </Typography>
@@ -33,10 +42,17 @@ function SettingsPage() {
         }
         actionButtonText='Delete Account'
       />
-      <Button variant='contained' color='error' onClick={() => setModalIsOpen(true)}>
+      <Button
+        sx={{
+          width: 'fit-content'
+        }}
+        variant='contained'
+        color='error'
+        onClick={() => setModalIsOpen(true)}
+      >
         Delete Account
       </Button>
-    </>
+    </Stack>
   );
 }
 
