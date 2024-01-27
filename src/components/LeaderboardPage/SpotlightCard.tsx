@@ -29,7 +29,7 @@ function SpotlightCard({ userId }: SpotlightCardProps) {
     { enabled: !!userId }
   );
 
-  const { data: userFollowsCount } = api.userFollows.getFollowersCount.useQuery(
+  const { data: userFollowsCount } = api.userFollows.getFollowingCount.useQuery(
     { userId: userData?.id || '' },
     {
       enabled: !!userData?.id
