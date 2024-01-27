@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
+import { containsBannedWords } from 'src/shared/bannedWords';
 
 export const userRouter = createTRPCRouter({
   findByUsername: publicProcedure
@@ -93,8 +94,11 @@ export const userRouter = createTRPCRouter({
         });
       }
 
+      const hasBannedWords = containsBannedWords(input.text);
+
       return {
-        isAvailable: userWithUsername === null || userWithUsername.id === ctx.session.user.id
+        isAvailable:
+          hasBannedWords || userWithUsername === null || userWithUsername.id === ctx.session.user.id
       };
     }),
   updateUser: protectedProcedure
@@ -131,6 +135,13 @@ export const userRouter = createTRPCRouter({
         allowedTags: [],
         allowedAttributes: {}
       });
+
+      if (containsBannedWords(sanitizedBio)) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong. Please try again later'
+        });
+      }
 
       // updates user
       const updatedUser = await ctx.prisma.user.update({
