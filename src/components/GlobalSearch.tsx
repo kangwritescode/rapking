@@ -23,7 +23,7 @@ interface GlobalSearchProps {
 
 const GlobalSearch = ({ sx }: GlobalSearchProps) => {
   const [searchText, setSearchText] = useState('');
-  const debouncedSearchText = useDebounce(searchText, 200);
+  const debouncedSearchText = useDebounce(searchText, 500);
   const [showPopover, setShowPopover] = useState(false);
 
   const popoverRef = useRef<HTMLDivElement>(null);
