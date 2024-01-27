@@ -1,7 +1,8 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 import { CommentVoteType } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 
 export const commentVoteRouter = createTRPCRouter({
   getCommentLikes: publicProcedure
@@ -30,7 +31,20 @@ export const commentVoteRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      if (!Boolean(ctx.session.user.id)) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You must be logged in to like a comment.'
+        });
+      }
       const { userId, commentId } = input;
+
+      if (userId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: "You don't have permission to do that."
+        });
+      }
 
       const [commentVote, rapComment] = await ctx.prisma.$transaction([
         ctx.prisma.commentVote.create({
@@ -65,7 +79,20 @@ export const commentVoteRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      if (!Boolean(ctx.session.user.id)) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You must be logged in to unlike.'
+        });
+      }
       const { userId, commentId } = input;
+
+      if (userId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: "You don't have permission to do that."
+        });
+      }
 
       // Check if vote exists
       const vote = await ctx.prisma.commentVote.findUnique({

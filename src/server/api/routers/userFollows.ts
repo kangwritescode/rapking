@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { NotificationType } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 
 export const userFollows = createTRPCRouter({
@@ -33,6 +34,13 @@ export const userFollows = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      if (!Boolean(ctx.session.user.id)) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You must be logged in to follow a user.'
+        });
+      }
+
       const { followerId, followedId } = input;
 
       const follow = await ctx.prisma.userFollows.create({
@@ -60,6 +68,12 @@ export const userFollows = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      if (!Boolean(ctx.session.user.id)) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You must be logged in to unfollow a user.'
+        });
+      }
       const { followerId, followedId } = input;
 
       const follow = await ctx.prisma.userFollows.delete({

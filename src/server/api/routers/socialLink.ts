@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { TRPCError } from '@trpc/server';
 import { createTRPCRouter, protectedProcedure } from 'src/server/api/trpc';
 
 // Schemas
@@ -39,6 +40,13 @@ export const socialLinkRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      if (!Boolean(ctx.session.user.id)) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You must be logged in to create a social link.'
+        });
+      }
+
       return await ctx.prisma.socialLink.create({
         data: {
           platform: input.platform,
@@ -68,6 +76,13 @@ export const socialLinkRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      if (!Boolean(ctx.session.user.id)) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You must be logged in to delete a social link.'
+        });
+      }
+
       return await ctx.prisma.socialLink.delete({
         where: {
           id: input.id

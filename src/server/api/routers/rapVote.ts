@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 import { RapVoteType } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 
 export const rapVote = createTRPCRouter({
   getRapLikes: publicProcedure
@@ -31,6 +31,12 @@ export const rapVote = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      if (!Boolean(ctx.session.user.id)) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You must be logged in to like a rap.'
+        });
+      }
       const { userId, rapId } = input;
 
       // Check if vote exists
@@ -107,6 +113,12 @@ export const rapVote = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      if (!Boolean(ctx.session.user.id)) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You must be logged in to unlike.'
+        });
+      }
       const { userId, rapId } = input;
 
       // Check if vote exists

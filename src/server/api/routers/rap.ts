@@ -53,6 +53,13 @@ export type SexFilter = z.infer<typeof sexFilterSchema>;
 
 export const rapRouter = createTRPCRouter({
   createRap: protectedProcedure.input(createRapPayloadSchema).mutation(async ({ input, ctx }) => {
+    if (!Boolean(ctx.session.user.id)) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'You must be logged in to create a rap.'
+      });
+    }
+
     // check if a rap with the same title already exists
     const existingRap = await ctx.prisma.rap.findFirst({
       where: {
