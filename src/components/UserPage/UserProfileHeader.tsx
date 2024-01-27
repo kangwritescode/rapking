@@ -39,7 +39,7 @@ const FollowersText = ({ text, onClick }: { text: string | ReactNode; onClick: (
 };
 
 interface UserProfileHeaderProps {
-  userData?: User | null;
+  userData?: Partial<User> | null;
   isCurrentUser?: boolean;
 }
 
@@ -48,8 +48,8 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
 
   // State
   const [modalIsOpen, setIsModalIsOpen] = useState<boolean>(false);
-  const [followingUser, setFollowingUser] = useState<User | null>();
-  const [followedUser, setFollowedUser] = useState<User | null>();
+  const [followingUser, setFollowingUser] = useState<Partial<User> | null>();
+  const [followedUser, setFollowedUser] = useState<Partial<User> | null>();
 
   // Queries
 

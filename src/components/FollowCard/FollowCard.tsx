@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { BUCKET_URL } from 'src/shared/constants';
 
 interface FollowCardProps {
-  userData?: User | null;
+  userData?: Partial<User> | null;
   onCardClick?: () => void;
 }
 

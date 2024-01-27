@@ -8,12 +8,12 @@ import FollowCard from '../FollowCard/FollowCard';
 interface FollowersModalProps {
   isOpen: boolean;
   handleClose: () => void;
-  followedUser?: User | null;
-  followingUser?: User | null;
+  followedUser?: Partial<User> | null;
+  followingUser?: Partial<User> | null;
 }
 
 function FollowersModal({ isOpen, handleClose, followedUser, followingUser }: FollowersModalProps) {
-  const [user, setUser] = useState<User | null | undefined>();
+  const [user, setUser] = useState<Partial<User> | null | undefined>();
   const { data: userFollowers } = api.userFollows.getUserFollowers.useQuery(
     { userId: followedUser?.id || '' },
     {

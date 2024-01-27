@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 import { BUCKET_URL } from 'src/shared/constants';
 
 interface LeaderboardUserCardProps {
-  userData: User | null;
+  userData: Partial<User> | null;
   sx?: SxProps;
   userClickHandler?: (userId: string) => void;
   place: number;

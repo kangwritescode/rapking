@@ -107,7 +107,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
       trpcState: helpers.dehydrate(),
-      userId: session?.user.id
+      userId: session?.user.id || null
     }
   };
 }

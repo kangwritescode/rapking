@@ -8,7 +8,7 @@ import { useGCloudUpload } from 'src/shared/useGCloudUpload';
 import { api } from 'src/utils/api';
 
 interface EditableProfilePhotoProps {
-  userData?: User | null;
+  userData?: Partial<User> | null;
   isEditable?: boolean;
 }
 

@@ -11,7 +11,7 @@ import { api } from 'src/utils/api';
 
 interface EditableBannerProps {
   isEditable?: boolean;
-  userData?: User | null;
+  userData?: Partial<User> | null;
 }
 
 function EditableBanner({ isEditable, userData }: EditableBannerProps) {

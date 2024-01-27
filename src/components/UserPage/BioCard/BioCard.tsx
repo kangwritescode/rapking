@@ -9,7 +9,7 @@ import EditBioDialog from './EditBioDialog';
 import SocialLinks from './SocialLinks';
 
 interface BioCardProps {
-  userData?: User | null;
+  userData?: Partial<User> | null;
   sx?: SxProps;
 }
 
