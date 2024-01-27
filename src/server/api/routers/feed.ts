@@ -131,7 +131,13 @@ export const feedRouter = createTRPCRouter({
         where,
         orderBy,
         include: {
-          user: true
+          user: {
+            select: {
+              username: true,
+              profileImageUrl: true,
+              country: true
+            }
+          }
         },
         cursor: cursor ? { id: cursor } : undefined,
         take: limit + 1

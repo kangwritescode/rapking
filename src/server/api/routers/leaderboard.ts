@@ -82,7 +82,13 @@ export const leaderboardRouter = createTRPCRouter({
         },
         cursor: cursor ? { id: cursor } : undefined,
         take: limit + 1,
-        where
+        where,
+        select: {
+          id: true,
+          username: true,
+          points: true,
+          profileImageUrl: true
+        }
       });
 
       let nextCursor: typeof cursor | undefined = undefined;

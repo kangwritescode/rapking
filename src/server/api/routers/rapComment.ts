@@ -39,7 +39,13 @@ export const rapComment = createTRPCRouter({
         },
         orderBy,
         include: {
-          user: true
+          user: {
+            select: {
+              id: true,
+              username: true,
+              profileImageUrl: true
+            }
+          }
         },
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined

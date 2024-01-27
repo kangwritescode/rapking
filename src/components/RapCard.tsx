@@ -18,7 +18,7 @@ import RapCardChip from './RapCardChip';
 import RapCardMenu from './UserPage/RapCardMenu';
 
 interface RapCardProps {
-  rap: Rap & { user: User };
+  rap: Rap & { user: Partial<User> };
   sx?: SxProps;
   hideAvatar?: boolean;
   hideUsername?: boolean;

@@ -12,6 +12,16 @@ export const userRouter = createTRPCRouter({
       return ctx.prisma.user.findUniqueOrThrow({
         where: {
           username: input.username
+        },
+        select: {
+          id: true,
+          username: true,
+          points: true,
+          bannerUrl: true,
+          profileImageUrl: true,
+          bio: true,
+          socialLinks: true,
+          country: true
         }
       });
     }),
@@ -47,6 +57,13 @@ export const userRouter = createTRPCRouter({
     return ctx.prisma.user.findUnique({
       where: {
         id: input.id
+      },
+      select: {
+        id: true,
+        username: true,
+        points: true,
+        bannerUrl: true,
+        profileImageUrl: true
       }
     });
   }),

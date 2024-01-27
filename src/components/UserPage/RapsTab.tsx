@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 import RapCard from '../RapCard';
 
 interface RapsTabProps {
-  raps?: (Rap & { user: User })[] | null;
+  raps?: (Rap & { user: Partial<User> })[] | null;
   isCurrentUser?: boolean;
 }
 

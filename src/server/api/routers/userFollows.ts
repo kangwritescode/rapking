@@ -137,7 +137,13 @@ export const userFollows = createTRPCRouter({
           followedId: userId
         },
         include: {
-          follower: true
+          follower: {
+            select: {
+              id: true,
+              username: true,
+              profileImageUrl: true
+            }
+          }
         }
       });
 
