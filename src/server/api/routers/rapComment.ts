@@ -94,8 +94,8 @@ export const rapComment = createTRPCRouter({
 
       if (containsBannedWords(sanitizedContent)) {
         throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Your comment contains inappropriate content.'
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong. Please try again later'
         });
       }
 
