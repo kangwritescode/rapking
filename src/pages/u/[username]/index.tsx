@@ -2,7 +2,7 @@
 import { useState } from 'react';
 
 // ** Next Import
-import { useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 // ** MUI Components
@@ -10,13 +10,13 @@ import { Box, Tab, Tabs, useTheme } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
 // ** Components
+import { GetServerSidePropsContext } from 'next';
 import BioCard from 'src/components/UserPage/BioCard/BioCard';
 import { api } from 'src/utils/api';
 import RapsTab from '../../../components/UserPage/RapsTab';
 import UserProfileHeader from '../../../components/UserPage/UserProfileHeader';
 
-const UserProfile = () => {
-  const session = useSession();
+const UserProfile = ({ userId }: { userId?: string }) => {
   const router = useRouter();
   const theme = useTheme();
 
@@ -31,12 +31,12 @@ const UserProfile = () => {
   );
 
   // Check if current user is viewing their own profile
-  const isCurrentUser = userData?.id === session.data?.user?.id;
+  const isCurrentUser = userData?.id === userId;
 
   const { data: rapsData } = api.rap.getRapsByUser.useQuery(
     { userId: userData?.id || '', publishedOnly: !isCurrentUser },
     {
-      enabled: !!userData?.id && !!session.data?.user?.id
+      enabled: !!userData?.id && !!userId
     }
   );
 
@@ -59,7 +59,7 @@ const UserProfile = () => {
     >
       <Grid container spacing={6}>
         <Grid item xs={12}>
-          <UserProfileHeader userData={userData} />
+          <UserProfileHeader userData={userData} isCurrentUser={isCurrentUser} />
         </Grid>
         <Grid item xs={12} md={4}>
           <BioCard
@@ -86,3 +86,28 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
+
+import { createServerSideHelpers } from '@trpc/react-query/server';
+import { appRouter } from 'src/server/api/root';
+import { createTRPCContext } from 'src/server/api/trpc';
+import superjson from 'superjson';
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { username } = context.query;
+
+  const session = await getSession(context);
+
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    ctx: await createTRPCContext(context),
+    transformer: superjson
+  });
+  await helpers.user.findByUsername.prefetch({ username });
+
+  return {
+    props: {
+      trpcState: helpers.dehydrate(),
+      userId: session?.user.id
+    }
+  };
+}

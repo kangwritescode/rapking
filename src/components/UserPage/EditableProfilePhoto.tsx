@@ -87,6 +87,7 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
         </Box>
         {isEditable && (
           <Box
+            className='fadeIn'
             position='absolute'
             right='0'
             bottom='0'

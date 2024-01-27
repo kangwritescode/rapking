@@ -40,9 +40,10 @@ const FollowersText = ({ text, onClick }: { text: string | ReactNode; onClick: (
 
 interface UserProfileHeaderProps {
   userData?: User | null;
+  isCurrentUser?: boolean;
 }
 
-const UserProfileHeader = ({ userData }: UserProfileHeaderProps) => {
+const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) => {
   const session = useSession();
 
   // State
@@ -62,13 +63,15 @@ const UserProfileHeader = ({ userData }: UserProfileHeaderProps) => {
       enabled: !!currentUserData?.id && !!userData?.id
     }
   );
-  const { data: userFollowsCount } = api.userFollows.getFollowersCount.useQuery(
+
+  const { data: userFollowersCount } = api.userFollows.getFollowersCount.useQuery(
     { userId: userData?.id || '' },
     {
       enabled: !!userData?.id
     }
   );
-  const { data: userFollowersCount } = api.userFollows.getFollowersCount.useQuery(
+
+  const { data: userFollowingCount } = api.userFollows.getFollowingCount.useQuery(
     { userId: userData?.id || '' },
     {
       enabled: !!userData?.id
@@ -113,8 +116,6 @@ const UserProfileHeader = ({ userData }: UserProfileHeaderProps) => {
       }
     );
   };
-
-  const isCurrentUser = currentUserData?.id === userData?.id;
 
   return (
     <>
@@ -195,7 +196,7 @@ const UserProfileHeader = ({ userData }: UserProfileHeaderProps) => {
                   }}
                 >
                   <FollowersText
-                    text={`${userFollowsCount || 0} Followers`}
+                    text={`${userFollowersCount || 0} Followers`}
                     onClick={() => setFollowedUser(userData)}
                   />
                 </Box>
@@ -209,7 +210,7 @@ const UserProfileHeader = ({ userData }: UserProfileHeaderProps) => {
                     '& svg': { color: 'text.secondary' }
                   }}
                 >
-                  <FollowersText text={`${userFollowersCount} Following`} onClick={() => {}} />
+                  <FollowersText text={`${userFollowingCount || 0} Following`} onClick={() => {}} />
                 </Box>
               </Box>
             </Box>

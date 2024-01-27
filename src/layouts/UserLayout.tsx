@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 // ** MUI Imports
 import { Theme } from '@mui/material/styles';
@@ -16,7 +16,6 @@ import AppBarContent from './components/vertical/AppBarContent';
 import { useSession } from 'next-auth/react';
 import { useSettings } from 'src/@core/hooks/useSettings';
 import { NavLink, NavSectionTitle } from 'src/@core/layouts/types';
-import { api } from 'src/utils/api';
 
 interface Props {
   children: ReactNode;
@@ -25,11 +24,18 @@ interface Props {
 
 const UserLayout = ({ children, contentHeightFixed }: Props) => {
   const session = useSession();
+  const { username } = session.data?.user || {};
+  const userIsAuthenticated = session.status === 'authenticated';
 
-  const { data: userData } = api.user.getCurrentUser.useQuery(undefined, {
-    enabled: !!session.data?.user?.id
-  });
   const { settings, saveSettings } = useSettings();
+
+  const [showWriteItem, setShowWriteItem] = useState(false);
+
+  useEffect(() => {
+    if (session.status !== 'loading' && session.status === 'unauthenticated') {
+      setShowWriteItem(true);
+    }
+  }, [session.status]);
 
   /**
    *  The below variable will hide the current layout menu at given screen size.
@@ -78,7 +84,7 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
     }
   ];
 
-  if (!userData) {
+  if (showWriteItem) {
     navItems.splice(2, 0, {
       title: 'Write',
       path: '/write',
@@ -86,10 +92,10 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
     });
   }
 
-  if (userData) {
+  if (userIsAuthenticated) {
     navItems.splice(0, 0, {
-      title: userData.username || 'Profile',
-      path: `/u/${userData.username}`,
+      title: username || 'Profile',
+      path: `/u/${username}`,
       icon: 'gg:profile'
     });
   }
