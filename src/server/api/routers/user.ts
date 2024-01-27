@@ -35,6 +35,11 @@ export const userRouter = createTRPCRouter({
             not: null
           }
         },
+        select: {
+          id: true,
+          username: true,
+          profileImageUrl: true
+        },
         take: input.limit || 10
       });
     }),

@@ -192,7 +192,12 @@ export const rapRouter = createTRPCRouter({
           id: input.id
         },
         include: {
-          user: true
+          user: {
+            select: {
+              username: true,
+              profileImageUrl: true
+            }
+          }
         }
       });
     }),
@@ -205,7 +210,12 @@ export const rapRouter = createTRPCRouter({
           ...(input.publishedOnly && { status: 'PUBLISHED' })
         },
         include: {
-          user: true
+          user: {
+            select: {
+              username: true,
+              profileImageUrl: true
+            }
+          }
         }
       });
     }),
