@@ -10,7 +10,7 @@ import RapLikeButton from './RapLikeButton';
 interface RapBarProps {
   rapData?:
     | (Rap & {
-        user?: User;
+        user?: Partial<User>;
       })
     | null;
 }

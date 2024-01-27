@@ -21,7 +21,7 @@ import { z } from 'zod';
 interface EditBioDialogProps {
   isOpen: boolean;
   onCloseHandler: () => void;
-  userData: User;
+  userData: Partial<User>;
 }
 
 function EditBioDialog({ isOpen, onCloseHandler, userData }: EditBioDialogProps) {

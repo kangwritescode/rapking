@@ -18,7 +18,7 @@ import { api } from 'src/utils/api';
 import RapBar from '../../components/RapPage/RapBar';
 import TipTapContent from '../../components/TipTapContent';
 
-const RapHead = ({ rapData }: { rapData: Rap & { user: User } }) => {
+const RapHead = ({ rapData }: { rapData: Rap & { user: Partial<User> } }) => {
   return (
     <Head>
       <title key='title'>{rapData?.title} - RapKing</title>
