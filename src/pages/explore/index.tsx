@@ -54,8 +54,6 @@ function ExplorePage() {
       <Stack
         alignItems='center'
         sx={{
-          width: ['100%', '90%', '80%'],
-          maxWidth: '45rem',
           margin: 'auto',
           height: '100%',
           padding: `1.5rem ${theme.spacing(6)}`,
@@ -70,8 +68,10 @@ function ExplorePage() {
           sx={{
             borderBottom: 1,
             borderColor: 'divider',
-            width: '100%',
-            mb: '1rem'
+            mb: '1rem',
+            width: ['100%', '90%', '80%'],
+            maxWidth: '45rem',
+            mx: 'auto'
           }}
         >
           <Tabs
@@ -91,7 +91,7 @@ function ExplorePage() {
           </Tabs>
         </Box>
         <FeedBar
-          sx={{ mb: '2rem' }}
+          sx={{ mb: '2rem', width: ['100%', '90%', '80%'], maxWidth: '45rem', mx: 'auto' }}
           onSortAndFilterChange={({ sortBy, countryFilter, timeFilter, sexFilter }) => {
             setSortByValue(sortBy);
             setCountryFilter(countryFilter);

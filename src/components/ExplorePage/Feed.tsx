@@ -1,4 +1,4 @@
-import { CircularProgress, Divider, Stack } from '@mui/material';
+import { Box, CircularProgress, Divider, Stack } from '@mui/material';
 import { useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { CountryFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
@@ -61,10 +61,16 @@ function Feed({ sortBy, countryFilter, timeFilter, followingFilter, sexFilter }:
       overscan={400}
       width='100%'
       itemContent={(_, rap) => (
-        <>
+        <Box
+          sx={{
+            width: ['100%', '90%', '80%'],
+            maxWidth: '45rem',
+            mx: 'auto'
+          }}
+        >
           <RapCard key={rap.id} rap={rap} showChips sx={{ mt: 7, mb: 9 }} />
           <Divider />
-        </>
+        </Box>
       )}
       components={{
         ...(rapsAreLoading && {
