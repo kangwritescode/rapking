@@ -24,11 +24,6 @@ function SpotlightCard({ userId }: SpotlightCardProps) {
     fetchStatus
   } = api.user.findById.useQuery({ id: userId ?? '' }, { enabled: !!userId });
 
-  const { data: followersCount } = api.userFollows.getFollowersCount.useQuery(
-    { userId: userId ?? '' },
-    { enabled: !!userId }
-  );
-
   const { data: userFollowsCount } = api.userFollows.getFollowingCount.useQuery(
     { userId: userData?.id || '' },
     {
@@ -103,18 +98,12 @@ function SpotlightCard({ userId }: SpotlightCardProps) {
           <Typography variant='caption' fontWeight='bold' mb='1.4rem'>
             {userFollowersCount} Followers | {userFollowsCount} Following
           </Typography>
-          <Stack direction='row' alignItems='top' justifyContent='center' gap='3rem' mb='.5rem'>
+          <Stack direction='row' alignItems='top' justifyContent='center' mb='.5rem'>
             <Stack alignItems='center'>
               <Typography fontWeight='bold' fontSize='18px' fontFamily='PressStart2P'>
                 {userData?.points}
               </Typography>
               <Typography variant='caption'>POINTS</Typography>
-            </Stack>
-            <Stack alignItems='center'>
-              <Typography fontWeight='bold' fontSize='1.4rem' lineHeight='1.55rem' mb='.2rem'>
-                {followersCount}
-              </Typography>
-              <Typography variant='caption'>FOLLOWERS</Typography>
             </Stack>
           </Stack>
           <Stack direction='row'>
