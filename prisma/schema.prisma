@@ -53,7 +53,7 @@ model User {
   sex                   String?
   dob                   DateTime?
   country               Country?
-  profileIsCommplete    Boolean        @default(false)
+  profileIsComplete     Boolean        @default(false)
   createdAt             DateTime       @default(now())
   bannerUrl             String?
   profileImageUrl       String?
