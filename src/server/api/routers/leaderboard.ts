@@ -59,7 +59,6 @@ export const leaderboardRouter = createTRPCRouter({
       const where: any = {};
 
       if (countryFilter !== 'ALL') {
-        console.log({ countryFilter });
         where.country = {
           equals: countryFilter,
           not: null // filter out users with incomplete profiles
