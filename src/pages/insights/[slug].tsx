@@ -1,7 +1,9 @@
 import { Box, Typography, useTheme } from '@mui/material';
+import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { GetStaticPropsContext } from 'next/types';
 import Article from 'src/components/Article';
 import { prisma } from 'src/server/db';
 import { BUCKET_URL } from 'src/shared/constants';
@@ -96,10 +98,22 @@ export async function getStaticPaths() {
   return { paths, fallback: false };
 }
 
-export async function getStaticProps({ params }: { params: { slug: string } }) {
+export async function getStaticProps({ params }: GetStaticPropsContext) {
+  const session = await getSession(params);
+  const redirectToCreateProfilePage =
+    session && (!session?.user.profileIsComplete || !session?.user.isWhitelisted);
+
+  if (redirectToCreateProfilePage) {
+    return {
+      redirect: {
+        destination: '/create-profile/',
+        permanent: false
+      }
+    };
+  }
   const article = await prisma.article.findUnique({
     where: {
-      slug: params.slug
+      slug: params?.slug as string
     }
   });
 

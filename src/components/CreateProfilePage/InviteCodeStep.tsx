@@ -15,13 +15,13 @@ const usernameSchema = z.object({
 });
 
 function InviteCodeStep({ handleNext }: InviteCodeStepProps) {
-  const { data: isInWhitelist } = api.whitelist.userIsInWhitelist.useQuery();
+  const { data: isInWhitelist } = api.user.userIsWhitelisted.useQuery();
 
   // state
   const { mutateAsync: verifyCode, isLoading } = api.inviteToken.verifyCode.useMutation();
 
   // ** Invalidators
-  const { invalidate: invalidateUserIsInWhitelist } = api.useContext().whitelist.userIsInWhitelist;
+  const { invalidate: invalidateUserIsInWhitelist } = api.useContext().user.userIsWhitelisted;
   const {
     register,
     handleSubmit,

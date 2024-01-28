@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // ** MUI Imports
 import Card from '@mui/material/Card';
@@ -18,7 +18,7 @@ import toast from 'react-hot-toast';
 import StepperCustomDot from '../../components/CreateProfilePage/StepperCustomDot';
 
 // ** Styled Components
-import { Stack, useTheme } from '@mui/material';
+import { Box, Stack, useTheme } from '@mui/material';
 import StepperWrapper from 'src/@core/styles/mui/stepper';
 import InviteCodeStep from 'src/components/CreateProfilePage/InviteCodeStep';
 import { api } from 'src/utils/api';
@@ -47,9 +47,11 @@ const steps = [
 
 const CompleteProfilePage = () => {
   const { invalidate } = api.useContext().user.getProfileIsComplete;
+  const router = useRouter();
 
   // ** States
   const [activeStep, setActiveStep] = useState<number>(0);
+  const [profileIsComplete, setProfileIsComplete] = useState<boolean>(false);
 
   // Handle Stepper
   const handleBack = () => {
@@ -62,11 +64,27 @@ const CompleteProfilePage = () => {
   const handleCreateProfile = () => {
     invalidate();
     toast.success('Profile created successfully!');
+    setProfileIsComplete(true);
   };
+
+  useEffect(() => {
+    if (profileIsComplete) {
+      router.push(`/`);
+    }
+  }, [profileIsComplete, router]);
 
   const theme = useTheme();
 
-  return (
+  return profileIsComplete ? (
+    <Box
+      sx={{
+        mt: '50vh',
+        ml: '50vw'
+      }}
+    >
+      Redirecting...
+    </Box>
+  ) : (
     <Stack
       width={{
         xs: '100%'
@@ -123,3 +141,29 @@ const CompleteProfilePage = () => {
 };
 
 export default CompleteProfilePage;
+
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next/types';
+
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getSession(context);
+  const redirectToUserPage =
+    (session && session?.user.profileIsComplete && session?.user.isWhitelisted) || !session;
+
+  if (redirectToUserPage) {
+    return {
+      redirect: {
+        destination: `/u/${session?.user.username}`,
+        permanent: false
+      }
+    };
+  }
+
+  return {
+    props: {}
+  };
+};

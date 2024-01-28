@@ -54,6 +54,7 @@ model User {
   dob                   DateTime?
   country               Country?
   profileIsComplete     Boolean        @default(false)
+  isWhitelisted         Boolean        @default(false)
   createdAt             DateTime       @default(now())
   bannerUrl             String?
   profileImageUrl       String?

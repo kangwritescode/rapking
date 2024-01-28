@@ -25,6 +25,14 @@ export const inviteTokenRouter = createTRPCRouter({
           where: {
             token: input.code
           }
+        }),
+        ctx.prisma.user.update({
+          where: {
+            id: ctx.session.user.id
+          },
+          data: {
+            isWhitelisted: true
+          }
         })
       ]);
 

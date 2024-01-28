@@ -16,7 +16,6 @@ import { LayoutProps } from 'src/@core/layouts/types';
 import { Icon } from '@iconify/react';
 import { useSession } from 'next-auth/react';
 import ScrollToTop from 'src/@core/components/scroll-to-top';
-import { api } from 'src/utils/api';
 import Footer from './components/shared-components/footer';
 import AppBar from './components/vertical/appBar';
 import Navigation from './components/vertical/navigation';
@@ -58,15 +57,9 @@ const VerticalLayout = (props: LayoutProps) => {
   const toggleNavVisibility = () => setNavVisible(!navVisible);
 
   // ** Auth
-  const { status } = useSession();
+  const { data } = useSession();
 
-  // ** Queries
-  const { data: profileIsComplete, isLoading } = api.user.getProfileIsComplete.useQuery(undefined, {
-    enabled: status === 'authenticated'
-  });
-
-  const showNavigation =
-    (profileIsComplete && status === 'authenticated') || isLoading || status === 'loading';
+  const showNavigation = data?.user.profileIsComplete || data?.user.isWhitelisted;
 
   return (
     <>

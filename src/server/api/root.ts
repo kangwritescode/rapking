@@ -13,7 +13,6 @@ import { rapComment } from './routers/rapComment';
 import { rapVote } from './routers/rapVote';
 import { socialLinkRouter } from './routers/socialLink';
 import { userFollows } from './routers/userFollows';
-import { whitelistRouter } from './routers/whitelist';
 
 /**
  * This is the primary router for your server.
@@ -34,7 +33,6 @@ export const appRouter = createTRPCRouter({
   feed: feedRouter,
   notifications: notificationsRouter,
   articles: articlesRouter,
-  whitelist: whitelistRouter,
   inviteToken: inviteTokenRouter
 });
 

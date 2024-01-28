@@ -97,6 +97,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const session = await getSession(context);
 
+  const redirectToCreateProfilePage =
+    session && (!session?.user.profileIsComplete || !session?.user.isWhitelisted);
+
+  if (redirectToCreateProfilePage) {
+    return {
+      redirect: {
+        destination: '/create-profile/',
+        permanent: false
+      }
+    };
+  }
+
   const helpers = createServerSideHelpers({
     router: appRouter,
     ctx: await createTRPCContext(context),
