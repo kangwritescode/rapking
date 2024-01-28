@@ -14,7 +14,7 @@ import { LayoutProps } from 'src/@core/layouts/types';
 
 // ** Components
 import { Icon } from '@iconify/react';
-import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import ScrollToTop from 'src/@core/components/scroll-to-top';
 import Footer from './components/shared-components/footer';
 import AppBar from './components/vertical/appBar';
@@ -43,6 +43,12 @@ const VerticalLayout = (props: LayoutProps) => {
   const { settings, children, scrollToTop, footerProps, contentHeightFixed, verticalLayoutProps } =
     props;
 
+  // ** Router
+  const router = useRouter();
+
+  // if route is /create-profile, hideNavigation
+  const hideNavigation = router.asPath.includes('/create-profile');
+
   // ** Vars
   const { skin, contentWidth } = settings;
   const { navigationSize, collapsedNavigationSize } = themeConfig;
@@ -56,16 +62,11 @@ const VerticalLayout = (props: LayoutProps) => {
   // ** Toggle Functions
   const toggleNavVisibility = () => setNavVisible(!navVisible);
 
-  // ** Auth
-  const { data } = useSession();
-
-  const showNavigation = data?.user.profileIsComplete || data?.user.isWhitelisted;
-
   return (
     <>
       <VerticalLayoutWrapper className='layout-wrapper'>
         {/* Navigation Menu */}
-        {showNavigation ? (
+        {!hideNavigation ? (
           <Navigation
             navWidth={navWidth}
             navVisible={navVisible}
