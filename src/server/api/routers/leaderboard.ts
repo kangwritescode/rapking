@@ -59,7 +59,11 @@ export const leaderboardRouter = createTRPCRouter({
       const where: any = {};
 
       if (countryFilter !== 'ALL') {
-        where.country = countryFilter;
+        console.log({ countryFilter });
+        where.country = {
+          equals: countryFilter,
+          not: null // filter out users with incomplete profiles
+        };
       }
 
       if (sexFilter !== 'ANY') {
@@ -70,11 +74,6 @@ export const leaderboardRouter = createTRPCRouter({
       if (filterDate) {
         where.createdAt = { gte: filterDate };
       }
-
-      // filter out users with incomplete profiles
-      where.country = {
-        not: null
-      };
 
       const users = await ctx.prisma.user.findMany({
         orderBy: {
