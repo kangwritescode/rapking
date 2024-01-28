@@ -17,6 +17,7 @@ declare module 'next-auth' {
     user: {
       id: string;
       username: string | null;
+      profileIsComplete: boolean;
 
       // ...other properties
       // role: UserRole;
@@ -25,6 +26,7 @@ declare module 'next-auth' {
 
   interface User {
     username: string | null;
+    profileIsComplete: boolean;
   }
 }
 
@@ -39,6 +41,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = user.id;
         session.user.username = user.username;
+        session.user.profileIsComplete = user.profileIsComplete;
       }
 
       return session;

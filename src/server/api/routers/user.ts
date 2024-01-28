@@ -114,7 +114,7 @@ export const userRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      await ctx.prisma.user.findUniqueOrThrow({
+      const userToUpdate = await ctx.prisma.user.findUniqueOrThrow({
         where: { id: ctx.session.user.id }
       });
 
@@ -136,7 +136,7 @@ export const userRouter = createTRPCRouter({
         allowedAttributes: {}
       });
 
-      if (containsBannedWords(sanitizedBio)) {
+      if (containsBannedWords(sanitizedBio) || containsBannedWords(input.username ?? '')) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Something went wrong. Please try again later'
@@ -155,7 +155,10 @@ export const userRouter = createTRPCRouter({
           ...(input.country ? { country: input.country } : {}),
           ...(input.bannerUrl ? { bannerUrl: input.bannerUrl } : {}),
           ...(input.profileImageUrl ? { profileImageUrl: input.profileImageUrl } : {}),
-          ...(input.bio ? { bio: sanitizedBio } : {})
+          ...(input.bio ? { bio: sanitizedBio } : {}),
+          ...(input.country && userToUpdate.username && userToUpdate.sex && userToUpdate.dob
+            ? { profileIsComplete: true }
+            : {})
         }
       });
 

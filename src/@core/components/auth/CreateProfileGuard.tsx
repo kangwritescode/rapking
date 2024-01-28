@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { api } from 'src/utils/api';
 
 interface CreateProfileGuardProps {
@@ -8,16 +8,28 @@ interface CreateProfileGuardProps {
 }
 
 const CreateProfileGuard: React.FC<CreateProfileGuardProps> = ({ children }) => {
-  const { status } = useSession();
   const router = useRouter();
+  const session = useSession();
+
+  const [profileIsComplete, setProfileIsComplete] = useState(false);
+  const [isInWhitelist, setIsInWhitelist] = useState(false);
+
+  const { status, data: sessionData } = session;
+
   const {
-    data: profileIsComplete,
+    data: profileIsCompleteData,
     fetchStatus,
     isLoading
   } = api.user.getProfileIsComplete.useQuery(undefined, {
     enabled: status === 'authenticated'
   });
-  const { data: isInWhitelist } = api.whitelist.userIsInWhitelist.useQuery();
+
+  const { data: whiteListData } = api.whitelist.userIsInWhitelist.useQuery();
+
+  useEffect(() => {
+    setProfileIsComplete(sessionData?.user.profileIsComplete || (profileIsCompleteData ?? false));
+    setIsInWhitelist(whiteListData ?? false);
+  }, [profileIsCompleteData, sessionData?.user.profileIsComplete, whiteListData]);
 
   const isDataLoading = status === 'loading' || (fetchStatus !== 'idle' && isLoading);
 
@@ -31,7 +43,14 @@ const CreateProfileGuard: React.FC<CreateProfileGuardProps> = ({ children }) => 
         router.replace('/');
       }
     }
-  }, [status, profileIsComplete, router, isDataLoading, isInWhitelist]);
+  }, [
+    status,
+    profileIsComplete,
+    router,
+    isDataLoading,
+    isInWhitelist,
+    sessionData?.user.profileIsComplete
+  ]);
 
   return children;
 };
