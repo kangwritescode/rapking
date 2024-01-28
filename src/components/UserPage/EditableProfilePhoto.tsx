@@ -1,6 +1,7 @@
 import { Icon } from '@iconify/react';
 import { Avatar, Box, CircularProgress, IconButton, useTheme } from '@mui/material';
 import { User } from '@prisma/client';
+import { useSession } from 'next-auth/react';
 import { useRef, useState } from 'react';
 import { BUCKET_URL } from 'src/shared/constants';
 import { useGCloudDelete } from 'src/shared/useGCloudDelete';
@@ -16,6 +17,7 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
   const { id, profileImageUrl } = userData || {};
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const session = useSession();
 
   // State
   const [file, setFile] = useState<File | null>(null);
@@ -26,7 +28,10 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
   // Invalidaters
   const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
 
-  const { deleteFile } = useGCloudDelete({ url: profileImageUrl || '' });
+  const { deleteFile } = useGCloudDelete({
+    url: profileImageUrl || '',
+    isAuthenticated: session?.status === 'authenticated'
+  });
 
   const { isUploading } = useGCloudUpload({
     path: `user/${id}`,

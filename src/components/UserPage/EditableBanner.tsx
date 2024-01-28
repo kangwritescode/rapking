@@ -2,6 +2,7 @@
 import { Icon } from '@iconify/react';
 import { Box, CardMedia, CircularProgress, IconButton } from '@mui/material';
 import { User } from '@prisma/client';
+import { useSession } from 'next-auth/react';
 import { useRef, useState } from 'react';
 
 import { BUCKET_URL } from 'src/shared/constants';
@@ -16,6 +17,7 @@ interface EditableBannerProps {
 
 function EditableBanner({ isEditable, userData }: EditableBannerProps) {
   const { id, bannerUrl } = userData || {};
+  const session = useSession();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -29,7 +31,8 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
   const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
 
   const { deleteFile } = useGCloudDelete({
-    url: bannerUrl || ''
+    url: bannerUrl || '',
+    isAuthenticated: session?.status === 'authenticated'
   });
 
   const { isUploading } = useGCloudUpload({

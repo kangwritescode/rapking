@@ -1,6 +1,7 @@
 import { Box, Button, CardMedia, CircularProgress } from '@mui/material';
 import { Rap } from '@prisma/client';
-import React, { useRef, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRef, useState } from 'react';
 import { BUCKET_URL } from 'src/shared/constants';
 import { useGCloudDelete } from 'src/shared/useGCloudDelete';
 import { useGCloudUpload } from 'src/shared/useGCloudUpload';
@@ -13,6 +14,7 @@ interface EditableCoverArtProps {
 
 function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
   const { id, coverArtUrl } = rapData;
+  const session = useSession();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -25,7 +27,10 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
   // Invalidaters
   const { invalidate: invalidateRapQuery } = api.useContext().rap.getRap;
 
-  const { deleteFile } = useGCloudDelete({ url: coverArtUrl || '' });
+  const { deleteFile } = useGCloudDelete({
+    url: coverArtUrl || '',
+    isAuthenticated: session?.status === 'authenticated'
+  });
 
   const { isUploading } = useGCloudUpload({
     path: `rap/${id}`,

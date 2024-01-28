@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { TRPCError } from '@trpc/server';
-import { createTRPCRouter, protectedProcedure } from 'src/server/api/trpc';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 
 // Schemas
 const SocialPlatformSchema = z.union([
@@ -56,7 +56,7 @@ export const socialLinkRouter = createTRPCRouter({
         }
       });
     }),
-  getSocialLinkByUserId: protectedProcedure
+  getSocialLinkByUserId: publicProcedure
     .input(
       z.object({
         userId: z.string()

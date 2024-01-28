@@ -3,17 +3,21 @@ import { api } from 'src/utils/api';
 
 type UseGCloudDeleteProps = {
   url: string;
+  isAuthenticated: boolean;
 };
 
 type UseGCloudDeleteReturn = {
   deleteFile: () => void;
 };
 
-export const useGCloudDelete = ({ url }: UseGCloudDeleteProps): UseGCloudDeleteReturn => {
+export const useGCloudDelete = ({
+  url,
+  isAuthenticated
+}: UseGCloudDeleteProps): UseGCloudDeleteReturn => {
   // Queries and Mutations
   const { data: presignedDeleteUrl } = api.gcloud.generateDeleteUrl.useQuery(
     { fileName: url || '' },
-    { enabled: !!url }
+    { enabled: !!url && isAuthenticated }
   );
 
   const deleteFile = () => {

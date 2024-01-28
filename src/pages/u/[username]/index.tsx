@@ -33,12 +33,10 @@ const UserProfile = ({ userId }: { userId?: string }) => {
   // Check if current user is viewing their own profile
   const isCurrentUser = userData?.id === userId;
 
-  const { data: rapsData } = api.rap.getRapsByUser.useQuery(
-    { userId: userData?.id || '', publishedOnly: !isCurrentUser },
-    {
-      enabled: !!userData?.id && !!userId
-    }
-  );
+  const { data: rapsData } = api.rap.getRapsByUser.useQuery({
+    userId: userData?.id || '',
+    publishedOnly: !isCurrentUser
+  });
 
   const [value, setValue] = useState('raps');
 
