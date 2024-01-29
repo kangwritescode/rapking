@@ -6,9 +6,10 @@ import { api } from 'src/utils/api';
 
 interface SocialLinksProps {
   socialLinks: SocialLink[];
+  isCurrentUser: boolean;
 }
 
-function SocialLinks({ socialLinks }: SocialLinksProps) {
+function SocialLinks({ socialLinks, isCurrentUser }: SocialLinksProps) {
   const theme = useTheme();
 
   const { mutate: deleteSocialLink } = api.socialLink.deleteSocialLink.useMutation();
@@ -40,20 +41,22 @@ function SocialLinks({ socialLinks }: SocialLinksProps) {
                 text={socialLink.displayText}
                 onClickHandler={() => window.open(socialLink.link, '_blank')}
               />
-              <IconButton
-                color='error'
-                size='small'
-                sx={{
-                  opacity: 0.3,
-                  '&:hover': {
-                    opacity: 'unset'
-                  },
-                  marginLeft: theme.spacing(1)
-                }}
-                onClick={() => removeButtonClickHandler(socialLink.id)}
-              >
-                <Icon icon='si-glyph:button-remove' />
-              </IconButton>
+              {isCurrentUser && (
+                <IconButton
+                  color='error'
+                  size='small'
+                  sx={{
+                    opacity: 0.3,
+                    '&:hover': {
+                      opacity: 'unset'
+                    },
+                    marginLeft: theme.spacing(1)
+                  }}
+                  onClick={() => removeButtonClickHandler(socialLink.id)}
+                >
+                  <Icon icon='si-glyph:button-remove' />
+                </IconButton>
+              )}
             </Stack>
           );
         }
