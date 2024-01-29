@@ -91,7 +91,7 @@ function BioCard({ userData, sx }: BioCardProps) {
               Socials
             </Typography>
           ))}
-        <SocialLinks socialLinks={socialLinksData || []} />
+        <SocialLinks isCurrentUser={isCurrentUser} socialLinks={socialLinksData || []} />
         {socialLinksData && socialLinksData.length < 5 && isCurrentUser && (
           <Button
             onClick={() => setSocialsModalIsOpen(true)}
