@@ -83,6 +83,26 @@ export const socialLinkRouter = createTRPCRouter({
         });
       }
 
+      const socialLinkToDelete = await ctx.prisma.socialLink.findUnique({
+        where: {
+          id: input.id
+        }
+      });
+
+      if (!Boolean(socialLinkToDelete)) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'This social link does not exist.'
+        });
+      }
+
+      if (socialLinkToDelete?.userId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'You do not have permission to delete this social link.'
+        });
+      }
+
       return await ctx.prisma.socialLink.delete({
         where: {
           id: input.id
