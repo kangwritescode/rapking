@@ -81,10 +81,11 @@ const RapPreviewCell = ({
           <Typography>{userData?.username}</Typography>
         </Link>
       </Stack>
-      <Typography fontSize='1.5rem' fontWeight='bold'>
-        {rap.title}
-      </Typography>
+
       <Link href={`/rap/${rap.id}`} style={{ textDecoration: 'none' }}>
+        <Typography fontSize='1.5rem' fontWeight='bold'>
+          {rap.title}
+        </Typography>
         <TipTapContent
           sx={{
             mt: '-1rem',
