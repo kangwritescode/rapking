@@ -275,6 +275,29 @@ export const rapRouter = createTRPCRouter({
       ]);
 
       return true;
+    }),
+  getRandomRaps: publicProcedure
+    .input(z.object({ limit: z.number().optional() }))
+    .query(async ({ ctx, input }) => {
+      const raps = await ctx.prisma.rap.findMany({
+        where: {
+          status: 'PUBLISHED'
+        },
+        take: input.limit || 10,
+        orderBy: {
+          id: 'desc'
+        },
+        include: {
+          user: {
+            select: {
+              username: true,
+              profileImageUrl: true
+            }
+          }
+        }
+      });
+
+      return raps;
     })
 });
 

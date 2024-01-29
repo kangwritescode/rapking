@@ -149,6 +149,12 @@ function RapPage() {
           )}
         </Stack>
       </Stack>
+      <Divider />
+      <ViewMoreRaps
+        sx={{
+          mt: '4rem'
+        }}
+      />
     </>
   );
 }
@@ -158,6 +164,7 @@ export default RapPage;
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import { GetServerSideProps } from 'next/types';
+import ViewMoreRaps from 'src/components/ViewMoreRaps';
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
