@@ -45,6 +45,7 @@ function RapPage() {
   const router = useRouter();
 
   const { id } = router.query;
+
   const { data: rapData } = api.rap.getRap.useQuery({ id: id as string }, { enabled: Boolean(id) });
 
   const userData = rapData?.user;
@@ -62,7 +63,7 @@ function RapPage() {
           md: '2.5rem'
         }}
       >
-        <Stack width={{ xs: '100%', md: '40rem' }}>
+        <Stack width={{ xs: '100%', md: '44rem' }}>
           <CardMedia
             component='img'
             alt='profile-header'
@@ -150,11 +151,7 @@ function RapPage() {
         </Stack>
       </Stack>
       <Divider />
-      <ViewMoreRaps
-        sx={{
-          mt: '4rem'
-        }}
-      />
+      {rapData && <ViewMoreRaps viewedRap={rapData} />}
     </>
   );
 }

@@ -277,11 +277,14 @@ export const rapRouter = createTRPCRouter({
       return true;
     }),
   getRandomRaps: publicProcedure
-    .input(z.object({ limit: z.number().optional() }))
+    .input(z.object({ limit: z.number().optional(), viewedRapId: z.string() }))
     .query(async ({ ctx, input }) => {
       const raps = await ctx.prisma.rap.findMany({
         where: {
-          status: 'PUBLISHED'
+          status: 'PUBLISHED',
+          id: {
+            not: input.viewedRapId
+          }
         },
         take: input.limit || 10,
         orderBy: {

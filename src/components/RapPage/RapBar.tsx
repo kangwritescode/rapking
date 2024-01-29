@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { Box, IconButton, useTheme } from '@mui/material';
+import { Box, IconButton, SxProps, useTheme } from '@mui/material';
 import { Rap, User } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -13,9 +13,11 @@ interface RapBarProps {
         user?: Partial<User>;
       })
     | null;
+  commentClickHandler?: () => void;
+  sx?: SxProps;
 }
 
-function RapBar({ rapData }: RapBarProps) {
+function RapBar({ rapData, commentClickHandler, sx }: RapBarProps) {
   const theme = useTheme();
   const { commentId } = useRouter().query;
 
@@ -39,7 +41,7 @@ function RapBar({ rapData }: RapBarProps) {
         onCloseHandler={() => setCommentDrawerIsOpen(false)}
         rapId={rapData?.id as string}
       />
-      <Box display='flex'>
+      <Box display='flex' sx={sx}>
         <RapLikeButton rapId={rapData?.id} />
         <Box
           sx={{
@@ -49,7 +51,7 @@ function RapBar({ rapData }: RapBarProps) {
           }}
         >
           <IconButton
-            onClick={() => setCommentDrawerIsOpen(true)}
+            onClick={commentClickHandler ? commentClickHandler : () => setCommentDrawerIsOpen(true)}
             sx={{
               pr: 1
             }}

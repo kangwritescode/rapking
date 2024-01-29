@@ -1,6 +1,5 @@
 import { Icon } from '@iconify/react';
 import { IconButton, SxProps } from '@mui/material';
-import React from 'react';
 
 interface FireIconButtonProps {
   onClick: () => void;
@@ -11,6 +10,7 @@ interface FireIconButtonProps {
 function FireIconButton({ onClick, isColored, sx, disabled }: FireIconButtonProps) {
   return (
     <IconButton
+      className='fire-icon-button'
       sx={{
         paddingRight: 1,
         ...sx
