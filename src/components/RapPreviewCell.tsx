@@ -21,12 +21,8 @@ const RapPreviewCell = ({
   const theme = useTheme();
 
   const userData = rap?.user || {};
-  const contentMaxLength = 30;
 
-  let formattedContent = sanitize(rap.content || '');
-  if (rap.content.length > contentMaxLength) {
-    formattedContent = `${rap.content.slice(0, contentMaxLength)}...`;
-  }
+  const formattedContent = sanitize(rap.content || '');
 
   return (
     <Stack>
@@ -87,6 +83,7 @@ const RapPreviewCell = ({
           {rap.title}
         </Typography>
         <TipTapContent
+          maxLength={30}
           sx={{
             mt: '-1rem',
             color: theme.palette.text.secondary
