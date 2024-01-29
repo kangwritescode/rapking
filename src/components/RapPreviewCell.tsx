@@ -26,22 +26,24 @@ const RapPreviewCell = ({
 
   return (
     <Stack>
-      <CardMedia
-        component='img'
-        alt='profile-header'
-        image={
-          rap?.coverArtUrl
-            ? `${BUCKET_URL}/${rap?.coverArtUrl}`
-            : `${BUCKET_URL}/default/cover-art.jpg`
-        }
-        sx={{
-          height: {
-            xs: 130,
-            sm: 150,
-            md: 170
+      <Link href={`/rap/${rap.id}`} style={{ textDecoration: 'none' }}>
+        <CardMedia
+          component='img'
+          alt='profile-header'
+          image={
+            rap?.coverArtUrl
+              ? `${BUCKET_URL}/${rap?.coverArtUrl}`
+              : `${BUCKET_URL}/default/cover-art.jpg`
           }
-        }}
-      />
+          sx={{
+            height: {
+              xs: 130,
+              sm: 150,
+              md: 170
+            }
+          }}
+        />
+      </Link>
       <Stack
         direction='row'
         alignItems='center'
@@ -50,17 +52,12 @@ const RapPreviewCell = ({
           mb: 4
         }}
       >
-        <Link
-          onClick={() => router.push(`/u/${userData?.username}`)}
-          style={{ textDecoration: 'none' }}
-          href={`/u/${userData?.username}`}
-        >
+        <Link style={{ textDecoration: 'none' }} href={`/u/${userData?.username}`}>
           <Avatar
             {...(userData?.profileImageUrl && {
               src: `${BUCKET_URL}/${userData.profileImageUrl}`
             })}
             alt='profile-picture'
-            onClick={() => router.push(`/u/${userData?.username}`)}
             sx={{
               mr: theme.spacing(2),
               width: 20,
@@ -69,11 +66,7 @@ const RapPreviewCell = ({
             }}
           />
         </Link>
-        <Link
-          onClick={() => router.push(`/u/${userData?.username}`)}
-          style={{ textDecoration: 'none' }}
-          href={`/u/${userData?.username}`}
-        >
+        <Link style={{ textDecoration: 'none' }} href={`/u/${userData?.username}`}>
           <Typography>{userData?.username}</Typography>
         </Link>
       </Stack>
