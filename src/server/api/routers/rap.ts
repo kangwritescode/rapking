@@ -94,7 +94,7 @@ export const rapRouter = createTRPCRouter({
       const resetTime = Math.ceil(rateLimitResult / (60 * 60)); // Convert to hours
       throw new TRPCError({
         code: 'TOO_MANY_REQUESTS',
-        message: `You can post 5 raps per day. Please try again in ${resetTime} hours.`
+        message: `You can post 3 raps per day. Please try again in ${resetTime} hours.`
       });
     }
 
