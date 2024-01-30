@@ -1,6 +1,9 @@
 import { Icon } from '@iconify/react';
 import { Button, Divider, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/react';
 import Link from 'next/link';
+import { GetServerSideProps } from 'next/types';
 import { useEffect, useState } from 'react';
 import DashboardRaps from 'src/components/DashboardPage/DashboardRaps';
 import { api } from 'src/utils/api';
@@ -103,3 +106,24 @@ function DashboardPage() {
 }
 
 export default DashboardPage;
+
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getSession(context);
+  const redirectToCreateProfilePage =
+    session && (!session?.user.profileIsComplete || !session?.user.isWhitelisted);
+
+  if (redirectToCreateProfilePage) {
+    return {
+      redirect: {
+        destination: '/create-profile/',
+        permanent: false
+      }
+    };
+  }
+
+  return {
+    props: {}
+  };
+};
