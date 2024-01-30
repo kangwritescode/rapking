@@ -78,8 +78,8 @@ export const rapRouter = createTRPCRouter({
     // * Content Moderation
     if (containsBannedWords(input.title) || containsBannedWords(input.content)) {
       throw new TRPCError({
-        code: 'FORBIDDEN',
-        message: 'Your rap has innapropriate content.'
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Something went wrong.'
       });
     }
 
