@@ -8,6 +8,7 @@ import { geoDBRouter } from './routers/geoDB';
 import { inviteTokenRouter } from './routers/inviteToken';
 import { leaderboardRouter } from './routers/leaderboard';
 import { notificationsRouter } from './routers/notifications';
+import { pulseRouter } from './routers/pulse';
 import { rapRouter } from './routers/rap';
 import { rapComment } from './routers/rapComment';
 import { rapVote } from './routers/rapVote';
@@ -33,7 +34,8 @@ export const appRouter = createTRPCRouter({
   feed: feedRouter,
   notifications: notificationsRouter,
   articles: articlesRouter,
-  inviteToken: inviteTokenRouter
+  inviteToken: inviteTokenRouter,
+  pulse: pulseRouter
 });
 
 // export type definition of API
