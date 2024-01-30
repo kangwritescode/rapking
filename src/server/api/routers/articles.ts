@@ -30,7 +30,10 @@ export const articlesRouter = createTRPCRouter({
       const { limit } = input;
 
       const articles = await ctx.prisma.article.findMany({
-        take: limit ? limit : undefined
+        take: limit ? limit : undefined,
+        orderBy: {
+          publishedAt: 'desc'
+        }
       });
 
       return articles;
