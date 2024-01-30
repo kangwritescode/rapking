@@ -95,6 +95,11 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
 
   if (userIsAuthenticated) {
     navItems.splice(0, 0, {
+      title: 'Dashboard',
+      path: '/dashboard',
+      icon: 'ic:sharp-dashboard'
+    });
+    navItems.splice(0, 0, {
       title: username || 'Profile',
       path: `/u/${username}`,
       icon: 'gg:profile'

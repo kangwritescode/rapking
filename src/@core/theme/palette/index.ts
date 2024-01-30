@@ -57,15 +57,15 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
       white: whiteColor
     },
     primary: {
-      light: '#7c9bb3',
-      main: '#5b7b97',
-      dark: '#405865',
+      light: '#7fb1de',
+      main: '#5f99cc',
+      dark: '#467197',
       contrastText: whiteColor
     },
     secondary: {
-      light: '#b89a7d',
-      main: '#97775B',
-      dark: '#754f3b',
+      light: '#ffc76d',
+      main: '#F89900',
+      dark: '#aa6900',
       contrastText: whiteColor
     },
     error: {
@@ -81,15 +81,15 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
       contrastText: whiteColor
     },
     info: {
-      light: '#32BAFF',
-      main: '#16B1FF',
-      dark: '#139CE0',
+      light: '#7FE4C3', // Lighter shade of greenish-teal
+      main: '#46C9A9', // Main shade of greenish-teal
+      dark: '#2D9D82', // Darker shade of greenish-teal
       contrastText: whiteColor
     },
     success: {
-      light: '#6AD01F',
-      main: '#56CA00',
-      dark: '#4CB200',
+      light: '#5ab46a',
+      main: '#39af4f',
+      dark: '#2b833b',
       contrastText: whiteColor
     },
     grey: {

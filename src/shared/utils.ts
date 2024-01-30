@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
 export function useDebounce(value: string, delay: number) {
@@ -61,5 +62,16 @@ export function getOrdinalSuffix(number: number): string {
     } else {
       return 'th';
     }
+  }
+}
+
+export function formatRapCardDate(dateObj: Date) {
+  const date = dayjs(dateObj);
+  const currentYear = dayjs().year();
+
+  if (date.year() === currentYear) {
+    return date.format('MMM D');
+  } else {
+    return date.format('MMM D, YYYY');
   }
 }

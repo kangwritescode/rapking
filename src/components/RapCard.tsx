@@ -9,11 +9,11 @@ import {
   useTheme
 } from '@mui/material';
 import { Rap, User } from '@prisma/client';
-import dayjs from 'dayjs';
 import { convert } from 'html-to-text';
 import { useRouter } from 'next/router';
 import sanitize from 'sanitize-html';
 import { BUCKET_URL } from 'src/shared/constants';
+import { formatRapCardDate } from 'src/shared/utils';
 import RapCardChip from './RapCardChip';
 import RapCardMenu from './UserPage/RapCardMenu';
 
@@ -25,17 +25,6 @@ interface RapCardProps {
   showMenu?: boolean;
   showChips?: boolean;
   contentMaxLength?: number;
-}
-
-function formatDate(dateObj: Date) {
-  const date = dayjs(dateObj);
-  const currentYear = dayjs().year();
-
-  if (date.year() === currentYear) {
-    return date.format('MMM D');
-  } else {
-    return date.format('MMM D, YYYY');
-  }
 }
 
 function RapCard({
@@ -110,7 +99,7 @@ function RapCard({
             cursor: 'pointer'
           }}
         >
-          {formatDate(dateCreated)}
+          {formatRapCardDate(dateCreated)}
         </Typography>
       </Stack>
       <Stack direction='row' justifyContent='space-between'>
