@@ -11,6 +11,7 @@ declare module '@mui/material/styles' {
       avatarBg: string;
       tableHeaderBg: string;
       primaryGradient: string;
+      navDrawerBg: string;
     };
   }
   interface PaletteOptions {

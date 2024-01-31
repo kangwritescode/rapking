@@ -10,13 +10,13 @@ import { Direction } from '@mui/material';
 
 // ** Types
 import {
-  Skin,
-  Mode,
   AppBar,
-  Footer,
   ContentWidth,
-  VerticalNavToggle,
-  HorizontalMenuToggle
+  Footer,
+  HorizontalMenuToggle,
+  Mode,
+  Skin,
+  VerticalNavToggle
 } from 'src/@core/layouts/types';
 
 type ThemeConfig = {
@@ -72,8 +72,8 @@ const themeConfig: ThemeConfig = {
   navSubItemIcon: 'mdi:circle-outline' /* Icon */,
   verticalNavToggleType:
     'accordion' /* accordion | collapse /*! Note: This is for Vertical navigation menu only */,
-  navCollapsed: false /* true | false /*! Note: This is for Vertical navigation menu only */,
-  navigationSize: 260 /* Number in px(Pixels) /*! Note: This is for Vertical navigation menu only */,
+  navCollapsed: true /* true | false /*! Note: This is for Vertical navigation menu only */,
+  navigationSize: 205 /* Number in px(Pixels) /*! Note: This is for Vertical navigation menu only */,
   collapsedNavigationSize: 68 /* Number in px(Pixels) /*! Note: This is for Vertical navigation menu only */,
   afterVerticalNavMenuContentPosition: 'fixed' /* fixed | static */,
   beforeVerticalNavMenuContentPosition: 'fixed' /* fixed | static */,
