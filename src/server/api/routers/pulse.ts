@@ -1,4 +1,7 @@
 import { TRPCError } from '@trpc/server';
+import axios from 'axios';
+import { htmlToText } from 'html-to-text';
+import { env } from 'src/env.mjs';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 import { z } from 'zod';
 
@@ -24,11 +27,19 @@ export const pulseRouter = createTRPCRouter({
         });
       }
 
-      return await ctx.prisma.pulsePost.create({
+      const createdPost = await ctx.prisma.pulsePost.create({
         data: {
           content: input.content
         }
       });
+
+      if (env.NODE_ENV === 'production') {
+        await sendPulseChannelUpdate({
+          content: htmlToText(createdPost.content)
+        });
+      }
+
+      return createdPost;
     }),
   deletePost: protectedProcedure
     .input(
@@ -51,3 +62,15 @@ export const pulseRouter = createTRPCRouter({
       });
     })
 });
+
+async function sendPulseChannelUpdate({ content }: { content: string }) {
+  try {
+    const response = await axios.post(env.PULSE_BOT_WEBHOOK_URL, {
+      content
+    });
+
+    console.log('Webhook response:', response.data);
+  } catch (error: any) {
+    console.error('Error sending webhook:', error.message);
+  }
+}

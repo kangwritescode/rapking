@@ -12,9 +12,6 @@ const server = z.object({
   NEXTAUTH_SECRET:
     process.env.NODE_ENV === 'production' ? z.string().min(1) : z.string().min(1).optional(),
   NEXTAUTH_URL: z.preprocess(
-
-    // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
-    // Since NextAuth.js automatically uses the VERCEL_URL if present.
     str => process.env.VERCEL_URL ?? str,
 
     // VERCEL_URL doesn't include `https` so it cant be validated as a URL
@@ -33,6 +30,8 @@ const server = z.object({
   GCLOUD_CLIENT_ID: z.string(),
 
   REDIS_CONNECTION_STRING: z.string().url(),
+
+  PULSE_BOT_WEBHOOK_URL: z.string().url()
 });
 
 /**
@@ -69,6 +68,8 @@ const processEnv = {
   MUUT_SECRET_KEY: process.env.MUUT_SECRET_KEY,
 
   REDIS_CONNECTION_STRING: process.env.REDIS_CONNECTION_STRING,
+
+  PULSE_BOT_WEBHOOK_URL: process.env.PULSE_BOT_WEBHOOK_URL
 
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
