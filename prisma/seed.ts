@@ -49,7 +49,8 @@ async function seedDatabase() {
       data: {
         title: faker.lorem.words(3),
         content: faker.lorem.paragraphs(2),
-        userId: user.id
+        userId: user.id,
+        status: 'PUBLISHED'
       }
     });
 

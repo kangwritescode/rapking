@@ -1,5 +1,6 @@
 import { ArticleContainer } from 'src/components/Article';
 import PulseEditor from 'src/components/PulsePage/PulseEditor';
+import PulsePost from 'src/components/PulsePage/PulsePost';
 
 function BlogPage() {
   const { data: pulsePosts } = api.pulse.getAllPosts.useQuery();
@@ -35,21 +36,7 @@ function BlogPage() {
         </Box>
       ) : undefined}
       {pulsePosts?.map(post => (
-        <>
-          <Box component='article' key={post.id} mb='2rem'>
-            <Typography component='h2' fontSize='1.5rem' fontWeight='600'>
-              {post.createdAt.toLocaleDateString()}
-            </Typography>
-            <Typography
-              component='div'
-              variant='body1'
-              fontSize='1.25rem'
-              dangerouslySetInnerHTML={{
-                __html: post.content
-              }}
-            />
-          </Box>
-        </>
+        <PulsePost key={post.id} pulsePost={post} />
       ))}
     </ArticleContainer>
   );

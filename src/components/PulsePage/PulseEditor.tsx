@@ -4,10 +4,14 @@ import TextAlign from '@tiptap/extension-text-align';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useSession } from 'next-auth/react';
+import { api } from 'src/utils/api';
 
 function PulseEditor(): JSX.Element {
   const theme = useTheme();
   const session = useSession();
+
+  const { mutateAsync: createPost } = api.pulse.createPost.useMutation();
+  const { invalidate: invalidateGetAllPosts } = api.useContext().pulse.getAllPosts;
 
   const editor = useEditor({
     extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
@@ -18,15 +22,29 @@ function PulseEditor(): JSX.Element {
     return <></>;
   }
 
+  const text = editor?.getText();
+
+  const onSubmit = async () => {
+    const html = editor?.getHTML() || '';
+    createPost({ content: html })
+      .then(() => {
+        editor?.commands.setContent('');
+        invalidateGetAllPosts();
+      })
+      .catch(console.error);
+  };
+
   return (
     <Stack alignItems='right'>
       <Button
+        disabled={!text}
         sx={{
           width: 'fit-content',
           mb: '1rem',
           marginLeft: 'auto'
         }}
         variant='contained'
+        onClick={onSubmit}
       >
         Submit
       </Button>
@@ -60,6 +78,7 @@ function PulseEditor(): JSX.Element {
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.Bold />
             <RichTextEditor.Italic />
+            <RichTextEditor.BulletList />
           </RichTextEditor.ControlsGroup>
 
           <RichTextEditor.ControlsGroup>
