@@ -1,7 +1,11 @@
 import { ArticleContainer } from 'src/components/Article';
+import PulseEditor from 'src/components/PulsePage/PulseEditor';
 
 function BlogPage() {
   const { data: pulsePosts } = api.pulse.getAllPosts.useQuery();
+
+  const session = useSession();
+  const isAdmin = session?.data?.user?.isAdmin;
 
   return (
     <ArticleContainer>
@@ -25,6 +29,11 @@ function BlogPage() {
           mb: '2rem'
         }}
       />
+      {isAdmin ? (
+        <Box mb='2rem'>
+          <PulseEditor />
+        </Box>
+      ) : undefined}
       {pulsePosts?.map(post => (
         <>
           <Box component='article' key={post.id} mb='2rem'>
@@ -50,7 +59,7 @@ export default BlogPage;
 
 import { Box, Divider, Typography } from '@mui/material';
 import { GetServerSidePropsContext } from 'next';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { GetServerSideProps } from 'next/types';
 import { api } from 'src/utils/api';
 

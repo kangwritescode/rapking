@@ -16,6 +16,7 @@ import AppBarContent from './components/vertical/AppBarContent';
 import { useSession } from 'next-auth/react';
 import { useSettings } from 'src/@core/hooks/useSettings';
 import { NavLink, NavSectionTitle } from 'src/@core/layouts/types';
+import { api } from 'src/utils/api';
 
 interface Props {
   children: ReactNode;
@@ -24,8 +25,10 @@ interface Props {
 
 const UserLayout = ({ children, contentHeightFixed }: Props) => {
   const session = useSession();
-  const { username } = session.data?.user || {};
-  const userIsAuthenticated = session.status === 'authenticated';
+
+  const { data: userData } = api.user.getCurrentUser.useQuery(undefined, {
+    enabled: session.status === 'authenticated'
+  });
 
   const { settings, saveSettings } = useSettings();
 
@@ -93,15 +96,15 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
     });
   }
 
-  if (userIsAuthenticated) {
+  if (userData) {
     navItems.splice(0, 0, {
       title: 'Dashboard',
       path: '/dashboard',
       icon: 'ic:sharp-dashboard'
     });
     navItems.splice(0, 0, {
-      title: username || 'Profile',
-      path: `/u/${username}`,
+      title: userData.username || 'Profile',
+      path: `/u/${userData.username}`,
       icon: 'gg:profile'
     });
   }

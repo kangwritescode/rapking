@@ -60,6 +60,7 @@ model User {
   profileImageUrl       String?
   bio                   String?
   points                Int            @default(0)
+  isAdmin               Boolean        @default(false)
   followed              UserFollows[]  @relation("FollowedRelation")
   followers             UserFollows[]  @relation("FollowerRelation")
   raps                  Rap[]
