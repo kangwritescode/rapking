@@ -35,7 +35,7 @@ function PulsePost({ pulsePost }: PulsePostProps) {
           }}
         />
         {isAdmin ? (
-          <Button onClick={handleDelete} color='secondary' variant='outlined'>
+          <Button onClick={handleDelete} size='small' color='secondary' variant='outlined'>
             Delete
           </Button>
         ) : undefined}
