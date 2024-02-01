@@ -9,47 +9,30 @@ import Typography from '@mui/material/Typography';
 
 // ** Icon Imports
 import { Icon } from '@iconify/react';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, useTheme } from '@mui/material';
 import { User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
-import FollowersModal from '../FollowersModal/FollowersModal';
+import AddSocialDialog from './BioCard/AddSocialDialog';
+import SocialLinks from './BioCard/SocialLinks';
 import EditProfileDialog from './EditProfileDialog';
 import EditableBanner from './EditableBanner';
 import EditableProfilePhoto from './EditableProfilePhoto';
 import FollowingButton from './FollowingButton';
 
-const FollowersText = ({ text, onClick }: { text: string | ReactNode; onClick: () => void }) => {
-  return (
-    <Typography
-      onClick={onClick}
-      variant='caption'
-      sx={{
-        ':hover': {
-          cursor: 'pointer',
-          textDecoration: 'underline'
-        }
-      }}
-    >
-      {text}
-    </Typography>
-  );
-};
-
-interface UserProfileHeaderProps {
+interface ProfileCardProps {
   userData?: Partial<User> | null;
   isCurrentUser?: boolean;
 }
 
-const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) => {
+const ProfileCard = ({ userData, isCurrentUser }: ProfileCardProps) => {
   const session = useSession();
 
   // State
   const [modalIsOpen, setIsModalIsOpen] = useState<boolean>(false);
-  const [followingUser, setFollowingUser] = useState<Partial<User> | null>();
-  const [followedUser, setFollowedUser] = useState<Partial<User> | null>();
+  const [socialsModalIsOpen, setSocialsModalIsOpen] = useState(false);
 
   // Queries
 
@@ -61,20 +44,6 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
     { followerId: currentUserData?.id || '', followedId: userData?.id || '' },
     {
       enabled: !!currentUserData?.id && !!userData?.id
-    }
-  );
-
-  const { data: userFollowersCount } = api.userFollows.getFollowersCount.useQuery(
-    { userId: userData?.id || '' },
-    {
-      enabled: !!userData?.id
-    }
-  );
-
-  const { data: userFollowingCount } = api.userFollows.getFollowingCount.useQuery(
-    { userId: userData?.id || '' },
-    {
-      enabled: !!userData?.id
     }
   );
 
@@ -117,28 +86,39 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
     );
   };
 
+  const { data: socialLinksData } = api.socialLink.getSocialLinkByUserId.useQuery(
+    { userId: userData?.id || '' },
+    {
+      enabled: !!userData?.id
+    }
+  );
+
+  const theme = useTheme();
+
   return (
     <>
-      <EditProfileDialog isOpen={modalIsOpen} handleClose={() => setIsModalIsOpen(false)} />
-      <FollowersModal
-        isOpen={!!followedUser || !!followingUser}
-        followedUser={followedUser}
-        followingUser={followingUser}
-        handleClose={() => {
-          setFollowedUser(undefined);
-          setFollowingUser(undefined);
-        }}
+      <AddSocialDialog
+        isOpen={socialsModalIsOpen}
+        onCloseHandler={() => setSocialsModalIsOpen(false)}
       />
-      <Card>
+      <EditProfileDialog isOpen={modalIsOpen} handleClose={() => setIsModalIsOpen(false)} />
+      <Card
+        sx={{
+          position: 'relative',
+          pb: 6,
+          border: `1px solid ${theme.palette.divider}`
+        }}
+      >
         <EditableBanner isEditable={isCurrentUser} userData={userData} />
         <CardContent
           sx={{
             pt: 0,
-            mt: -8,
             display: 'flex',
             alignItems: 'flex-end',
-            flexWrap: { xs: 'wrap', md: 'nowrap' },
-            justifyContent: { xs: 'center', md: 'flex-start' }
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            position: 'relative',
+            mt: '-3.75rem'
           }}
         >
           <EditableProfilePhoto isEditable={isCurrentUser} userData={userData} />
@@ -146,74 +126,42 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
             sx={{
               width: '100%',
               display: 'flex',
-              flexDirection: {
-                xs: 'column',
-                md: 'row'
-              },
-              ml: { xs: 0, md: 6 },
-              alignItems: {
-                xs: 'center',
-                md: 'flex-end'
-              },
-              flexWrap: ['wrap', 'nowrap'],
-              justifyContent: ['center', 'space-between']
+              flexDirection: 'column',
+              ml: 0,
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              justifyContent: 'center'
             }}
           >
-            <Box
+            <Typography
+              fontSize='2rem'
+              fontFamily='impact'
               sx={{
-                mb: {
-                  xs: 6,
-                  md: 0
-                },
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: {
-                  xs: 'center',
-                  md: 'flex-start'
-                }
+                mb: 4,
+                mt: 4
               }}
             >
-              <Typography
-                variant='h5'
-                sx={{
-                  mb: 0
-                }}
-              >
-                {userData?.username}
-              </Typography>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  justifyContent: ['center', 'flex-start']
-                }}
-              >
-                <Box
-                  sx={{
-                    mr: 2,
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}
-                >
-                  <FollowersText
-                    text={`${userFollowersCount || 0} Followers`}
-                    onClick={() => setFollowedUser(userData)}
-                  />
-                </Box>
-                <Typography mr='.5rem' color='gray'>
-                  |
-                </Typography>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    '& svg': { color: 'text.secondary' }
-                  }}
-                >
-                  <FollowersText text={`${userFollowingCount || 0} Following`} onClick={() => {}} />
-                </Box>
-              </Box>
-            </Box>
+              {userData?.username}
+            </Typography>
+            <Typography
+              variant='body1'
+              color='text.secondary'
+              width='85%'
+              mb='1.5rem'
+              textAlign='center'
+            >
+              {userData?.bio || 'This user has not set a bio yet.'}
+            </Typography>
+            <SocialLinks
+              sx={{
+                width: '80%',
+                mb: 4
+              }}
+              socialLinks={socialLinksData || []}
+              isCurrentUser={Boolean(isCurrentUser)}
+              hideDeleteButtons
+            />
+
             {isCurrentUser ? (
               <Button
                 sx={{ borderRadius: '20px' }}
@@ -255,4 +203,4 @@ const UserProfileHeader = ({ userData, isCurrentUser }: UserProfileHeaderProps) 
   );
 };
 
-export default UserProfileHeader;
+export default ProfileCard;

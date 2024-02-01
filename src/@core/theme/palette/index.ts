@@ -116,7 +116,7 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin, themeColor: ThemeColo
     },
     divider: `rgba(${mainColor}, 0.12)`,
     background: {
-      paper: mode === 'light' ? whiteColor : '#242424',
+      paper: mode === 'light' ? whiteColor : '#191919',
       default: defaultBgColor()
     },
     action: {

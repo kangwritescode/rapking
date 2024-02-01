@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { IconButton, Stack, useTheme } from '@mui/material';
+import { Box, IconButton, Stack, SxProps, useTheme } from '@mui/material';
 import { SocialLink } from '@prisma/client';
 import CustomUrlButton from 'src/components/UserPage/CustomUrlButton';
 import { api } from 'src/utils/api';
@@ -7,9 +7,11 @@ import { api } from 'src/utils/api';
 interface SocialLinksProps {
   socialLinks: SocialLink[];
   isCurrentUser: boolean;
+  hideDeleteButtons?: boolean;
+  sx?: SxProps;
 }
 
-function SocialLinks({ socialLinks, isCurrentUser }: SocialLinksProps) {
+function SocialLinks({ socialLinks, isCurrentUser, hideDeleteButtons, sx }: SocialLinksProps) {
   const theme = useTheme();
 
   const { mutate: deleteSocialLink } = api.socialLink.deleteSocialLink.useMutation();
@@ -27,7 +29,14 @@ function SocialLinks({ socialLinks, isCurrentUser }: SocialLinksProps) {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        ...sx
+      }}
+    >
       {socialLinks.map(socialLink => {
         if (socialLink.platform === 'CUSTOM') {
           return (
@@ -41,7 +50,7 @@ function SocialLinks({ socialLinks, isCurrentUser }: SocialLinksProps) {
                 text={socialLink.displayText}
                 onClickHandler={() => window.open(socialLink.link, '_blank')}
               />
-              {isCurrentUser && (
+              {!hideDeleteButtons && isCurrentUser && (
                 <IconButton
                   color='error'
                   size='small'
@@ -61,7 +70,7 @@ function SocialLinks({ socialLinks, isCurrentUser }: SocialLinksProps) {
           );
         }
       })}
-    </>
+    </Box>
   );
 }
 

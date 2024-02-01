@@ -1,6 +1,5 @@
 import { Icon } from '@iconify/react';
 import { Button, SxProps, useTheme } from '@mui/material';
-import React from 'react';
 
 interface CustomUrlButtonProps {
   onClickHandler?: () => void;
@@ -13,16 +12,19 @@ function CustomUrlButton({ onClickHandler, sx, text }: CustomUrlButtonProps) {
 
   return (
     <Button
-      variant='outlined'
+      variant='contained'
       startIcon={<Icon color='inherit' icon='octicon:link-16' />}
       size='small'
       sx={{
         borderRadius: '20px',
-        color: theme.palette.grey[400],
+        color: theme.palette.grey[300],
         borderColor: theme.palette.grey[400],
+        backgroundColor: theme.palette.grey[800],
+        fontSize: '0.75rem',
         ...sx,
         ['&:hover']: {
-          borderColor: 'unset'
+          borderColor: 'unset',
+          backgroundColor: theme.palette.grey[700]
         }
       }}
       onClick={onClickHandler}

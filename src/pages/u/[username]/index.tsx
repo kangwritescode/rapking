@@ -6,15 +6,13 @@ import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 // ** MUI Components
-import { Box, Tab, Tabs, useTheme } from '@mui/material';
-import Grid from '@mui/material/Grid';
+import { Card, CardContent, Stack, Tab, Tabs, useTheme } from '@mui/material';
 
 // ** Components
 import { GetServerSidePropsContext } from 'next';
-import BioCard from 'src/components/UserPage/BioCard/BioCard';
 import { api } from 'src/utils/api';
+import ProfileCard from '../../../components/UserPage/ProfileCard';
 import RapsTab from '../../../components/UserPage/RapsTab';
-import UserProfileHeader from '../../../components/UserPage/UserProfileHeader';
 
 const UserProfile = ({ userId }: { userId?: string }) => {
   const router = useRouter();
@@ -45,9 +43,11 @@ const UserProfile = ({ userId }: { userId?: string }) => {
   };
 
   return (
-    <Box
+    <Stack
+      direction={{ sm: 'column', md: 'row' }}
+      gap={4}
       sx={{
-        padding: `3rem 2rem`,
+        padding: `1.5rem`,
         transition: 'padding .25s ease-in-out',
         [theme.breakpoints.down('sm')]: {
           paddingLeft: theme.spacing(4),
@@ -55,19 +55,27 @@ const UserProfile = ({ userId }: { userId?: string }) => {
         }
       }}
     >
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <UserProfileHeader userData={userData} isCurrentUser={isCurrentUser} />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <BioCard
-            userData={userData}
-            sx={{
-              p: theme.spacing(5)
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} md={8}>
+      <Stack
+        width='40%'
+        maxWidth={'28rem'}
+        minWidth={{
+          sm: '100%',
+          md: '24rem'
+        }}
+      >
+        <ProfileCard userData={userData} isCurrentUser={isCurrentUser} />
+      </Stack>
+      <Stack flexGrow={1} gap='1rem'>
+        <Card
+          sx={{
+            border: `1px solid ${theme.palette.divider}`
+          }}
+        >
+          <CardContent>
+            <ProfileCardStats userData={userData} />
+          </CardContent>
+        </Card>
+        <Stack p='.5rem'>
           <Tabs
             value={value}
             onChange={handleTabsChange}
@@ -77,15 +85,16 @@ const UserProfile = ({ userId }: { userId?: string }) => {
             <Tab value='raps' label='Raps' />
           </Tabs>
           {value === 'raps' && <RapsTab raps={rapsData} isCurrentUser={isCurrentUser} />}
-        </Grid>
-      </Grid>
-    </Box>
+        </Stack>
+      </Stack>
+    </Stack>
   );
 };
 
 export default UserProfile;
 
 import { createServerSideHelpers } from '@trpc/react-query/server';
+import ProfileCardStats from 'src/components/UserPage/ProfileCardStats';
 import { appRouter } from 'src/server/api/root';
 import { createTRPCContext } from 'src/server/api/trpc';
 import superjson from 'superjson';

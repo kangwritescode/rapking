@@ -105,7 +105,7 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
             bannerUrl ? `${BUCKET_URL}/${bannerUrl}` : `${BUCKET_URL}/default/profile-banner.jpg`
           }
           sx={{
-            height: { xs: 150, md: 250 }
+            height: 150
           }}
         />
       </Box>

@@ -82,7 +82,7 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
             sx={{
               width: 120,
               height: 120,
-              border: `5px solid ${theme.palette.common.white}`,
+              border: `3px solid ${theme.palette.background.paper}`,
               position: 'relative',
               [theme.breakpoints.down('md')]: {
                 marginBottom: theme.spacing(4)

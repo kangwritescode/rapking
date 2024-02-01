@@ -10,14 +10,27 @@ interface FollowersModalProps {
   handleClose: () => void;
   followedUser?: Partial<User> | null;
   followingUser?: Partial<User> | null;
+  title?: string;
 }
 
-function FollowersModal({ isOpen, handleClose, followedUser, followingUser }: FollowersModalProps) {
+function FollowersModal({
+  isOpen,
+  handleClose,
+  followedUser,
+  followingUser,
+  title
+}: FollowersModalProps) {
   const [user, setUser] = useState<Partial<User> | null | undefined>();
   const { data: userFollowers } = api.userFollows.getUserFollowers.useQuery(
     { userId: followedUser?.id || '' },
     {
       enabled: !!followedUser?.id
+    }
+  );
+  const { data: userFollowing } = api.userFollows.getUserFollowing.useQuery(
+    { userId: followingUser?.id || '' },
+    {
+      enabled: !!followingUser?.id
     }
   );
   useEffect(() => {
@@ -39,7 +52,7 @@ function FollowersModal({ isOpen, handleClose, followedUser, followingUser }: Fo
         <Icon icon='ph:x' />
       </IconButton>
       <DialogTitle display='flex' justifyContent='center' alignItems='center' sx={{ p: 3 }}>
-        {`${user?.username}'s followers`}
+        {`${user?.username}'s ${title ? title : 'followers'}`}
       </DialogTitle>
       <Divider />
       <DialogContent
@@ -55,7 +68,7 @@ function FollowersModal({ isOpen, handleClose, followedUser, followingUser }: Fo
           }
         }}
       >
-        {userFollowers?.map((user, i) => (
+        {(userFollowers || userFollowing || []).map((user, i) => (
           <Fragment key={user.id}>
             {i === 0 ? null : <Divider />}
             <FollowCard
@@ -64,7 +77,6 @@ function FollowersModal({ isOpen, handleClose, followedUser, followingUser }: Fo
                 handleClose();
               }}
             />
-            {i === userFollowers.length - 1 ? <Divider /> : null}
           </Fragment>
         ))}
       </DialogContent>
