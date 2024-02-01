@@ -59,7 +59,7 @@ const UserProfile = ({ userId }: { userId?: string }) => {
         width='40%'
         maxWidth={'28rem'}
         minWidth={{
-          sm: '100%',
+          xs: '100%',
           md: '24rem'
         }}
       >
