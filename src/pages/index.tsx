@@ -159,6 +159,13 @@ export const getServerSideProps: GetServerSideProps = async context => {
           permanent: false
         }
       };
+    } else {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false
+        }
+      };
     }
   }
 
