@@ -80,7 +80,7 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
         )}
 
         {isEditable && (
-          <Box position='absolute' right='1rem' bottom='1rem'>
+          <Box position='absolute' right='1rem' bottom='1rem' zIndex={10}>
             <IconButton
               onClick={() => fileInputRef?.current?.click()}
               sx={theme => ({
