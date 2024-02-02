@@ -1,13 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Typography, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import DateofBirthField from 'src/components/FormComponents/DateofBirthField';
 import SexField from 'src/components/FormComponents/SexField';
 import UsernameAvailabilityField from 'src/components/FormComponents/UsernameAvailabilityField';
 import { api } from 'src/utils/api';
 import { z } from 'zod';
+import BioField from '../FormComponents/BioField';
+import SocialLinksField from '../SocialLinksField';
 
 const formSchema = z.object({
   sex: z.string(),
@@ -27,7 +29,8 @@ const formSchema = z.object({
     {
       message: 'Age should be at least 10 years old and less than 90 years old'
     }
-  )
+  ),
+  bio: z.string().max(200)
 });
 
 interface EditProfileFormProps {
@@ -39,7 +42,8 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
   const { mutate: updateUser } = api.user.updateUser.useMutation();
 
   // Invalidaters
-  const { invalidate: invalidateUserQuery } = api.useContext().user.getCurrentUser;
+  const { invalidate: invalidateGetCurrentUser } = api.useContext().user.getCurrentUser;
+  const { invalidate: invalidateFindByUsername } = api.useContext().user.findByUsername;
 
   const theme = useTheme();
 
@@ -53,7 +57,8 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
     defaultValues: {
       username: userData?.username || '',
       sex: userData?.sex || '',
-      dob: userData && userData.dob ? dayjs(userData.dob.toUTCString()) : ''
+      dob: userData && userData.dob ? dayjs(userData.dob.toUTCString()) : '',
+      bio: userData?.bio || ''
     },
     resolver: zodResolver(formSchema),
     mode: 'all'
@@ -62,22 +67,26 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
   const onSubmit = async ({
     username,
     sex,
-    dob
+    dob,
+    bio
   }: {
     username: string;
     sex: string;
     dob: dayjs.Dayjs | string;
+    bio: string;
   }) => {
     updateUser(
       {
         username,
         sex,
-        dob: new Date(dob as string)
+        dob: new Date(dob as string),
+        bio
       },
       {
         onSuccess: () => {
           closeDialogHandler();
-          invalidateUserQuery();
+          invalidateGetCurrentUser();
+          invalidateFindByUsername();
         }
       }
     );
@@ -85,13 +94,6 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
 
   return (
     <form onSubmit={handleSubmit(formValues => onSubmit(formValues))}>
-      <Typography
-        sx={{
-          mb: theme.spacing(1)
-        }}
-      >
-        Username
-      </Typography>
       <UsernameAvailabilityField
         control={control}
         initialUsername={userData?.username}
@@ -103,12 +105,19 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
           setUsernameIsAvailable(isAvailable)
         }
       />
+      <BioField control={control} errorMessage={errors?.bio?.message} sx={{ mt: 4 }} />
       <Typography mt={6} mb={1}>
         Date of Birth
       </Typography>
       <DateofBirthField control={control} errorMessage={errors.dob?.message} />
       <Typography mt={6}>Sex</Typography>
       <SexField control={control} errorMessage={errors.sex?.message} />
+      <SocialLinksField
+        sx={{
+          mt: '1rem'
+        }}
+        userData={userData}
+      />
       <Box display='flex' justifyContent={'flex-end'}>
         <Button
           variant='contained'

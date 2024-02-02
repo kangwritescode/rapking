@@ -159,7 +159,7 @@ const ProfileCard = ({ userData, isCurrentUser }: ProfileCardProps) => {
               }}
               socialLinks={socialLinksData || []}
               isCurrentUser={Boolean(isCurrentUser)}
-              hideDeleteButtons
+              hideEditButtons
             />
 
             {isCurrentUser ? (
