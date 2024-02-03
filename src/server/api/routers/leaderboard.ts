@@ -56,7 +56,10 @@ export const leaderboardRouter = createTRPCRouter({
       const { cursor, limit, countryFilter, sexFilter, timeFilter } = input;
 
       // Filter logic
-      const where: any = {};
+      const where: any = {
+        profileIsComplete: true,
+        isWhitelisted: true
+      };
 
       if (countryFilter !== 'ALL') {
         where.country = {

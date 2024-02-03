@@ -114,11 +114,12 @@ export const userRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      // Ensures user that is updating is the same as the one in the session
       const userToUpdate = await ctx.prisma.user.findUniqueOrThrow({
         where: { id: ctx.session.user.id }
       });
 
-      // checks if username is already taken
+      // Checks if username is already taken
       if (input.username) {
         const userWithUsername = await ctx.prisma.user.findUnique({
           where: { username: input.username }
@@ -131,11 +132,13 @@ export const userRouter = createTRPCRouter({
         }
       }
 
+      // Sanitizes bio
       const sanitizedBio = sanitize(input.bio ?? '', {
         allowedTags: [],
         allowedAttributes: {}
       });
 
+      // checks if bio or username contains banned words
       if (containsBannedWords(sanitizedBio) || containsBannedWords(input.username ?? '')) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
@@ -143,7 +146,7 @@ export const userRouter = createTRPCRouter({
         });
       }
 
-      // updates user
+      // Updates user
       const updatedUser = await ctx.prisma.user.update({
         where: {
           id: ctx.session.user.id
