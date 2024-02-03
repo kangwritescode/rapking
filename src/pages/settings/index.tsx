@@ -1,20 +1,19 @@
-import { Button, Stack, Typography, useTheme } from '@mui/material';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import AlertDialog from 'src/components/AlertDialog';
-import { api } from 'src/utils/api';
+import { Box, Stack, Typography, useTheme } from '@mui/material';
 
 function SettingsPage() {
   const theme = useTheme();
-  const [modalIsOopen, setModalIsOpen] = useState(false);
-
-  const { mutate: deleteUser } = api.user.deleteUser.useMutation();
-  const router = useRouter();
 
   return (
     <Stack
       sx={{
-        padding: `3rem ${theme.spacing(6)} 2rem`,
+        py: `1rem`,
+        px: {
+          xs: '1rem',
+          sm: '2rem',
+          md: '4rem',
+          lg: '8rem',
+          xl: '12rem'
+        },
         transition: 'padding .25s ease-in-out',
         [theme.breakpoints.down('sm')]: {
           paddingLeft: theme.spacing(4),
@@ -22,36 +21,39 @@ function SettingsPage() {
         }
       }}
     >
-      <Typography variant='h5' sx={{ mb: theme.spacing(4) }}>
-        Settings
-      </Typography>
-      <AlertDialog
-        isOpen={modalIsOopen}
-        handleClose={() => setModalIsOpen(false)}
-        dialogText="This action is irreversible. You'll lose all your raps, points, and followers if you delete your account."
-        dialogTitle='Delete your account forever?'
-        submitButtonProps={{
-          color: 'error'
-        }}
-        onSubmitHandler={() =>
-          deleteUser(undefined, {
-            onSuccess: () => {
-              router.reload();
+      <Stack width={['100%']} mx='auto'>
+        <Typography
+          borderBottom={theme => `1px solid ${theme.palette.divider}`}
+          variant='h3'
+          component='h1'
+          fontFamily='impact'
+          mb='.5rem'
+          pb='.25rem'
+        >
+          Account Settings
+        </Typography>
+        <Box
+          sx={{
+            marginTop: theme.spacing(2),
+            width: {
+              xs: '100%',
+              lg: '50%'
             }
-          })
-        }
-        actionButtonText='Delete Account'
-      />
-      <Button
-        sx={{
-          width: 'fit-content'
-        }}
-        variant='contained'
-        color='error'
-        onClick={() => setModalIsOpen(true)}
-      >
-        Delete Account
-      </Button>
+          }}
+        >
+          <Typography
+            borderBottom={theme => `1px solid ${theme.palette.divider}`}
+            variant='h4'
+            component='h2'
+            fontFamily='impact'
+            mb='1rem'
+            pb='.25rem'
+          >
+            Delete Account
+          </Typography>
+          <DeleteAccountButton />
+        </Box>
+      </Stack>
     </Stack>
   );
 }
@@ -61,6 +63,7 @@ export default SettingsPage;
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import { GetServerSideProps } from 'next/types';
+import DeleteAccountButton from 'src/components/SettingsPage/DeleteAccountButton';
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext

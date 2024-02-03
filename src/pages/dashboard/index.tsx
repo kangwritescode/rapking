@@ -32,14 +32,14 @@ function DashboardPage() {
 
   const shortcuts = [
     {
-      label: 'Account Settings',
-      icon: 'bi:gear-fill',
-      link: '/settings'
-    },
-    {
       label: 'View Profile',
       icon: 'bi:person-fill',
       link: `/u/${userData?.username}`
+    },
+    {
+      label: 'Account Settings',
+      icon: 'bi:gear-fill',
+      link: '/settings'
     }
   ];
 
