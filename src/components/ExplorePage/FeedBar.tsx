@@ -84,6 +84,10 @@ function FeedBar({ sx, onSortAndFilterChange }: FeedBarProps) {
           <MenuItem value={Country.US}>US</MenuItem>
           <MenuItem value={Country.UK}>UK</MenuItem>
           <MenuItem value={Country.CA}>CA</MenuItem>
+          <MenuItem value={Country.AU}>AU</MenuItem>
+          <MenuItem value={Country.NZ}>NZ</MenuItem>
+          <MenuItem value={Country.IE}>IE</MenuItem>
+          <MenuItem value={Country.ZA}>ZA</MenuItem>
         </Select>
         <Select
           defaultValue='ALL'

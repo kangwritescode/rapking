@@ -248,6 +248,10 @@ enum Country {
   US
   UK
   CA
+  AU
+  ZA
+  NZ
+  IE
 }
 
 enum SocialPlatform {

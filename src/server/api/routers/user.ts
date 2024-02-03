@@ -1,6 +1,7 @@
 import sanitize from 'sanitize-html';
 import { z } from 'zod';
 
+import { Country } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
@@ -107,7 +108,7 @@ export const userRouter = createTRPCRouter({
         username: z.string().optional(),
         sex: z.string().optional(),
         dob: z.date().optional(),
-        country: z.enum(['US', 'UK', 'CA']).optional(),
+        country: z.nativeEnum(Country).optional(),
         bannerUrl: z.string().optional(),
         profileImageUrl: z.string().optional(),
         bio: z.string().max(200).optional()

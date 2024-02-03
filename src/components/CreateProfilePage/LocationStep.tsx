@@ -19,11 +19,9 @@ const englishSpeakingCountries = [
   { code: 'CA', name: 'Canada' },
   { code: 'UK', name: 'United Kingdom' },
   { code: 'AU', name: 'Australia' },
-  { code: 'IN', name: 'India' },
   { code: 'ZA', name: 'South Africa' },
   { code: 'NZ', name: 'New Zealand' },
-  { code: 'IE', name: 'Ireland' },
-  { code: 'PH', name: 'Philippines' }
+  { code: 'IE', name: 'Ireland' }
 ];
 
 export type LocationStepProps = {
