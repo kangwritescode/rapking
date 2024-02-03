@@ -162,7 +162,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
     } else {
       return {
         redirect: {
-          destination: '/',
+          destination: '/create-profile',
           permanent: false
         }
       };

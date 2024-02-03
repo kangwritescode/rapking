@@ -14,6 +14,18 @@ import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
 import z from 'zod';
 
+const englishSpeakingCountries = [
+  { code: 'US', name: 'United States' },
+  { code: 'CA', name: 'Canada' },
+  { code: 'UK', name: 'United Kingdom' },
+  { code: 'AU', name: 'Australia' },
+  { code: 'IN', name: 'India' },
+  { code: 'ZA', name: 'South Africa' },
+  { code: 'NZ', name: 'New Zealand' },
+  { code: 'IE', name: 'Ireland' },
+  { code: 'PH', name: 'Philippines' }
+];
+
 export type LocationStepProps = {
   handleBack: () => void;
   handleCreateProfile: () => void;
@@ -72,9 +84,11 @@ function LocationStep({ handleBack, handleCreateProfile }: LocationStepProps) {
             name='country'
             render={({ field: { onChange, value } }) => (
               <Select variant='outlined' value={value} onChange={onChange}>
-                <MenuItem value='US'>United States</MenuItem>
-                <MenuItem value='CA'>Canada</MenuItem>
-                <MenuItem value='UK'>United Kingdom</MenuItem>
+                {englishSpeakingCountries.map(country => (
+                  <MenuItem key={country.code} value={country.code}>
+                    {country.name}
+                  </MenuItem>
+                ))}
               </Select>
             )}
           />
