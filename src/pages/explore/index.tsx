@@ -56,7 +56,7 @@ function ExplorePage() {
         sx={{
           margin: 'auto',
           height: '100%',
-          padding: `1.5rem ${theme.spacing(6)}`,
+          padding: `.5rem ${theme.spacing(6)} 0`,
           transition: 'padding .25s ease-in-out',
           [theme.breakpoints.down('sm')]: {
             paddingLeft: theme.spacing(4),
@@ -91,7 +91,7 @@ function ExplorePage() {
           </Tabs>
         </Box>
         <FeedBar
-          sx={{ mb: '2rem', width: ['100%', '90%', '80%'], maxWidth: '45rem', mx: 'auto' }}
+          sx={{ mb: '.75rem', width: ['100%', '90%', '80%'], maxWidth: '45rem', mx: 'auto' }}
           onSortAndFilterChange={({ sortBy, countryFilter, timeFilter, sexFilter }) => {
             setSortByValue(sortBy);
             setCountryFilter(countryFilter);

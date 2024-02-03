@@ -16,7 +16,6 @@ import { LayoutProps } from 'src/@core/layouts/types';
 import { Icon } from '@iconify/react';
 import { useRouter } from 'next/router';
 import ScrollToTop from 'src/@core/components/scroll-to-top';
-import Footer from './components/shared-components/footer';
 import AppBar from './components/vertical/appBar';
 import Navigation from './components/vertical/navigation';
 
@@ -40,8 +39,7 @@ const ContentWrapper = styled('main')(() => ({
 
 const VerticalLayout = (props: LayoutProps) => {
   // ** Props
-  const { settings, children, scrollToTop, footerProps, contentHeightFixed, verticalLayoutProps } =
-    props;
+  const { settings, children, scrollToTop, contentHeightFixed, verticalLayoutProps } = props;
 
   // ** Router
   const router = useRouter();
@@ -114,9 +112,6 @@ const VerticalLayout = (props: LayoutProps) => {
           >
             {children}
           </ContentWrapper>
-
-          {/* Footer Component */}
-          <Footer footerStyles={footerProps?.sx} footerContent={footerProps?.content} {...props} />
         </MainContentWrapper>
       </VerticalLayoutWrapper>
 
