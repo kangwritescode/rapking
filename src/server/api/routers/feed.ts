@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { RapStatus } from '@prisma/client';
+import { Country, RapStatus } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { createTRPCRouter, publicProcedure } from 'src/server/api/trpc';
 
@@ -19,7 +19,7 @@ const updateRapPayloadSchema = z.object({
 
 const sortBySchema = z.enum(['NEWEST', 'TOP']);
 const timeFilterSchema = z.enum(['ALL', '24HOURS', '7DAYS', '30DAYS', '6MONTHS', '12MONTHS']);
-const countryFilterSchema = z.enum(['ALL', 'US', 'UK', 'CA']);
+const countryFilterSchema = z.union([z.literal('ALL'), z.nativeEnum(Country)]);
 const sexFilterSchema = z.enum(['ANY', 'MALE', 'FEMALE']);
 
 // Types

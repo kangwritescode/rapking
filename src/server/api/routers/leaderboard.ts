@@ -1,9 +1,10 @@
 import { z } from 'zod';
 
+import { Country } from '@prisma/client';
 import { createTRPCRouter, publicProcedure } from 'src/server/api/trpc';
 
 const timeFilterSchema = z.enum(['TODAY', 'THIS_WEEK', 'THIS_MONTH', 'THIS_YEAR', 'ALL_TIME']);
-const countryFilterSchema = z.enum(['ALL', 'US', 'UK', 'CA']);
+const countryFilterSchema = z.union([z.literal('ALL'), z.nativeEnum(Country)]);
 const sexFilterSchema = z.enum(['ANY', 'MALE', 'FEMALE']);
 
 export type LeaderboardTimeFilter = z.infer<typeof timeFilterSchema>;

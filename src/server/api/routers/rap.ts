@@ -1,7 +1,7 @@
 import sanitize from 'sanitize-html';
 import { z } from 'zod';
 
-import { Rap } from '@prisma/client';
+import { Country, Rap } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import path from 'path';
 import { deleteGloudFile, moveGCloudFile } from 'src/gcloud/serverMethods';
@@ -39,7 +39,7 @@ const updateRapPayloadSchema = z.object({
 
 const sortBySchema = z.enum(['NEWEST', 'TOP']);
 const timeFilterSchema = z.enum(['ALL', '24HOURS', '7DAYS', '30DAYS', '6MONTHS', '12MONTHS']);
-const countryFilterSchema = z.enum(['ALL', 'US', 'UK', 'CA']);
+const countryFilterSchema = z.union([z.literal('ALL'), z.nativeEnum(Country)]);
 const sexFilterSchema = z.enum(['ANY', 'MALE', 'FEMALE']);
 
 // Types
