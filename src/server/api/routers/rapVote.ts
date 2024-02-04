@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { RapVoteType } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 
 export const rapVote = createTRPCRouter({
@@ -37,6 +38,21 @@ export const rapVote = createTRPCRouter({
         });
       }
       const { rapId } = input;
+
+      // * Rate limiting
+      const rateLimitResult = await rateLimit({
+        maxRequests: 3,
+        window: 60 * 60,
+        keyString: `create-rap-vote-${ctx.session.user.id}-${rapId}`
+      });
+
+      if (typeof rateLimitResult === 'number') {
+        const resetTime = Math.ceil(rateLimitResult / (60 * 60));
+        throw new TRPCError({
+          code: 'TOO_MANY_REQUESTS',
+          message: `You're doing that too much. Please wait ${resetTime} hours to like this rap again.`
+        });
+      }
 
       // Check if vote exists
       const vote = await ctx.prisma.rapVote.findUnique({
@@ -118,6 +134,21 @@ export const rapVote = createTRPCRouter({
         });
       }
       const { rapId } = input;
+
+      // * Rate limiting
+      const rateLimitResult = await rateLimit({
+        maxRequests: 3,
+        window: 60 * 60,
+        keyString: `delete-rap-vote-${ctx.session.user.id}-${rapId}`
+      });
+
+      if (typeof rateLimitResult === 'number') {
+        const resetTime = Math.ceil(rateLimitResult / (60 * 60));
+        throw new TRPCError({
+          code: 'TOO_MANY_REQUESTS',
+          message: `You're doing that too much. Please wait ${resetTime} hours to unlike this rap again.`
+        });
+      }
 
       // Check if vote exists
       const vote = await ctx.prisma.rapVote.findUnique({

@@ -39,6 +39,12 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
     }
   );
 
+  // Sync state with DB
+  const syncStateWithDB = () => {
+    setCurrentUserLikedRap(likeExists || false);
+    setRapLikesCount(rapLikesCountData || 0);
+  };
+
   // Mutations
   const { mutate: createLike } = api.rapVote.createLike.useMutation();
   const { mutate: deleteLike } = api.rapVote.deleteLike.useMutation();
@@ -74,8 +80,10 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
           onSuccess: () => {
             invalidateCache();
           },
-          onError: () => {
+          onError: err => {
             invalidateCache();
+            syncStateWithDB();
+            toast.error(err.message);
           }
         }
       );
@@ -97,8 +105,10 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
           onSuccess: () => {
             invalidateCache();
           },
-          onError: () => {
+          onError: err => {
             invalidateCache();
+            syncStateWithDB();
+            toast.error(err.message);
           }
         }
       );
@@ -106,12 +116,9 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
   };
 
   useEffect(() => {
-    setCurrentUserLikedRap(likeExists || false);
-  }, [likeExists]);
-
-  useEffect(() => {
-    setRapLikesCount(rapLikesCountData || 0);
-  }, [rapLikesCountData]);
+    syncStateWithDB();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rapLikesCountData, likeExists]);
 
   useEffect(() => {
     return () => {
