@@ -26,7 +26,6 @@ export const rapVote = createTRPCRouter({
   createLike: protectedProcedure
     .input(
       z.object({
-        userId: z.string(),
         rapId: z.string()
       })
     )
@@ -37,13 +36,13 @@ export const rapVote = createTRPCRouter({
           message: 'You must be logged in to like a rap.'
         });
       }
-      const { userId, rapId } = input;
+      const { rapId } = input;
 
       // Check if vote exists
       const vote = await ctx.prisma.rapVote.findUnique({
         where: {
           userId_rapId: {
-            userId,
+            userId: ctx.session.user.id,
             rapId
           }
         }
@@ -77,7 +76,7 @@ export const rapVote = createTRPCRouter({
         ctx.prisma.rapVote.create({
           data: {
             type: RapVoteType.LIKE,
-            userId,
+            userId: ctx.session.user.id,
             rapId
           }
         }),
@@ -108,7 +107,6 @@ export const rapVote = createTRPCRouter({
   deleteLike: protectedProcedure
     .input(
       z.object({
-        userId: z.string(),
         rapId: z.string()
       })
     )
@@ -119,13 +117,13 @@ export const rapVote = createTRPCRouter({
           message: 'You must be logged in to unlike.'
         });
       }
-      const { userId, rapId } = input;
+      const { rapId } = input;
 
       // Check if vote exists
       const vote = await ctx.prisma.rapVote.findUnique({
         where: {
           userId_rapId: {
-            userId,
+            userId: ctx.session.user.id,
             rapId
           }
         }
@@ -155,7 +153,7 @@ export const rapVote = createTRPCRouter({
         ctx.prisma.rapVote.delete({
           where: {
             userId_rapId: {
-              userId,
+              userId: ctx.session.user.id,
               rapId
             }
           }

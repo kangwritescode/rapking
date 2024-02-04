@@ -1,8 +1,8 @@
 import { Box, SxProps } from '@mui/material';
 import { useSession } from 'next-auth/react';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import FireIconButton from 'src/components/FireIconButton';
+import FireIconButton from 'src/components/HeartIconButton';
 import { api } from 'src/utils/api';
 
 interface CommentLikeButtonProps {

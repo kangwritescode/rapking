@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
 import { useSession } from 'next-auth/react';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import FireIconButton from 'src/components/FireIconButton';
+import FireIconButton from 'src/components/HeartIconButton';
 import { api } from 'src/utils/api';
 
 interface RapLikeButtonProps {
@@ -68,8 +68,7 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
     handleDebouncedAPI(() => {
       createLike(
         {
-          rapId: rapId,
-          userId: currentUserId
+          rapId: rapId
         },
         {
           onSuccess: () => {
@@ -92,8 +91,7 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
     handleDebouncedAPI(() => {
       deleteLike(
         {
-          rapId: rapId,
-          userId: currentUserId
+          rapId: rapId
         },
         {
           onSuccess: () => {

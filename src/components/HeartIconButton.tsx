@@ -7,10 +7,10 @@ interface FireIconButtonProps {
   sx?: SxProps;
   disabled?: boolean;
 }
-function FireIconButton({ onClick, isColored, sx, disabled }: FireIconButtonProps) {
+function HeartIconButton({ onClick, isColored, sx, disabled }: FireIconButtonProps) {
   return (
     <IconButton
-      className='fire-icon-button'
+      className='heart-icon-button'
       sx={{
         paddingRight: 1,
         ...sx
@@ -18,9 +18,9 @@ function FireIconButton({ onClick, isColored, sx, disabled }: FireIconButtonProp
       onClick={onClick}
       disabled={disabled}
     >
-      <Icon {...(isColored ? { color: 'orange' } : {})} icon='mdi:fire' />
+      <Icon {...(isColored ? { color: 'red' } : {})} icon='mdi:heart' />
     </IconButton>
   );
 }
 
-export default FireIconButton;
+export default HeartIconButton;
