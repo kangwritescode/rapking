@@ -52,6 +52,23 @@ function RapPage() {
 
   const isMobileView = useMediaQuery(theme.breakpoints.down('sm'));
 
+  if (rapData?.status === 'DRAFT') {
+    return (
+      <Stack
+        direction='column'
+        alignItems='center'
+        padding={{
+          xs: '2rem 1rem',
+          md: '2.5rem'
+        }}
+      >
+        <Typography variant='h4' fontWeight='bold'>
+          This rap is private
+        </Typography>
+      </Stack>
+    );
+  }
+
   return (
     <>
       {rapData && <RapHead rapData={rapData} />}
