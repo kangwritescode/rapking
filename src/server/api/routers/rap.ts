@@ -85,7 +85,7 @@ export const rapRouter = createTRPCRouter({
 
     // * Rate limiting
     const rateLimitResult = await rateLimit({
-      maxRequests: 10, // TODO: Change to 3
+      maxRequests: 3,
       window: 60 * 60 * 24, // 24 hours
       keyString: `rap-${ctx.session.user.id}`
     });
