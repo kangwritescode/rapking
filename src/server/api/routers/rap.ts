@@ -222,7 +222,7 @@ export const rapRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      return await ctx.prisma.rap.findFirst({
+      const rap = await ctx.prisma.rap.findFirst({
         where: {
           id: input.id
         },
@@ -235,6 +235,8 @@ export const rapRouter = createTRPCRouter({
           }
         }
       });
+
+      return rap;
     }),
   getRapsByUser: publicProcedure
     .input(z.object({ userId: z.string(), publishedOnly: z.boolean().optional() }))

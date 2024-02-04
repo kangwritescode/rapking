@@ -43,6 +43,7 @@ const RapHead = ({ rapData }: { rapData: Rap & { user: Partial<User> } }) => {
 function RapPage() {
   const theme = useTheme();
   const router = useRouter();
+  const session = useSession();
 
   const { id, commentId } = router.query;
 
@@ -52,7 +53,7 @@ function RapPage() {
 
   const isMobileView = useMediaQuery(theme.breakpoints.down('sm'));
 
-  if (rapData?.status === 'DRAFT') {
+  if (rapData?.status === 'DRAFT' && rapData?.userId !== session.data?.user?.id) {
     return (
       <Stack
         direction='column'
@@ -176,7 +177,7 @@ function RapPage() {
 export default RapPage;
 
 import { GetServerSidePropsContext } from 'next';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { GetServerSideProps } from 'next/types';
 import ViewMoreRaps from 'src/components/ViewMoreRaps';
 
