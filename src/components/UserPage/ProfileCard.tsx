@@ -150,7 +150,7 @@ const ProfileCard = ({ userData, isCurrentUser }: ProfileCardProps) => {
               mb='1.5rem'
               textAlign='center'
             >
-              {userData?.bio || 'This user has not set a bio yet.'}
+              {userData?.bio || `${userData?.username} has not set a bio yet.`}
             </Typography>
             <SocialLinks
               sx={{

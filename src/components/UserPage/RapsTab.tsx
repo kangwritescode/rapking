@@ -21,7 +21,7 @@ function RapsTab({ raps, isCurrentUser }: RapsTabProps) {
           />
         </Fragment>
       ))}
-      {raps?.length === 0 && <Typography>No raps yet.</Typography>}
+      {raps?.length === 0 && <Typography>No public raps.</Typography>}
     </Box>
   );
 }

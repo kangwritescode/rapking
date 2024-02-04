@@ -33,7 +33,7 @@ const UserProfile = ({ userId }: { userId?: string }) => {
 
   const { data: rapsData } = api.rap.getRapsByUser.useQuery({
     userId: userData?.id || '',
-    publishedOnly: !isCurrentUser
+    publishedOnly: true
   });
 
   const [value, setValue] = useState('raps');
