@@ -1,7 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Box, IconButton, SxProps, useTheme } from '@mui/material';
 import { Rap, User } from '@prisma/client';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import RapCommentDrawer from 'src/components/RapPage/RapCommentDrawer';
 import { api } from 'src/utils/api';
@@ -15,11 +14,11 @@ interface RapBarProps {
     | null;
   commentClickHandler?: () => void;
   sx?: SxProps;
+  defaultCommentDrawerIsOpen?: boolean;
 }
 
-function RapBar({ rapData, commentClickHandler, sx }: RapBarProps) {
+function RapBar({ rapData, commentClickHandler, sx, defaultCommentDrawerIsOpen }: RapBarProps) {
   const theme = useTheme();
-  const { commentId } = useRouter().query;
 
   // Queries
   const { data: rapCommentsCount } = api.rapComment.getRapCommentsCount.useQuery(
@@ -32,7 +31,9 @@ function RapBar({ rapData, commentClickHandler, sx }: RapBarProps) {
   );
 
   // State
-  const [commentDrawerIsOpen, setCommentDrawerIsOpen] = useState<boolean>(!!commentId);
+  const [commentDrawerIsOpen, setCommentDrawerIsOpen] = useState<boolean>(
+    Boolean(defaultCommentDrawerIsOpen)
+  );
 
   return (
     <>

@@ -1,14 +1,13 @@
 import { Box, Typography, TypographyProps, styled } from '@mui/material';
 import { htmlToText } from 'html-to-text';
-import React from 'react';
-import { getFormattedDate } from 'src/@core/utils/get-formatted-date';
-import { NotificationWithAssociatedData } from 'src/server/api/routers/notifications';
-import { CustomAvatarProps } from 'src/@core/components/mui/avatar/types';
-import CustomAvatar from 'src/@core/components/mui/avatar';
-import { getInitials } from 'src/@core/utils/get-initials';
-import { StyledMenuItem } from './NotificationDropdown';
 import { useRouter } from 'next/router';
+import CustomAvatar from 'src/@core/components/mui/avatar';
+import { CustomAvatarProps } from 'src/@core/components/mui/avatar/types';
+import { getFormattedDate } from 'src/@core/utils/get-formatted-date';
+import { getInitials } from 'src/@core/utils/get-initials';
+import { NotificationWithAssociatedData } from 'src/server/api/routers/notifications';
 import { BUCKET_URL } from 'src/shared/constants';
+import { StyledMenuItem } from './NotificationDropdown';
 
 // ** Styled component for the title in MenuItems
 const MenuItemTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
@@ -65,6 +64,8 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
     title = `${notification.notifierUser?.username} commented on ${notification.rap?.title}`;
   } else if (notification.type === 'FOLLOW') {
     title = `${notification.notifierUser?.username} is now following you`;
+  } else if (notification.type === 'FOLLOWED_USER_RAP') {
+    title = `${notification.notifierUser?.username} published a new rap!`;
   }
   let subtitle = '';
   if (notification.type === 'RAP_COMMENT') {
@@ -79,6 +80,8 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
       router.push(`/rap/${notification.rap?.id}/?commentId=${notification.comment?.id}`);
     } else if (notification.type === 'FOLLOW') {
       router.push(`/u/${notification.notifierUser?.username}`);
+    } else if (notification.type === 'FOLLOWED_USER_RAP') {
+      router.push(`/rap/${notification.rap?.id}`);
     }
   };
 

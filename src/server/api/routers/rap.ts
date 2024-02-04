@@ -1,7 +1,7 @@
 import sanitize from 'sanitize-html';
 import { z } from 'zod';
 
-import { Country, Rap } from '@prisma/client';
+import { Country, NotificationType, Rap } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import path from 'path';
 import { deleteGloudFile, moveGCloudFile } from 'src/gcloud/serverMethods';
@@ -85,7 +85,7 @@ export const rapRouter = createTRPCRouter({
 
     // * Rate limiting
     const rateLimitResult = await rateLimit({
-      maxRequests: 3,
+      maxRequests: 10, // TODO: Change to 3
       window: 60 * 60 * 24, // 24 hours
       keyString: `rap-${ctx.session.user.id}`
     });
@@ -129,6 +129,34 @@ export const rapRouter = createTRPCRouter({
           }
         });
       }
+    }
+
+    // If rap is published, send a notification to all followers
+    if (rap.status === 'PUBLISHED') {
+      // Get all of the rap author's followers
+      const followers = await ctx.prisma.userFollows.findMany({
+        where: {
+          followedId: ctx.session.user.id
+        },
+        select: {
+          followerId: true
+        }
+      });
+
+      // Create notificationData for each follower
+      const notificationData = followers.map(follower => {
+        return {
+          recipientId: follower.followerId,
+          notifierId: ctx.session.user.id,
+          type: NotificationType.FOLLOWED_USER_RAP,
+          rapId: rap.id
+        };
+      });
+
+      // Create notifications
+      await ctx.prisma.notification.createMany({
+        data: notificationData
+      });
     }
 
     return rap;

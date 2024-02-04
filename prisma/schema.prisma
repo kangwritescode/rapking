@@ -186,6 +186,7 @@ enum NotificationType {
   RAP_COMMENT
   RAP_VOTE
   COMMENT_VOTE
+  FOLLOWED_USER_RAP
 }
 
 model Notification {

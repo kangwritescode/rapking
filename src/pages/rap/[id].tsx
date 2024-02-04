@@ -44,7 +44,7 @@ function RapPage() {
   const theme = useTheme();
   const router = useRouter();
 
-  const { id } = router.query;
+  const { id, commentId } = router.query;
 
   const { data: rapData } = api.rap.getRap.useQuery({ id: id as string }, { enabled: Boolean(id) });
 
@@ -124,7 +124,7 @@ function RapPage() {
             </Stack>
           </Stack>
           <Divider />
-          <RapBar rapData={rapData} />
+          <RapBar rapData={rapData} defaultCommentDrawerIsOpen={Boolean(commentId)} />
           <Divider />
           {rapData?.soundcloudUrl ? (
             <SCPlayer
