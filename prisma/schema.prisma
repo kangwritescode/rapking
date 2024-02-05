@@ -44,25 +44,25 @@ model Session {
 }
 
 model User {
-  id                    String         @id @default(cuid())
+  id                    String              @id @default(cuid())
   name                  String?
-  email                 String?        @unique
+  email                 String?             @unique
   emailVerified         DateTime?
   image                 String?
-  username              String?        @unique
+  username              String?             @unique
   sex                   String?
   dob                   DateTime?
   country               Country?
-  profileIsComplete     Boolean        @default(false)
-  isWhitelisted         Boolean        @default(false)
-  createdAt             DateTime       @default(now())
+  profileIsComplete     Boolean             @default(false)
+  isWhitelisted         Boolean             @default(false)
+  createdAt             DateTime            @default(now())
   bannerUrl             String?
   profileImageUrl       String?
   bio                   String?
-  points                Int            @default(0)
-  isAdmin               Boolean        @default(false)
-  followed              UserFollows[]  @relation("FollowedRelation")
-  followers             UserFollows[]  @relation("FollowerRelation")
+  points                Int                 @default(0)
+  isAdmin               Boolean             @default(false)
+  followed              UserFollows[]       @relation("FollowedRelation")
+  followers             UserFollows[]       @relation("FollowerRelation")
   raps                  Rap[]
   accounts              Account[]
   sessions              Session[]
@@ -70,10 +70,13 @@ model User {
   rapVotes              RapVote[]
   rapComments           RapComment[]
   commentVotes          CommentVote[]
-  sentNotifications     Notification[] @relation("NotifierRelation")
-  receivedNotifications Notification[] @relation("UserRelation")
+  sentNotifications     Notification[]      @relation("NotifierRelation")
+  receivedNotifications Notification[]      @relation("UserRelation")
   Article               Article[]
   WhiteList             WhiteList[]
+  threads               Thread[]
+  threadComments        ThreadComment[]
+  threadCommmentVotes   ThreadCommentVote[]
 }
 
 model UserFollows {
@@ -88,23 +91,60 @@ model UserFollows {
 }
 
 model Rap {
-  id              String         @id @default(cuid())
+  id              String          @id @default(cuid())
   title           String
   content         String
-  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          String
   coverArtUrl     String?
-  status          RapStatus      @default(DRAFT)
-  dateCreated     DateTime       @default(now())
-  likesCount      Int            @default(0)
+  status          RapStatus       @default(DRAFT)
+  dateCreated     DateTime        @default(now())
+  likesCount      Int             @default(0)
   soundcloudUrl   String?
   youtubeVideoId  String?
-  disableComments Boolean        @default(false)
+  disableComments Boolean         @default(false)
   votes           RapVote[]
   comments        RapComment[]
   Notification    Notification[]
+  thread          Thread[]
+  threadComment   ThreadComment[]
 
   @@index([userId, dateCreated(sort: Desc)])
+}
+
+enum ThreadType {
+  RAP
+  WALL
+  ARTICLE
+}
+
+model Thread {
+  id             String          @id @default(cuid())
+  type           ThreadType
+  ownerId        String
+  owner          User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  rap            Rap?            @relation(fields: [rapId], references: [id], onDelete: Cascade)
+  rapId          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  threadComments ThreadComment[]
+}
+
+model ThreadComment {
+  id                 String              @id @default(cuid())
+  content            String
+  userId             String
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rapId              String?
+  rap                Rap?                @relation(fields: [rapId], references: [id], onDelete: Cascade)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  likesCount         Int                 @default(0)
+  notifications      Notification[]
+  thread             Thread              @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId           String
+  threadCommentVotes ThreadCommentVote[]
+  CommentVote        CommentVote[]
 }
 
 model RapComment {
@@ -147,18 +187,34 @@ enum CommentVoteType {
 }
 
 model CommentVote {
-  id            String          @id @default(cuid())
-  type          CommentVoteType
-  userId        String
-  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  commentId     String
-  comment       RapComment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  notifications Notification[]
+  id              String          @id @default(cuid())
+  type            CommentVoteType
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment         RapComment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId       String
+  threadComment   ThreadComment?  @relation(fields: [threadCommentId], references: [id])
+  threadCommentId String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  notifications   Notification[]
 
   @@unique([userId, commentId])
   @@index([commentId, createdAt(sort: Desc)])
+}
+
+model ThreadCommentVote {
+  id              String          @id @default(cuid())
+  type            CommentVoteType
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  threadComment   ThreadComment   @relation(fields: [threadCommentId], references: [id], onDelete: Cascade)
+  threadCommentId String
+  createdAt       DateTime        @default(now())
+  notifications   Notification[]
+
+  @@unique([userId, threadCommentId])
+  @@index([threadCommentId, createdAt(sort: Desc)])
 }
 
 model SocialLink {
@@ -210,6 +266,11 @@ model Notification {
 
   commentVoteId String?
   commentVote   CommentVote? @relation(fields: [commentVoteId], references: [id], onDelete: Cascade)
+
+  threadComment       ThreadComment?     @relation(fields: [threadCommentId], references: [id])
+  threadCommentId     String?
+  threadCommentVote   ThreadCommentVote? @relation(fields: [threadCommentVoteId], references: [id])
+  threadCommentVoteId String?
 
   @@index([recipientId, createdAt(sort: Desc)])
 }
