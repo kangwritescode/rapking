@@ -46,7 +46,7 @@ function DashboardRap({ rap }: DashboardRapProps) {
             }
           )
         }
-        actionButtonText='Delete Account'
+        actionButtonText='Delete Rap'
         isLoading={isLoading}
       />
       <Stack direction='row' px='.5rem' pt='1rem' pb='.75rem'>

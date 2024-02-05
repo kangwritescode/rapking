@@ -72,7 +72,7 @@ function RapCommentMenu({ rapCommentId }: RapCommentMenuProps) {
             }
           )
         }
-        actionButtonText='Delete Account'
+        actionButtonText='Delete Comment'
         isLoading={isLoading}
       />
     </Box>

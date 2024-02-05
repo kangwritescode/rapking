@@ -66,7 +66,7 @@ function RapCardMenu({ rapId }: RapCardMenuProps) {
             }
           )
         }
-        actionButtonText='Delete Account'
+        actionButtonText='Delete Rap'
         isLoading={isLoading}
       />
     </Box>
