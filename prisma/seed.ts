@@ -4,8 +4,8 @@ import { PrismaClient, SocialPlatform, User } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function clearDatabase() {
-  await prisma.commentVote.deleteMany({});
-  await prisma.rapComment.deleteMany({});
+  await prisma.threadCommentVote.deleteMany({});
+  await prisma.threadComment.deleteMany({});
   await prisma.rapVote.deleteMany({});
   await prisma.rap.deleteMany({});
   await prisma.socialLink.deleteMany({});
@@ -54,22 +54,30 @@ async function seedDatabase() {
       }
     });
 
+    const thread = await prisma.thread.create({
+      data: {
+        ownerId: user.id,
+        type: 'RAP',
+        rapId: rap.id
+      }
+    });
+
     // Generate 5 comments for each rap
     for (let i = 0; i < 5; i++) {
-      const comment = await prisma.rapComment.create({
+      const comment = await prisma.threadComment.create({
         data: {
           content: faker.lorem.sentence(),
           userId: faker.helpers.arrayElement(users).id,
-          rapId: rap.id
+          threadId: thread.id
         }
       });
 
       // Generate votes for each comment
-      await prisma.commentVote.create({
+      await prisma.threadCommentVote.create({
         data: {
           type: 'LIKE',
           userId: faker.helpers.arrayElement(users).id,
-          commentId: comment.id
+          threadCommentId: comment.id
         }
       });
     }
