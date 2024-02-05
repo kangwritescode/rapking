@@ -69,7 +69,7 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
   }
   let subtitle = '';
   if (notification.type === 'RAP_COMMENT') {
-    subtitle = notification.comment ? htmlToText(notification.comment.content) : '';
+    subtitle = notification.threadComment ? htmlToText(notification.threadComment.content) : '';
   }
 
   const notificationDate = getFormattedDate(notification.createdAt);
@@ -77,7 +77,7 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
   const onClickHandler = async () => {
     closeDropdown();
     if (notification.type === 'RAP_COMMENT') {
-      router.push(`/rap/${notification.rap?.id}/?commentId=${notification.comment?.id}`);
+      router.push(`/rap/${notification.rap?.id}/?commentId=${notification.threadComment?.id}`);
     } else if (notification.type === 'FOLLOW') {
       router.push(`/u/${notification.notifierUser?.username}`);
     } else if (notification.type === 'FOLLOWED_USER_RAP') {
