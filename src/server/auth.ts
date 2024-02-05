@@ -1,4 +1,5 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { ThreadType } from '@prisma/client';
 import { GetServerSidePropsContext } from 'next';
 import { getServerSession, type DefaultSession, type NextAuthOptions } from 'next-auth';
 import DiscordProvider from 'next-auth/providers/discord';
@@ -76,7 +77,13 @@ export const authOptions: NextAuthOptions = {
   ],
   events: {
     createUser: async message => {
-      console.log('New user created: ', message);
+      const user = message.user;
+      await prisma.thread.create({
+        data: {
+          ownerId: user.id,
+          type: ThreadType.WALL
+        }
+      });
     }
   }
 };
