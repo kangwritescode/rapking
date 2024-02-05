@@ -1,13 +1,13 @@
 import sanitize from 'sanitize-html';
 import { z } from 'zod';
 
-import { NotificationType, RapComment, User } from '@prisma/client';
+import { NotificationType, ThreadComment, User } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 import { containsBannedWords } from 'src/shared/bannedWords';
 
-export type RapCommentWithUserData = RapComment & {
+export type ThreadCommentWithUserData = ThreadComment & {
   user: User;
 };
 
