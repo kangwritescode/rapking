@@ -42,15 +42,15 @@ export const rapVote = createTRPCRouter({
       // * Rate limiting
       const rateLimitResult = await rateLimit({
         maxRequests: 3,
-        window: 60 * 60,
+        window: 60 * 5,
         keyString: `create-rap-vote-${ctx.session.user.id}-${rapId}`
       });
 
       if (typeof rateLimitResult === 'number') {
-        const resetTime = Math.ceil(rateLimitResult / (60 * 60));
+        const resetTime = Math.ceil(rateLimitResult / 60);
         throw new TRPCError({
           code: 'TOO_MANY_REQUESTS',
-          message: `You're doing that too much. Please wait ${resetTime} hours to like this rap again.`
+          message: `You're doing that too much. Please wait ${resetTime} minutes to like this rap again.`
         });
       }
 
@@ -138,15 +138,15 @@ export const rapVote = createTRPCRouter({
       // * Rate limiting
       const rateLimitResult = await rateLimit({
         maxRequests: 3,
-        window: 60 * 60,
+        window: 60 * 5,
         keyString: `delete-rap-vote-${ctx.session.user.id}-${rapId}`
       });
 
       if (typeof rateLimitResult === 'number') {
-        const resetTime = Math.ceil(rateLimitResult / (60 * 60));
+        const resetTime = Math.ceil(rateLimitResult / 60);
         throw new TRPCError({
           code: 'TOO_MANY_REQUESTS',
-          message: `You're doing that too much. Please wait ${resetTime} hours to unlike this rap again.`
+          message: `You're doing that too much. Please wait ${resetTime} minutes to unlike this rap again.`
         });
       }
 
