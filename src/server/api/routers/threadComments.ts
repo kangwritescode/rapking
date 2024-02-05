@@ -15,14 +15,14 @@ export const threadComments = createTRPCRouter({
   getThreadComments: publicProcedure
     .input(
       z.object({
-        rapId: z.string(),
+        threadId: z.string(),
         sortBy: z.enum(['POPULAR', 'RECENT']),
         limit: z.number(),
         cursor: z.string().optional()
       })
     )
     .query(async ({ input, ctx }) => {
-      const { rapId, sortBy, cursor, limit } = input;
+      const { threadId, sortBy, cursor, limit } = input;
 
       let orderBy = {};
       if (sortBy === 'RECENT') {
@@ -35,7 +35,7 @@ export const threadComments = createTRPCRouter({
 
       const threadComments = await ctx.prisma.threadComment.findMany({
         where: {
-          rapId
+          threadId
         },
         orderBy,
         include: {
@@ -67,22 +67,22 @@ export const threadComments = createTRPCRouter({
       z.object({
         content: z.string(),
         userId: z.string(),
-        rapId: z.string()
+        threadId: z.string().optional()
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { content, userId, rapId } = input;
+      const { content, userId, threadId } = input;
 
       const rapThread = await ctx.prisma.thread.findFirstOrThrow({
         where: {
-          rapId
+          id: threadId
         }
       });
 
       const rateLimitResult = await rateLimit({
         maxRequests: 3,
         window: 60 * 60,
-        keyString: `rapComment-${rapId}-${userId}`
+        keyString: `rapComment-${threadId}-${userId}`
       });
 
       if (typeof rateLimitResult === 'number') {
@@ -105,11 +105,10 @@ export const threadComments = createTRPCRouter({
         });
       }
 
-      const rapComment = await ctx.prisma.threadComment.create({
+      const threadComment = await ctx.prisma.threadComment.create({
         data: {
           content: sanitizedContent,
           userId,
-          rapId,
           threadId: rapThread.id
         }
       });
@@ -119,12 +118,12 @@ export const threadComments = createTRPCRouter({
           type: NotificationType.RAP_COMMENT,
           recipientId: rapThread.ownerId,
           notifierId: userId,
-          threadCommentId: rapComment.id,
+          threadCommentId: threadComment.id,
           rapId: rapThread.rapId
         }
       });
 
-      return rapComment;
+      return threadComment;
     }),
   deleteThreadComment: protectedProcedure
     .input(

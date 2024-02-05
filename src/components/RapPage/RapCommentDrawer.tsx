@@ -26,6 +26,13 @@ function RapCommentDrawer({ onCloseHandler, isOpen, rapId }: RapCommentDrawerPro
     }
   );
 
+  const { data: thread } = api.thread.getThread.useQuery(
+    { rapId: rapId as string },
+    {
+      enabled: !!rapId
+    }
+  );
+
   return (
     <Drawer anchor='right' open={isOpen} onClose={onCloseHandler}>
       <Box width='24rem' maxWidth='24rem' px={6} pt={6}>
@@ -37,7 +44,7 @@ function RapCommentDrawer({ onCloseHandler, isOpen, rapId }: RapCommentDrawerPro
             <Icon icon='mdi:close' />
           </IconButton>
         </Box>
-        <RapCommentComposer rapId={rapId} />
+        <RapCommentComposer threadId={thread?.id} />
         <Select
           defaultValue='ALL'
           sx={{
@@ -60,7 +67,7 @@ function RapCommentDrawer({ onCloseHandler, isOpen, rapId }: RapCommentDrawerPro
         }}
       />
       <Box width='24rem' maxWidth='24rem' height='100%' px={5}>
-        <RapComments rapId={rapId} sortBy={sortBy} />
+        <RapComments threadId={thread?.id} sortBy={sortBy} />
       </Box>
     </Drawer>
   );

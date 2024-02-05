@@ -8,10 +8,10 @@ import RapComment from './RapComment';
 
 interface RapCommentsProps {
   sortBy: 'POPULAR' | 'RECENT';
-  rapId?: string;
+  threadId?: string;
 }
 
-function RapComments({ sortBy, rapId }: RapCommentsProps) {
+function RapComments({ sortBy, threadId }: RapCommentsProps) {
   const {
     data,
     fetchNextPage,
@@ -19,7 +19,7 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
     isLoading: commentsAreLoading
   } = api.threadComments.getThreadComments.useInfiniteQuery(
     {
-      rapId: rapId as string,
+      threadId: threadId as string,
       sortBy,
       limit: 5
     },
@@ -38,7 +38,7 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
     const postListKey = getQueryKey(
       api.threadComments.getThreadComments,
       {
-        rapId: rapId as string,
+        threadId: threadId as string,
         sortBy,
         limit: 5
       },
@@ -46,7 +46,7 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
     );
     queryClient.removeQueries(postListKey);
     queryClient.setQueryDefaults(postListKey, {});
-  }, [queryClient, rapId, sortBy]);
+  }, [queryClient, threadId, sortBy]);
 
   useEffect(() => {
     return clearQueryCache;

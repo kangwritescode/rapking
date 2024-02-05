@@ -115,6 +115,14 @@ export const rapRouter = createTRPCRouter({
       }
     });
 
+    await ctx.prisma.thread.create({
+      data: {
+        rapId: rap.id,
+        ownerId: ctx.session.user.id,
+        type: 'RAP'
+      }
+    });
+
     if (input.coverArtUrl) {
       const extension = path.extname(input.coverArtUrl);
       const newCoverArtUrl = `rap/${rap.id}/cover-art-${Date.now()}${extension}`;

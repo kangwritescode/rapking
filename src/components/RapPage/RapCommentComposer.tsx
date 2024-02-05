@@ -13,10 +13,10 @@ import { z } from 'zod';
 import RapCommentTextEditor from './RapCommentTextEditor';
 
 interface RapCommentComposerProps {
-  rapId?: string;
+  threadId?: string;
 }
 
-function RapCommentComposer({ rapId }: RapCommentComposerProps) {
+function RapCommentComposer({ threadId }: RapCommentComposerProps) {
   const theme = useTheme();
 
   // Session
@@ -52,13 +52,13 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
   const submitFormHandler = (formValues: { content: string }) => {
     if (status === 'unauthenticated') {
       toast.error('You must be logged in to comment.');
-    } else if (userData && formValues.content && rapId) {
+    } else if (userData && formValues.content && threadId) {
       const editedContent = removeTrailingAndLeadingPElements(formValues.content);
 
       postComment(
         {
           userId: userData.id,
-          rapId,
+          threadId,
           content: editedContent
         },
         {

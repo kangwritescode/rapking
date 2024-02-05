@@ -6,7 +6,7 @@ import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 // ** MUI Components
-import { Card, CardContent, Stack, Tab, Tabs, useTheme } from '@mui/material';
+import { Card, CardContent, Divider, Stack, Tab, Tabs, useTheme } from '@mui/material';
 
 // ** Components
 import { GetServerSidePropsContext } from 'next';
@@ -75,7 +75,7 @@ const UserProfile = ({ userId }: { userId?: string }) => {
             <ProfileCardStats userData={userData} />
           </CardContent>
         </Card>
-        <Stack p='.5rem'>
+        <Stack p='.5rem' position='relative'>
           <Tabs
             value={value}
             onChange={handleTabsChange}
@@ -83,8 +83,17 @@ const UserProfile = ({ userId }: { userId?: string }) => {
             indicatorColor='primary'
           >
             <Tab value='raps' label='Raps' />
+            <Tab value='wall' label='Wall' />
           </Tabs>
+          <Divider
+            sx={{
+              borderBottom: `2px solid ${theme.palette.divider}`,
+              position: 'relative',
+              top: '-2px'
+            }}
+          />
           {value === 'raps' && <RapsTab raps={rapsData} isCurrentUser={isCurrentUser} />}
+          {value === 'wall' && <Wall />}
         </Stack>
       </Stack>
     </Stack>
@@ -95,6 +104,7 @@ export default UserProfile;
 
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import ProfileCardStats from 'src/components/UserPage/ProfileCardStats';
+import Wall from 'src/components/UserPage/Wall/Wall';
 import { appRouter } from 'src/server/api/root';
 import { createTRPCContext } from 'src/server/api/trpc';
 import superjson from 'superjson';
