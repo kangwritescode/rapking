@@ -80,7 +80,7 @@ export const rapComment = createTRPCRouter({
       });
 
       const rateLimitResult = await rateLimit({
-        maxRequests: 2,
+        maxRequests: 3,
         window: 60 * 60,
         keyString: `rapComment-${rapId}-${userId}`
       });
