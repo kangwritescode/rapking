@@ -21,7 +21,7 @@ function RapBar({ rapData, commentClickHandler, sx, defaultCommentDrawerIsOpen }
   const theme = useTheme();
 
   // Queries
-  const { data: rapCommentsCount } = api.rapComment.getRapCommentsCount.useQuery(
+  const { data: rapCommentsCount } = api.threadComments.getThreadCommentsCount.useQuery(
     {
       rapId: rapData?.id as string
     },

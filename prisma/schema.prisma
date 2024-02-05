@@ -267,8 +267,9 @@ model Notification {
   commentVoteId String?
   commentVote   CommentVote? @relation(fields: [commentVoteId], references: [id], onDelete: Cascade)
 
-  threadComment       ThreadComment?     @relation(fields: [threadCommentId], references: [id])
-  threadCommentId     String?
+  threadComment   ThreadComment? @relation(fields: [threadCommentId], references: [id])
+  threadCommentId String?
+
   threadCommentVote   ThreadCommentVote? @relation(fields: [threadCommentVoteId], references: [id])
   threadCommentVoteId String?
 

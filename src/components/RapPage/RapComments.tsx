@@ -1,10 +1,10 @@
-import React, { Fragment, useCallback, useEffect } from 'react';
-import RapComment from './RapComment';
 import { CircularProgress, Divider, Stack } from '@mui/material';
-import { api } from 'src/utils/api';
-import { Virtuoso } from 'react-virtuoso';
 import { useQueryClient } from '@tanstack/react-query';
 import { getQueryKey } from '@trpc/react-query';
+import { Fragment, useCallback, useEffect } from 'react';
+import { Virtuoso } from 'react-virtuoso';
+import { api } from 'src/utils/api';
+import RapComment from './RapComment';
 
 interface RapCommentsProps {
   sortBy: 'POPULAR' | 'RECENT';
@@ -17,7 +17,7 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
     fetchNextPage,
     hasNextPage,
     isLoading: commentsAreLoading
-  } = api.rapComment.getRapComments.useInfiniteQuery(
+  } = api.threadComments.getThreadComments.useInfiniteQuery(
     {
       rapId: rapId as string,
       sortBy,
@@ -36,7 +36,7 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
 
   const clearQueryCache = useCallback(() => {
     const postListKey = getQueryKey(
-      api.rapComment.getRapComments,
+      api.threadComments.getThreadComments,
       {
         rapId: rapId as string,
         sortBy,
@@ -52,7 +52,7 @@ function RapComments({ sortBy, rapId }: RapCommentsProps) {
     return clearQueryCache;
   }, [clearQueryCache]);
 
-  const rapCommentsData = data?.pages.flatMap(page => page.rapComments) ?? [];
+  const rapCommentsData = data?.pages.flatMap(page => page.threadComments) ?? [];
 
   return (
     <Virtuoso

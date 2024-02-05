@@ -1,5 +1,5 @@
 import { Avatar, Box, Stack, SxProps, Typography } from '@mui/material';
-import { RapComment, User } from '@prisma/client';
+import { ThreadComment, User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import CommentLikeButton from 'src/components/RapPage/CommentLikeButton';
 import TipTapContent from 'src/components/TipTapContent';
@@ -7,7 +7,7 @@ import { BUCKET_URL } from 'src/shared/constants';
 import RapCommentMenu from './RapCommentMenu';
 
 interface RapCommentProps {
-  comment: RapComment & {
+  comment: ThreadComment & {
     user: Partial<User>;
   };
   sx?: SxProps;

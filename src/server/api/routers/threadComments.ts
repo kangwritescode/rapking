@@ -11,8 +11,8 @@ export type RapCommentWithUserData = RapComment & {
   user: User;
 };
 
-export const rapComment = createTRPCRouter({
-  getRapComments: publicProcedure
+export const threadComments = createTRPCRouter({
+  getThreadComments: publicProcedure
     .input(
       z.object({
         rapId: z.string(),
@@ -33,7 +33,7 @@ export const rapComment = createTRPCRouter({
         orderBy = [{ likesCount: 'desc' }, { id: 'asc' }];
       }
 
-      const rapComments = await ctx.prisma.rapComment.findMany({
+      const threadComments = await ctx.prisma.threadComment.findMany({
         where: {
           rapId
         },
@@ -52,17 +52,17 @@ export const rapComment = createTRPCRouter({
       });
 
       let nextCursor: typeof cursor | undefined = undefined;
-      if (rapComments.length > limit) {
-        const nextItem = rapComments.pop();
+      if (threadComments.length > limit) {
+        const nextItem = threadComments.pop();
         nextCursor = nextItem!.id;
       }
 
       return {
-        rapComments,
+        threadComments,
         nextCursor
       };
     }),
-  postComment: protectedProcedure
+  postThreadComment: protectedProcedure
     .input(
       z.object({
         content: z.string(),
@@ -73,9 +73,9 @@ export const rapComment = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { content, userId, rapId } = input;
 
-      const rap = await ctx.prisma.rap.findUniqueOrThrow({
+      const rapThread = await ctx.prisma.thread.findFirstOrThrow({
         where: {
-          id: rapId
+          rapId
         }
       });
 
@@ -105,27 +105,28 @@ export const rapComment = createTRPCRouter({
         });
       }
 
-      const rapComment = await ctx.prisma.rapComment.create({
+      const rapComment = await ctx.prisma.threadComment.create({
         data: {
           content: sanitizedContent,
           userId,
-          rapId
+          rapId,
+          threadId: rapThread.id
         }
       });
 
       await ctx.prisma.notification.create({
         data: {
           type: NotificationType.RAP_COMMENT,
-          recipientId: rap.userId,
+          recipientId: rapThread.ownerId,
           notifierId: userId,
-          commentId: rapComment.id,
-          rapId: rap.id
+          threadCommentId: rapComment.id,
+          rapId: rapThread.rapId
         }
       });
 
       return rapComment;
     }),
-  deleteComment: protectedProcedure
+  deleteThreadComment: protectedProcedure
     .input(
       z.object({
         id: z.string()
@@ -134,7 +135,7 @@ export const rapComment = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { id } = input;
 
-      const commentToDelete = await ctx.prisma.rapComment.findUniqueOrThrow({
+      const commentToDelete = await ctx.prisma.threadComment.findUniqueOrThrow({
         where: {
           id
         }
@@ -147,7 +148,7 @@ export const rapComment = createTRPCRouter({
         });
       }
 
-      const deleteResponse = await ctx.prisma.rapComment.delete({
+      const deleteResponse = await ctx.prisma.threadComment.delete({
         where: {
           id
         }
@@ -155,7 +156,7 @@ export const rapComment = createTRPCRouter({
 
       return deleteResponse;
     }),
-  getRapCommentsCount: publicProcedure
+  getThreadCommentsCount: publicProcedure
     .input(
       z.object({
         rapId: z.string()
@@ -164,7 +165,7 @@ export const rapComment = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const { rapId } = input;
 
-      const count = await ctx.prisma.rapComment.count({
+      const count = await ctx.prisma.threadComment.count({
         where: {
           rapId
         }

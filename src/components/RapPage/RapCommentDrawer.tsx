@@ -1,10 +1,10 @@
 import { Icon } from '@iconify/react';
 import { Box, Divider, Drawer, IconButton, MenuItem, Select, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { api } from 'src/utils/api';
 import RapCommentComposer from './RapCommentComposer';
 import RapComments from './RapComments';
-import { api } from 'src/utils/api';
-import { useRouter } from 'next/router';
 
 interface RapCommentDrawerProps {
   onCloseHandler: () => void;
@@ -17,7 +17,7 @@ function RapCommentDrawer({ onCloseHandler, isOpen, rapId }: RapCommentDrawerPro
 
   const [sortBy, setSortBy] = useState<'POPULAR' | 'RECENT'>(commentId ? 'RECENT' : 'POPULAR');
 
-  const { data: rapCommentsCount } = api.rapComment.getRapCommentsCount.useQuery(
+  const { data: rapCommentsCount } = api.threadComments.getThreadCommentsCount.useQuery(
     {
       rapId: rapId as string
     },

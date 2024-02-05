@@ -1,17 +1,16 @@
-import { Avatar, Box, useTheme } from '@mui/material';
-import React from 'react';
-import RapCommentTextEditor from './RapCommentTextEditor';
-import { api } from 'src/utils/api';
-import { BUCKET_URL } from 'src/shared/constants';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { Avatar, Box, useTheme } from '@mui/material';
+import Placeholder from '@tiptap/extension-placeholder';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Placeholder from '@tiptap/extension-placeholder';
-import { useForm } from 'react-hook-form';
-import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
-import toast from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { BUCKET_URL } from 'src/shared/constants';
+import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
+import { api } from 'src/utils/api';
+import { z } from 'zod';
+import RapCommentTextEditor from './RapCommentTextEditor';
 
 interface RapCommentComposerProps {
   rapId?: string;
@@ -29,11 +28,12 @@ function RapCommentComposer({ rapId }: RapCommentComposerProps) {
   });
 
   // Mutations
-  const { mutate: postComment, isLoading } = api.rapComment.postComment.useMutation();
+  const { mutate: postComment, isLoading } = api.threadComments.postThreadComment.useMutation();
 
   // Invalidaters
-  const { invalidate: invalidateRapComments } = api.useContext().rapComment.getRapComments;
-  const { invalidate: invalidateCommentsCount } = api.useContext().rapComment.getRapCommentsCount;
+  const { invalidate: invalidateRapComments } = api.useContext().threadComments.getThreadComments;
+  const { invalidate: invalidateCommentsCount } =
+    api.useContext().threadComments.getThreadCommentsCount;
 
   const {
     setValue,

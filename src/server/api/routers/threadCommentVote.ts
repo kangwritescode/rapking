@@ -5,7 +5,7 @@ import { TRPCError } from '@trpc/server';
 import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 
-export const commentVoteRouter = createTRPCRouter({
+export const threadCommentVoteRouter = createTRPCRouter({
   getCommentLikes: publicProcedure
     .input(
       z.object({
@@ -15,14 +15,14 @@ export const commentVoteRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const { commentId } = input;
 
-      const rapVotes = await ctx.prisma.commentVote.findMany({
+      const likes = await ctx.prisma.threadCommentVote.findMany({
         where: {
-          commentId,
+          threadCommentId: commentId,
           type: CommentVoteType.LIKE
         }
       });
 
-      return rapVotes;
+      return likes;
     }),
   createLike: protectedProcedure
     .input(
@@ -63,14 +63,14 @@ export const commentVoteRouter = createTRPCRouter({
       }
 
       const [commentVote, rapComment] = await ctx.prisma.$transaction([
-        ctx.prisma.commentVote.create({
+        ctx.prisma.threadCommentVote.create({
           data: {
             type: CommentVoteType.LIKE,
             userId,
-            commentId
+            threadCommentId: commentId
           }
         }),
-        ctx.prisma.rapComment.update({
+        ctx.prisma.threadComment.update({
           where: {
             id: commentId
           },
@@ -126,11 +126,11 @@ export const commentVoteRouter = createTRPCRouter({
       }
 
       // Check if vote exists
-      const vote = await ctx.prisma.commentVote.findUnique({
+      const vote = await ctx.prisma.threadCommentVote.findUnique({
         where: {
-          userId_commentId: {
+          userId_threadCommentId: {
             userId,
-            commentId
+            threadCommentId: commentId
           }
         }
       });
@@ -140,15 +140,15 @@ export const commentVoteRouter = createTRPCRouter({
       }
 
       const [deletedVote, updatedRap] = await ctx.prisma.$transaction([
-        ctx.prisma.commentVote.delete({
+        ctx.prisma.threadCommentVote.delete({
           where: {
-            userId_commentId: {
+            userId_threadCommentId: {
               userId,
-              commentId
+              threadCommentId: commentId
             }
           }
         }),
-        ctx.prisma.rapComment.update({
+        ctx.prisma.threadComment.update({
           where: {
             id: commentId
           },
@@ -175,11 +175,11 @@ export const commentVoteRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const { userId, commentId } = input;
 
-      const vote = await ctx.prisma.commentVote.findUnique({
+      const vote = await ctx.prisma.threadCommentVote.findUnique({
         where: {
-          userId_commentId: {
+          userId_threadCommentId: {
             userId,
-            commentId
+            threadCommentId: commentId
           }
         }
       });
@@ -195,9 +195,9 @@ export const commentVoteRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const { commentId } = input;
 
-      const count = await ctx.prisma.commentVote.count({
+      const count = await ctx.prisma.threadCommentVote.count({
         where: {
-          commentId,
+          threadCommentId: commentId,
           type: CommentVoteType.LIKE
         }
       });

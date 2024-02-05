@@ -1,7 +1,6 @@
 import { userRouter } from 'src/server/api/routers/user';
 import { createTRPCRouter } from 'src/server/api/trpc';
 import { articlesRouter } from './routers/articles';
-import { commentVoteRouter } from './routers/commentVote';
 import { feedRouter } from './routers/feed';
 import { gcloudRouter } from './routers/gcloud';
 import { geoDBRouter } from './routers/geoDB';
@@ -10,9 +9,10 @@ import { leaderboardRouter } from './routers/leaderboard';
 import { notificationsRouter } from './routers/notifications';
 import { pulseRouter } from './routers/pulse';
 import { rapRouter } from './routers/rap';
-import { rapComment } from './routers/rapComment';
 import { rapVote } from './routers/rapVote';
 import { socialLinkRouter } from './routers/socialLink';
+import { threadCommentVoteRouter } from './routers/threadCommentVote';
+import { threadComments } from './routers/threadComments';
 import { userFollows } from './routers/userFollows';
 
 /**
@@ -28,8 +28,8 @@ export const appRouter = createTRPCRouter({
   socialLink: socialLinkRouter,
   userFollows: userFollows,
   rapVote: rapVote,
-  rapComment: rapComment,
-  commentVote: commentVoteRouter,
+  threadComments: threadComments,
+  commentVote: threadCommentVoteRouter,
   leaderboard: leaderboardRouter,
   feed: feedRouter,
   notifications: notificationsRouter,

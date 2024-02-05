@@ -22,10 +22,10 @@ function RapCommentMenu({ rapCommentId }: RapCommentMenuProps) {
 
   const [modalIsOopen, setModalIsOpen] = React.useState(false);
 
-  const { mutate: deleteRap, isLoading } = api.rapComment.deleteComment.useMutation();
+  const { mutate: deleteRap, isLoading } = api.threadComments.deleteThreadComment.useMutation();
   const { invalidate: invalidateRapCommentsCount } =
-    api.useContext().rapComment.getRapCommentsCount;
-  const { invalidate: invalidateRapComments } = api.useContext().rapComment.getRapComments;
+    api.useContext().threadComments.getThreadCommentsCount;
+  const { invalidate: invalidateRapComments } = api.useContext().threadComments.getThreadComments;
 
   return (
     <Box>
