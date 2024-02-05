@@ -3,7 +3,7 @@ import { createTRPCRouter, protectedProcedure } from 'src/server/api/trpc';
 import { z } from 'zod';
 
 export type NotificationWithAssociatedData = Notification & {
-  comment: {
+  threadComment: {
     id: string;
     content: string;
   } | null;
@@ -28,7 +28,7 @@ export const notificationsRouter = createTRPCRouter({
         createdAt: 'desc'
       },
       include: {
-        comment: {
+        threadComment: {
           select: {
             id: true,
             content: true
