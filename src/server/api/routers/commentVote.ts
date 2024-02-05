@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { CommentVoteType } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 
 export const commentVoteRouter = createTRPCRouter({
@@ -43,6 +44,21 @@ export const commentVoteRouter = createTRPCRouter({
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: "You don't have permission to do that."
+        });
+      }
+
+      // * Rate limiting
+      const rateLimitResult = await rateLimit({
+        maxRequests: 3,
+        window: 60 * 5,
+        keyString: `create-comment-vote-${ctx.session.user.id}-${commentId}`
+      });
+
+      if (typeof rateLimitResult === 'number') {
+        const resetTime = Math.ceil(rateLimitResult / 60);
+        throw new TRPCError({
+          code: 'TOO_MANY_REQUESTS',
+          message: `You're doing that too much. Please wait ${resetTime} minutes to like this comment again.`
         });
       }
 
@@ -91,6 +107,21 @@ export const commentVoteRouter = createTRPCRouter({
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: "You don't have permission to do that."
+        });
+      }
+
+      // * Rate limiting
+      const rateLimitResult = await rateLimit({
+        maxRequests: 3,
+        window: 60 * 5,
+        keyString: `delete-comment-vote-${ctx.session.user.id}-${commentId}`
+      });
+
+      if (typeof rateLimitResult === 'number') {
+        const resetTime = Math.ceil(rateLimitResult / 60);
+        throw new TRPCError({
+          code: 'TOO_MANY_REQUESTS',
+          message: `You're doing that too much. Please wait ${resetTime} minutes to unlike this comment again.`
         });
       }
 

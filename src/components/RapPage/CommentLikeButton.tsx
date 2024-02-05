@@ -18,6 +18,11 @@ function CommentLikeButton({ rapCommentId, sx }: CommentLikeButtonProps) {
   const [currentUserLikedRapComment, setCurrentUserLikedRapComment] = useState<boolean>(false);
   const [rapCommentLikesCount, setRapCommentLikesCount] = useState<number>(0);
 
+  const syncStateWithDB = () => {
+    setCurrentUserLikedRapComment(likeExists || false);
+    setRapCommentLikesCount(commentLikesCount || 0);
+  };
+
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   // Queries
@@ -78,8 +83,9 @@ function CommentLikeButton({ rapCommentId, sx }: CommentLikeButtonProps) {
         .then(() => {
           refetch();
         })
-        .catch(() => {
-          refetch();
+        .catch(err => {
+          syncStateWithDB();
+          toast.error(err.message);
         });
     });
   };
@@ -101,21 +107,17 @@ function CommentLikeButton({ rapCommentId, sx }: CommentLikeButtonProps) {
         .then(() => {
           refetch();
         })
-        .catch(() => {
-          refetch();
+        .catch(err => {
+          syncStateWithDB();
+          toast.error(err.message);
         });
     });
   };
 
   useEffect(() => {
-    setCurrentUserLikedRapComment(likeExists || false);
-  }, [likeExists]);
-
-  useEffect(() => {
-    if (commentLikesCount) {
-      setRapCommentLikesCount(commentLikesCount || 0);
-    }
-  }, [commentLikesCount]);
+    syncStateWithDB();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [likeExists, commentLikesCount]);
 
   useEffect(() => {
     return () => {
