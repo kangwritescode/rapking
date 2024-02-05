@@ -68,7 +68,6 @@ model User {
   sessions              Session[]
   socialLinks           SocialLink[]
   rapVotes              RapVote[]
-  rapComments           RapComment[]
   commentVotes          CommentVote[]
   sentNotifications     Notification[]      @relation("NotifierRelation")
   receivedNotifications Notification[]      @relation("UserRelation")
@@ -104,7 +103,6 @@ model Rap {
   youtubeVideoId  String?
   disableComments Boolean         @default(false)
   votes           RapVote[]
-  comments        RapComment[]
   Notification    Notification[]
   thread          Thread[]
   threadComment   ThreadComment[]
@@ -147,22 +145,6 @@ model ThreadComment {
   CommentVote        CommentVote[]
 }
 
-model RapComment {
-  id            String         @id @default(cuid())
-  content       String
-  userId        String
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  rapId         String
-  rap           Rap            @relation(fields: [rapId], references: [id], onDelete: Cascade)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  commentVotes  CommentVote[]
-  likesCount    Int            @default(0)
-  notifications Notification[]
-
-  @@index([rapId, createdAt(sort: Desc)])
-}
-
 enum RapVoteType {
   LIKE
 }
@@ -191,16 +173,14 @@ model CommentVote {
   type            CommentVoteType
   userId          String
   user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  comment         RapComment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  commentId       String
   threadComment   ThreadComment?  @relation(fields: [threadCommentId], references: [id])
   threadCommentId String?
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   notifications   Notification[]
 
-  @@unique([userId, commentId])
-  @@index([commentId, createdAt(sort: Desc)])
+  @@unique([userId, threadCommentId])
+  @@index([threadCommentId, createdAt(sort: Desc)])
 }
 
 model ThreadCommentVote {
@@ -257,9 +237,6 @@ model Notification {
 
   rapId String?
   rap   Rap?    @relation(fields: [rapId], references: [id], onDelete: Cascade)
-
-  commentId String?
-  comment   RapComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   rapVoteId String?
   rapVote   RapVote? @relation(fields: [rapVoteId], references: [id], onDelete: Cascade)
