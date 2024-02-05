@@ -56,11 +56,17 @@ const UserProfile = ({ userId }: { userId?: string }) => {
       }}
     >
       <Stack
-        width='40%'
-        maxWidth={'28rem'}
+        width={{
+          xs: '100%',
+          md: '24rem'
+        }}
+        maxWidth={'24rem'}
         minWidth={{
           xs: '100%',
           md: '24rem'
+        }}
+        sx={{
+          transition: 'width .25s ease-in-out'
         }}
       >
         <ProfileCard userData={userData} isCurrentUser={isCurrentUser} />
