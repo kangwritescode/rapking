@@ -1,5 +1,6 @@
 import { Avatar, Box, Stack, SxProps, Typography } from '@mui/material';
 import { RapComment, User } from '@prisma/client';
+import { useSession } from 'next-auth/react';
 import CommentLikeButton from 'src/components/RapPage/CommentLikeButton';
 import TipTapContent from 'src/components/TipTapContent';
 import { BUCKET_URL } from 'src/shared/constants';
@@ -13,6 +14,7 @@ interface RapCommentProps {
 }
 
 function RapComment({ comment, sx }: RapCommentProps) {
+  const session = useSession();
   const { content, user, createdAt } = comment;
 
   return (
@@ -33,7 +35,7 @@ function RapComment({ comment, sx }: RapCommentProps) {
           <Typography variant='body2'>{createdAt.toLocaleDateString()}</Typography>
         </Stack>
         <Stack flexGrow={1} alignItems='flex-end'>
-          <RapCommentMenu rapCommentId={comment.id} />
+          {session.data?.user?.id === user.id && <RapCommentMenu rapCommentId={comment.id} />}
         </Stack>
       </Stack>
       <TipTapContent
