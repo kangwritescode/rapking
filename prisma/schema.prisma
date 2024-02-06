@@ -69,7 +69,7 @@ model User {
   followers             UserFollows[]       @relation("FollowerRelation")
   WhiteList             WhiteList?
   wall                  Wall?
-  rapThread             RapThread?
+  rapThread             RapThread[]
 }
 
 model UserFollows {
@@ -135,7 +135,7 @@ model RapThread {
   thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
   rapId    String @unique
   rap      Rap    @relation(fields: [rapId], references: [id], onDelete: Cascade)
-  ownerId  String @unique
+  ownerId  String
   owner    User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 }
 
