@@ -20,7 +20,7 @@ export default function ThreadCommentTextEditor({
       sx={{
         border: 'unset',
         '& .ProseMirror': {
-          minHeight: '8rem'
+          minHeight: '4rem'
         }
       }}
       editor={editor}
@@ -29,7 +29,7 @@ export default function ThreadCommentTextEditor({
           background: theme.palette.grey[900],
           color: theme.palette.text.primary,
           width: '100%',
-          minHeight: '8rem',
+          minHeight: '4rem',
           fontSize: '10pt'
         },
         toolbar: {
