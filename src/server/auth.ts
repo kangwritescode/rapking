@@ -1,11 +1,11 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { ThreadType } from '@prisma/client';
 import { GetServerSidePropsContext } from 'next';
 import { getServerSession, type DefaultSession, type NextAuthOptions } from 'next-auth';
 import DiscordProvider from 'next-auth/providers/discord';
 import GoogleProvider from 'next-auth/providers/google';
 import { env } from 'src/env.mjs';
 import { prisma } from 'src/server/db';
+import { createWall } from './api/procedures/wall';
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -78,12 +78,7 @@ export const authOptions: NextAuthOptions = {
   events: {
     createUser: async message => {
       const user = message.user;
-      await prisma.thread.create({
-        data: {
-          ownerId: user.id,
-          type: ThreadType.WALL
-        }
-      });
+      await createWall(user.id);
     }
   }
 };
