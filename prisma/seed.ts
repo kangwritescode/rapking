@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { PrismaClient, SocialPlatform, User } from '@prisma/client';
+import { env } from 'process';
 
 const prisma = new PrismaClient();
 
@@ -21,6 +22,9 @@ async function clearDatabase() {
 }
 
 async function seedDatabase() {
+  if (env.NODE_ENV === 'production') {
+    return;
+  }
   const genders = ['male', 'female'];
 
   // Generate 30 users
@@ -44,6 +48,21 @@ async function seedDatabase() {
 
   // Generate data for each user
   for (const user of users) {
+    // Generate a wall for each user
+    const wallThread = await prisma.thread.create({
+      data: {
+        type: 'WALL',
+        ownerId: user.id
+      }
+    });
+
+    await prisma.wall.create({
+      data: {
+        threadId: wallThread.id,
+        ownerId: user.id
+      }
+    });
+
     // Generate one rap for each user
     const rap = await prisma.rap.create({
       data: {
@@ -122,9 +141,18 @@ async function seedDatabase() {
       }
     });
   }
+
+  await prisma.inviteToken.create({
+    data: {
+      token: '123'
+    }
+  });
 }
 
 async function main() {
+  if (env.NODE_ENV === 'production') {
+    return;
+  }
   await clearDatabase();
   await seedDatabase();
 }
