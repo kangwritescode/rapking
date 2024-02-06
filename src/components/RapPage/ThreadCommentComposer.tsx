@@ -10,13 +10,13 @@ import { BUCKET_URL } from 'src/shared/constants';
 import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
 import { api } from 'src/utils/api';
 import { z } from 'zod';
-import RapCommentTextEditor from './RapCommentTextEditor';
+import ThreadCommentTextEditor from './ThreadCommentTextEditor';
 
-interface RapCommentComposerProps {
+interface ThreadCommentComposerProps {
   threadId?: string | null;
 }
 
-function RapCommentComposer({ threadId }: RapCommentComposerProps) {
+function ThreadCommentComposer({ threadId }: ThreadCommentComposerProps) {
   const theme = useTheme();
 
   // Session
@@ -31,7 +31,8 @@ function RapCommentComposer({ threadId }: RapCommentComposerProps) {
   const { mutate: postComment, isLoading } = api.threadComments.postThreadComment.useMutation();
 
   // Invalidaters
-  const { invalidate: invalidateRapComments } = api.useContext().threadComments.getThreadComments;
+  const { invalidate: invalidateThreadComments } =
+    api.useContext().threadComments.getThreadComments;
   const { invalidate: invalidateCommentsCount } =
     api.useContext().threadComments.getThreadCommentsCount;
 
@@ -63,7 +64,7 @@ function RapCommentComposer({ threadId }: RapCommentComposerProps) {
         },
         {
           onSuccess: () => {
-            invalidateRapComments();
+            invalidateThreadComments();
             invalidateCommentsCount();
             reset();
             editor?.commands.clearContent();
@@ -91,8 +92,8 @@ function RapCommentComposer({ threadId }: RapCommentComposerProps) {
   return (
     <Box
       sx={{
-        border: `1px solid ${theme.palette.grey[300]}`,
-        boxShadow: '1px 1px 14px 0px rgba(255, 255, 255, 0.15)'
+        border: `1px solid ${theme.palette.grey[800]}`,
+        background: theme.palette.grey[900]
       }}
     >
       <Box px={4} pt={3} display='flex' alignItems='center'>
@@ -111,7 +112,7 @@ function RapCommentComposer({ threadId }: RapCommentComposerProps) {
         {userData?.username}
       </Box>
       <form onSubmit={handleSubmit(submitFormHandler)}>
-        <RapCommentTextEditor
+        <ThreadCommentTextEditor
           editor={editor}
           submitButtonIsDisabled={!isValid || isSubmitting || isLoading}
           showSubmitLoader={isSubmitting || isLoading}
@@ -121,4 +122,4 @@ function RapCommentComposer({ threadId }: RapCommentComposerProps) {
   );
 }
 
-export default RapCommentComposer;
+export default ThreadCommentComposer;

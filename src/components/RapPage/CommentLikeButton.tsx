@@ -6,21 +6,22 @@ import FireIconButton from 'src/components/HeartIconButton';
 import { api } from 'src/utils/api';
 
 interface CommentLikeButtonProps {
-  rapCommentId?: string;
+  threadCommentId?: string;
   sx?: SxProps;
 }
 
-function CommentLikeButton({ rapCommentId, sx }: CommentLikeButtonProps) {
+function CommentLikeButton({ threadCommentId, sx }: CommentLikeButtonProps) {
   const { data, status } = useSession();
   const currentUserId = data?.user?.id;
 
   // State
-  const [currentUserLikedRapComment, setCurrentUserLikedRapComment] = useState<boolean>(false);
-  const [rapCommentLikesCount, setRapCommentLikesCount] = useState<number>(0);
+  const [currentUserLikedThreadComment, setCurrentUserLikedThreadComment] =
+    useState<boolean>(false);
+  const [threadCommentLikesCount, setThreadCommentLikesCount] = useState<number>(0);
 
   const syncStateWithDB = () => {
-    setCurrentUserLikedRapComment(likeExists || false);
-    setRapCommentLikesCount(commentLikesCount || 0);
+    setCurrentUserLikedThreadComment(likeExists || false);
+    setThreadCommentLikesCount(commentLikesCount || 0);
   };
 
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
@@ -29,10 +30,10 @@ function CommentLikeButton({ rapCommentId, sx }: CommentLikeButtonProps) {
   const { data: commentLikesCount, refetch: refetchCommentLikesCount } =
     api.commentVote.getCommentLikesCount.useQuery(
       {
-        commentId: rapCommentId as string
+        commentId: threadCommentId as string
       },
       {
-        enabled: Boolean(rapCommentId),
+        enabled: Boolean(threadCommentId),
         refetchOnMount: false,
         refetchOnWindowFocus: false
       }
@@ -40,11 +41,11 @@ function CommentLikeButton({ rapCommentId, sx }: CommentLikeButtonProps) {
 
   const { data: likeExists, refetch: refetchLikeExists } = api.commentVote.likeExists.useQuery(
     {
-      commentId: rapCommentId as string,
+      commentId: threadCommentId as string,
       userId: currentUserId as string
     },
     {
-      enabled: Boolean(currentUserId && rapCommentId),
+      enabled: Boolean(currentUserId && threadCommentId),
       refetchOnMount: false,
       refetchOnWindowFocus: false
     }
@@ -71,13 +72,13 @@ function CommentLikeButton({ rapCommentId, sx }: CommentLikeButtonProps) {
     if (status === 'unauthenticated') {
       return toast.error('You must be logged in to like a comment.');
     }
-    if (!currentUserId || !rapCommentId) return;
+    if (!currentUserId || !threadCommentId) return;
 
-    setCurrentUserLikedRapComment(true);
-    setRapCommentLikesCount(prevCount => prevCount + 1);
+    setCurrentUserLikedThreadComment(true);
+    setThreadCommentLikesCount(prevCount => prevCount + 1);
     handleDebouncedAPI(() => {
       createLike({
-        commentId: rapCommentId,
+        commentId: threadCommentId,
         userId: currentUserId
       })
         .then(() => {
@@ -94,14 +95,14 @@ function CommentLikeButton({ rapCommentId, sx }: CommentLikeButtonProps) {
     if (status === 'unauthenticated') {
       return toast.error('You must be logged in to like a comment.');
     }
-    if (!rapCommentId || !currentUserId) return;
+    if (!threadCommentId || !currentUserId) return;
 
-    setCurrentUserLikedRapComment(false);
-    setRapCommentLikesCount(prevCount => prevCount - 1);
+    setCurrentUserLikedThreadComment(false);
+    setThreadCommentLikesCount(prevCount => prevCount - 1);
 
     handleDebouncedAPI(() => {
       deleteLike({
-        commentId: rapCommentId,
+        commentId: threadCommentId,
         userId: currentUserId
       })
         .then(() => {
@@ -137,15 +138,15 @@ function CommentLikeButton({ rapCommentId, sx }: CommentLikeButtonProps) {
       }}
     >
       <FireIconButton
-        onClick={currentUserLikedRapComment ? handleUnlike : handleLike}
-        isColored={currentUserLikedRapComment}
+        onClick={currentUserLikedThreadComment ? handleUnlike : handleLike}
+        isColored={currentUserLikedThreadComment}
         sx={{
           paddingRight: 1,
           py: 0,
           pl: 0
         }}
       />
-      {rapCommentLikesCount || 0}
+      {threadCommentLikesCount || 0}
     </Box>
   );
 }

@@ -5,16 +5,16 @@ import Link from 'next/link';
 import CommentLikeButton from 'src/components/RapPage/CommentLikeButton';
 import TipTapContent from 'src/components/TipTapContent';
 import { BUCKET_URL } from 'src/shared/constants';
-import RapCommentMenu from './RapCommentMenu';
+import ThreadCommentMenu from './ThreadCommentMenu';
 
-interface RapCommentProps {
+interface ThreadCommentProps {
   comment: ThreadComment & {
     user: Partial<User>;
   };
   sx?: SxProps;
 }
 
-function RapComment({ comment, sx }: RapCommentProps) {
+function ThreadComment({ comment, sx }: ThreadCommentProps) {
   const session = useSession();
   const { content, user, createdAt } = comment;
 
@@ -46,7 +46,7 @@ function RapComment({ comment, sx }: RapCommentProps) {
           <Typography variant='body2'>{createdAt.toLocaleDateString()}</Typography>
         </Stack>
         <Stack flexGrow={1} alignItems='flex-end'>
-          {session.data?.user?.id === user.id && <RapCommentMenu rapCommentId={comment.id} />}
+          {session.data?.user?.id === user.id && <ThreadCommentMenu threadCommentId={comment.id} />}
         </Stack>
       </Stack>
       <TipTapContent
@@ -55,9 +55,9 @@ function RapComment({ comment, sx }: RapCommentProps) {
           fontSize: 14
         }}
       />
-      <CommentLikeButton rapCommentId={comment.id} />
+      <CommentLikeButton threadCommentId={comment.id} />
     </Box>
   );
 }
 
-export default RapComment;
+export default ThreadComment;

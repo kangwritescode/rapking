@@ -5,11 +5,11 @@ import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
 import AlertDialog from '../AlertDialog';
 
-interface RapCommentMenuProps {
-  rapCommentId: string;
+interface ThreadCommentMenuProps {
+  threadCommentId: string;
 }
 
-function RapCommentMenu({ rapCommentId }: RapCommentMenuProps) {
+function ThreadCommentMenu({ threadCommentId }: ThreadCommentMenuProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -22,10 +22,12 @@ function RapCommentMenu({ rapCommentId }: RapCommentMenuProps) {
 
   const [modalIsOopen, setModalIsOpen] = React.useState(false);
 
-  const { mutate: deleteRap, isLoading } = api.threadComments.deleteThreadComment.useMutation();
-  const { invalidate: invalidateRapCommentsCount } =
+  const { mutate: deleteThreadComment, isLoading } =
+    api.threadComments.deleteThreadComment.useMutation();
+  const { invalidate: invalidateThreadCommentsCount } =
     api.useContext().threadComments.getThreadCommentsCount;
-  const { invalidate: invalidateRapComments } = api.useContext().threadComments.getThreadComments;
+  const { invalidate: invalidateThreadComments } =
+    api.useContext().threadComments.getThreadComments;
 
   return (
     <Box>
@@ -58,12 +60,12 @@ function RapCommentMenu({ rapCommentId }: RapCommentMenuProps) {
           color: 'error'
         }}
         onSubmitHandler={() =>
-          deleteRap(
-            { id: rapCommentId },
+          deleteThreadComment(
+            { id: threadCommentId },
             {
               onSuccess: () => {
-                invalidateRapCommentsCount();
-                invalidateRapComments();
+                invalidateThreadCommentsCount();
+                invalidateThreadComments();
                 handleClose();
               },
               onError: () => {
@@ -79,4 +81,4 @@ function RapCommentMenu({ rapCommentId }: RapCommentMenuProps) {
   );
 }
 
-export default RapCommentMenu;
+export default ThreadCommentMenu;

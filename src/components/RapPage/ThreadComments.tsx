@@ -4,14 +4,14 @@ import { getQueryKey } from '@trpc/react-query';
 import { Fragment, useCallback, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { api } from 'src/utils/api';
-import RapComment from './RapComment';
+import RapComment from './ThreadComment';
 
-interface RapCommentsProps {
+interface ThreadCommentsProps {
   sortBy: 'POPULAR' | 'RECENT';
   threadId?: string | null;
 }
 
-function RapComments({ sortBy, threadId }: RapCommentsProps) {
+function ThreadComments({ sortBy, threadId }: ThreadCommentsProps) {
   const {
     data,
     fetchNextPage,
@@ -100,4 +100,4 @@ function RapComments({ sortBy, threadId }: RapCommentsProps) {
   );
 }
 
-export default RapComments;
+export default ThreadComments;

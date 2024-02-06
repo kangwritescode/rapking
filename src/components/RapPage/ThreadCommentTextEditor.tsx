@@ -1,18 +1,18 @@
 import { RichTextEditor } from '@mantine/tiptap';
-import { Editor } from '@tiptap/react';
 import { Box, Button, CircularProgress, useTheme } from '@mui/material';
+import { Editor } from '@tiptap/react';
 
-interface RapCommentTextEditorProps {
+interface ThreadCommentTextEditorProps {
   editor: Editor | null;
   submitButtonIsDisabled?: boolean;
   showSubmitLoader?: boolean;
 }
 
-export default function RapCommentTextEditor({
+export default function ThreadCommentTextEditor({
   editor,
   submitButtonIsDisabled,
   showSubmitLoader
-}: RapCommentTextEditorProps) {
+}: ThreadCommentTextEditorProps) {
   const theme = useTheme();
 
   return (
@@ -26,19 +26,19 @@ export default function RapCommentTextEditor({
       editor={editor}
       styles={{
         content: {
-          background: theme.palette.background.paper,
+          background: theme.palette.grey[900],
           color: theme.palette.text.primary,
           width: '100%',
           minHeight: '8rem',
           fontSize: '10pt'
         },
         toolbar: {
-          background: theme.palette.background.paper,
+          background: theme.palette.grey[900],
           borderRadius: '20px'
         },
         control: {
           color: theme.palette.text.primary,
-          background: theme.palette.background.paper
+          background: theme.palette.grey[900]
         },
         controlsGroup: {
           '& > *:hover': {

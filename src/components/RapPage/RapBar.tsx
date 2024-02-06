@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 import { Box, IconButton, SxProps, useTheme } from '@mui/material';
 import { Rap, User } from '@prisma/client';
 import { useState } from 'react';
-import RapCommentDrawer from 'src/components/RapPage/RapCommentDrawer';
+import RapCommentDrawer from 'src/components/RapPage/ThreadDrawer';
 import { api } from 'src/utils/api';
 import RapLikeButton from './RapLikeButton';
 
@@ -47,7 +47,6 @@ function RapBar({
       <RapCommentDrawer
         isOpen={commentDrawerIsOpen}
         onCloseHandler={() => setCommentDrawerIsOpen(false)}
-        rapData={rapData}
         threadId={threadId}
       />
       <Box display='flex' sx={sx}>

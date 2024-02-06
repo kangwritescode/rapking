@@ -1,25 +1,23 @@
 import { Icon } from '@iconify/react';
 import { Box, Divider, Drawer, IconButton, MenuItem, Select, Typography } from '@mui/material';
-import { Rap } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { api } from 'src/utils/api';
-import RapCommentComposer from './RapCommentComposer';
-import RapComments from './RapComments';
+import RapCommentComposer from './ThreadCommentComposer';
+import RapComments from './ThreadComments';
 
-interface RapCommentDrawerProps {
+interface ThreadDrawerProps {
   onCloseHandler: () => void;
   isOpen: boolean;
-  rapData?: Rap | null;
   threadId?: string | null;
 }
 
-function RapCommentDrawer({ onCloseHandler, isOpen, threadId }: RapCommentDrawerProps) {
+function ThreadDrawer({ onCloseHandler, isOpen, threadId }: ThreadDrawerProps) {
   const { commentId } = useRouter().query;
 
   const [sortBy, setSortBy] = useState<'POPULAR' | 'RECENT'>(commentId ? 'RECENT' : 'POPULAR');
 
-  const { data: rapCommentsCount } = api.threadComments.getThreadCommentsCount.useQuery(
+  const { data: threadCommentsCount } = api.threadComments.getThreadCommentsCount.useQuery(
     {
       id: threadId as string
     },
@@ -30,10 +28,10 @@ function RapCommentDrawer({ onCloseHandler, isOpen, threadId }: RapCommentDrawer
 
   return (
     <Drawer anchor='right' open={isOpen} onClose={onCloseHandler}>
-      <Box width='24rem' maxWidth='24rem' px={6} pt={6}>
+      <Box px={6} pt={6}>
         <Box display='flex' justifyContent='space-between' alignItems='center'>
           <Typography variant='h6'>
-            Comments {rapCommentsCount ? `(${rapCommentsCount})` : ''}
+            Comments {threadCommentsCount ? `(${threadCommentsCount})` : ''}
           </Typography>
           <IconButton onClick={onCloseHandler}>
             <Icon icon='mdi:close' />
@@ -61,11 +59,19 @@ function RapCommentDrawer({ onCloseHandler, isOpen, threadId }: RapCommentDrawer
           mb: 4
         }}
       />
-      <Box width='24rem' maxWidth='24rem' height='100%' px={5}>
+      <Box
+        width={{
+          xs: '24rem',
+          md: '28rem'
+        }}
+        maxWidth='100%'
+        height='100%'
+        px={5}
+      >
         <RapComments threadId={threadId} sortBy={sortBy} />
       </Box>
     </Drawer>
   );
 }
 
-export default RapCommentDrawer;
+export default ThreadDrawer;
