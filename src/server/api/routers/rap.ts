@@ -8,6 +8,7 @@ import { deleteGloudFile, moveGCloudFile } from 'src/gcloud/serverMethods';
 import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 import { containsBannedWords } from 'src/shared/bannedWords';
+import { createRapThread } from '../procedures/rapThread';
 
 // Schemas
 const createRapPayloadSchema = z.object({
@@ -115,13 +116,7 @@ export const rapRouter = createTRPCRouter({
       }
     });
 
-    await ctx.prisma.thread.create({
-      data: {
-        rapId: rap.id,
-        ownerId: ctx.session.user.id,
-        type: 'RAP'
-      }
-    });
+    await createRapThread(rap);
 
     if (input.coverArtUrl) {
       const extension = path.extname(input.coverArtUrl);

@@ -62,6 +62,15 @@ async function seedDatabase() {
       }
     });
 
+    // Generate a RapThread for each rap's thread
+    await prisma.rapThread.create({
+      data: {
+        rapId: rap.id,
+        threadId: thread.id,
+        ownerId: user.id
+      }
+    });
+
     // Generate 5 comments for each rap
     for (let i = 0; i < 5; i++) {
       const comment = await prisma.threadComment.create({
