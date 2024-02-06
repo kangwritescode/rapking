@@ -68,6 +68,8 @@ model User {
   followed              UserFollows[]       @relation("FollowedRelation")
   followers             UserFollows[]       @relation("FollowerRelation")
   WhiteList             WhiteList?
+  wall                  Wall?
+  rapThread             RapThread?
 }
 
 model UserFollows {
@@ -98,6 +100,7 @@ model Rap {
   votes           RapVote[]
   thread          Thread[]
   threadComment   ThreadComment[]
+  rapThread       RapThread?
 
   @@index([userId, dateCreated(sort: Desc)])
 }
@@ -112,6 +115,28 @@ model Thread {
   owner          User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   rap            Rap?            @relation(fields: [rapId], references: [id], onDelete: Cascade)
   threadComments ThreadComment[]
+  wall           Wall?
+  rapThread      RapThread?
+}
+
+// Extends Thread
+model Wall {
+  id       String @id @default(cuid())
+  threadId String @unique
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  ownerId  String @unique
+  owner    User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+}
+
+// Extends Thread
+model RapThread {
+  id       String @id @default(cuid())
+  threadId String @unique
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  rapId    String @unique
+  rap      Rap    @relation(fields: [rapId], references: [id], onDelete: Cascade)
+  ownerId  String @unique
+  owner    User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 }
 
 model ThreadComment {

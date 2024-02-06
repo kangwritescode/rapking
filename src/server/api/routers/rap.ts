@@ -240,6 +240,11 @@ export const rapRouter = createTRPCRouter({
               username: true,
               profileImageUrl: true
             }
+          },
+          rapThread: {
+            select: {
+              threadId: true
+            }
           }
         }
       });

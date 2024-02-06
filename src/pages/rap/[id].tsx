@@ -142,7 +142,11 @@ function RapPage() {
             </Stack>
           </Stack>
           <Divider />
-          <RapBar rapData={rapData} defaultCommentDrawerIsOpen={Boolean(commentId)} />
+          <RapBar
+            rapData={rapData}
+            threadId={rapData?.rapThread?.threadId}
+            defaultCommentDrawerIsOpen={Boolean(commentId)}
+          />
           <Divider />
           {rapData?.soundcloudUrl ? (
             <SCPlayer
@@ -176,10 +180,12 @@ function RapPage() {
 
 export default RapPage;
 
-import { GetServerSidePropsContext } from 'next';
-import { getSession, useSession } from 'next-auth/react';
-import { GetServerSideProps } from 'next/types';
+import { useSession } from 'next-auth/react';
 import ViewMoreRaps from 'src/components/ViewMoreRaps';
+
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/react';
+import { GetServerSideProps } from 'next/types';
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext

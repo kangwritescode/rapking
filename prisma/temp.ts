@@ -1,32 +1,58 @@
-// Import necessary modules and Prisma client
-
-import { PrismaClient, ThreadType } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function createThreadsPerUser() {
-  try {
-    // Fetch all Raps
-    const users = await prisma.user.findMany();
+async function migrateThreads() {
+  // Find all threads with type "RAP"
+  const rapThreads = await prisma.thread.findMany({
+    where: {
+      type: 'RAP'
+    },
+    include: {
+      rap: true // Assuming a relation is defined in Thread model for rap
+    }
+  });
 
-    // create Thread for each user
-    for (const user of users) {
-      await prisma.thread.create({
+  // For each RAP thread, create a RapThread
+  for (const thread of rapThreads) {
+    if (thread.rap) {
+      await prisma.rapThread.create({
         data: {
-          ownerId: user.id,
-          type: ThreadType.WALL
+          threadId: thread.id,
+          rapId: thread.rap.id,
+          ownerId: thread.rap.userId
         }
       });
     }
-
-    console.log('Migration completed successfully!');
-  } catch (error) {
-    console.error('Error during migration:', error);
-  } finally {
-    // Close Prisma client connection
-    await prisma.$disconnect();
   }
+
+  // Find all threads with type "WALL"
+  const wallThreads = await prisma.thread.findMany({
+    where: {
+      type: 'WALL'
+    },
+    include: {
+      owner: true // Assuming a relation is defined in Thread model for owner
+    }
+  });
+
+  // For each WALL thread, create a Wall
+  for (const thread of wallThreads) {
+    await prisma.wall.create({
+      data: {
+        threadId: thread.id,
+        ownerId: thread.ownerId
+      }
+    });
+  }
+
+  console.log('Migration completed successfully.');
 }
 
-// Run the migration
-createThreadsPerUser();
+migrateThreads()
+  .catch(e => {
+    throw e;
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

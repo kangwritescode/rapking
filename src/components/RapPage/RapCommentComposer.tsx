@@ -13,7 +13,7 @@ import { z } from 'zod';
 import RapCommentTextEditor from './RapCommentTextEditor';
 
 interface RapCommentComposerProps {
-  threadId?: string;
+  threadId?: string | null;
 }
 
 function RapCommentComposer({ threadId }: RapCommentComposerProps) {

@@ -15,18 +15,25 @@ interface RapBarProps {
   commentClickHandler?: () => void;
   sx?: SxProps;
   defaultCommentDrawerIsOpen?: boolean;
+  threadId?: string | null;
 }
 
-function RapBar({ rapData, commentClickHandler, sx, defaultCommentDrawerIsOpen }: RapBarProps) {
+function RapBar({
+  rapData,
+  commentClickHandler,
+  sx,
+  defaultCommentDrawerIsOpen,
+  threadId
+}: RapBarProps) {
   const theme = useTheme();
 
   // Queries
   const { data: rapCommentsCount } = api.threadComments.getThreadCommentsCount.useQuery(
     {
-      rapId: rapData?.id as string
+      id: threadId as string
     },
     {
-      enabled: !!rapData?.id
+      enabled: !!threadId
     }
   );
 
@@ -40,7 +47,8 @@ function RapBar({ rapData, commentClickHandler, sx, defaultCommentDrawerIsOpen }
       <RapCommentDrawer
         isOpen={commentDrawerIsOpen}
         onCloseHandler={() => setCommentDrawerIsOpen(false)}
-        rapId={rapData?.id as string}
+        rapData={rapData}
+        threadId={threadId}
       />
       <Box display='flex' sx={sx}>
         <RapLikeButton rapId={rapData?.id} />

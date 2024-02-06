@@ -158,15 +158,15 @@ export const threadComments = createTRPCRouter({
   getThreadCommentsCount: publicProcedure
     .input(
       z.object({
-        rapId: z.string()
+        id: z.string()
       })
     )
     .query(async ({ input, ctx }) => {
-      const { rapId } = input;
+      const { id } = input;
 
       const count = await ctx.prisma.threadComment.count({
         where: {
-          rapId
+          threadId: id
         }
       });
 

@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Box, Divider, Drawer, IconButton, MenuItem, Select, Typography } from '@mui/material';
+import { Rap } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { api } from 'src/utils/api';
@@ -9,27 +10,21 @@ import RapComments from './RapComments';
 interface RapCommentDrawerProps {
   onCloseHandler: () => void;
   isOpen: boolean;
-  rapId?: string;
+  rapData?: Rap | null;
+  threadId?: string | null;
 }
 
-function RapCommentDrawer({ onCloseHandler, isOpen, rapId }: RapCommentDrawerProps) {
+function RapCommentDrawer({ onCloseHandler, isOpen, threadId }: RapCommentDrawerProps) {
   const { commentId } = useRouter().query;
 
   const [sortBy, setSortBy] = useState<'POPULAR' | 'RECENT'>(commentId ? 'RECENT' : 'POPULAR');
 
   const { data: rapCommentsCount } = api.threadComments.getThreadCommentsCount.useQuery(
     {
-      rapId: rapId as string
+      id: threadId as string
     },
     {
-      enabled: !!rapId
-    }
-  );
-
-  const { data: thread } = api.thread.getThread.useQuery(
-    { rapId: rapId as string },
-    {
-      enabled: !!rapId
+      enabled: !!threadId
     }
   );
 
@@ -44,7 +39,7 @@ function RapCommentDrawer({ onCloseHandler, isOpen, rapId }: RapCommentDrawerPro
             <Icon icon='mdi:close' />
           </IconButton>
         </Box>
-        <RapCommentComposer threadId={thread?.id} />
+        <RapCommentComposer threadId={threadId} />
         <Select
           defaultValue='ALL'
           sx={{
@@ -67,7 +62,7 @@ function RapCommentDrawer({ onCloseHandler, isOpen, rapId }: RapCommentDrawerPro
         }}
       />
       <Box width='24rem' maxWidth='24rem' height='100%' px={5}>
-        <RapComments threadId={thread?.id} sortBy={sortBy} />
+        <RapComments threadId={threadId} sortBy={sortBy} />
       </Box>
     </Drawer>
   );

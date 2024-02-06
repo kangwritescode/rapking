@@ -8,7 +8,7 @@ import RapComment from './RapComment';
 
 interface RapCommentsProps {
   sortBy: 'POPULAR' | 'RECENT';
-  threadId?: string;
+  threadId?: string | null;
 }
 
 function RapComments({ sortBy, threadId }: RapCommentsProps) {
