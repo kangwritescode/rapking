@@ -73,7 +73,7 @@ export const threadComments = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { content, userId, threadId } = input;
 
-      const rapThread = await ctx.prisma.thread.findFirstOrThrow({
+      const thread = await ctx.prisma.thread.findFirstOrThrow({
         where: {
           id: threadId
         }
@@ -82,7 +82,7 @@ export const threadComments = createTRPCRouter({
       const rateLimitResult = await rateLimit({
         maxRequests: 3,
         window: 60 * 60,
-        keyString: `rapComment-${threadId}-${userId}`
+        keyString: `threadComment-${threadId}-${userId}`
       });
 
       if (typeof rateLimitResult === 'number') {
@@ -109,19 +109,21 @@ export const threadComments = createTRPCRouter({
         data: {
           content: sanitizedContent,
           userId,
-          threadId: rapThread.id
+          threadId: thread.id
         }
       });
 
-      await ctx.prisma.notification.create({
-        data: {
-          type: NotificationType.RAP_COMMENT,
-          recipientId: rapThread.ownerId,
-          notifierId: userId,
-          threadCommentId: threadComment.id,
-          rapId: rapThread.rapId
-        }
-      });
+      if (thread.type === 'RAP') {
+        await ctx.prisma.notification.create({
+          data: {
+            type: NotificationType.RAP_COMMENT,
+            recipientId: thread.ownerId,
+            notifierId: userId,
+            threadCommentId: threadComment.id,
+            rapId: thread.rapId
+          }
+        });
+      }
 
       return threadComment;
     }),

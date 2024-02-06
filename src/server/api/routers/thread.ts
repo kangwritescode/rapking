@@ -30,25 +30,5 @@ export const threadRouter = createTRPCRouter({
       });
 
       return thread;
-    }),
-  getRapThread: publicProcedure
-    .input(
-      z.object({
-        id: z.string()
-      })
-    )
-    .query(async ({ input, ctx }) => {
-      const { id } = input;
-
-      const rapThread = await ctx.prisma.rapThread.findFirstOrThrow({
-        where: {
-          id
-        },
-        include: {
-          thread: true
-        }
-      });
-
-      return rapThread.thread;
     })
 });
