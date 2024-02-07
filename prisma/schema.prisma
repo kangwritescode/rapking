@@ -277,7 +277,7 @@ model WhiteList {
 
 model InviteToken {
   id        Int      @id @default(autoincrement())
-  token     String   @unique
+  token     String   @default(cuid())
   createdAt DateTime @default(now())
 }
 
