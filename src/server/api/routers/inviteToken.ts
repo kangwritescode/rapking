@@ -11,7 +11,7 @@ export const inviteTokenRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.inviteToken.findUniqueOrThrow({
         where: {
-          token: input.code
+          id: input.code
         }
       });
 
@@ -23,7 +23,7 @@ export const inviteTokenRouter = createTRPCRouter({
         }),
         ctx.prisma.inviteToken.delete({
           where: {
-            token: input.code
+            id: input.code
           }
         }),
         ctx.prisma.user.update({
