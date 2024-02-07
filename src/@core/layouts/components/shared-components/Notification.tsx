@@ -66,9 +66,11 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
     title = `${notification.notifierUser?.username} is now following you`;
   } else if (notification.type === 'FOLLOWED_USER_RAP') {
     title = `${notification.notifierUser?.username} published a new rap!`;
+  } else if (notification.type === 'WALL_COMMENT') {
+    title = `${notification.notifierUser?.username} commented on your wall`;
   }
   let subtitle = '';
-  if (notification.type === 'RAP_COMMENT') {
+  if (notification.type === 'RAP_COMMENT' || notification.type === 'WALL_COMMENT') {
     subtitle = notification.threadComment ? htmlToText(notification.threadComment.content) : '';
   }
 

@@ -301,6 +301,7 @@ enum NotificationType {
   RAP_VOTE
   COMMENT_VOTE
   FOLLOWED_USER_RAP
+  WALL_COMMENT
 }
 
 enum RapStatus {

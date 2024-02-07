@@ -114,7 +114,7 @@ export const threadComments = createTRPCRouter({
         }
       });
 
-      if (thread.type === 'RAP') {
+      if (thread.type === 'RAP' && thread.ownerId !== userId) {
         await ctx.prisma.notification.create({
           data: {
             type: NotificationType.RAP_COMMENT,
@@ -122,6 +122,17 @@ export const threadComments = createTRPCRouter({
             notifierId: userId,
             threadCommentId: threadComment.id,
             rapId: thread.rapId
+          }
+        });
+      }
+
+      if (thread.type === 'WALL' && thread.ownerId !== userId) {
+        await ctx.prisma.notification.create({
+          data: {
+            type: NotificationType.WALL_COMMENT,
+            recipientId: thread.ownerId,
+            notifierId: userId,
+            threadCommentId: threadComment.id
           }
         });
       }
