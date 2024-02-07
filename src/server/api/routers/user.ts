@@ -23,7 +23,12 @@ export const userRouter = createTRPCRouter({
           profileImageUrl: true,
           bio: true,
           socialLinks: true,
-          country: true
+          country: true,
+          wall: {
+            select: {
+              threadId: true
+            }
+          }
         }
       });
     }),

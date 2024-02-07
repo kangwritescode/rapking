@@ -66,12 +66,13 @@ export const threadComments = createTRPCRouter({
     .input(
       z.object({
         content: z.string(),
-        userId: z.string(),
-        threadId: z.string().optional()
+        threadId: z.string()
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { content, userId, threadId } = input;
+      const { content, threadId } = input;
+
+      const userId = ctx.session.user.id;
 
       const thread = await ctx.prisma.thread.findFirstOrThrow({
         where: {
@@ -86,7 +87,7 @@ export const threadComments = createTRPCRouter({
       });
 
       if (typeof rateLimitResult === 'number') {
-        const resetTime = Math.ceil(rateLimitResult / 60); // Convert to minutes
+        const resetTime = Math.ceil(rateLimitResult / 60);
         throw new TRPCError({
           code: 'TOO_MANY_REQUESTS',
           message: `You are doing that too much. Please try again in ${resetTime} minutes.`

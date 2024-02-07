@@ -58,7 +58,6 @@ function ThreadCommentComposer({ threadId }: ThreadCommentComposerProps) {
 
       postComment(
         {
-          userId: userData.id,
           threadId,
           content: editedContent
         },

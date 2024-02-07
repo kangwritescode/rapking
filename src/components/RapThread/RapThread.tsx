@@ -5,14 +5,19 @@ import { api } from 'src/utils/api';
 import ThreadCommentComposer from '../RapPage/ThreadCommentComposer';
 import ThreadComments from '../RapPage/ThreadComments';
 
-interface ThreadDrawerProps {
+interface RapThreadDrawerProps {
   sortByDefaultValue: 'POPULAR' | 'RECENT';
   threadId?: string | null;
-  closeButtonClickHandler: () => void;
+  closeButtonClickHandler?: () => void;
   sx?: SxProps;
 }
 
-function Thread({ sortByDefaultValue, threadId, closeButtonClickHandler, sx }: ThreadDrawerProps) {
+function RapThread({
+  sortByDefaultValue,
+  threadId,
+  closeButtonClickHandler,
+  sx
+}: RapThreadDrawerProps) {
   const [sortBy, setSortBy] = useState<'POPULAR' | 'RECENT'>(sortByDefaultValue);
 
   const { data: threadCommentsCount } = api.threadComments.getThreadCommentsCount.useQuery(
@@ -74,4 +79,4 @@ function Thread({ sortByDefaultValue, threadId, closeButtonClickHandler, sx }: T
   );
 }
 
-export default Thread;
+export default RapThread;

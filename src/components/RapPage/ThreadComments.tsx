@@ -1,17 +1,18 @@
 import { CircularProgress, Divider, Stack } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { getQueryKey } from '@trpc/react-query';
-import { Fragment, useCallback, useEffect } from 'react';
+import React, { Fragment, useCallback, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { api } from 'src/utils/api';
-import RapComment from './ThreadComment';
+import ThreadComment from './ThreadComment';
 
 interface ThreadCommentsProps {
   sortBy: 'POPULAR' | 'RECENT';
   threadId?: string | null;
+  style?: React.CSSProperties;
 }
 
-function ThreadComments({ sortBy, threadId }: ThreadCommentsProps) {
+function ThreadComments({ sortBy, threadId, style }: ThreadCommentsProps) {
   const {
     data,
     fetchNextPage,
@@ -52,30 +53,30 @@ function ThreadComments({ sortBy, threadId }: ThreadCommentsProps) {
     return clearQueryCache;
   }, [clearQueryCache]);
 
-  const rapCommentsData = data?.pages.flatMap(page => page.threadComments) ?? [];
+  const threadCommentsData = data?.pages.flatMap(page => page.threadComments) ?? [];
 
   return (
     <Virtuoso
       style={{
-        width: '100%'
+        width: '100%',
+        ...style
       }}
-      data={rapCommentsData}
-      totalCount={rapCommentsData.length}
+      data={threadCommentsData}
+      totalCount={threadCommentsData.length}
       endReached={() => {
         if (hasNextPage) {
           fetchNextPage();
         }
       }}
       overscan={200}
-      width='100%'
-      itemContent={(_, rapComment) => (
-        <Fragment key={rapComment.id}>
-          <RapComment
+      itemContent={(_, threadComment) => (
+        <Fragment key={threadComment.id}>
+          <ThreadComment
             sx={{
               py: 5
             }}
-            key={rapComment.id}
-            comment={rapComment}
+            key={threadComment.id}
+            comment={threadComment}
           />
           <Divider />
         </Fragment>

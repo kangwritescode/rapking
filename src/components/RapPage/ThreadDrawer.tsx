@@ -1,6 +1,6 @@
 import { Drawer } from '@mui/material';
 import { useRouter } from 'next/router';
-import Thread from '../Thread/Thread';
+import RapThread from '../RapThread/RapThread';
 
 interface ThreadDrawerProps {
   onCloseHandler: () => void;
@@ -13,7 +13,7 @@ function ThreadDrawer({ onCloseHandler, isOpen, threadId }: ThreadDrawerProps) {
 
   return (
     <Drawer anchor='right' open={isOpen} onClose={onCloseHandler}>
-      <Thread
+      <RapThread
         sortByDefaultValue={commentId ? 'RECENT' : 'POPULAR'}
         threadId={threadId}
         closeButtonClickHandler={onCloseHandler}
