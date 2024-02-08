@@ -77,6 +77,9 @@ export const leaderboardRouter = createTRPCRouter({
         where.createdAt = { gte: filterDate };
       }
 
+      // Remove my own user from the leaderboard
+      where.username = { not: 'mello' };
+
       const users = await ctx.prisma.user.findMany({
         orderBy: [
           {
