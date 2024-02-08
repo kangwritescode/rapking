@@ -79,9 +79,14 @@ export const leaderboardRouter = createTRPCRouter({
       }
 
       const users = await ctx.prisma.user.findMany({
-        orderBy: {
-          points: 'desc'
-        },
+        orderBy: [
+          {
+            points: 'desc'
+          },
+          {
+            id: 'asc'
+          }
+        ],
         cursor: cursor ? { id: cursor } : undefined,
         take: limit + 1,
         where,
