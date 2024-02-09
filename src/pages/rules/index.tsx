@@ -47,9 +47,9 @@ function RulesPage() {
           <li>Impersonating other users.</li>
           <li>
             <b> Racist shit does not fly here.</b> Zero tolerance for racist content. If your
-            clowning in rap lyrics and it's all in good fun, that's one thing, but blatantly racist
-            lyrics, comments, images, etc., or some ignorant casual 4Chan-esque racist meme shit
-            &nbsp;
+            clowning about race in rap lyrics and it's all jokes and in good fun, that's one thing,
+            but blatantly racist lyrics, comments, images, etc., or some ignorant casual 4Chan-esque
+            racist meme shit &nbsp;
             <b>will result in an immediate and permanent ban.</b>
           </li>
         </Box>

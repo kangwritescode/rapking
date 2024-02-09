@@ -33,11 +33,9 @@ export const pulseRouter = createTRPCRouter({
         }
       });
 
-      if (env.NODE_ENV === 'production') {
-        await sendPulseChannelUpdate({
-          content: htmlToText(createdPost.content)
-        });
-      }
+      await sendPulseChannelUpdate({
+        content: htmlToText(createdPost.content)
+      });
 
       return createdPost;
     }),
