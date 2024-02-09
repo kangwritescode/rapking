@@ -6,8 +6,8 @@ import { useTheme } from '@mui/material/styles';
 import { LayoutProps } from 'src/@core/layouts/types';
 
 // ** Footer Content Component
-import FooterContent from './FooterContent';
 import { useRouter } from 'next/router';
+import FooterContent from './FooterContent';
 
 interface Props {
   settings: LayoutProps['settings'];
