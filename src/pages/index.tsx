@@ -1,8 +1,6 @@
 import { Box, Button, Divider, Stack, Theme, Typography, useMediaQuery } from '@mui/material';
-import { Session } from 'next-auth';
-import { getSession, signIn } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { GetServerSideProps } from 'next/types';
 import BoxOutlineButton from 'src/components/BoxOutlinedButton';
 import BannerContainer from 'src/components/LandingPage/BannerContainer';
 import LandingFooter from 'src/components/LandingPage/LandingFooter';
@@ -145,33 +143,6 @@ const LandingPage = () => {
       <LandingFooter />
     </Box>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async context => {
-  const session: Session | null = await getSession(context);
-
-  if (session?.user) {
-    const username = session.user.username;
-    if (username) {
-      return {
-        redirect: {
-          destination: `/u/${username}`,
-          permanent: false
-        }
-      };
-    } else {
-      return {
-        redirect: {
-          destination: '/create-profile',
-          permanent: false
-        }
-      };
-    }
-  }
-
-  return {
-    props: {} // will be passed to the page component as props
-  };
 };
 
 export default LandingPage;

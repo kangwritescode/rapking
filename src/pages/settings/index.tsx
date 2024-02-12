@@ -60,28 +60,4 @@ function SettingsPage() {
 
 export default SettingsPage;
 
-import { GetServerSidePropsContext } from 'next';
-import { getSession } from 'next-auth/react';
-import { GetServerSideProps } from 'next/types';
 import DeleteAccountButton from 'src/components/SettingsPage/DeleteAccountButton';
-
-export const getServerSideProps: GetServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const session = await getSession(context);
-  const redirectToCreateProfilePage =
-    session && (!session?.user.profileIsComplete || !session?.user.isWhitelisted);
-
-  if (redirectToCreateProfilePage) {
-    return {
-      redirect: {
-        destination: '/create-profile/',
-        permanent: false
-      }
-    };
-  }
-
-  return {
-    props: {}
-  };
-};

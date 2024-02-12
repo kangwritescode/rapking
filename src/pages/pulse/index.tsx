@@ -45,28 +45,5 @@ function BlogPage() {
 export default BlogPage;
 
 import { Box, Divider, Typography } from '@mui/material';
-import { GetServerSidePropsContext } from 'next';
-import { getSession, useSession } from 'next-auth/react';
-import { GetServerSideProps } from 'next/types';
+import { useSession } from 'next-auth/react';
 import { api } from 'src/utils/api';
-
-export const getServerSideProps: GetServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const session = await getSession(context);
-  const redirectToCreateProfilePage =
-    session && (!session?.user.profileIsComplete || !session?.user.isWhitelisted);
-
-  if (redirectToCreateProfilePage) {
-    return {
-      redirect: {
-        destination: '/create-profile/',
-        permanent: false
-      }
-    };
-  }
-
-  return {
-    props: {}
-  };
-};

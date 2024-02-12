@@ -1,9 +1,7 @@
 import { Container } from '@mui/material';
 import { Rap } from '@prisma/client';
-import { GetServerSidePropsContext } from 'next';
-import { getSession, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { GetServerSideProps } from 'next/types';
 import { toast } from 'react-hot-toast';
 import sanitize from 'sanitize-html';
 import { CreateRapPayload } from 'src/server/api/routers/rap';
@@ -84,24 +82,3 @@ function WritePage() {
 }
 
 export default WritePage;
-
-export const getServerSideProps: GetServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const session = await getSession(context);
-  const redirectToCreateProfilePage =
-    session && (!session?.user.profileIsComplete || !session?.user.isWhitelisted);
-
-  if (redirectToCreateProfilePage) {
-    return {
-      redirect: {
-        destination: '/create-profile/',
-        permanent: false
-      }
-    };
-  }
-
-  return {
-    props: {}
-  };
-};

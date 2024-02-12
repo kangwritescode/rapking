@@ -19,6 +19,7 @@ import StepperCustomDot from '../../components/CreateProfilePage/StepperCustomDo
 
 // ** Styled Components
 import { Box, Stack, useTheme } from '@mui/material';
+import { useRouter } from 'next/router';
 import StepperWrapper from 'src/@core/styles/mui/stepper';
 import InviteCodeStep from 'src/components/CreateProfilePage/InviteCodeStep';
 import { api } from 'src/utils/api';
@@ -141,29 +142,3 @@ const CompleteProfilePage = () => {
 };
 
 export default CompleteProfilePage;
-
-import { GetServerSidePropsContext } from 'next';
-import { getSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { GetServerSideProps } from 'next/types';
-
-export const getServerSideProps: GetServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const session = await getSession(context);
-  const redirectToUserPage =
-    (session && session?.user.profileIsComplete && session?.user.isWhitelisted) || !session;
-
-  if (redirectToUserPage) {
-    return {
-      redirect: {
-        destination: `/u/${session?.user.username}`,
-        permanent: false
-      }
-    };
-  }
-
-  return {
-    props: {}
-  };
-};

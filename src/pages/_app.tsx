@@ -33,6 +33,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 
 // ** Global css styles
+import CreateProfileGuard from 'src/components/CreateProfileGuard';
 import { api } from 'src/utils/api';
 import '../../styles/globals.css';
 
@@ -114,7 +115,9 @@ const App: any = (props: ExtendedAppProps) => {
               return (
                 <ThemeComponent settings={settings}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    {getLayout(<Component {...pageProps} />)}
+                    <CreateProfileGuard>
+                      {getLayout(<Component {...pageProps} />)}
+                    </CreateProfileGuard>
                     {/* <ReactQueryDevtools initialIsOpen={false} /> */}
                   </LocalizationProvider>
                   <ReactHotToast>
