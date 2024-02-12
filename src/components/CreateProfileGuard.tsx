@@ -34,7 +34,6 @@ const CreateProfileGuard = ({ children }: { children: React.ReactNode }) => {
   }, [status, session, userData, isUserDataLoading]);
 
   useEffect(() => {
-    console.log(router.pathname);
     if (isLoading) return;
 
     const shouldRedirectToCreateProfile =

@@ -38,10 +38,20 @@ const Avatar = styled(CustomAvatar)<CustomAvatarProps>({
 const RenderAvatar = ({ notification }: { notification: NotificationWithAssociatedData }) => {
   const { notifierUser, type } = notification;
 
+  let avatarUrl = '';
+
   if ((type === 'RAP_COMMENT' || type === 'FOLLOW') && notifierUser?.profileImageUrl) {
-    return (
-      <Avatar alt='notification-avatar' src={`${BUCKET_URL}/${notifierUser.profileImageUrl}`} />
+    avatarUrl = `${BUCKET_URL}/${notifierUser.profileImageUrl}`;
+  } else if (type === 'FOLLOWED_USER_RAP') {
+    return notification.rap?.coverArtUrl ? (
+      <Avatar alt='notification-avatar' src={`${BUCKET_URL}/${notification.rap.coverArtUrl}`} />
+    ) : (
+      <Avatar alt='notification-avatar' src={`${BUCKET_URL}/default/cover-art.jpg`} />
     );
+  }
+
+  if (avatarUrl) {
+    return <Avatar alt='notification-avatar' src={avatarUrl} />;
   }
 
   return (

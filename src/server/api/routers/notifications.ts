@@ -10,6 +10,7 @@ export type NotificationWithAssociatedData = Notification & {
   rap: {
     title: string;
     id: string;
+    coverArtUrl: string;
   } | null;
   notifierUser: {
     id: string;
@@ -37,7 +38,8 @@ export const notificationsRouter = createTRPCRouter({
         rap: {
           select: {
             title: true,
-            id: true
+            id: true,
+            coverArtUrl: true
           }
         },
         notifierUser: {
