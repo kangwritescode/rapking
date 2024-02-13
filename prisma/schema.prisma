@@ -340,9 +340,11 @@ model RapReview {
   originality   Decimal  @db.Decimal(3, 2)
   delivery      Decimal? @db.Decimal(3, 2)
   total         Decimal  @db.Decimal(3, 2)
-  writtenReview String?
+  writtenReview String?  @db.VarChar(300)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   user          User     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
   rap           Rap      @relation(fields: [rapId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewerId, rapId])
 }

@@ -1,15 +1,16 @@
 import { Icon } from '@iconify/react';
 import { Rating, Stack, SxProps } from '@mui/material';
+import { Decimal } from '@prisma/client/runtime';
 
 interface FireRatingProps {
   sx?: SxProps;
-  defaultValue?: number;
+  value?: number | Decimal;
   precision?: number;
   fontSize?: string;
   onChange?: (rating: number) => void;
 }
 
-function FireRating({ sx, defaultValue, precision, fontSize, onChange }: FireRatingProps) {
+function FireRating({ sx, value, precision, fontSize, onChange }: FireRatingProps) {
   const onRatingChange = (_: any, newValue: number | null) => {
     onChange && newValue && onChange(newValue);
   };
@@ -36,10 +37,8 @@ function FireRating({ sx, defaultValue, precision, fontSize, onChange }: FireRat
           },
           fontSize: fontSize || '2.5rem'
         }}
-        name='customized-color'
-        defaultValue={defaultValue}
+        value={Number(value)}
         onChange={onRatingChange}
-        getLabelText={(value: number) => `${value} Heart${value !== 1 ? 's' : ''}`}
         precision={precision}
         icon={<Icon icon='mdi:fire' />}
         emptyIcon={<Icon icon='mdi:fire' />}

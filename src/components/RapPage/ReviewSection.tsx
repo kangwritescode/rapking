@@ -1,8 +1,10 @@
 import { Icon } from '@iconify/react';
-import { Box, Button, IconButton, Stack, SxProps, Typography } from '@mui/material';
+import { Box, Button, Divider, IconButton, Stack, SxProps, Typography } from '@mui/material';
 import { Rap } from '@prisma/client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { api } from 'src/utils/api';
 import FireRating from './FireRating';
+import RapReviews from './RapReviews';
 import ReviewMaker from './ReviewMaker';
 
 interface ReviewSectionProps {
@@ -13,6 +15,22 @@ interface ReviewSectionProps {
 
 function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) {
   const [showReviewMaker, setShowReviewMaker] = useState<boolean>(false);
+
+  const { data: rapReview, refetch } = api.reviews.getReview.useQuery(
+    { rapId: rapData?.id || '' },
+    {
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchIntervalInBackground: false,
+      refetchOnReconnect: false
+    }
+  );
+
+  useEffect(() => {
+    refetch();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Stack sx={{ pt: '3rem', ...sx }}>
@@ -40,12 +58,39 @@ function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) 
         </IconButton>
       )}
       {showReviewMaker ? (
-        <ReviewMaker rapData={rapData} />
+        <ReviewMaker
+          rapData={rapData}
+          onSuccess={() => {
+            setShowReviewMaker(false);
+            refetch();
+          }}
+          defaultRapReview={rapReview}
+        />
       ) : (
         <>
+          <Box bgcolor='#282828'>
+            <Stack sx={{ m: '2rem 0rem 1.5rem' }} px='2rem'>
+              <Typography fontSize='1.2rem'>You have not submitted a review yet.</Typography>
+              <Button
+                variant='text'
+                color='secondary'
+                sx={{
+                  width: 'fit-content',
+                  ml: '-.6rem',
+                  textTransform: 'unset',
+                  fontSize: '1.2rem',
+                  pt: '0rem'
+                }}
+                onClick={() => setShowReviewMaker(true)}
+              >
+                Leave a review
+              </Button>
+            </Stack>
+          </Box>
           <Stack
             sx={{
-              p: '1rem 2rem 3rem'
+              p: '1rem 2rem 3rem',
+              mt: '1.5rem'
             }}
           >
             <Typography fontSize='1.25rem' fontWeight='600'>
@@ -71,25 +116,8 @@ function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) 
               </Typography>
             </Stack>
           </Stack>
-          <Box bgcolor='#282828'>
-            <Stack sx={{ m: '2rem 0rem 1.5rem' }} px='2rem'>
-              <Typography fontSize='1.2rem'>You have not submitted a review yet.</Typography>
-              <Button
-                variant='text'
-                color='secondary'
-                sx={{
-                  width: 'fit-content',
-                  ml: '-.6rem',
-                  textTransform: 'unset',
-                  fontSize: '1.2rem',
-                  pt: '0rem'
-                }}
-                onClick={() => setShowReviewMaker(true)}
-              >
-                Leave a review
-              </Button>
-            </Stack>
-          </Box>
+          <Divider />
+          <RapReviews />
         </>
       )}
     </Stack>

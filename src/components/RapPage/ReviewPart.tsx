@@ -1,15 +1,16 @@
 import { Stack, SxProps, Typography } from '@mui/material';
+import { Decimal } from '@prisma/client/runtime';
 import FireRating from './FireRating';
 
 interface ReviewSectionProps {
   title: string;
   subtitle: string;
   onChange: (rating: number) => void;
-  defaultValue: number;
+  value?: number | Decimal;
   sx?: SxProps;
 }
 
-function ReviewPart({ title, subtitle, onChange, defaultValue, sx }: ReviewSectionProps) {
+function ReviewPart({ title, subtitle, onChange, value, sx }: ReviewSectionProps) {
   return (
     <Stack direction='row' alignItems='top' justifyContent='space-between' sx={sx}>
       <Stack>
@@ -19,13 +20,14 @@ function ReviewPart({ title, subtitle, onChange, defaultValue, sx }: ReviewSecti
         <Typography variant='body2'>{subtitle}</Typography>
       </Stack>
       <FireRating
-        defaultValue={defaultValue}
+        value={value}
         precision={0.5}
         sx={{
           fontSize: '2.5rem',
           ml: '1rem',
           width: 'fit-content'
         }}
+        onChange={onChange}
       />
     </Stack>
   );
