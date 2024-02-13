@@ -2,9 +2,10 @@ import { Icon } from '@iconify/react';
 import { Box, IconButton, SxProps, useTheme } from '@mui/material';
 import { Rap, User } from '@prisma/client';
 import { useState } from 'react';
-import RapCommentDrawer from 'src/components/RapPage/ThreadDrawer';
 import { api } from 'src/utils/api';
 import RapLikeButton from './RapLikeButton';
+import ReviewDrawer from './ReviewDrawer';
+import ThreadDrawer from './ThreadDrawer';
 
 interface RapBarProps {
   rapData?:
@@ -41,16 +42,41 @@ function RapBar({
   const [commentDrawerIsOpen, setCommentDrawerIsOpen] = useState<boolean>(
     Boolean(defaultCommentDrawerIsOpen)
   );
+  const [reviewDrawerIsOpen, setReviewDrawerIsOpen] = useState<boolean>(false);
 
   return (
     <>
-      <RapCommentDrawer
+      <ThreadDrawer
         isOpen={commentDrawerIsOpen}
         onCloseHandler={() => setCommentDrawerIsOpen(false)}
         threadId={threadId}
       />
+      <ReviewDrawer
+        isOpen={reviewDrawerIsOpen}
+        onCloseHandler={() => setReviewDrawerIsOpen(false)}
+        rapData={rapData}
+      />
+
       <Box display='flex' sx={sx}>
         <RapLikeButton rapId={rapData?.id} />
+        <Box
+          sx={{
+            ml: theme.spacing(5),
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          <IconButton
+            onClick={() => setReviewDrawerIsOpen(true)}
+            sx={{
+              pr: 1
+            }}
+            disabled={rapData?.disableComments}
+          >
+            <Icon icon='mdi:fire' />
+          </IconButton>
+          {rapCommentsCount || 0}
+        </Box>
         <Box
           sx={{
             ml: theme.spacing(5),

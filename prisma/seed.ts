@@ -144,7 +144,7 @@ async function seedDatabase() {
 
   await prisma.inviteToken.create({
     data: {
-      token: '123'
+      id: '123'
     }
   });
 }
