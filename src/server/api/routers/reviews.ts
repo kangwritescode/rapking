@@ -114,6 +114,15 @@ export const reviewsRouter = createTRPCRouter({
       const reviews = await ctx.prisma.rapReview.findMany({
         where: {
           rapId: input.rapId
+        },
+        include: {
+          reviewer: {
+            select: {
+              id: true,
+              username: true,
+              profileImageUrl: true
+            }
+          }
         }
       });
 
@@ -126,5 +135,50 @@ export const reviewsRouter = createTRPCRouter({
       }
 
       return reviews;
+    }),
+  getOverallRatings: protectedProcedure
+    .input(z.object({ rapId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const reviews = await ctx.prisma.rapReview.findMany({
+        where: {
+          rapId: input.rapId
+        },
+        select: {
+          lyricism: true,
+          flow: true,
+          originality: true,
+          delivery: true,
+          total: true
+        }
+      });
+
+      let lyricismSum = 0;
+      let flowSum = 0;
+      let originalitySum = 0;
+      let deliverySum = 0;
+      let totalSum = 0;
+      let deliveryCount = 0;
+
+      reviews.forEach(review => {
+        lyricismSum += Number(review.lyricism);
+        flowSum += Number(review.flow);
+        originalitySum += Number(review.originality);
+        totalSum += Number(review.total);
+        if (review.delivery !== null) {
+          deliverySum += Number(review.delivery);
+          deliveryCount++;
+        }
+      });
+
+      const count = reviews.length;
+      const overallRatings = {
+        lyricism: count > 0 ? (lyricismSum / count).toFixed(1) : 0,
+        flow: count > 0 ? (flowSum / count).toFixed(1) : 0,
+        originality: count > 0 ? (originalitySum / count).toFixed(1) : 0,
+        delivery: deliveryCount > 0 ? (deliverySum / deliveryCount).toFixed(1) : null,
+        total: count > 0 ? (totalSum / count).toFixed(1) : 0
+      };
+
+      return overallRatings;
     })
 });

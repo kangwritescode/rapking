@@ -5,7 +5,7 @@ import CharacterCount from '@tiptap/extension-character-count';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
@@ -17,12 +17,11 @@ interface ReviewMakerProps {
   rapData?: Rap | null;
   onSuccess?: () => void;
   defaultRapReview?: RapReview | null;
+  viewOnly?: boolean;
 }
 
-function ReviewMaker({ rapData, onSuccess, defaultRapReview }: ReviewMakerProps) {
+function ReviewMaker({ rapData, onSuccess, defaultRapReview, viewOnly }: ReviewMakerProps) {
   const { mutateAsync: postReview } = api.reviews.upsertReview.useMutation();
-
-  const { lyricism, flow, originality, delivery, writtenReview } = defaultRapReview || {};
 
   const {
     control,
@@ -32,11 +31,11 @@ function ReviewMaker({ rapData, onSuccess, defaultRapReview }: ReviewMakerProps)
     formState: { isValid, isDirty }
   } = useForm({
     defaultValues: {
-      lyricism: lyricism || 0,
-      flow: flow || 0,
-      originality: originality || 0,
-      delivery: delivery || 0,
-      writtenReview: writtenReview || ''
+      lyricism: defaultRapReview?.lyricism || 0,
+      flow: defaultRapReview?.flow || 0,
+      originality: defaultRapReview?.originality || 0,
+      delivery: defaultRapReview?.delivery || 0,
+      writtenReview: defaultRapReview?.writtenReview || ''
     },
     resolver: zodResolver(
       z.object({
@@ -62,7 +61,8 @@ function ReviewMaker({ rapData, onSuccess, defaultRapReview }: ReviewMakerProps)
     ],
     onUpdate({ editor }) {
       setValue('writtenReview', editor.getText(), { shouldDirty: true });
-    }
+    },
+    editable: !viewOnly
   });
 
   useEffect(() => {
@@ -79,6 +79,8 @@ function ReviewMaker({ rapData, onSuccess, defaultRapReview }: ReviewMakerProps)
   }, [defaultRapReview, reset, editor]);
 
   const onSubmitHandler = async () => {
+    if (viewOnly) return;
+
     const { lyricism, flow, originality, delivery, writtenReview } = getValues();
     const rapId = rapData?.id;
 
@@ -105,6 +107,36 @@ function ReviewMaker({ rapData, onSuccess, defaultRapReview }: ReviewMakerProps)
     }
   };
 
+  const reviewParts: Array<{
+    name: 'lyricism' | 'flow' | 'originality' | 'delivery';
+    title: string;
+    subtitle: string;
+  }> = useMemo(
+    () => [
+      {
+        name: 'lyricism',
+        title: 'Lyricism',
+        subtitle: 'Rhymes, punchlines, literary devices, and structure.'
+      },
+      {
+        name: 'flow',
+        title: 'Flow',
+        subtitle: 'Rhythm, cadence, pace, and timing of the lyrics.'
+      },
+      {
+        name: 'originality',
+        title: 'Originality',
+        subtitle: 'Creativity, uniqueness, and innovation.'
+      },
+      {
+        name: 'delivery',
+        title: `Delivery ${viewOnly ? '' : '(Optional)'}`,
+        subtitle: 'Vocal performance, emotion, and energy.'
+      }
+    ],
+    [viewOnly]
+  );
+
   return (
     <Stack
       sx={{
@@ -122,80 +154,46 @@ function ReviewMaker({ rapData, onSuccess, defaultRapReview }: ReviewMakerProps)
           mb: '1rem'
         }}
       />
-      <Controller
-        control={control}
-        name='lyricism'
-        render={({ field }) => (
-          <ReviewPart
-            title='Lyricism'
-            subtitle='Rhymes, punchlines, literary devices, and structure.'
-            onChange={field.onChange}
-            value={field.value}
-            sx={{ mb: '1rem' }}
-          />
-        )}
-      />
-      <Controller
-        control={control}
-        name='flow'
-        render={({ field }) => (
-          <ReviewPart
-            title='Flow'
-            subtitle='Rhythm, cadence, pace, and timing of the lyrics.'
-            onChange={field.onChange}
-            value={field.value}
-            sx={{ mb: '1rem' }}
-          />
-        )}
-      />
-      <Controller
-        control={control}
-        name='originality'
-        render={({ field }) => (
-          <ReviewPart
-            title='Originality'
-            subtitle='Creativity, uniqueness, and innovation.'
-            onChange={field.onChange}
-            value={field.value}
-            sx={{ mb: '1rem' }}
-          />
-        )}
-      />
-      <Controller
-        control={control}
-        name='delivery'
-        render={({ field }) => (
-          <ReviewPart
-            title='Delivery (Optional)'
-            subtitle='Vocal performance, emotion, and energy.'
-            onChange={field.onChange}
-            value={field.value}
-            sx={{ mb: '1rem' }}
-          />
-        )}
-      />
-
+      {reviewParts.map((part, index) => (
+        <Controller
+          key={index}
+          control={control}
+          name={part.name}
+          render={({ field }) => (
+            <ReviewPart
+              title={part.title}
+              subtitle={part.subtitle}
+              onChange={field.onChange}
+              value={Number(field.value)}
+              sx={{ mb: '1rem' }}
+              readOnly={viewOnly}
+            />
+          )}
+        />
+      ))}
       <Typography variant='h6' fontWeight={600} mb='.5rem'>
-        Written Review (Optional)
+        Written Review {!viewOnly ? '(Optional)' : null}
       </Typography>
       <GenericTipTapEditor editor={editor} />
-      <Stack
-        width='100%'
-        sx={{
-          mt: '1.5rem'
-        }}
-      >
-        <Button
+      {!viewOnly ? (
+        <Stack
+          width='100%'
           sx={{
-            flexGrow: 1
+            mt: '1.5rem'
           }}
-          variant='contained'
-          disabled={!isValid || !isDirty}
-          onClick={onSubmitHandler}
         >
-          {defaultRapReview ? 'Update' : 'Submit'}
-        </Button>
-      </Stack>
+          <Button
+            sx={{
+              flexGrow: 1
+            }}
+            variant='contained'
+            disabled={!isValid || !isDirty || viewOnly}
+            onClick={onSubmitHandler}
+          >
+            {defaultRapReview ? 'Update' : 'Submit'}
+          </Button>
+        </Stack>
+      ) : null}
     </Stack>
   );
 }

@@ -8,9 +8,10 @@ interface ReviewSectionProps {
   onChange: (rating: number) => void;
   value?: number | Decimal;
   sx?: SxProps;
+  readOnly?: boolean;
 }
 
-function ReviewPart({ title, subtitle, onChange, value, sx }: ReviewSectionProps) {
+function ReviewPart({ title, subtitle, onChange, value, sx, readOnly }: ReviewSectionProps) {
   return (
     <Stack direction='row' alignItems='top' justifyContent='space-between' sx={sx}>
       <Stack>
@@ -28,6 +29,7 @@ function ReviewPart({ title, subtitle, onChange, value, sx }: ReviewSectionProps
           width: 'fit-content'
         }}
         onChange={onChange}
+        readOnly={readOnly}
       />
     </Stack>
   );

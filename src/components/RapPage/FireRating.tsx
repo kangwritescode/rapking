@@ -8,9 +8,10 @@ interface FireRatingProps {
   precision?: number;
   fontSize?: string;
   onChange?: (rating: number) => void;
+  readOnly?: boolean;
 }
 
-function FireRating({ sx, value, precision, fontSize, onChange }: FireRatingProps) {
+function FireRating({ sx, value, precision, fontSize, onChange, readOnly }: FireRatingProps) {
   const onRatingChange = (_: any, newValue: number | null) => {
     onChange && newValue && onChange(newValue);
   };
@@ -42,6 +43,7 @@ function FireRating({ sx, value, precision, fontSize, onChange }: FireRatingProp
         precision={precision}
         icon={<Icon icon='mdi:fire' />}
         emptyIcon={<Icon icon='mdi:fire' />}
+        readOnly={readOnly}
       />
     </Stack>
   );

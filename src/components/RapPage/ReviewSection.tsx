@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Box, Button, Divider, IconButton, Stack, SxProps, Typography } from '@mui/material';
-import { Rap } from '@prisma/client';
+import { Rap, RapReview } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import { api } from 'src/utils/api';
 import FireRating from './FireRating';
@@ -15,8 +15,9 @@ interface ReviewSectionProps {
 
 function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) {
   const [showReviewMaker, setShowReviewMaker] = useState<boolean>(false);
+  const [reviewMakerDefaultReview, setReviewMakerDefaultReview] = useState<RapReview | null>(null);
 
-  const { data: rapReview, refetch } = api.reviews.getReview.useQuery(
+  const { data: rapReview, refetch: reloadReview } = api.reviews.getReview.useQuery(
     { rapId: rapData?.id || '' },
     {
       refetchOnMount: false,
@@ -26,11 +27,28 @@ function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) 
     }
   );
 
+  const { data: overallRatings, refetch: refetchOverallRatings } =
+    api.reviews.getOverallRatings.useQuery({
+      rapId: rapData?.id || ''
+    });
+
   useEffect(() => {
-    refetch();
+    reloadReview();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (rapReview) {
+      setReviewMakerDefaultReview(rapReview);
+    }
+  }, [rapReview]);
+
+  useEffect(() => {
+    if (!showReviewMaker) {
+      refetchOverallRatings();
+    }
+  }, [showReviewMaker, refetchOverallRatings]);
 
   return (
     <Stack sx={{ pt: '3rem', ...sx }}>
@@ -62,39 +80,41 @@ function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) 
           rapData={rapData}
           onSuccess={() => {
             setShowReviewMaker(false);
-            refetch();
+            reloadReview();
           }}
-          defaultRapReview={rapReview}
+          defaultRapReview={reviewMakerDefaultReview}
         />
       ) : (
         <>
-          <Box bgcolor='#282828'>
-            <Stack sx={{ m: '2rem 0rem 1.5rem' }} px='2rem'>
-              <Typography fontSize='1.2rem'>You have not submitted a review yet.</Typography>
-              <Button
-                variant='text'
-                color='secondary'
-                sx={{
-                  width: 'fit-content',
-                  ml: '-.6rem',
-                  textTransform: 'unset',
-                  fontSize: '1.2rem',
-                  pt: '0rem'
-                }}
-                onClick={() => setShowReviewMaker(true)}
-              >
-                Leave a review
-              </Button>
-            </Stack>
-          </Box>
+          {rapReview ? null : (
+            <Box bgcolor='#282828'>
+              <Stack sx={{ m: '1.5rem 0rem 1rem' }} px='2rem'>
+                <Typography fontSize='1rem'>You have not submitted a review yet.</Typography>
+                <Button
+                  variant='text'
+                  color='secondary'
+                  sx={{
+                    width: 'fit-content',
+                    ml: '-.6rem',
+                    textTransform: 'unset',
+                    fontSize: '1rem',
+                    pt: '0rem'
+                  }}
+                  onClick={() => setShowReviewMaker(true)}
+                >
+                  Leave a review
+                </Button>
+              </Stack>
+            </Box>
+          )}
           <Stack
             sx={{
               p: '1rem 2rem 3rem',
-              mt: '1.5rem'
+              mt: rapReview ? '' : '1.5rem'
             }}
           >
             <Typography fontSize='1.25rem' fontWeight='600'>
-              Overall Rating (4.5)
+              Overall Rating ({overallRatings?.total})
             </Typography>
             <FireRating
               sx={{
@@ -103,21 +123,24 @@ function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) 
                 mt: '.25rem'
               }}
               fontSize='3.5rem'
+              precision={0.1}
+              value={Number(overallRatings?.total) || 0}
             />
-            <Stack direction='row' alignItems='center' sx={{ mt: '1rem' }}>
+            <Stack direction='row' alignItems='center' sx={{ mt: '.5rem' }}>
               <Typography
                 variant='body2'
                 sx={{
                   pointerEvents: 'none'
                 }}
               >
-                Lyricism: 4.5 &nbsp; • &nbsp; Flow: 4.5 &nbsp; • &nbsp; Originality: 4.5 &nbsp; •
-                &nbsp; Delivery: 4.5
+                Lyricism: {overallRatings?.lyricism} &nbsp; • &nbsp; Flow: {overallRatings?.flow}{' '}
+                &nbsp; • &nbsp; Originality: {overallRatings?.originality} &nbsp; • &nbsp; Delivery:{' '}
+                {overallRatings?.delivery}
               </Typography>
             </Stack>
           </Stack>
           <Divider />
-          <RapReviews />
+          <RapReviews rapId={rapData?.id} />
         </>
       )}
     </Stack>
