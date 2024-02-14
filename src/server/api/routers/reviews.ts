@@ -15,11 +15,20 @@ export const reviewsRouter = createTRPCRouter({
         originality: z.number(),
         delivery: z.number().optional(),
         writtenReview: z.string().optional(),
-        rapId: z.string()
+        rapId: z.string(),
+        reviewerId: z.string()
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { lyricism, flow, originality, delivery, writtenReview, rapId } = input;
+      const { lyricism, flow, originality, delivery, writtenReview, rapId, reviewerId } = input;
+
+      // * Check if the user is trying to review their own rap
+      if (reviewerId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'You do not have permission to do that.'
+        });
+      }
 
       if (writtenReview && bannedWords.some(word => writtenReview.includes(word))) {
         throw new TRPCError({
@@ -30,9 +39,9 @@ export const reviewsRouter = createTRPCRouter({
 
       // * Rate limiting
       const rateLimitResult = await rateLimit({
-        maxRequests: 20,
+        maxRequests: 2,
         window: 60 * 30,
-        keyString: `rap-reviews-${ctx.session.user.id}-${rapId}`
+        keyString: `rap-reviews-${reviewerId}-${rapId}`
       });
 
       if (typeof rateLimitResult === 'number') {
@@ -47,8 +56,8 @@ export const reviewsRouter = createTRPCRouter({
       if (delivery) components.push(delivery);
       let total = components.reduce((acc, curr) => acc + curr, 0) / components.length;
 
-      // Round total to  2 decimal places
-      total = Math.round(total * 100) / 100;
+      // Round total to 1 decimal place
+      total = Math.round(total * 10) / 10;
 
       const sanitizedWrittenReview = writtenReview ? sanitize(writtenReview) : '';
 
@@ -57,7 +66,7 @@ export const reviewsRouter = createTRPCRouter({
           where: {
             reviewerId_rapId: {
               rapId,
-              reviewerId: ctx.session.user.id
+              reviewerId: reviewerId
             }
           },
           create: {
@@ -66,7 +75,7 @@ export const reviewsRouter = createTRPCRouter({
             originality,
             delivery,
             writtenReview: sanitizedWrittenReview,
-            reviewerId: ctx.session.user.id,
+            reviewerId: reviewerId,
             rapId,
             total
           },
@@ -76,7 +85,8 @@ export const reviewsRouter = createTRPCRouter({
             originality,
             delivery,
             writtenReview: sanitizedWrittenReview,
-            total
+            total,
+            reviewerId
           }
         });
 
@@ -95,6 +105,20 @@ export const reviewsRouter = createTRPCRouter({
       }
     }),
   getReview: protectedProcedure
+    .input(z.object({ rapId: z.string(), userId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const review = await ctx.prisma.rapReview.findUnique({
+        where: {
+          reviewerId_rapId: {
+            rapId: input.rapId,
+            reviewerId: input.userId
+          }
+        }
+      });
+
+      return review;
+    }),
+  currentUserReview: protectedProcedure
     .input(z.object({ rapId: z.string() }))
     .query(async ({ input, ctx }) => {
       const review = await ctx.prisma.rapReview.findUnique({
@@ -180,5 +204,36 @@ export const reviewsRouter = createTRPCRouter({
       };
 
       return overallRatings;
+    }),
+  deleteReview: protectedProcedure
+    .input(z.object({ reviewId: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const review = await ctx.prisma.rapReview.findUnique({
+        where: {
+          id: input.reviewId
+        }
+      });
+
+      if (!review) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Review not found.'
+        });
+      }
+
+      if (review.reviewerId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'You do not have permission to do that.'
+        });
+      }
+
+      await ctx.prisma.rapReview.delete({
+        where: {
+          id: input.reviewId
+        }
+      });
+
+      return review;
     })
 });

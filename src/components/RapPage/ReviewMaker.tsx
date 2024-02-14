@@ -1,10 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Stack, Typography } from '@mui/material';
-import { Rap, RapReview } from '@prisma/client';
+import { Rap, RapReview, User } from '@prisma/client';
 import CharacterCount from '@tiptap/extension-character-count';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { useSession } from 'next-auth/react';
 import { useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -16,12 +17,16 @@ import ReviewPart from './ReviewPart';
 interface ReviewMakerProps {
   rapData?: Rap | null;
   onSuccess?: () => void;
-  defaultRapReview?: RapReview | null;
+  defaultRapReview?: (RapReview & { reviewer: Partial<User> }) | null;
   viewOnly?: boolean;
 }
 
 function ReviewMaker({ rapData, onSuccess, defaultRapReview, viewOnly }: ReviewMakerProps) {
   const { mutateAsync: postReview } = api.reviews.upsertReview.useMutation();
+
+  const session = useSession();
+
+  const reviewerId = defaultRapReview?.reviewerId || session.data?.user?.id;
 
   const {
     control,
@@ -84,14 +89,15 @@ function ReviewMaker({ rapData, onSuccess, defaultRapReview, viewOnly }: ReviewM
     const { lyricism, flow, originality, delivery, writtenReview } = getValues();
     const rapId = rapData?.id;
 
-    if (rapId) {
+    if (rapId && reviewerId) {
       await postReview({
         lyricism: Number(lyricism),
         flow: Number(flow),
         originality: Number(originality),
-        delivery: Number(delivery),
+        delivery: delivery ? Number(delivery) : undefined,
         writtenReview,
-        rapId
+        rapId,
+        reviewerId
       })
         .then(() => {
           onSuccess && onSuccess();
@@ -146,7 +152,7 @@ function ReviewMaker({ rapData, onSuccess, defaultRapReview, viewOnly }: ReviewM
       }}
     >
       <Typography fontSize='1.75rem' fontWeight='600'>
-        ajiashi's '{rapData?.title}' review
+        {defaultRapReview?.reviewer.username} '{rapData?.title}' review
       </Typography>
       <Divider
         sx={{

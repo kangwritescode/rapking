@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { api } from 'src/utils/api';
 import RapLikeButton from './RapLikeButton';
 import ReviewDrawer from './ReviewDrawer';
+import ReviewWithRatingButton from './ReviewWithRatingButton';
 import ThreadDrawer from './ThreadDrawer';
 
 interface RapBarProps {
@@ -59,24 +60,7 @@ function RapBar({
 
       <Box display='flex' sx={sx}>
         <RapLikeButton rapId={rapData?.id} />
-        <Box
-          sx={{
-            ml: theme.spacing(5),
-            display: 'flex',
-            alignItems: 'center'
-          }}
-        >
-          <IconButton
-            onClick={() => setReviewDrawerIsOpen(true)}
-            sx={{
-              pr: 1
-            }}
-            disabled={rapData?.disableComments}
-          >
-            <Icon icon='mdi:fire' />
-          </IconButton>
-          {rapCommentsCount || 0}
-        </Box>
+        <ReviewWithRatingButton rapId={rapData?.id} onClick={() => setReviewDrawerIsOpen(true)} />
         <Box
           sx={{
             ml: theme.spacing(5),

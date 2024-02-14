@@ -1,6 +1,7 @@
 import { Icon } from '@iconify/react';
 import { Box, Button, Divider, IconButton, Stack, SxProps, Typography } from '@mui/material';
-import { Rap, RapReview } from '@prisma/client';
+import { Rap, RapReview, User } from '@prisma/client';
+import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { api } from 'src/utils/api';
 import FireRating from './FireRating';
@@ -14,16 +15,20 @@ interface ReviewSectionProps {
 }
 
 function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) {
-  const [showReviewMaker, setShowReviewMaker] = useState<boolean>(false);
-  const [reviewMakerDefaultReview, setReviewMakerDefaultReview] = useState<RapReview | null>(null);
+  const session = useSession();
 
-  const { data: rapReview, refetch: reloadReview } = api.reviews.getReview.useQuery(
+  const [reviewMakerDefaultReview, setReviewMakerDefaultReview] = useState<
+    (RapReview & { reviewer: Partial<User> }) | null
+  >(null);
+  const [showReviewMaker, setShowReviewMaker] = useState(false);
+
+  const { data: currentUserReview, refetch: reloadReview } = api.reviews.currentUserReview.useQuery(
     { rapId: rapData?.id || '' },
     {
-      refetchOnMount: false,
       refetchOnWindowFocus: false,
-      refetchIntervalInBackground: false,
-      refetchOnReconnect: false
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchInterval: false
     }
   );
 
@@ -32,17 +37,12 @@ function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) 
       rapId: rapData?.id || ''
     });
 
+  // On mount
   useEffect(() => {
     reloadReview();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (rapReview) {
-      setReviewMakerDefaultReview(rapReview);
-    }
-  }, [rapReview]);
 
   useEffect(() => {
     if (!showReviewMaker) {
@@ -52,9 +52,13 @@ function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) 
 
   return (
     <Stack sx={{ pt: '3rem', ...sx }}>
+      {/* Top Right Nav Buttons */}
       {showReviewMaker ? (
         <Button
-          onClick={() => setShowReviewMaker(false)}
+          onClick={() => {
+            setReviewMakerDefaultReview(null);
+            setShowReviewMaker(false);
+          }}
           endIcon={<Icon icon='humbleicons:arrow-go-back' />}
           color='inherit'
           sx={theme => ({
@@ -75,42 +79,29 @@ function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) 
           <Icon icon='mdi:close' />
         </IconButton>
       )}
+      {/* Current View */}
       {showReviewMaker ? (
         <ReviewMaker
           rapData={rapData}
           onSuccess={() => {
+            setReviewMakerDefaultReview(null);
             setShowReviewMaker(false);
             reloadReview();
           }}
+          viewOnly={
+            reviewMakerDefaultReview &&
+            reviewMakerDefaultReview?.reviewerId !== session.data?.user?.id
+              ? true
+              : false
+          }
           defaultRapReview={reviewMakerDefaultReview}
         />
       ) : (
         <>
-          {rapReview ? null : (
-            <Box bgcolor='#282828'>
-              <Stack sx={{ m: '1.5rem 0rem 1rem' }} px='2rem'>
-                <Typography fontSize='1rem'>You have not submitted a review yet.</Typography>
-                <Button
-                  variant='text'
-                  color='secondary'
-                  sx={{
-                    width: 'fit-content',
-                    ml: '-.6rem',
-                    textTransform: 'unset',
-                    fontSize: '1rem',
-                    pt: '0rem'
-                  }}
-                  onClick={() => setShowReviewMaker(true)}
-                >
-                  Leave a review
-                </Button>
-              </Stack>
-            </Box>
-          )}
           <Stack
             sx={{
-              p: '1rem 2rem 3rem',
-              mt: rapReview ? '' : '1.5rem'
+              p: '0rem 2rem 2.5rem',
+              mt: currentUserReview ? '' : '1.5rem'
             }}
           >
             <Typography fontSize='1.25rem' fontWeight='600'>
@@ -135,12 +126,45 @@ function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) 
               >
                 Lyricism: {overallRatings?.lyricism} &nbsp; • &nbsp; Flow: {overallRatings?.flow}{' '}
                 &nbsp; • &nbsp; Originality: {overallRatings?.originality} &nbsp; • &nbsp; Delivery:{' '}
-                {overallRatings?.delivery}
+                {overallRatings?.delivery ? String(overallRatings?.delivery) : 'N/A'}
               </Typography>
             </Stack>
           </Stack>
           <Divider />
-          <RapReviews rapId={rapData?.id} />
+          {!currentUserReview ? (
+            <Box bgcolor='#282828'>
+              <Stack sx={{ m: '1.5rem 0rem 1rem' }} px='2rem'>
+                <Typography fontSize='1rem' alignItems='center' display='flex'>
+                  <Icon
+                    icon='line-md:alert-loop'
+                    style={{ fontSize: '1.5rem', marginRight: '.25rem' }}
+                  />
+                  You have not submitted a review yet.
+                </Typography>
+                <Button
+                  variant='outlined'
+                  color='secondary'
+                  fullWidth
+                  sx={{
+                    textTransform: 'unset',
+                    fontSize: '1rem',
+                    mt: '1.5rem',
+                    mb: '.5rem'
+                  }}
+                  onClick={() => setShowReviewMaker(true)}
+                >
+                  Leave a Review
+                </Button>
+              </Stack>
+            </Box>
+          ) : null}
+          <RapReviews
+            rapId={rapData?.id}
+            reviewClickHandler={(review: RapReview & { reviewer: Partial<User> }) => {
+              setShowReviewMaker(true);
+              setReviewMakerDefaultReview(review);
+            }}
+          />
         </>
       )}
     </Stack>
