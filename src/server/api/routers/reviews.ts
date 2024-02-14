@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { NotificationType } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import sanitize from 'sanitize-html';
 import rateLimit from 'src/redis/rateLimit';
@@ -30,6 +31,7 @@ export const reviewsRouter = createTRPCRouter({
         });
       }
 
+      // * Check if the review contains banned words
       if (writtenReview && bannedWords.some(word => writtenReview.includes(word))) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
@@ -52,14 +54,24 @@ export const reviewsRouter = createTRPCRouter({
         });
       }
 
+      // * Calculate the total score
       const components = [lyricism, flow, originality];
       if (delivery) components.push(delivery);
       let total = components.reduce((acc, curr) => acc + curr, 0) / components.length;
+      total = Math.round(total * 10) / 10; // Round to one decimal place
 
-      // Round total to 1 decimal place
-      total = Math.round(total * 10) / 10;
-
+      // * Sanitize the written review
       const sanitizedWrittenReview = writtenReview ? sanitize(writtenReview) : '';
+
+      // * Check if the user has already reviewed this rap
+      const existingReview = await ctx.prisma.rapReview.findUnique({
+        where: {
+          reviewerId_rapId: {
+            rapId,
+            reviewerId: reviewerId
+          }
+        }
+      });
 
       try {
         const review = await ctx.prisma.rapReview.upsert({
@@ -90,8 +102,31 @@ export const reviewsRouter = createTRPCRouter({
           }
         });
 
+        // * If the user has not reviewed this rap before, send a notification to the rap owner
+        if (!existingReview) {
+          const rap = await ctx.prisma.rap.findUnique({
+            where: {
+              id: rapId
+            }
+          });
+
+          if (!rap) {
+            return review;
+          }
+
+          await ctx.prisma.notification.create({
+            data: {
+              type: NotificationType.RAP_REVIEW,
+              recipientId: rap.userId,
+              notifierId: reviewerId,
+              rapReviewId: review.id
+            }
+          });
+        }
+
         return review;
       } catch (err: any) {
+        // * Catch any errors and return the appropriate error message
         if (err.code === 'P2000') {
           throw new TRPCError({
             code: 'BAD_REQUEST',

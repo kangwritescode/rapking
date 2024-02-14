@@ -233,6 +233,7 @@ model Notification {
   commentVoteId       String?
   threadCommentId     String?
   threadCommentVoteId String?
+  rapReviewId         Int?
   commentVote         CommentVote?       @relation(fields: [commentVoteId], references: [id], onDelete: Cascade)
   notifierUser        User               @relation("NotifierRelation", fields: [notifierId], references: [id], onDelete: Cascade)
   rap                 Rap?               @relation(fields: [rapId], references: [id], onDelete: Cascade)
@@ -240,6 +241,7 @@ model Notification {
   recipient           User               @relation("UserRelation", fields: [recipientId], references: [id], onDelete: Cascade)
   threadComment       ThreadComment?     @relation(fields: [threadCommentId], references: [id])
   threadCommentVote   ThreadCommentVote? @relation(fields: [threadCommentVoteId], references: [id])
+  rapReview           RapReview?         @relation(fields: [rapReviewId], references: [id], onDelete: Cascade)
 
   @@index([recipientId, createdAt(sort: Desc)])
 }
@@ -303,6 +305,7 @@ enum NotificationType {
   COMMENT_VOTE
   FOLLOWED_USER_RAP
   WALL_COMMENT
+  RAP_REVIEW
 }
 
 enum RapStatus {
@@ -332,19 +335,20 @@ enum SocialPlatform {
 }
 
 model RapReview {
-  id            Int      @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   rapId         String
   reviewerId    String
-  lyricism      Decimal  @db.Decimal(3, 2)
-  flow          Decimal  @db.Decimal(3, 2)
-  originality   Decimal  @db.Decimal(3, 2)
-  delivery      Decimal? @db.Decimal(3, 2)
-  total         Decimal  @db.Decimal(3, 2)
-  writtenReview String?  @db.VarChar(300)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  reviewer      User     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
-  rap           Rap      @relation(fields: [rapId], references: [id], onDelete: Cascade)
+  lyricism      Decimal        @db.Decimal(3, 2)
+  flow          Decimal        @db.Decimal(3, 2)
+  originality   Decimal        @db.Decimal(3, 2)
+  delivery      Decimal?       @db.Decimal(3, 2)
+  total         Decimal        @db.Decimal(3, 2)
+  writtenReview String?        @db.VarChar(300)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  reviewer      User           @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+  rap           Rap            @relation(fields: [rapId], references: [id], onDelete: Cascade)
+  notifications Notification[]
 
   @@unique([reviewerId, rapId])
 }
