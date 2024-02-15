@@ -133,7 +133,7 @@ function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) 
             </Stack>
           </Stack>
           <Divider />
-          {!currentUserReview && !isOwner ? (
+          {!currentUserReview && !isOwner && session.status === 'authenticated' ? (
             <Box bgcolor='#282828'>
               <Stack sx={{ m: '1.5rem 0rem 1rem' }} px='2rem'>
                 <Typography fontSize='1rem' alignItems='center' display='flex'>
