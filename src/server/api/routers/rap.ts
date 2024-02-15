@@ -16,7 +16,7 @@ const createRapPayloadSchema = z.object({
     .string()
     .min(3, 'Title must contain at least 3 character(s)')
     .max(50, 'Title must contain at most 50 character(s)'),
-  content: z.string().max(3000),
+  content: z.string().max(4500),
   status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
   coverArtUrl: z.string().optional().nullable(),
   soundcloudUrl: z.string().optional().nullable(),
@@ -30,7 +30,7 @@ const updateRapPayloadSchema = z.object({
     .min(3, 'Title must contain at least 3 character(s)')
     .max(50, 'Title must contain at most 50 character(s)')
     .optional(),
-  content: z.string().max(3000).optional(),
+  content: z.string().max(4500).optional(),
   status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
   coverArtUrl: z.string().optional().nullable(),
   soundcloudUrl: z.string().optional().nullable(),

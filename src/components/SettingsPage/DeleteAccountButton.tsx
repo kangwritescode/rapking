@@ -23,7 +23,7 @@ function DeleteAccountButton() {
         onSubmitHandler={() =>
           deleteUser(undefined, {
             onSuccess: () => {
-              router.reload();
+              router.push('/');
             }
           })
         }
