@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import FireIconButton from 'src/components/HeartIconButton';
+import ColoredIconButton from 'src/components/ColoredIconButton';
 import { api } from 'src/utils/api';
 
 interface RapLikeButtonProps {
@@ -138,7 +138,15 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
 
   return (
     <Box display='flex' alignItems='center'>
-      <FireIconButton onClick={buttonClickHandler} isColored={currentUserLikedRap} />
+      <ColoredIconButton
+        icon='mdi:heart'
+        iconColor='red'
+        onClick={buttonClickHandler}
+        isColored={currentUserLikedRap}
+        sx={{
+          paddingRight: 1
+        }}
+      />
       {rapLikesCount || 0}
     </Box>
   );

@@ -1,6 +1,6 @@
-import { Icon } from '@iconify/react';
-import { Box, IconButton } from '@mui/material';
+import { Box } from '@mui/material';
 import { api } from 'src/utils/api';
+import ColoredIconButton from '../ColoredIconButton';
 
 interface ReviewWithRatingButtonProps {
   onClick: () => void;
@@ -9,6 +9,14 @@ interface ReviewWithRatingButtonProps {
 
 function ReviewWithRatingButton({ onClick, rapId }: ReviewWithRatingButtonProps) {
   const { data: overallRatings } = api.reviews.getOverallRatings.useQuery(
+    {
+      rapId: rapId || ''
+    },
+    {
+      enabled: !!rapId
+    }
+  );
+  const { data: userHasReviewed } = api.reviews.userHasReviewed.useQuery(
     {
       rapId: rapId || ''
     },
@@ -27,14 +35,13 @@ function ReviewWithRatingButton({ onClick, rapId }: ReviewWithRatingButtonProps)
         alignItems: 'center'
       }}
     >
-      <IconButton
+      <ColoredIconButton
         onClick={onClick}
-        sx={{
-          pr: 1
-        }}
-      >
-        <Icon icon='mdi:fire' />
-      </IconButton>
+        sx={{ pr: 1 }}
+        icon='mdi:fire'
+        iconColor='orange'
+        isColored={userHasReviewed}
+      />
       {total || 0}
     </Box>
   );

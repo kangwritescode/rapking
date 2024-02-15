@@ -24,6 +24,9 @@ interface ReviewMakerProps {
 function ReviewMaker({ rapData, onSuccess, defaultRapReview, viewOnly }: ReviewMakerProps) {
   const { mutateAsync: postReview } = api.reviews.upsertReview.useMutation();
 
+  // ** Invalidators
+  const { invalidate: invalidateUserHasReviewed } = api.useUtils().reviews.userHasReviewed;
+
   const session = useSession();
 
   const reviewerId = defaultRapReview?.reviewerId || session.data?.user?.id;
@@ -104,6 +107,7 @@ function ReviewMaker({ rapData, onSuccess, defaultRapReview, viewOnly }: ReviewM
           if (defaultRapReview) {
             toast.success('Review updated successfully!');
           } else {
+            invalidateUserHasReviewed();
             toast.success('Review submitted successfully!');
           }
         })

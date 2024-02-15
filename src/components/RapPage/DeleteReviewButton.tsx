@@ -15,6 +15,9 @@ function DeleteReviewButton({ reviewId }: DeleteReviewButtonProps) {
   const { invalidate: invalidateCurrentUserReview } = api.useUtils().reviews.currentUserReview;
   const { invalidate: invalidateOverallRatings } = api.useUtils().reviews.getOverallRatings;
 
+  // ** Invalidators
+  const { invalidate: invalidateUserHasReviewed } = api.useUtils().reviews.userHasReviewed;
+
   const [open, setOpen] = useState(false);
 
   const handleDeleteReview = async () => {
@@ -23,6 +26,7 @@ function DeleteReviewButton({ reviewId }: DeleteReviewButtonProps) {
         invalidateRapReviews();
         invalidateCurrentUserReview();
         invalidateOverallRatings();
+        invalidateUserHasReviewed();
         setOpen(false);
       })
       .catch(() => {

@@ -2,7 +2,7 @@ import { Box, SxProps } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import FireIconButton from 'src/components/HeartIconButton';
+import ColoredIconButton from 'src/components/ColoredIconButton';
 import { api } from 'src/utils/api';
 
 interface CommentLikeButtonProps {
@@ -137,13 +137,15 @@ function CommentLikeButton({ threadCommentId, sx }: CommentLikeButtonProps) {
         ...sx
       }}
     >
-      <FireIconButton
+      <ColoredIconButton
+        icon='mdi:heart'
+        iconColor='red'
         onClick={currentUserLikedThreadComment ? handleUnlike : handleLike}
         isColored={currentUserLikedThreadComment}
         sx={{
-          paddingRight: 1,
           py: 0,
-          pl: 0
+          pl: 0,
+          paddingRight: 1
         }}
       />
       {threadCommentLikesCount || 0}

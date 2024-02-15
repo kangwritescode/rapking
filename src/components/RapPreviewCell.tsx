@@ -86,7 +86,7 @@ const RapPreviewCell = ({
       </Link>
       <RapBar
         sx={{
-          '& .heart-icon-button': {
+          '& .colored-icon-button': {
             paddingLeft: 0
           }
         }}

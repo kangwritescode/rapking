@@ -119,7 +119,8 @@ export const reviewsRouter = createTRPCRouter({
               type: NotificationType.RAP_REVIEW,
               recipientId: rap.userId,
               notifierId: reviewerId,
-              rapReviewId: review.id
+              rapReviewId: review.id,
+              rapId
             }
           });
         }
@@ -270,5 +271,19 @@ export const reviewsRouter = createTRPCRouter({
       });
 
       return review;
+    }),
+  userHasReviewed: protectedProcedure
+    .input(z.object({ rapId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const review = await ctx.prisma.rapReview.findUnique({
+        where: {
+          reviewerId_rapId: {
+            rapId: input.rapId,
+            reviewerId: ctx.session.user.id
+          }
+        }
+      });
+
+      return !!review;
     })
 });
