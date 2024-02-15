@@ -12,6 +12,8 @@ interface ReviewSectionProps {
 }
 
 function ReviewPart({ title, subtitle, onChange, value, sx, readOnly }: ReviewSectionProps) {
+  if (readOnly && !value) return null;
+
   return (
     <Stack direction='row' alignItems='top' justifyContent='space-between' sx={sx}>
       <Stack>

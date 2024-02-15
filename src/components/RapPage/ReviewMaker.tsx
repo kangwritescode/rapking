@@ -182,10 +182,15 @@ function ReviewMaker({ rapData, onSuccess, defaultRapReview, viewOnly }: ReviewM
           )}
         />
       ))}
-      <Typography variant='h6' fontWeight={600} mb='.5rem'>
-        Written Review {!viewOnly ? '(Optional)' : null}
-      </Typography>
-      <GenericTipTapEditor editor={editor} />
+      {/* If viewOnly mode and there is no written review, don't show the written review section */}
+      {viewOnly && !Boolean(editor?.getText()) ? undefined : (
+        <>
+          <Typography variant='h6' fontWeight={600} mb='.5rem'>
+            Written Review {!viewOnly ? '(Optional)' : null}
+          </Typography>
+          <GenericTipTapEditor editor={editor} />
+        </>
+      )}
       {!viewOnly ? (
         <Stack
           width='100%'
