@@ -4,7 +4,7 @@ import { NotificationType } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import sanitize from 'sanitize-html';
 import rateLimit from 'src/redis/rateLimit';
-import { createTRPCRouter, protectedProcedure } from 'src/server/api/trpc';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 import { bannedWords } from 'src/shared/bannedWords';
 
 export const reviewsRouter = createTRPCRouter({
@@ -206,7 +206,7 @@ export const reviewsRouter = createTRPCRouter({
 
       return review;
     }),
-  getRapReviewsWithUserReview: protectedProcedure
+  getRapReviewsWithUserReview: publicProcedure
     .input(z.object({ rapId: z.string() }))
     .query(async ({ input, ctx }) => {
       const reviews = await ctx.prisma.rapReview.findMany({
@@ -224,7 +224,7 @@ export const reviewsRouter = createTRPCRouter({
         }
       });
 
-      const userReview = reviews.find(review => review.reviewerId === ctx.session.user.id);
+      const userReview = reviews.find(review => review.reviewerId === ctx.session?.user.id || '');
 
       if (userReview) {
         const userReviewIndex = reviews.indexOf(userReview);
@@ -234,7 +234,7 @@ export const reviewsRouter = createTRPCRouter({
 
       return reviews;
     }),
-  getOverallRatings: protectedProcedure
+  getOverallRatings: publicProcedure
     .input(z.object({ rapId: z.string() }))
     .query(async ({ input, ctx }) => {
       const reviews = await ctx.prisma.rapReview.findMany({
