@@ -60,8 +60,6 @@ interface NotificationProps {
 function Notification({ notification, closeDropdown }: NotificationProps) {
   const router = useRouter();
 
-  console.log(notification);
-
   let title = '';
   if (notification.type === 'RAP_COMMENT') {
     title = `${notification.notifierUser?.username} commented on ${notification.rap?.title}'`;
