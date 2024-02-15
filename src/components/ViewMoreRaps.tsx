@@ -15,19 +15,25 @@ function ViewMoreRaps({ sx, viewedRap }: { sx?: SxProps; viewedRap: Partial<Rap>
       alignItems='center'
       padding={{
         xs: '2rem 1rem',
-        md: '5rem 2.5rem'
+        md: '3.5rem 2.5rem'
       }}
     >
       <Stack sx={sx} width={{ xs: '100%', md: '44rem' }} mx='auto'>
-        <Typography variant='h4' fontFamily='impact' sx={{ mb: '4rem' }}>
+        <Typography variant='h4' fontFamily='impact' sx={{ mb: '2rem' }}>
           View More Raps
         </Typography>
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, minmax(10rem, 1fr))',
-            rowGap: '3rem',
-            columnGap: '2rem'
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(2, minmax(10rem, 1fr))'
+            },
+            rowGap: '2rem',
+            columnGap: {
+              xs: '1rem',
+              md: '2rem'
+            }
           }}
         >
           {randomRapsData?.map(rap => (

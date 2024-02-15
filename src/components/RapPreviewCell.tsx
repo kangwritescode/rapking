@@ -48,8 +48,8 @@ const RapPreviewCell = ({
         direction='row'
         alignItems='center'
         sx={{
-          mt: 4.5,
-          mb: 4
+          mt: 3.5,
+          mb: 1
         }}
       >
         <Link style={{ textDecoration: 'none' }} href={`/u/${userData?.username}`}>
@@ -86,12 +86,12 @@ const RapPreviewCell = ({
       </Link>
       <RapBar
         sx={{
-          '& .colored-icon-button': {
-            paddingLeft: 0
-          }
+          mt: -2.5,
+          ml: -2.5
         }}
         rapData={rap}
         commentClickHandler={() => router.push(`/rap/${rap.id}`)}
+        reviewClickHandler={() => router.push(`/rap/${rap.id}`)}
       />
     </Stack>
   );

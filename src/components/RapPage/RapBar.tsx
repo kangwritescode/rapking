@@ -15,6 +15,7 @@ interface RapBarProps {
       })
     | null;
   commentClickHandler?: () => void;
+  reviewClickHandler?: () => void;
   sx?: SxProps;
   defaultCommentDrawerIsOpen?: boolean;
   threadId?: string | null;
@@ -25,7 +26,8 @@ function RapBar({
   commentClickHandler,
   sx,
   defaultCommentDrawerIsOpen,
-  threadId
+  threadId,
+  reviewClickHandler
 }: RapBarProps) {
   const theme = useTheme();
 
@@ -60,7 +62,15 @@ function RapBar({
 
       <Box display='flex' sx={sx}>
         <RapLikeButton rapId={rapData?.id} />
-        <ReviewWithRatingButton rapId={rapData?.id} onClick={() => setReviewDrawerIsOpen(true)} />
+        <ReviewWithRatingButton
+          rapId={rapData?.id}
+          onClick={() => {
+            if (reviewClickHandler) {
+              return reviewClickHandler();
+            }
+            setReviewDrawerIsOpen(true);
+          }}
+        />
         <Box
           sx={{
             ml: theme.spacing(5),
