@@ -22,7 +22,7 @@ function FollowingButton({ unfollowClickHandler, isLoading }: FollowingButtonPro
     <Box>
       <Button
         variant={'outlined'}
-        color={'inherit'}
+        color='secondary'
         onClick={handleClick}
         {...(!isLoading ? { endIcon: <Icon icon='basil:caret-down-solid' /> } : {})}
         sx={{ minWidth: '10rem' }}
@@ -35,8 +35,23 @@ function FollowingButton({ unfollowClickHandler, isLoading }: FollowingButtonPro
             handleClose();
             unfollowClickHandler && unfollowClickHandler();
           }}
+          sx={{
+            width: '10rem',
+            textAlign: 'center'
+          }}
         >
-          <Typography variant='button'>UNFOLLOW</Typography>
+          <Typography
+            sx={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            color={theme => theme.palette.grey[300]}
+            variant='button'
+          >
+            <Icon icon='ri:user-unfollow-line' /> &nbsp; UNFOLLOW
+          </Typography>
         </MenuItem>
       </Menu>
     </Box>
