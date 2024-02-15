@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Divider, Stack, Typography } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { Divider, Stack, Typography } from '@mui/material';
 import { Rap, RapReview, User } from '@prisma/client';
 import CharacterCount from '@tiptap/extension-character-count';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -192,16 +193,17 @@ function ReviewMaker({ rapData, onSuccess, defaultRapReview, viewOnly }: ReviewM
             mt: '1.5rem'
           }}
         >
-          <Button
+          <LoadingButton
             sx={{
               flexGrow: 1
             }}
             variant='contained'
-            disabled={!isValid || !isDirty || viewOnly || isLoading}
+            loading={isLoading}
+            disabled={!isValid || !isDirty || viewOnly}
             onClick={onSubmitHandler}
           >
             {defaultRapReview ? 'Update' : 'Submit'}
-          </Button>
+          </LoadingButton>
         </Stack>
       ) : null}
     </Stack>
