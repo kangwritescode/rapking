@@ -22,7 +22,7 @@ interface ReviewMakerProps {
 }
 
 function ReviewMaker({ rapData, onSuccess, defaultRapReview, viewOnly }: ReviewMakerProps) {
-  const { mutateAsync: postReview } = api.reviews.upsertReview.useMutation();
+  const { mutateAsync: postReview, isLoading } = api.reviews.upsertReview.useMutation();
 
   // ** Invalidators
   const { invalidate: invalidateUserHasReviewed } = api.useUtils().reviews.userHasReviewed;
@@ -197,7 +197,7 @@ function ReviewMaker({ rapData, onSuccess, defaultRapReview, viewOnly }: ReviewM
               flexGrow: 1
             }}
             variant='contained'
-            disabled={!isValid || !isDirty || viewOnly}
+            disabled={!isValid || !isDirty || viewOnly || isLoading}
             onClick={onSubmitHandler}
           >
             {defaultRapReview ? 'Update' : 'Submit'}
