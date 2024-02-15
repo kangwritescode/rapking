@@ -3,7 +3,6 @@ import { createTRPCRouter } from 'src/server/api/trpc';
 import { articlesRouter } from './routers/articles';
 import { feedRouter } from './routers/feed';
 import { gcloudRouter } from './routers/gcloud';
-import { geoDBRouter } from './routers/geoDB';
 import { inviteTokenRouter } from './routers/inviteToken';
 import { leaderboardRouter } from './routers/leaderboard';
 import { notificationsRouter } from './routers/notifications';
@@ -24,7 +23,6 @@ import { userFollows } from './routers/userFollows';
  */
 export const appRouter = createTRPCRouter({
   user: userRouter,
-  geoDB: geoDBRouter,
   rap: rapRouter,
   gcloud: gcloudRouter,
   socialLink: socialLinkRouter,
