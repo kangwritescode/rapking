@@ -23,19 +23,26 @@ export const reviewsRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { lyricism, flow, originality, delivery, writtenReview, rapId, reviewerId } = input;
 
-      // * Check if the user is trying to review their own rap
-      if (reviewerId !== ctx.session.user.id) {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'You do not have permission to do that.'
-        });
-      }
-
       // * Check if the review contains banned words
       if (writtenReview && bannedWords.some(word => writtenReview.includes(word))) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Something went wrong. Please try again.'
+        });
+      }
+
+      // * Make sure the rap exists
+      const rap = await ctx.prisma.rap.findUniqueOrThrow({
+        where: {
+          id: rapId
+        }
+      });
+
+      // User cannot review their own rap
+      if (rap.userId === ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'You cannot review your own rap.'
         });
       }
 
@@ -73,33 +80,64 @@ export const reviewsRouter = createTRPCRouter({
         }
       });
 
+      // * Calculate the points to increment
+      let userPointsToIncrement = 0;
+
+      if (!existingReview) {
+        userPointsToIncrement = getPointsFromReviewTotal(total);
+      } else {
+        const previousTotal = Number(existingReview.total);
+        const newPoints = getPointsFromReviewTotal(total);
+        const oldPoints = getPointsFromReviewTotal(previousTotal);
+        userPointsToIncrement = newPoints - oldPoints;
+      }
+
       try {
-        const review = await ctx.prisma.rapReview.upsert({
-          where: {
-            reviewerId_rapId: {
+        const review = await ctx.prisma.$transaction(async prisma => {
+          // * First, upsert the review
+          const review = await prisma.rapReview.upsert({
+            where: {
+              reviewerId_rapId: {
+                rapId,
+                reviewerId: reviewerId
+              }
+            },
+            create: {
+              lyricism,
+              flow,
+              originality,
+              delivery,
+              writtenReview: sanitizedWrittenReview,
+              reviewerId: reviewerId,
               rapId,
-              reviewerId: reviewerId
+              total
+            },
+            update: {
+              lyricism,
+              flow,
+              originality,
+              delivery,
+              writtenReview: sanitizedWrittenReview,
+              total,
+              reviewerId
             }
-          },
-          create: {
-            lyricism,
-            flow,
-            originality,
-            delivery,
-            writtenReview: sanitizedWrittenReview,
-            reviewerId: reviewerId,
-            rapId,
-            total
-          },
-          update: {
-            lyricism,
-            flow,
-            originality,
-            delivery,
-            writtenReview: sanitizedWrittenReview,
-            total,
-            reviewerId
-          }
+          });
+
+          // * Then, increment the user's points
+          const userId = rap.userId;
+
+          await prisma.user.update({
+            where: {
+              id: userId
+            },
+            data: {
+              points: {
+                increment: userPointsToIncrement
+              }
+            }
+          });
+
+          return review;
         });
 
         // * If the user has not reviewed this rap before, send a notification to the rap owner
@@ -264,13 +302,35 @@ export const reviewsRouter = createTRPCRouter({
         });
       }
 
-      await ctx.prisma.rapReview.delete({
+      const rap = await ctx.prisma.rap.findUniqueOrThrow({
         where: {
-          id: input.reviewId
+          id: review.rapId
         }
       });
 
-      return review;
+      const previousTotal = Number(review.total);
+
+      const userPointsToDecrement = getPointsFromReviewTotal(previousTotal);
+
+      const [deletedReview] = await ctx.prisma.$transaction([
+        ctx.prisma.rapReview.delete({
+          where: {
+            id: input.reviewId
+          }
+        }),
+        ctx.prisma.user.update({
+          where: {
+            id: rap.userId
+          },
+          data: {
+            points: {
+              decrement: userPointsToDecrement
+            }
+          }
+        })
+      ]);
+
+      return deletedReview;
     }),
   userHasReviewed: protectedProcedure
     .input(z.object({ rapId: z.string() }))
@@ -287,3 +347,15 @@ export const reviewsRouter = createTRPCRouter({
       return !!review;
     })
 });
+
+const getPointsFromReviewTotal = (total: number) => {
+  if (total === 5) {
+    return 3;
+  } else if (total >= 4) {
+    return 2;
+  } else if (total >= 3) {
+    return 1;
+  } else {
+    return 0;
+  }
+};
