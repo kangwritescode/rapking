@@ -25,7 +25,14 @@ function FollowCard({ userData, onCardClick }: FollowCardProps) {
           textDecoration: 'none'
         }}
       >
-        <Stack py='.25rem'>
+        <Stack
+          py='.25rem'
+          sx={theme => ({
+            '&:hover': {
+              backgroundColor: theme.palette.grey[900]
+            }
+          })}
+        >
           <Stack direction='row' alignItems='center' spacing={2} sx={{ p: 2 }}>
             <Avatar
               {...(profileImageUrl && { src: `${BUCKET_URL}/${profileImageUrl}` })}

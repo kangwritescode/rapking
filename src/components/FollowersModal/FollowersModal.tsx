@@ -58,13 +58,15 @@ function FollowersModal({
       <DialogContent
         sx={{
           pt: 0,
+          px: 4,
           height: {
             xs: '100vh',
-            md: 'unset'
+            md: '30rem'
           },
+          overflowY: 'auto',
           minHeight: '20rem',
           minWidth: {
-            sm: '25rem'
+            sm: '26rem'
           }
         }}
       >
