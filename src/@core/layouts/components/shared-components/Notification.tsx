@@ -37,7 +37,7 @@ const RenderAvatar = ({ notification }: { notification: NotificationWithAssociat
     ) : (
       <Avatar alt='notification-avatar' />
     );
-  } else if (type === 'FOLLOWED_USER_RAP') {
+  } else if (type === 'FOLLOWED_USER_RAP' || type === 'COLLABORATOR_ADDED') {
     return notification.rap?.coverArtUrl ? (
       <Avatar alt='notification-avatar' src={`${BUCKET_URL}/${notification.rap.coverArtUrl}`} />
     ) : (
@@ -71,6 +71,8 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
     title = `${notification.notifierUser?.username} commented on your wall`;
   } else if (notification.type === 'RAP_REVIEW') {
     title = `${notification.notifierUser?.username} reviewed '${notification.rap?.title}'`;
+  } else if (notification.type === 'COLLABORATOR_ADDED') {
+    title = `${notification.notifierUser?.username} added you as a collaborator on '${notification.rap?.title}'`;
   }
   let subtitle = '';
   if (notification.type === 'RAP_COMMENT' || notification.type === 'WALL_COMMENT') {
@@ -88,6 +90,8 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
     } else if (notification.type === 'FOLLOWED_USER_RAP') {
       router.push(`/rap/${notification.rap?.id}`);
     } else if (notification.type === 'RAP_REVIEW') {
+      router.push(`/rap/${notification.rap?.id}`);
+    } else if (notification.type === 'COLLABORATOR_ADDED') {
       router.push(`/rap/${notification.rap?.id}`);
     }
   };

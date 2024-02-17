@@ -174,6 +174,9 @@ export const rapRouter = createTRPCRouter({
       where: {
         id: input.id,
         userId: ctx.session.user.id
+      },
+      include: {
+        collaborators: true
       }
     });
 
@@ -232,6 +235,22 @@ export const rapRouter = createTRPCRouter({
           }
         }
       }
+    });
+
+    // Send notifications to new collaborators
+    const existingCollaboratorIds = existingRap.collaborators.map(c => c.id);
+    const toAddCollaboratorIds = updatedRap.collaborators.map(c => c.id);
+    const newCollaboratorIds = toAddCollaboratorIds.filter(
+      id => !existingCollaboratorIds.includes(id)
+    );
+
+    await ctx.prisma.notification.createMany({
+      data: newCollaboratorIds.map(id => ({
+        recipientId: id,
+        notifierId: ctx.session.user.id,
+        type: NotificationType.COLLABORATOR_ADDED,
+        rapId: updatedRap.id
+      }))
     });
 
     return updatedRap;

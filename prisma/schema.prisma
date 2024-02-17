@@ -308,6 +308,7 @@ enum NotificationType {
   FOLLOWED_USER_RAP
   WALL_COMMENT
   RAP_REVIEW
+  COLLABORATOR_ADDED
 }
 
 enum RapStatus {
