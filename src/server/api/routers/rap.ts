@@ -167,6 +167,22 @@ export const rapRouter = createTRPCRouter({
       });
     }
 
+    const collaboratorIds = input.collaboratorIds || [];
+    if (collaboratorIds.length > 0) {
+      const notificationData = collaboratorIds.map(id => {
+        return {
+          recipientId: id,
+          notifierId: ctx.session.user.id,
+          type: NotificationType.COLLABORATOR_ADDED,
+          rapId: rap.id
+        };
+      });
+
+      await ctx.prisma.notification.createMany({
+        data: notificationData
+      });
+    }
+
     return rap;
   }),
   updateRap: protectedProcedure.input(updateRapPayloadSchema).mutation(async ({ input, ctx }) => {
