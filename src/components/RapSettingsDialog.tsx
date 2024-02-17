@@ -6,9 +6,12 @@ import {
   Divider,
   FormControlLabel,
   IconButton,
-  Switch
+  Stack,
+  Switch,
+  Typography
 } from '@mui/material';
 import { Control, Controller } from 'react-hook-form';
+import CollaboratorsInterface from './RapPage/CollaboratorsInterface';
 import { RapEditorFormValues } from './WritePage/RapEditor';
 
 interface RapSettingsDialogProps {
@@ -19,7 +22,7 @@ interface RapSettingsDialogProps {
 
 export default function RapSettingsDialog({ open, onClose, control }: RapSettingsDialogProps) {
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} maxWidth={false}>
       <IconButton
         onClick={onClose}
         sx={theme => ({
@@ -30,26 +33,34 @@ export default function RapSettingsDialog({ open, onClose, control }: RapSetting
       >
         <Icon icon='ph:x' />
       </IconButton>
-      <DialogTitle
-        display='flex'
-        justifyContent='center'
-        alignItems='center'
-        sx={theme => ({ p: theme.spacing(3) })}
-      >
-        Rap Settings
+      <DialogTitle>
+        <Typography fontSize='1rem' variant='button'>
+          Rap Settings
+        </Typography>
       </DialogTitle>
       <Divider />
-      <DialogContent sx={{ width: '20rem' }}>
-        <Controller
-          name='disableComments'
-          control={control}
-          render={({ field }) => (
-            <FormControlLabel
-              control={<Switch checked={field.value} onChange={field.onChange} />}
-              label='Disable Comments'
-            />
-          )}
-        />
+      <DialogContent>
+        <Stack bgcolor={theme => theme.palette.grey[900]} p='1rem 1.5rem'>
+          <Controller
+            name='collaborators'
+            control={control}
+            render={({ field }) => (
+              <CollaboratorsInterface onChange={field.onChange} value={field.value} />
+            )}
+          />
+        </Stack>
+        <Stack bgcolor={theme => theme.palette.grey[900]} p='1rem 1.5rem' mt='1rem'>
+          <Controller
+            name='disableComments'
+            control={control}
+            render={({ field }) => (
+              <FormControlLabel
+                control={<Switch checked={field.value} onChange={field.onChange} />}
+                label='Disable Comments'
+              />
+            )}
+          />
+        </Stack>
       </DialogContent>
     </Dialog>
   );

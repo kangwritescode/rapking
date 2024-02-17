@@ -8,7 +8,7 @@ import { CreateRapPayload } from 'src/server/api/routers/rap';
 import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
 import { api } from 'src/utils/api';
 import useLocalStorage from 'use-local-storage';
-import RapEditor from '../../components/WritePage/RapEditor';
+import RapEditor, { Collaborator } from '../../components/WritePage/RapEditor';
 
 function WritePage() {
   const router = useRouter();
@@ -17,7 +17,9 @@ function WritePage() {
   const { mutate, isLoading, isSuccess } = api.rap.createRap.useMutation();
 
   // Local Storage
-  const [storedRapDraft, setStoredRapDraft] = useLocalStorage<Partial<Rap>>('rap-draft', {});
+  const [storedRapDraft, setStoredRapDraft] = useLocalStorage<
+    Partial<Rap & { collaborators: Array<Collaborator> }>
+  >('rap-draft', {});
 
   const createRap = (rap: CreateRapPayload) => {
     if (status === 'unauthenticated') {

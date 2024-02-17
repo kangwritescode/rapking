@@ -40,7 +40,13 @@ export const userRouter = createTRPCRouter({
     });
   }),
   searchUserByUsername: publicProcedure
-    .input(z.object({ text: z.string(), limit: z.number().optional() }))
+    .input(
+      z.object({
+        text: z.string(),
+        limit: z.number().optional(),
+        excludeSelf: z.boolean().optional()
+      })
+    )
     .query(({ input, ctx }) => {
       return ctx.prisma.user.findMany({
         where: {
@@ -48,8 +54,10 @@ export const userRouter = createTRPCRouter({
             contains: input.text,
             mode: 'insensitive'
           },
-          country: {
-            not: null
+          profileIsComplete: true,
+          isWhitelisted: true,
+          id: {
+            not: input.excludeSelf && ctx?.session?.user.id ? ctx.session.user.id : undefined
           }
         },
         select: {

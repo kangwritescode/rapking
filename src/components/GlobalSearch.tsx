@@ -30,7 +30,8 @@ const GlobalSearch = ({ sx }: GlobalSearchProps) => {
 
   const { data: usersData } = api.user.searchUserByUsername.useQuery({
     text: debouncedSearchText,
-    limit: 3
+    limit: 3,
+    excludeSelf: true
   });
   const { data: rapsData } = api.rap.searchRapsByTitle.useQuery({
     text: debouncedSearchText,

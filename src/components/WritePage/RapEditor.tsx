@@ -17,6 +17,13 @@ import RapTextEditor from './RapTextEditor';
 import SoundcloudUrlField from './SoundcloudUrlField';
 import YoutubeVideoIdField from './YoutubeUrlField';
 
+const collaboratorSchema = z.object({
+  username: z.string().nullable(),
+  id: z.string()
+});
+
+export type Collaborator = z.infer<typeof collaboratorSchema>;
+
 const rapEditorFormSchema = z.object({
   title: z
     .string()
@@ -27,23 +34,27 @@ const rapEditorFormSchema = z.object({
   coverArtUrl: z.string().nullable(),
   soundcloudUrl: z.string(),
   youtubeVideoId: z.string(),
-  disableComments: z.boolean()
+  disableComments: z.boolean(),
+  collaborators: z.array(collaboratorSchema)
 });
 
 interface RapEditorProps {
   createRap?: (payload: CreateRapPayload) => void;
   updateRap?: (payload: UpdateRapPayload) => void;
-  rapData?: Rap | null;
+  rapData?: (Rap & { collaborators?: Array<Collaborator> }) | null;
   sx?: SxProps;
   isLoading?: boolean;
   submitButtonIsDisabled?: boolean;
-  storedRapDraft?: Partial<Rap>;
+  storedRapDraft?: Partial<Rap & { collaborators: Array<Collaborator> }>;
   setStoredRapDraft?: (value: Partial<Rap>) => void;
 }
 
 export type RapEditorFormValues = z.infer<typeof rapEditorFormSchema>;
 
-const useRapEditorForm = (rapData?: Rap | null, storedRapDraft?: Partial<Rap>) => {
+const useRapEditorForm = (
+  rapData?: (Rap & { collaborators?: Array<Collaborator> }) | null,
+  storedRapDraft?: Partial<Rap & { collaborators?: Array<Collaborator> }>
+) => {
   const sanitizedDefaultContent = sanitize(rapData?.content ?? storedRapDraft?.content ?? '', {
     allowedTags: ['p', 'br', 'b', 'strong', 'i'],
     allowedAttributes: {
@@ -64,7 +75,9 @@ const useRapEditorForm = (rapData?: Rap | null, storedRapDraft?: Partial<Rap>) =
       coverArtUrl: rapData?.coverArtUrl || storedRapDraft?.coverArtUrl || null,
       soundcloudUrl: rapData?.soundcloudUrl || storedRapDraft?.soundcloudUrl || '',
       disableComments: rapData?.disableComments || storedRapDraft?.disableComments || false,
-      youtubeVideoId: rapData?.youtubeVideoId || storedRapDraft?.youtubeVideoId || ''
+      youtubeVideoId: rapData?.youtubeVideoId || storedRapDraft?.youtubeVideoId || '',
+      collaborators:
+        rapData?.collaborators || storedRapDraft?.collaborators || ([] as Array<Collaborator>)
     },
     resolver: zodResolver(rapEditorFormSchema),
     mode: 'onTouched'
@@ -97,13 +110,22 @@ export default function RapEditor({
         coverArtUrl: rapData?.coverArtUrl || null,
         soundcloudUrl: rapData?.soundcloudUrl || '',
         youtubeVideoId: rapData?.youtubeVideoId || '',
-        disableComments: rapData?.disableComments || false
+        disableComments: rapData?.disableComments || false,
+        collaborators: rapData?.collaborators || []
       });
     }
   }, [rapData, reset]);
 
-  const { content, title, coverArtUrl, published, soundcloudUrl, disableComments, youtubeVideoId } =
-    watch();
+  const {
+    content,
+    title,
+    coverArtUrl,
+    published,
+    soundcloudUrl,
+    disableComments,
+    youtubeVideoId,
+    collaborators
+  } = watch();
   const status = published ? RapStatus.PUBLISHED : RapStatus.DRAFT;
 
   // Update Local Storage
@@ -149,7 +171,8 @@ export default function RapEditor({
       coverArtUrl,
       soundcloudUrl,
       youtubeVideoId,
-      disableComments
+      disableComments,
+      collaboratorIds: collaborators.map(collaborator => collaborator.id)
     });
     updateRap?.({
       id: rapData?.id as string,
@@ -159,7 +182,8 @@ export default function RapEditor({
       coverArtUrl,
       soundcloudUrl,
       youtubeVideoId,
-      disableComments
+      disableComments,
+      collaboratorIds: collaborators.map(collaborator => collaborator.id)
     });
   };
 

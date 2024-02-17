@@ -21,7 +21,8 @@ const createRapPayloadSchema = z.object({
   coverArtUrl: z.string().optional().nullable(),
   soundcloudUrl: z.string().optional().nullable(),
   youtubeVideoId: z.string().optional().nullable(),
-  disableComments: z.boolean().optional()
+  disableComments: z.boolean().optional(),
+  collaboratorIds: z.array(z.string()).optional()
 });
 const updateRapPayloadSchema = z.object({
   id: z.string(),
@@ -35,7 +36,8 @@ const updateRapPayloadSchema = z.object({
   coverArtUrl: z.string().optional().nullable(),
   soundcloudUrl: z.string().optional().nullable(),
   youtubeVideoId: z.string().optional().nullable(),
-  disableComments: z.boolean().optional()
+  disableComments: z.boolean().optional(),
+  collaboratorIds: z.array(z.string()).optional()
 });
 
 const sortBySchema = z.enum(['NEWEST', 'TOP']);
@@ -112,7 +114,10 @@ export const rapRouter = createTRPCRouter({
         userId: ctx.session.user.id,
         soundcloudUrl: input.soundcloudUrl,
         youtubeVideoId: input.youtubeVideoId,
-        disableComments: input.disableComments
+        disableComments: input.disableComments,
+        collaborators: {
+          connect: input.collaboratorIds?.map(id => ({ id }))
+        }
       }
     });
 
@@ -190,7 +195,7 @@ export const rapRouter = createTRPCRouter({
 
     const newCoverArtUrl = await updateCoverArtUrl(input, existingRap);
 
-    return await ctx.prisma.rap.update({
+    const updatedRap = await ctx.prisma.rap.update({
       where: {
         id: input.id
       },
@@ -213,9 +218,23 @@ export const rapRouter = createTRPCRouter({
         soundcloudUrl: input.soundcloudUrl,
         youtubeVideoId: input.youtubeVideoId,
         coverArtUrl: newCoverArtUrl,
-        disableComments: input.disableComments
+        disableComments: input.disableComments,
+        collaborators: {
+          set: [],
+          connect: input.collaboratorIds?.map(id => ({ id }))
+        }
+      },
+      include: {
+        collaborators: {
+          select: {
+            id: true,
+            username: true
+          }
+        }
       }
     });
+
+    return updatedRap;
   }),
   getRap: publicProcedure
     .input(
@@ -240,6 +259,12 @@ export const rapRouter = createTRPCRouter({
             select: {
               threadId: true
             }
+          },
+          collaborators: {
+            select: {
+              id: true,
+              username: true
+            }
           }
         }
       });
@@ -259,6 +284,12 @@ export const rapRouter = createTRPCRouter({
             select: {
               username: true,
               profileImageUrl: true
+            }
+          },
+          collaborators: {
+            select: {
+              id: true,
+              username: true
             }
           }
         }

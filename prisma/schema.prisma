@@ -71,6 +71,7 @@ model User {
   wall                  Wall?
   rapThread             RapThread[]
   rapReviews            RapReview[]
+  collaboratedRaps      Rap[]               @relation("RapCollaborators")
 }
 
 model UserFollows {
@@ -98,6 +99,7 @@ model Rap {
   disableComments Boolean         @default(false)
   Notification    Notification[]
   user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collaborators   User[]          @relation("RapCollaborators")
   votes           RapVote[]
   thread          Thread[]
   threadComment   ThreadComment[]
