@@ -70,6 +70,20 @@ function RapPage() {
     );
   }
 
+  const collaborators = rapData?.collaborators || [];
+  const features = collaborators.map(c => (
+    <Link
+      key={c.id}
+      href={`/u/${c.username}`}
+      style={{
+        textDecoration: 'none',
+        color: theme.palette.secondary.light
+      }}
+    >
+      {`${c.username}${collaborators.indexOf(c) === collaborators.length - 1 ? '' : ', '}`}
+    </Link>
+  ));
+
   return (
     <>
       {rapData && <RapHead rapData={rapData} />}
@@ -81,7 +95,7 @@ function RapPage() {
           md: '2.5rem'
         }}
       >
-        <Stack width={{ xs: '100%', md: '44rem' }}>
+        <Stack width={{ xs: '100%', md: '44rem' }} pb='2rem'>
           <CardMedia
             component='img'
             alt='profile-header'
@@ -100,8 +114,20 @@ function RapPage() {
             }}
           />
           <Typography variant='h4' fontWeight='bold'>
-            {rapData?.title}
+            {rapData?.title}{' '}
           </Typography>
+          {collaborators.length ? (
+            <span
+              style={{
+                fontSize: '1.5rem',
+                fontWeight: 'normal',
+                marginBottom: '1rem'
+              }}
+            >
+              ft. {features}
+            </span>
+          ) : undefined}
+
           <Stack
             direction='row'
             mt={theme.spacing(4)}

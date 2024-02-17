@@ -167,6 +167,7 @@ export const rapRouter = createTRPCRouter({
       });
     }
 
+    // Send notifications to new collaborators
     const collaboratorIds = input.collaboratorIds || [];
     if (collaboratorIds.length > 0) {
       const notificationData = collaboratorIds.map(id => {
