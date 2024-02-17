@@ -75,6 +75,7 @@ function CollaboratorsInterface({ onChange, value }: CollaboratorsInterfaceProps
           sx={{
             flexGrow: 1
           }}
+          disabled={value && value.length >= 5}
           renderInput={params => (
             <TextField
               {...params}
@@ -89,11 +90,12 @@ function CollaboratorsInterface({ onChange, value }: CollaboratorsInterfaceProps
                 flexGrow: 1
               }}
               ref={ref}
+              disabled={value && value.length >= 5}
             />
           )}
         />
         <Button
-          disabled={!Boolean(autoCompleteValue)}
+          disabled={!Boolean(autoCompleteValue) || (value && value.length >= 5)}
           variant='contained'
           color='primary'
           onClick={addButtonClickHandler}
