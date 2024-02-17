@@ -6,6 +6,7 @@ import sanitize from 'sanitize-html';
 import { BUCKET_URL } from 'src/shared/constants';
 import RapBar from './RapPage/RapBar';
 import TipTapContent from './TipTapContent';
+import { Collaborator } from './WritePage/RapEditor';
 
 const RapPreviewCell = ({
   rap
@@ -15,6 +16,7 @@ const RapPreviewCell = ({
       username: string | null;
       profileImageUrl: string | null;
     };
+    collaborators: Array<Collaborator>;
   };
 }) => {
   const router = useRouter();
@@ -23,6 +25,16 @@ const RapPreviewCell = ({
   const userData = rap?.user || {};
 
   const formattedContent = sanitize(rap.content || '');
+
+  const features =
+    rap?.collaborators?.map(c => (
+      <span key={c.id}>
+        {' '}
+        {`${c.username}${
+          rap?.collaborators.indexOf(c) === rap?.collaborators.length - 1 ? '' : ', '
+        }`}
+      </span>
+    )) || [];
 
   return (
     <Stack>
@@ -73,7 +85,7 @@ const RapPreviewCell = ({
 
       <Link href={`/rap/${rap.id}`} style={{ textDecoration: 'none' }}>
         <Typography fontSize='1.5rem' fontWeight='bold'>
-          {rap.title}
+          {rap.title} {features.length ? <span>(ft. {features})</span> : undefined}
         </Typography>
         <TipTapContent
           maxLength={30}

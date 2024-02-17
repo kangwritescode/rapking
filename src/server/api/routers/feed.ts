@@ -137,6 +137,12 @@ export const feedRouter = createTRPCRouter({
               profileImageUrl: true,
               country: true
             }
+          },
+          collaborators: {
+            select: {
+              id: true,
+              username: true
+            }
           }
         },
         cursor: cursor ? { id: cursor } : undefined,

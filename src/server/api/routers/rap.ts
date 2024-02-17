@@ -86,6 +86,13 @@ export const rapRouter = createTRPCRouter({
       });
     }
 
+    if (input.collaboratorIds && input.collaboratorIds.length > 5) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'You can only add up to 5 collaborators.'
+      });
+    }
+
     // * Rate limiting
     const rateLimitResult = await rateLimit({
       maxRequests: 3,
@@ -210,6 +217,28 @@ export const rapRouter = createTRPCRouter({
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Something went wrong.'
+      });
+    }
+
+    // * Rate limiting
+    const rateLimitResult = await rateLimit({
+      maxRequests: 30,
+      window: 60 * 15, // 15 minutes
+      keyString: `rap-update-${existingRap.id}-${ctx.session.user.id}`
+    });
+
+    if (typeof rateLimitResult === 'number') {
+      const resetTime = Math.ceil(rateLimitResult / 60); // Convert to minutes
+      throw new TRPCError({
+        code: 'TOO_MANY_REQUESTS',
+        message: `You're doing that too much. Please try again in ${resetTime} minutes.`
+      });
+    }
+
+    if (input.collaboratorIds && input.collaboratorIds?.length > 5) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'You cannot exceed 5 collaborators for a rap.'
       });
     }
 
@@ -411,6 +440,12 @@ export const rapRouter = createTRPCRouter({
             select: {
               username: true,
               profileImageUrl: true
+            }
+          },
+          collaborators: {
+            select: {
+              id: true,
+              username: true
             }
           }
         }

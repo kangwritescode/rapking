@@ -16,9 +16,10 @@ import { BUCKET_URL } from 'src/shared/constants';
 import { formatRapCardDate } from 'src/shared/utils';
 import RapCardChip from './RapCardChip';
 import RapCardMenu from './UserPage/RapCardMenu';
+import { Collaborator } from './WritePage/RapEditor';
 
 interface RapCardProps {
-  rap: Rap & { user: Partial<User> };
+  rap: Rap & { user: Partial<User>; collaborators: Array<Collaborator> };
   sx?: SxProps;
   hideAvatar?: boolean;
   hideUsername?: boolean;
@@ -36,7 +37,7 @@ function RapCard({
   showChips,
   contentMaxLength
 }: RapCardProps) {
-  const { id, title, dateCreated, coverArtUrl, content, user: userData } = rap;
+  const { id, title, dateCreated, coverArtUrl, content, user: userData, collaborators } = rap;
 
   const theme = useTheme();
   const router = useRouter();
@@ -66,6 +67,13 @@ function RapCard({
   if (formattedContent.length > maxLength) {
     formattedContent = `${formattedContent.slice(0, maxLength)}...`;
   }
+
+  const features = collaborators?.map(c => (
+    <span key={c.id}>
+      {' '}
+      {`${c.username}${collaborators.indexOf(c) === collaborators.length - 1 ? '' : ', '}`}
+    </span>
+  ));
 
   return (
     <Box position='relative' sx={sx}>
@@ -118,7 +126,7 @@ function RapCard({
               cursor: 'pointer'
             }}
           >
-            {title}
+            {title} {features.length ? <span>(ft. {features})</span> : undefined}
           </Typography>
           <Typography
             sx={{
