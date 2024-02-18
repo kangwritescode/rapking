@@ -8,10 +8,12 @@ import {
   useTheme
 } from '@mui/material';
 import { Rap, User } from '@prisma/client';
+import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import SCPlayer from 'src/components/SCPlayer';
+import ViewMoreRaps from 'src/components/ViewMoreRaps';
 import YTPlayer from 'src/components/YTPlayer';
 import { BUCKET_URL } from 'src/shared/constants';
 import { api } from 'src/utils/api';
@@ -205,6 +207,3 @@ function RapPage() {
 }
 
 export default RapPage;
-
-import { useSession } from 'next-auth/react';
-import ViewMoreRaps from 'src/components/ViewMoreRaps';
