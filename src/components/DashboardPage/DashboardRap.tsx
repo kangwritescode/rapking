@@ -70,7 +70,7 @@ function DashboardRap({ rap }: DashboardRapProps) {
           <Typography fontWeight='600'>
             <Box
               component={Link}
-              href={`/write/${id}`}
+              href={`/rap/${id}`}
               sx={{
                 textDecoration: 'none',
                 color: theme.palette.text.primary,
