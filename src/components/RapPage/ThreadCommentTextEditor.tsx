@@ -6,12 +6,14 @@ interface ThreadCommentTextEditorProps {
   editor: Editor | null;
   submitButtonIsDisabled?: boolean;
   showSubmitLoader?: boolean;
+  editorStyles?: any;
 }
 
 export default function ThreadCommentTextEditor({
   editor,
   submitButtonIsDisabled,
-  showSubmitLoader
+  showSubmitLoader,
+  editorStyles
 }: ThreadCommentTextEditorProps) {
   const theme = useTheme();
 
@@ -21,7 +23,8 @@ export default function ThreadCommentTextEditor({
         border: 'unset',
         '& .ProseMirror': {
           minHeight: '4rem'
-        }
+        },
+        ...editorStyles
       }}
       editor={editor}
       styles={{

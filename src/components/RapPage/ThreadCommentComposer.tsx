@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Avatar, Box, useTheme } from '@mui/material';
+import { Avatar, Box, useMediaQuery, useTheme } from '@mui/material';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -88,6 +88,8 @@ function ThreadCommentComposer({ threadId }: ThreadCommentComposerProps) {
     }
   });
 
+  const isNotMobile = useMediaQuery(theme.breakpoints.up('md'));
+
   return (
     <Box
       sx={{
@@ -115,6 +117,9 @@ function ThreadCommentComposer({ threadId }: ThreadCommentComposerProps) {
           editor={editor}
           submitButtonIsDisabled={!isValid || isSubmitting || isLoading}
           showSubmitLoader={isSubmitting || isLoading}
+          editorStyles={{
+            maxWidth: isNotMobile ? '25rem' : '100%'
+          }}
         />
       </form>
     </Box>

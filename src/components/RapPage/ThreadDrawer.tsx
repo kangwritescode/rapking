@@ -12,7 +12,17 @@ function ThreadDrawer({ onCloseHandler, isOpen, threadId }: ThreadDrawerProps) {
   const { commentId } = useRouter().query;
 
   return (
-    <Drawer anchor='right' open={isOpen} onClose={onCloseHandler}>
+    <Drawer
+      anchor='right'
+      open={isOpen}
+      onClose={onCloseHandler}
+      sx={{
+        width: {
+          xs: '100%',
+          md: 'unset'
+        }
+      }}
+    >
       <RapThread
         sortByDefaultValue={commentId ? 'RECENT' : 'POPULAR'}
         threadId={threadId}

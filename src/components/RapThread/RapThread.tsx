@@ -66,10 +66,10 @@ function RapThread({
       />
       <Box
         width={{
-          xs: '24rem',
+          xs: '100vw',
           md: '28rem'
         }}
-        maxWidth='100%'
+        maxWidth='100vw'
         height='100%'
         px={5}
       >
