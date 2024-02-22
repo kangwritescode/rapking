@@ -72,6 +72,17 @@ function InviteCodeStep({ handleNext }: InviteCodeStepProps) {
             You're in! Welcome to RapKing.
           </Alert>
         )}
+        {!isInWhitelist && (
+          <Alert
+            icon={<Icon icon='simple-line-icons:check' />}
+            severity='error'
+            sx={{ mt: '1rem' }}
+          >
+            RapKing is currently in private beta. Hit me up on Discord to request an invite code.{' '}
+            <br /> <br />
+            Username: <strong>ahhjushi</strong>
+          </Alert>
+        )}
         <div className='button-wrapper'>
           <Button
             disabled={!isInWhitelist}
