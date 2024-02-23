@@ -46,7 +46,18 @@ function FeedBar({ sx, onSortAndFilterChange }: FeedBarProps) {
       alignItems={['left', 'center']}
       justifyContent='flex-end'
       flexDirection={['column-reverse', 'row']}
-      sx={sx}
+      sx={{
+        ...sx,
+        overflow: 'hidden',
+        py: {
+          xs: '0',
+          sm: '.5rem'
+        },
+        height: {
+          xs: '7rem',
+          sm: 'unset'
+        }
+      }}
     >
       <Stack direction='row' alignItems='center'>
         <Typography variant='body2'>Sort By: &nbsp;</Typography>

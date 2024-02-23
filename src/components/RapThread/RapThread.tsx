@@ -71,7 +71,7 @@ function RapThread({
         }}
         maxWidth='100vw'
         height='100%'
-        px={5}
+        pl={5}
       >
         <ThreadComments threadId={threadId} sortBy={sortBy} />
       </Box>

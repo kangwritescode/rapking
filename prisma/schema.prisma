@@ -36,42 +36,44 @@ model Session {
 }
 
 model User {
-  id                    String              @id @default(cuid())
-  name                  String?
-  email                 String?             @unique
-  emailVerified         DateTime?
-  image                 String?
-  username              String?             @unique
-  sex                   String?
-  dob                   DateTime?
-  createdAt             DateTime            @default(now())
-  bannerUrl             String?
-  profileImageUrl       String?
-  bio                   String?
-  points                Int                 @default(0)
-  country               Country?
-  profileIsComplete     Boolean             @default(false)
-  isWhitelisted         Boolean             @default(false)
-  isAdmin               Boolean             @default(false)
-  accounts              Account[]
-  Article               Article[]
-  commentVotes          CommentVote[]
-  sentNotifications     Notification[]      @relation("NotifierRelation")
-  receivedNotifications Notification[]      @relation("UserRelation")
-  raps                  Rap[]
-  rapVotes              RapVote[]
-  sessions              Session[]
-  socialLinks           SocialLink[]
-  threads               Thread[]
-  threadComments        ThreadComment[]
-  threadCommmentVotes   ThreadCommentVote[]
-  followed              UserFollows[]       @relation("FollowedRelation")
-  followers             UserFollows[]       @relation("FollowerRelation")
-  WhiteList             WhiteList?
-  wall                  Wall?
-  rapThread             RapThread[]
-  rapReviews            RapReview[]
-  collaboratedRaps      Rap[]               @relation("RapCollaborators")
+  id                     String              @id @default(cuid())
+  name                   String?
+  email                  String?             @unique
+  emailVerified          DateTime?
+  image                  String?
+  username               String?             @unique
+  sex                    String?
+  dob                    DateTime?
+  createdAt              DateTime            @default(now())
+  bannerUrl              String?
+  profileImageUrl        String?
+  bio                    String?
+  points                 Int                 @default(0)
+  country                Country?
+  profileIsComplete      Boolean             @default(false)
+  isWhitelisted          Boolean             @default(false)
+  isAdmin                Boolean             @default(false)
+  accounts               Account[]
+  Article                Article[]
+  commentVotes           CommentVote[]
+  sentNotifications      Notification[]      @relation("NotifierRelation")
+  receivedNotifications  Notification[]      @relation("UserRelation")
+  raps                   Rap[]
+  rapVotes               RapVote[]
+  sessions               Session[]
+  socialLinks            SocialLink[]
+  threads                Thread[]
+  threadComments         ThreadComment[]
+  threadCommmentVotes    ThreadCommentVote[]
+  followed               UserFollows[]       @relation("FollowedRelation")
+  followers              UserFollows[]       @relation("FollowerRelation")
+  WhiteList              WhiteList?
+  wall                   Wall?
+  rapThread              RapThread[]
+  rapReviews             RapReview[]
+  collaboratedRaps       Rap[]               @relation("RapCollaborators")
+  reviewRequestsSent     ReviewRequest[]     @relation("RequesterRelation")
+  reviewRequestsReceived ReviewRequest[]     @relation("ReviewerRelation")
 }
 
 model UserFollows {
@@ -105,6 +107,7 @@ model Rap {
   threadComment   ThreadComment[]
   rapThread       RapThread?
   rapReviews      RapReview[]
+  reviewRequests  ReviewRequest[]
 
   @@index([userId, dateCreated(sort: Desc)])
 }
@@ -354,4 +357,25 @@ model RapReview {
   notifications Notification[]
 
   @@unique([reviewerId, rapId])
+}
+
+model ReviewRequest {
+  id          String              @id @default(cuid())
+  rapId       String
+  requesterId String
+  reviewerId  String
+  createdAt   DateTime            @default(now())
+  status      ReviewRequestStatus
+  rap         Rap                 @relation(fields: [rapId], references: [id], onDelete: Cascade)
+  requester   User                @relation("RequesterRelation", fields: [requesterId], references: [id], onDelete: Cascade)
+  reviewer    User                @relation("ReviewerRelation", fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  @@index([reviewerId, createdAt])
+}
+
+enum ReviewRequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  CANCELLED
 }

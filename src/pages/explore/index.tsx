@@ -56,12 +56,7 @@ function ExplorePage() {
         sx={{
           margin: 'auto',
           height: '100%',
-          padding: `.5rem ${theme.spacing(6)} 0`,
-          transition: 'padding .25s ease-in-out',
-          [theme.breakpoints.down('sm')]: {
-            paddingLeft: theme.spacing(4),
-            paddingRight: theme.spacing(4)
-          }
+          transition: 'padding .25s ease-in-out'
         }}
       >
         <Box
@@ -69,9 +64,15 @@ function ExplorePage() {
             borderBottom: 1,
             borderColor: 'divider',
             mb: '1rem',
-            width: ['100%', '90%', '80%'],
+            width: {
+              xs: 'calc(100% - 2rem)',
+              sm: '90%',
+              md: '80%'
+            },
+
             maxWidth: '45rem',
-            mx: 'auto'
+            mx: 'auto',
+            mt: '.5rem'
           }}
         >
           <Tabs
@@ -91,7 +92,19 @@ function ExplorePage() {
           </Tabs>
         </Box>
         <FeedBar
-          sx={{ mb: '.75rem', width: ['100%', '90%', '80%'], maxWidth: '45rem', mx: 'auto' }}
+          sx={{
+            width: {
+              xs: '100%',
+              sm: '90%',
+              md: '80%'
+            },
+            maxWidth: '45rem',
+            mx: 'auto',
+            px: {
+              xs: 4,
+              sm: 0
+            }
+          }}
           onSortAndFilterChange={({ sortBy, countryFilter, timeFilter, sexFilter }) => {
             setSortByValue(sortBy);
             setCountryFilter(countryFilter);

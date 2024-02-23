@@ -4,6 +4,7 @@ import { Virtuoso } from 'react-virtuoso';
 import { CountryFilter, SexFilter, SortByValue, TimeFilter } from 'src/server/api/routers/rap';
 import { api } from 'src/utils/api';
 import RapCard from '../RapCard';
+import VirtuosoStyles from '../VirtuosoStyles';
 
 interface FeedProps {
   sortBy: SortByValue;
@@ -47,48 +48,69 @@ function Feed({ sortBy, countryFilter, timeFilter, followingFilter, sexFilter }:
   }, [sortBy, countryFilter, timeFilter, followingFilter, sexFilter, refetch]);
 
   return (
-    <Virtuoso
-      style={{
-        width: '100%'
-      }}
-      data={rapData}
-      totalCount={rapData.length}
-      endReached={() => {
-        if (hasNextPage) {
-          fetchNextPage();
+    <VirtuosoStyles
+      sx={{
+        pl: {
+          xs: 4,
+          sm: 0
         }
       }}
-      overscan={400}
-      width='100%'
-      itemContent={(_, rap) => (
-        <Box
-          sx={{
-            width: ['100%', '90%', '80%'],
-            maxWidth: '45rem',
-            mx: 'auto'
-          }}
-        >
-          <RapCard key={rap.id} rap={rap} showChips sx={{ mt: 7, mb: 9 }} />
-          <Divider />
-        </Box>
-      )}
-      components={{
-        ...(rapsAreLoading && {
-          Header: () => (
-            <Stack alignItems='center' justifyContent='center' height='5rem'>
-              <CircularProgress color='inherit' size={20} />
-            </Stack>
-          )
-        }),
-        ...(hasNextPage && {
-          Footer: () => (
-            <Stack alignItems='center' justifyContent='center' height='5rem'>
-              <CircularProgress color='inherit' size={20} />
-            </Stack>
-          )
-        })
-      }}
-    />
+    >
+      <Virtuoso
+        style={{
+          width: '100%'
+        }}
+        data={rapData}
+        totalCount={rapData.length}
+        endReached={() => {
+          if (hasNextPage) {
+            fetchNextPage();
+          }
+        }}
+        overscan={400}
+        width='100%'
+        itemContent={(_, rap) => (
+          <Box
+            sx={{
+              width: ['100%', '90%', '80%'],
+              maxWidth: '45rem',
+              mx: 'auto'
+            }}
+          >
+            <RapCard
+              key={rap.id}
+              rap={rap}
+              showChips
+              sx={{
+                mt: 7,
+                mb: 9,
+                pr: {
+                  xs: 4,
+                  sm: 0
+                }
+              }}
+            />
+            <Divider />
+          </Box>
+        )}
+        components={{
+          ...(rapsAreLoading && {
+            Header: () => (
+              <Stack alignItems='center' justifyContent='center' height='5rem'>
+                <CircularProgress color='inherit' size={20} />
+              </Stack>
+            )
+          }),
+          ...(hasNextPage && {
+            Footer: () => (
+              <Stack alignItems='center' justifyContent='center' height='5rem'>
+                <CircularProgress color='inherit' size={20} />
+              </Stack>
+            )
+          })
+        }}
+      />
+    </VirtuosoStyles>
   );
 }
 
