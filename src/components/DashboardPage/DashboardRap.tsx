@@ -8,6 +8,7 @@ import { formatRapCardDate } from 'src/shared/utils';
 import { api } from 'src/utils/api';
 import AlertDialog from '../AlertDialog';
 import IconLink from '../IconLink';
+import RequestReviewDialog from './RequestReviewDialog';
 
 interface DashboardRapProps {
   rap: Rap;
@@ -19,6 +20,7 @@ function DashboardRap({ rap }: DashboardRapProps) {
   const theme = useTheme();
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [rapToRequestReview, setRapToRequestReview] = useState<Rap | null>(null);
 
   const { mutate: deleteRap, isLoading } = api.rap.deleteRap.useMutation();
   const { invalidate: invalidateRaps } = api.useContext().rap.getRapsByUser;
@@ -48,6 +50,11 @@ function DashboardRap({ rap }: DashboardRapProps) {
         }
         actionButtonText='Delete Rap'
         isLoading={isLoading}
+      />
+      <RequestReviewDialog
+        isOpen={!!rapToRequestReview}
+        handleClose={() => setRapToRequestReview(null)}
+        rap={rapToRequestReview}
       />
       <Stack direction='row' px='.5rem' pt='1rem' pb='.75rem'>
         <Link href={`/rap/${id}`} passHref>
@@ -107,6 +114,16 @@ function DashboardRap({ rap }: DashboardRapProps) {
               onClick={() => setModalIsOpen(true)}
               icon='icon-park-outline:delete-five'
               text='Delete'
+              color={theme.palette.secondary.main}
+              gap={theme.spacing(1)}
+              fontSize='.875rem'
+            />
+            &nbsp;
+            {`·`}
+            <IconLink
+              onClick={() => setRapToRequestReview(rap)}
+              icon='mdi:fire'
+              text='Request Review'
               color={theme.palette.secondary.main}
               gap={theme.spacing(1)}
               fontSize='.875rem'

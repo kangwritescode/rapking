@@ -53,6 +53,7 @@ model User {
   profileIsComplete      Boolean             @default(false)
   isWhitelisted          Boolean             @default(false)
   isAdmin                Boolean             @default(false)
+  reviewRequestTokens    Int                 @default(0)
   accounts               Account[]
   Article                Article[]
   commentVotes           CommentVote[]
@@ -370,12 +371,11 @@ model ReviewRequest {
   requester   User                @relation("RequesterRelation", fields: [requesterId], references: [id], onDelete: Cascade)
   reviewer    User                @relation("ReviewerRelation", fields: [reviewerId], references: [id], onDelete: Cascade)
 
-  @@index([reviewerId, createdAt])
+  @@unique([requesterId, reviewerId, rapId])
+  @@index([rapId])
 }
 
 enum ReviewRequestStatus {
   PENDING
-  ACCEPTED
   DECLINED
-  CANCELLED
 }
