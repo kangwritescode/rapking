@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { ReviewRequestStatus } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
 import { createTRPCRouter, protectedProcedure } from 'src/server/api/trpc';
 
 export const reviewRequestsRouter = createTRPCRouter({
@@ -36,6 +37,23 @@ export const reviewRequestsRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { requestedUserId, rapId } = input;
 
+      if (ctx.session.user.id === requestedUserId) {
+        throw new Error('You cannot request a review from yourself');
+      }
+
+      const currentUser = await ctx.prisma.user.findUnique({
+        where: {
+          id: ctx.session.user.id
+        }
+      });
+
+      if (currentUser?.reviewRequestTokens === 0) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: 'You have no review request tokens left.'
+        });
+      }
+
       // transaction
       const reviewRequest = await ctx.prisma.$transaction(async prisma => {
         const reviewRequest = await prisma.reviewRequest.create({
@@ -44,12 +62,6 @@ export const reviewRequestsRouter = createTRPCRouter({
             reviewerId: requestedUserId,
             rapId,
             status: ReviewRequestStatus.PENDING
-          }
-        });
-
-        const currentUser = await prisma.user.findUnique({
-          where: {
-            id: ctx.session.user.id
           }
         });
 

@@ -17,7 +17,7 @@ function ReviewDrawer({ onCloseHandler, isOpen, rapData }: ReviewDrawerProps) {
       sx={{ pt: '.5rem', position: 'relative' }}
     >
       <ReviewSection
-        closeButtonHandler={onCloseHandler}
+        onCloseHandler={onCloseHandler}
         sx={{
           width: {
             xs: '100vw',

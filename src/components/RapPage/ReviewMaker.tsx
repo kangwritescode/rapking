@@ -27,6 +27,7 @@ function ReviewMaker({ rapData, onSuccess, defaultRapReview, viewOnly }: ReviewM
 
   // ** Invalidators
   const { invalidate: invalidateUserHasReviewed } = api.useUtils().reviews.userHasReviewed;
+  const { invalidate: invalidateRequestReviews } = api.useUtils().reviewRequests.getReviewRequests;
 
   const session = useSession();
 
@@ -110,6 +111,7 @@ function ReviewMaker({ rapData, onSuccess, defaultRapReview, viewOnly }: ReviewM
           } else {
             invalidateUserHasReviewed();
             toast.success('Review submitted successfully!');
+            invalidateRequestReviews();
           }
         })
         .catch(err => {

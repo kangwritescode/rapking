@@ -33,6 +33,9 @@ function SendRequestButton({ requestedUserId, rapId }: SendRequestButtonProps) {
           toast.success('Request Sent');
           invalidateReviewExists();
           invalidateCurrentUser();
+        },
+        onError: err => {
+          toast.error(err.message);
         }
       }
     );

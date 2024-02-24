@@ -3,9 +3,11 @@ import { User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import Rap from 'src/components/RapPage/Rap';
 import ViewMoreRaps from 'src/components/ViewMoreRaps';
 import { BUCKET_URL } from 'src/shared/constants';
+import { useRapStore } from 'src/stores/rapStore';
 import { api } from 'src/utils/api';
 
 const RapHead = ({ rapData }: { rapData: Rap & { user: Partial<User> } }) => {
@@ -33,6 +35,14 @@ const RapHead = ({ rapData }: { rapData: Rap & { user: Partial<User> } }) => {
 function RapPage() {
   const router = useRouter();
   const session = useSession();
+
+  const setRapContext = useRapStore(state => state.setContext);
+
+  useEffect(() => {
+    setRapContext('rap-page');
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { id } = router.query;
 

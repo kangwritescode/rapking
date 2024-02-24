@@ -3,6 +3,7 @@ import { Box, Button, Divider, IconButton, Stack, SxProps, Typography } from '@m
 import { Rap, RapReview, User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import { useRapStore } from 'src/stores/rapStore';
 import { api } from 'src/utils/api';
 import FireRating from './FireRating';
 import RapReviews from './RapReviews';
@@ -11,10 +12,10 @@ import ReviewMaker from './ReviewMaker';
 interface ReviewSectionProps {
   rapData?: Rap | null;
   sx?: SxProps;
-  closeButtonHandler?: () => void;
+  onCloseHandler?: () => void;
 }
 
-function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) {
+function ReviewSection({ rapData, sx, onCloseHandler }: ReviewSectionProps) {
   const session = useSession();
 
   const [reviewMakerDefaultReview, setReviewMakerDefaultReview] = useState<
@@ -52,6 +53,8 @@ function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) 
     }
   }, [showReviewMaker, refetchOverallRatings]);
 
+  const rapContext = useRapStore(state => state.context);
+
   return (
     <Stack sx={{ pt: '3rem', ...sx }}>
       {/* Top Right Nav Buttons */}
@@ -76,7 +79,7 @@ function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) 
       ) : (
         <IconButton
           sx={{ position: 'absolute', right: '1rem', top: '.5rem' }}
-          onClick={closeButtonHandler}
+          onClick={onCloseHandler}
         >
           <Icon icon='mdi:close' />
         </IconButton>
@@ -89,6 +92,9 @@ function ReviewSection({ rapData, sx, closeButtonHandler }: ReviewSectionProps) 
             setReviewMakerDefaultReview(null);
             setShowReviewMaker(false);
             reloadReview();
+            if (rapContext === 'review-inbox') {
+              onCloseHandler?.();
+            }
           }}
           viewOnly={
             reviewMakerDefaultReview &&

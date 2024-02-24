@@ -26,6 +26,7 @@ interface RapProps {
       })
     | null;
   sx?: SxProps;
+  context?: 'review-inbox';
 }
 
 function Rap({ rapData, sx }: RapProps) {
