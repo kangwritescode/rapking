@@ -116,7 +116,10 @@ const Drawer = (props: Props) => {
       }}
       sx={{
         width: navCollapsed ? collapsedNavWidth : navWidth,
-        ...userNavMenuStyle
+        ...userNavMenuStyle,
+        '& .MuiDrawer-paperAnchorDockedLeft': {
+          overflow: 'hidden'
+        }
       }}
       {...userNavMenuProps}
     >

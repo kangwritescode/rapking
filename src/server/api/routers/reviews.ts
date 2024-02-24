@@ -137,6 +137,38 @@ export const reviewsRouter = createTRPCRouter({
             }
           });
 
+          if (!existingReview) {
+            // * Delete any pending review requests from the rap owner
+            const reviewRequest = await ctx.prisma.reviewRequest.findUnique({
+              where: {
+                requesterId_reviewerId_rapId: {
+                  requesterId: rap.userId,
+                  reviewerId: reviewerId,
+                  rapId
+                }
+              }
+            });
+            if (reviewRequest) {
+              await ctx.prisma.reviewRequest.delete({
+                where: {
+                  id: reviewRequest.id
+                }
+              });
+            }
+
+            // * Increment reviewRequestToken for the reviewer
+            await ctx.prisma.user.update({
+              where: {
+                id: reviewerId
+              },
+              data: {
+                reviewRequestTokens: {
+                  increment: 1
+                }
+              }
+            });
+          }
+
           return review;
         });
 
@@ -312,13 +344,15 @@ export const reviewsRouter = createTRPCRouter({
 
       const userPointsToDecrement = getPointsFromReviewTotal(previousTotal);
 
-      const [deletedReview] = await ctx.prisma.$transaction([
-        ctx.prisma.rapReview.delete({
+      const deletedReview = await ctx.prisma.$transaction(async prisma => {
+        const deletedReview = await prisma.rapReview.delete({
           where: {
             id: input.reviewId
           }
-        }),
-        ctx.prisma.user.update({
+        });
+
+        // * Decrement the rap owner's points
+        await prisma.user.update({
           where: {
             id: rap.userId
           },
@@ -327,8 +361,27 @@ export const reviewsRouter = createTRPCRouter({
               decrement: userPointsToDecrement
             }
           }
-        })
-      ]);
+        });
+
+        // * Decrement the reviewer's reviewRequestTokens
+        const currentUser = await ctx.prisma.user.findUnique({
+          where: {
+            id: ctx.session.user.id
+          }
+        });
+
+        const reviewRequestTokens = Math.max((currentUser?.reviewRequestTokens || 0) - 1, 0);
+        await prisma.user.update({
+          where: {
+            id: ctx.session.user.id
+          },
+          data: {
+            reviewRequestTokens
+          }
+        });
+
+        return deletedReview;
+      });
 
       return deletedReview;
     }),

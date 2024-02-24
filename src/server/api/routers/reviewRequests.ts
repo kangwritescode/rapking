@@ -36,15 +36,68 @@ export const reviewRequestsRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { requestedUserId, rapId } = input;
 
-      const reviewRequest = await ctx.prisma.reviewRequest.create({
-        data: {
-          requesterId: ctx.session.user.id,
-          reviewerId: requestedUserId,
-          rapId,
-          status: ReviewRequestStatus.PENDING
-        }
+      // transaction
+      const reviewRequest = await ctx.prisma.$transaction(async prisma => {
+        const reviewRequest = await prisma.reviewRequest.create({
+          data: {
+            requesterId: ctx.session.user.id,
+            reviewerId: requestedUserId,
+            rapId,
+            status: ReviewRequestStatus.PENDING
+          }
+        });
+
+        const currentUser = await prisma.user.findUnique({
+          where: {
+            id: ctx.session.user.id
+          }
+        });
+
+        const reviewRequestTokens = Math.max((currentUser?.reviewRequestTokens || 0) - 1, 0);
+
+        await prisma.user.update({
+          where: {
+            id: ctx.session.user.id
+          },
+          data: {
+            reviewRequestTokens: reviewRequestTokens
+          }
+        });
+
+        return reviewRequest;
       });
 
       return reviewRequest;
-    })
+    }),
+  getReviewRequests: protectedProcedure.query(async ({ ctx }) => {
+    const reviewRequests = await ctx.prisma.reviewRequest.findMany({
+      where: {
+        reviewerId: ctx.session.user.id
+      },
+      include: {
+        requester: {
+          select: {
+            username: true
+          }
+        },
+        rap: {
+          select: {
+            title: true,
+            coverArtUrl: true
+          }
+        }
+      }
+    });
+
+    return reviewRequests;
+  }),
+  getReviewRequestsCount: protectedProcedure.query(async ({ ctx }) => {
+    const reviewRequestsCount = await ctx.prisma.reviewRequest.count({
+      where: {
+        reviewerId: ctx.session.user.id
+      }
+    });
+
+    return reviewRequestsCount;
+  })
 });

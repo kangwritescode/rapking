@@ -1,13 +1,4 @@
-import {
-  Avatar,
-  Box,
-  CardMedia,
-  Stack,
-  SxProps,
-  Typography,
-  useMediaQuery,
-  useTheme
-} from '@mui/material';
+import { Avatar, Box, Stack, SxProps, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Rap, User } from '@prisma/client';
 import { convert } from 'html-to-text';
 import { useRouter } from 'next/router';
@@ -15,6 +6,7 @@ import sanitize from 'sanitize-html';
 import { BUCKET_URL } from 'src/shared/constants';
 import { formatRapCardDate } from 'src/shared/utils';
 import RapCardChip from './RapCardChip';
+import SquareRapCoverImage from './SquareRapCoverImage';
 import RapCardMenu from './UserPage/RapCardMenu';
 import { Collaborator } from './WritePage/RapEditor';
 
@@ -141,20 +133,7 @@ function RapCard({
             <Box>{showMenu && <RapCardMenu rapId={rap.id} />}</Box>
           </Stack>
         </Box>
-        <CardMedia
-          component='img'
-          alt='rap-cover-art'
-          onClick={navigateToRap}
-          image={
-            coverArtUrl ? `${BUCKET_URL}/${coverArtUrl}` : `${BUCKET_URL}/default/cover-art.jpg`
-          }
-          sx={{
-            height: 100,
-            width: 100,
-            borderRadius: '8px',
-            cursor: 'pointer'
-          }}
-        />
+        <SquareRapCoverImage coverArtUrl={coverArtUrl} onClick={navigateToRap} size={100} />
       </Stack>
     </Box>
   );

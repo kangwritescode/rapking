@@ -1,16 +1,16 @@
 // ** React Imports
-import { useState, SyntheticEvent, Fragment, ReactNode } from 'react';
+import { Fragment, ReactNode, SyntheticEvent, useState } from 'react';
 
 // ** MUI Imports
-import Box from '@mui/material/Box';
 import Badge from '@mui/material/Badge';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import { styled, Theme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import MuiMenu, { MenuProps } from '@mui/material/Menu';
-import Typography from '@mui/material/Typography';
 import MuiMenuItem, { MenuItemProps } from '@mui/material/MenuItem';
+import { styled, Theme } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 // ** Icon Imports
 import { Icon } from '@iconify/react';
@@ -19,16 +19,16 @@ import { Icon } from '@iconify/react';
 import PerfectScrollbarComponent from 'react-perfect-scrollbar';
 
 // ** Type Imports
-import { ThemeColor } from 'src/@core/layouts/types';
 import { Settings } from 'src/@core/context/settingsContext';
+import { ThemeColor } from 'src/@core/layouts/types';
 
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip';
 
 // ** Util Import
+import { CircularProgress, Stack } from '@mui/material';
 import { api } from 'src/utils/api';
 import Notification from './Notification';
-import { CircularProgress, Stack } from '@mui/material';
 
 export type NotificationsType = {
   meta: string;
@@ -64,7 +64,7 @@ interface Props {
 // ** Styled Menu component
 const Menu = styled(MuiMenu)<MenuProps>(({ theme }) => ({
   '& .MuiMenu-paper': {
-    width: 380,
+    width: 450,
     overflow: 'hidden',
     marginTop: theme.spacing(4),
     [theme.breakpoints.down('sm')]: {

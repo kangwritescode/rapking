@@ -18,18 +18,22 @@ function ReviewRequester({ rap }: ReviewRequesterProps) {
     excludeSelf: true
   });
 
+  const { data: currentUserData } = api.user.getCurrentUser.useQuery();
+
   return (
     <>
-      <Alert severity='info' sx={{ mb: '1rem' }}>
-        You need credits to request a review. You can get credits by reviewing other raps.
-      </Alert>
+      {currentUserData?.reviewRequestTokens === 0 && (
+        <Alert severity='info' sx={{ mb: '1rem' }}>
+          You need credits to request a review. You can get credits by reviewing other raps.
+        </Alert>
+      )}
       <Typography
         variant='body1'
         sx={{
           mb: '1rem'
         }}
       >
-        Credits Available: <b>0</b>
+        Credits Available: <b>{currentUserData?.reviewRequestTokens}</b>
       </Typography>
       <TextField
         sx={{
@@ -41,7 +45,6 @@ function ReviewRequester({ rap }: ReviewRequesterProps) {
         fullWidth
         onChange={e => setValue(e.target.value)}
       />
-
       <Stack
         sx={{
           height: '14rem'

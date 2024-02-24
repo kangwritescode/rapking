@@ -1,8 +1,9 @@
 import { Icon } from '@iconify/react';
-import { Alert, Button, Divider, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { Button, Divider, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import DashboardRaps from 'src/components/DashboardPage/DashboardRaps';
+import ReviewRequestAlert from 'src/components/DashboardPage/ReviewRequestAlert';
 import { api } from 'src/utils/api';
 
 const greetings = ['Welcome back', `What's good`, `What's up`];
@@ -81,12 +82,7 @@ function DashboardPage() {
           ))}
         </Stack>
         <Divider />
-        <Alert severity='info' sx={{ my: '1rem' }}>
-          <Typography variant='body2'>
-            You have <strong>2</strong> raps to review. Go to{' '}
-            <Link href='/raps'>Review Request Inbox</Link>
-          </Typography>
-        </Alert>
+        <ReviewRequestAlert />
         <Tabs
           value={tab}
           onChange={handleChange}
