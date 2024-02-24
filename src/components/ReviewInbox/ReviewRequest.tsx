@@ -42,6 +42,7 @@ function ReviewRequest({ reviewRequest, onClick, isSelected }: ReviewRequestProp
         sx={{
           mr: '1rem'
         }}
+        onClick={e => e.stopPropagation()}
       />
       <SquareRapCoverImage coverArtUrl={reviewRequest.rap.coverArtUrl} size={40} borderRadius={1} />
       <Stack ml='1rem'>

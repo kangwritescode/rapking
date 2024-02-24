@@ -1,4 +1,13 @@
-import { Checkbox, Stack, Typography, useTheme } from '@mui/material';
+import { Icon } from '@iconify/react';
+import {
+  Button,
+  Checkbox,
+  Stack,
+  SxProps,
+  Typography,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
 import { ReviewRequest } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import Rap from 'src/components/RapPage/Rap';
@@ -8,17 +17,22 @@ import { api } from 'src/utils/api';
 
 interface RapViewerProps {
   rapId?: string;
+  sx?: SxProps;
+  backClickHandler?: () => void;
 }
 
-function RapViewer({ rapId }: RapViewerProps) {
+function RapViewer({ rapId, sx, backClickHandler }: RapViewerProps) {
   const { data: rapData } = api.rap.getRap.useQuery(
     { id: rapId as string },
     { enabled: Boolean(rapId) }
   );
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   if (!rapId) {
-    return (
-      <Stack height='100%' justifyContent='center'>
+    return isMobile ? null : (
+      <Stack height='100%' flexGrow='1' justifyContent='center'>
         <Typography
           fontSize={{
             xs: '2rem',
@@ -33,7 +47,37 @@ function RapViewer({ rapId }: RapViewerProps) {
     );
   }
 
-  return <Rap rapData={rapData} />;
+  return (
+    <Stack
+      sx={{
+        ...sx
+      }}
+    >
+      {isMobile ? (
+        <Stack
+          direction='row'
+          sx={{
+            pb: '1rem',
+            width: '100%',
+            justifyContent: 'flex-end'
+          }}
+        >
+          <Button
+            sx={{
+              width: 'fit-content'
+            }}
+            color='secondary'
+            variant='outlined'
+            endIcon={<Icon icon='humbleicons:arrow-go-back' />}
+            onClick={() => backClickHandler?.()}
+          >
+            Back to Inbox
+          </Button>
+        </Stack>
+      ) : undefined}
+      <Rap rapData={rapData} />
+    </Stack>
+  );
 }
 
 function ReviewInboxPage() {
@@ -52,17 +96,16 @@ function ReviewInboxPage() {
   }, []);
 
   useEffect(() => {
-    if (!selectedReviewRequest && reviewRequests) {
-      setSelectedReviewRequest(reviewRequests[0]);
-    }
     if (
       selectedReviewRequest &&
       reviewRequests &&
       !reviewRequests.find(r => r.id === selectedReviewRequest.id)
     ) {
-      setSelectedReviewRequest(reviewRequests[0]);
+      setSelectedReviewRequest(null);
     }
   }, [reviewRequests, selectedReviewRequest]);
+
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <Stack
@@ -86,13 +129,16 @@ function ReviewInboxPage() {
       <Stack
         sx={{
           borderRight: `2px solid ${theme.palette.divider}`,
-          width: '32%',
-          minWidth: '32%'
+          width: isMobile ? '100%' : '32%',
+          minWidth: isMobile ? '100%' : '32%',
+          display: isMobile && selectedReviewRequest ? 'none' : 'flex'
         }}
       >
         <Stack
           textAlign='center'
-          sx={{ borderBottom: `2px solid ${theme.palette.divider}` }}
+          sx={{
+            borderBottom: `2px solid ${theme.palette.divider}`
+          }}
           py='1rem'
         >
           <Typography
@@ -117,18 +163,21 @@ function ReviewInboxPage() {
             key={reviewRequest.id}
             reviewRequest={reviewRequest}
             onClick={reviewRequest => setSelectedReviewRequest(reviewRequest)}
+            isSelected={selectedReviewRequest?.id === reviewRequest.id}
           />
         ))}
       </Stack>
-      <Stack
-        flexGrow='1'
-        p={{
-          xs: '1rem',
-          lg: '2rem'
+      <RapViewer
+        sx={{
+          flexGrow: 1,
+          p: {
+            xs: '1rem',
+            lg: '2rem'
+          }
         }}
-      >
-        <RapViewer rapId={selectedReviewRequest?.rapId} />{' '}
-      </Stack>
+        backClickHandler={() => setSelectedReviewRequest(null)}
+        rapId={selectedReviewRequest?.rapId}
+      />
     </Stack>
   );
 }

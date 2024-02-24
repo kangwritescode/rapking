@@ -92,7 +92,7 @@ function ReviewSection({ rapData, sx, onCloseHandler }: ReviewSectionProps) {
             setReviewMakerDefaultReview(null);
             setShowReviewMaker(false);
             reloadReview();
-            if (rapContext === 'review-inbox') {
+            if (rapContext === 'review-inbox' && !currentUserReview) {
               onCloseHandler?.();
             }
           }}

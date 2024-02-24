@@ -38,6 +38,11 @@ function DashboardPage() {
       label: 'Account Settings',
       icon: 'bi:gear-fill',
       link: '/settings'
+    },
+    {
+      label: 'Review Inbox',
+      icon: 'bi:inbox-fill',
+      link: '/review-inbox'
     }
   ];
 
