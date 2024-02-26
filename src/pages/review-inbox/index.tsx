@@ -195,7 +195,7 @@ function ReviewInboxPage() {
             }}
             fontWeight='600'
           >
-            Review Requests ({reviewRequests?.length}/10)
+            Review Requests ({reviewRequests?.length || 0}/10)
           </Typography>
         </Stack>
         <Stack
