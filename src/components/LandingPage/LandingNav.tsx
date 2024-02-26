@@ -134,9 +134,21 @@ const LandingNav = () => {
           );
         })}
       </Stack>
-      <Button variant='contained' onClick={() => void signIn()} ref={signInButtonRef}>
-        Sign In
-      </Button>
+      <Stack direction='row'>
+        <Button
+          variant='outlined'
+          onClick={() => void signIn()}
+          ref={signInButtonRef}
+          sx={{
+            mr: '1rem'
+          }}
+        >
+          Log in
+        </Button>
+        <Button variant='contained' onClick={() => void signIn()} ref={signInButtonRef}>
+          Sign Up
+        </Button>
+      </Stack>
     </Stack>
   );
 };

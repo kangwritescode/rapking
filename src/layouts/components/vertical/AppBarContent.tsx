@@ -1,6 +1,6 @@
 // ** MUI Imports
 import { Icon } from '@iconify/react';
-import { Button } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import { signIn, useSession } from 'next-auth/react';
@@ -68,9 +68,20 @@ const AppBarContent = (props: Props) => {
         />
       )}
       {status === 'unauthenticated' && (
-        <Button variant='contained' onClick={() => void signIn()}>
-          Sign In
-        </Button>
+        <Stack direction='row'>
+          <Button
+            variant='outlined'
+            onClick={() => void signIn()}
+            sx={{
+              mr: '1rem'
+            }}
+          >
+            Log in
+          </Button>
+          <Button variant='contained' onClick={() => void signIn()}>
+            Sign Up
+          </Button>
+        </Stack>
       )}
       {status === 'authenticated' && (
         <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
