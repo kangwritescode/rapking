@@ -37,7 +37,11 @@ const RenderAvatar = ({ notification }: { notification: NotificationWithAssociat
     ) : (
       <Avatar alt='notification-avatar' />
     );
-  } else if (type === 'FOLLOWED_USER_RAP' || type === 'COLLABORATOR_ADDED') {
+  } else if (
+    type === 'FOLLOWED_USER_RAP' ||
+    type === 'COLLABORATOR_ADDED' ||
+    type === 'REVIEW_REQUEST_CREATED'
+  ) {
     return notification.rap?.coverArtUrl ? (
       <Avatar alt='notification-avatar' src={`${BUCKET_URL}/${notification.rap.coverArtUrl}`} />
     ) : (
@@ -73,6 +77,8 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
     title = `${notification.notifierUser?.username} reviewed '${notification.rap?.title}'`;
   } else if (notification.type === 'COLLABORATOR_ADDED') {
     title = `${notification.notifierUser?.username} added you as a collaborator on '${notification.rap?.title}'`;
+  } else if (notification.type === 'REVIEW_REQUEST_CREATED') {
+    title = `${notification.notifierUser?.username} requested a review for '${notification.rap?.title}'`;
   }
   let subtitle = '';
   if (notification.type === 'RAP_COMMENT' || notification.type === 'WALL_COMMENT') {
@@ -93,6 +99,8 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
       router.push(`/rap/${notification.rap?.id}`);
     } else if (notification.type === 'COLLABORATOR_ADDED') {
       router.push(`/rap/${notification.rap?.id}`);
+    } else if (notification.type === 'REVIEW_REQUEST_CREATED') {
+      router.push('/review-inbox');
     }
   };
 

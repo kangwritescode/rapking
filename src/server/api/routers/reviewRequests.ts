@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ReviewRequestStatus } from '@prisma/client';
+import { NotificationType, ReviewRequestStatus } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { createTRPCRouter, protectedProcedure } from 'src/server/api/trpc';
 
@@ -103,6 +103,17 @@ export const reviewRequestsRouter = createTRPCRouter({
           },
           data: {
             reviewRequestTokens: reviewRequestTokens
+          }
+        });
+
+        // Send notification to requested user
+
+        await prisma.notification.create({
+          data: {
+            notifierId: ctx.session.user.id,
+            type: NotificationType.REVIEW_REQUEST_CREATED,
+            recipientId: requestedUserId,
+            rapId: rapId
           }
         });
 
