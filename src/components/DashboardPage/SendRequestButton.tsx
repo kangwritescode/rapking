@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
 
@@ -42,14 +42,15 @@ function SendRequestButton({ requestedUserId, rapId }: SendRequestButtonProps) {
   };
 
   return (
-    <Button
+    <LoadingButton
       variant='outlined'
       color='secondary'
-      disabled={requestExists || isLoading}
+      disabled={requestExists}
+      loading={isLoading}
       onClick={handleSendRequest}
     >
       {requestExists ? 'Request Sent' : 'Send Request'}
-    </Button>
+    </LoadingButton>
   );
 }
 
