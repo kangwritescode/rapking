@@ -6,9 +6,17 @@ interface ReviewRequestProps {
   reviewRequest: ReviewRequest & { rap: Partial<Rap>; requester: Partial<User> };
   onClick?: (id: ReviewRequest | null) => void;
   isSelected?: boolean;
+  isChecked?: boolean;
+  handleCheckboxChange?: (id: string) => void;
 }
 
-function ReviewRequest({ reviewRequest, onClick, isSelected }: ReviewRequestProps) {
+function ReviewRequest({
+  reviewRequest,
+  onClick,
+  isSelected,
+  isChecked,
+  handleCheckboxChange
+}: ReviewRequestProps) {
   const theme = useTheme();
 
   const handleClick = () => {
@@ -42,7 +50,13 @@ function ReviewRequest({ reviewRequest, onClick, isSelected }: ReviewRequestProp
         sx={{
           mr: '1rem'
         }}
+        onChange={() => {
+          if (handleCheckboxChange) {
+            handleCheckboxChange(reviewRequest.id);
+          }
+        }}
         onClick={e => e.stopPropagation()}
+        checked={isChecked}
       />
       <SquareRapCoverImage coverArtUrl={reviewRequest.rap.coverArtUrl} size={40} borderRadius={1} />
       <Stack ml='1rem'>

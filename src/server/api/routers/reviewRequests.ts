@@ -111,5 +111,20 @@ export const reviewRequestsRouter = createTRPCRouter({
     });
 
     return reviewRequestsCount;
-  })
+  }),
+  deleteReviewRequests: protectedProcedure
+    .input(z.array(z.string()))
+    .mutation(async ({ input, ctx }) => {
+      const reviewRequestIds = input;
+
+      await ctx.prisma.reviewRequest.deleteMany({
+        where: {
+          id: {
+            in: reviewRequestIds
+          }
+        }
+      });
+
+      return null;
+    })
 });

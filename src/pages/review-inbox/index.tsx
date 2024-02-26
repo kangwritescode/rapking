@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { ReviewRequest } from '@prisma/client';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import Rap from 'src/components/RapPage/Rap';
 import ReviewRequestComponent from 'src/components/ReviewInbox/ReviewRequest';
 import { useRapStore } from 'src/stores/rapStore';
@@ -107,6 +108,52 @@ function ReviewInboxPage() {
 
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
+  // Checkboxes logic
+  const [checked, setChecked] = useState<string[]>([]);
+  const [isIndeterminate, setIsIndeterminate] = useState(false);
+
+  useEffect(() => {
+    if (reviewRequests) {
+      const totalReviewRequests = reviewRequests.length;
+      const totalChecked = checked.length;
+
+      if (totalChecked === 0) {
+        setIsIndeterminate(false);
+      } else if (totalChecked < totalReviewRequests) {
+        setIsIndeterminate(true);
+      } else {
+        setIsIndeterminate(false);
+      }
+    }
+  }, [checked, reviewRequests]);
+
+  const handleParentCheckboxChange = () => {
+    if (reviewRequests) {
+      if (checked.length === reviewRequests.length || isIndeterminate) {
+        setChecked([]); // Uncheck all
+      } else {
+        setChecked(reviewRequests.map(r => r.id)); // Check all
+      }
+    }
+  };
+
+  const { invalidate: invalidateReviewRequests } = api.useUtils().reviewRequests.getReviewRequests;
+  const { mutateAsync: deleteReviewRequests } =
+    api.reviewRequests.deleteReviewRequests.useMutation();
+
+  const handleDeleteSelected = () => {
+    if (checked.length > 0) {
+      deleteReviewRequests(checked)
+        .then(() => {
+          invalidateReviewRequests();
+          setChecked([]);
+        })
+        .catch(() => {
+          toast.error('An error occurred while deleting the review requests');
+        });
+    }
+  };
+
   return (
     <Stack
       direction='row'
@@ -153,10 +200,28 @@ function ReviewInboxPage() {
         </Stack>
         <Stack
           borderBottom={`2px solid ${theme.palette.divider}`}
-          p='0rem 1rem'
+          p='.25rem 1rem'
           flexDirection='row'
+          alignItems='center'
         >
-          <Checkbox color='secondary' />
+          <Checkbox
+            color='secondary'
+            indeterminate={isIndeterminate}
+            checked={checked.length > 0 && !isIndeterminate}
+            onChange={handleParentCheckboxChange}
+          />
+          {checked.length > 0 && (
+            <Button
+              sx={{
+                ml: '1rem'
+              }}
+              size='small'
+              color='error'
+              onClick={handleDeleteSelected}
+            >
+              Delete Selected
+            </Button>
+          )}
         </Stack>
         {reviewRequests?.map(reviewRequest => (
           <ReviewRequestComponent
@@ -164,6 +229,12 @@ function ReviewInboxPage() {
             reviewRequest={reviewRequest}
             onClick={reviewRequest => setSelectedReviewRequest(reviewRequest)}
             isSelected={selectedReviewRequest?.id === reviewRequest.id}
+            isChecked={checked.includes(reviewRequest.id)}
+            handleCheckboxChange={
+              checked.includes(reviewRequest.id)
+                ? id => setChecked(prevChecked => prevChecked.filter(c => c !== id))
+                : id => setChecked(prevChecked => [...prevChecked, id])
+            }
           />
         ))}
       </Stack>
