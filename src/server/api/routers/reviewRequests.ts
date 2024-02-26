@@ -47,10 +47,40 @@ export const reviewRequestsRouter = createTRPCRouter({
         }
       });
 
+      // * Review Requests Tokens Check *
       if (currentUser?.reviewRequestTokens === 0) {
         throw new TRPCError({
           code: 'PRECONDITION_FAILED',
           message: 'You have no review request tokens left.'
+        });
+      }
+
+      // * Requested User Inbox Full Check *
+      const requestedUserReviewRequestsCount = await ctx.prisma.reviewRequest.count({
+        where: {
+          reviewerId: requestedUserId
+        }
+      });
+
+      if (requestedUserReviewRequestsCount >= 10) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: 'The inbox of the requested user is full.'
+        });
+      }
+
+      // * Review Exists Check *
+      const reviewExists = await ctx.prisma.rapReview.findFirst({
+        where: {
+          reviewerId: requestedUserId,
+          rapId
+        }
+      });
+
+      if (reviewExists) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: 'User has already reviewed this rap.'
         });
       }
 
@@ -110,7 +140,7 @@ export const reviewRequestsRouter = createTRPCRouter({
       }
     });
 
-    return reviewRequestsCount;
+    return reviewRequestsCount || 0;
   }),
   deleteReviewRequests: protectedProcedure
     .input(z.array(z.string()))

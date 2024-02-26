@@ -8,9 +8,7 @@ function ReviewRequestAlert() {
   const [reviewRequestsCountState, setReviewRequestsCountState] = useState(0);
 
   useEffect(() => {
-    if (reviewRequestsCount) {
-      setReviewRequestsCountState(reviewRequestsCount);
-    }
+    setReviewRequestsCountState(reviewRequestsCount || 0);
   }, [reviewRequestsCount]);
 
   if (reviewRequestsCountState === 0) {

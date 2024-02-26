@@ -190,12 +190,12 @@ function ReviewInboxPage() {
         >
           <Typography
             fontSize={{
-              xs: '1.5rem',
-              lg: '1.75rem'
+              xs: '1.25rem',
+              lg: '1.5rem'
             }}
             fontWeight='600'
           >
-            Review Requests ({reviewRequests?.length})
+            Review Requests ({reviewRequests?.length}/10)
           </Typography>
         </Stack>
         <Stack

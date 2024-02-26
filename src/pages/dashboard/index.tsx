@@ -1,5 +1,15 @@
 import { Icon } from '@iconify/react';
-import { Button, Divider, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import {
+  Badge,
+  Button,
+  Divider,
+  Stack,
+  SxProps,
+  Tab,
+  Tabs,
+  Typography,
+  useTheme
+} from '@mui/material';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import DashboardRaps from 'src/components/DashboardPage/DashboardRaps';
@@ -28,6 +38,8 @@ function DashboardPage() {
     setGreeting(randomGreeting);
   }, []);
 
+  const { data: reviewRequestsCount } = api.reviewRequests.getReviewRequestsCount.useQuery();
+
   const shortcuts = [
     {
       label: 'View Profile',
@@ -45,6 +57,22 @@ function DashboardPage() {
       link: '/review-inbox'
     }
   ];
+
+  const renderShortcut = (props: { label: string; icon: string; link: string; sx?: SxProps }) => {
+    return (
+      <Button
+        key={props.label}
+        startIcon={<Icon icon={props.icon} fontSize='2rem' />}
+        variant='outlined'
+        component={Link}
+        href={props.link}
+        color='primary'
+        sx={{ wordBreak: 'keep-all', whiteSpace: 'nowrap', mb: '.75rem', ...props.sx }}
+      >
+        {props.label}
+      </Button>
+    );
+  };
 
   return (
     <Stack
@@ -70,21 +98,23 @@ function DashboardPage() {
         <Typography variant='h6'>
           {greeting}, <strong>{userData?.username}</strong>
         </Typography>
-        <Stack direction='row' alignItems='center' sx={{ mt: '1rem', mb: '.75rem' }}>
-          {shortcuts.map((shortcut, index) => (
-            <Button
-              key={index}
-              startIcon={<Icon icon={shortcut.icon} fontSize='2rem' />}
-              variant='text'
-              size='small'
-              component={Link}
-              href={shortcut.link}
-              color='primary'
-              sx={{ mr: '.5rem' }}
-            >
-              {shortcut.label}
-            </Button>
-          ))}
+        <Stack direction='row' alignItems='center' flexWrap='wrap' sx={{ mt: '1rem' }}>
+          {shortcuts.map(shortcut => {
+            if (shortcut.label === 'Review Inbox' && reviewRequestsCount) {
+              return (
+                <Badge key={shortcut.label} badgeContent={reviewRequestsCount} color='error'>
+                  {renderShortcut(shortcut)}
+                </Badge>
+              );
+            }
+
+            return renderShortcut({
+              label: shortcut.label,
+              icon: shortcut.icon,
+              link: shortcut.link,
+              sx: { mr: '.5rem' }
+            });
+          })}
         </Stack>
         <Divider />
         <ReviewRequestAlert />
