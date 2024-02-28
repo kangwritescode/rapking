@@ -28,7 +28,7 @@ function LeaderboardPage() {
           xs: '100%',
           md: 'fit-content'
         }}
-        height='calc(100% - 3.75rem)'
+        height='100%'
         mx='auto'
         sx={{
           padding: `3rem ${theme.spacing(6)} 1rem`,

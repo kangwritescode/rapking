@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { toast } from 'react-hot-toast';
 import sanitize from 'sanitize-html';
+import Footer from 'src/components/Footer';
 import { CreateRapPayload } from 'src/server/api/routers/rap';
 import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
 import { api } from 'src/utils/api';
@@ -58,28 +59,31 @@ function WritePage() {
   };
 
   return (
-    <Container
-      sx={theme => ({
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        padding: ` 2.5rem ${theme.spacing(6)}`,
-        transition: 'padding .25s ease-in-out',
-        [theme.breakpoints.down('sm')]: {
-          paddingLeft: theme.spacing(4),
-          paddingRight: theme.spacing(4)
-        }
-      })}
-    >
-      <RapEditor
-        isLoading={isLoading}
-        createRap={createRap}
-        submitButtonIsDisabled={isSuccess}
-        storedRapDraft={storedRapDraft}
-        setStoredRapDraft={setStoredRapDraft}
-      />
-    </Container>
+    <>
+      <Container
+        sx={theme => ({
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+          padding: ` 2.5rem ${theme.spacing(6)}`,
+          transition: 'padding .25s ease-in-out',
+          [theme.breakpoints.down('sm')]: {
+            paddingLeft: theme.spacing(4),
+            paddingRight: theme.spacing(4)
+          }
+        })}
+      >
+        <RapEditor
+          isLoading={isLoading}
+          createRap={createRap}
+          submitButtonIsDisabled={isSuccess}
+          storedRapDraft={storedRapDraft}
+          setStoredRapDraft={setStoredRapDraft}
+        />
+      </Container>
+      <Footer sx={{ mt: '1rem' }} />
+    </>
   );
 }
 

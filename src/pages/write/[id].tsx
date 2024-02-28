@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import sanitize from 'sanitize-html';
+import Footer from 'src/components/Footer';
 import { UpdateRapPayload } from 'src/server/api/routers/rap';
 import { api } from 'src/utils/api';
 import RapEditor from '../../components/WritePage/RapEditor';
@@ -49,22 +50,25 @@ const ExistingRap = () => {
   };
 
   return (
-    <Container
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        padding: `2.5rem ${theme.spacing(6)}`,
-        transition: 'padding .25s ease-in-out',
-        [theme.breakpoints.down('sm')]: {
-          paddingLeft: theme.spacing(4),
-          paddingRight: theme.spacing(4)
-        }
-      }}
-    >
-      {rapData && <RapEditor updateRap={updateRap} rapData={rapData} isLoading={isLoading} />}
-    </Container>
+    <>
+      <Container
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+          padding: `2.5rem ${theme.spacing(6)}`,
+          transition: 'padding .25s ease-in-out',
+          [theme.breakpoints.down('sm')]: {
+            paddingLeft: theme.spacing(4),
+            paddingRight: theme.spacing(4)
+          }
+        }}
+      >
+        {rapData && <RapEditor updateRap={updateRap} rapData={rapData} isLoading={isLoading} />}
+      </Container>
+      <Footer sx={{ mt: '1rem' }} />
+    </>
   );
 };
 

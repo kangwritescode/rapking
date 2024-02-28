@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import Footer from 'src/components/Footer';
 import Rap from 'src/components/RapPage/Rap';
 import ViewMoreRaps from 'src/components/ViewMoreRaps';
 import { BUCKET_URL } from 'src/shared/constants';
@@ -89,6 +90,7 @@ function RapPage() {
       </Stack>
       <Divider />
       {rapData && <ViewMoreRaps viewedRap={rapData} />}
+      <Footer />
     </>
   );
 }
