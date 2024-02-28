@@ -2,6 +2,7 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { GetServerSidePropsContext } from 'next';
 import { getServerSession, type DefaultSession, type NextAuthOptions } from 'next-auth';
 import DiscordProvider from 'next-auth/providers/discord';
+import EmailProvider from 'next-auth/providers/email';
 import GoogleProvider from 'next-auth/providers/google';
 import { env } from 'src/env.mjs';
 import { prisma } from 'src/server/db';
@@ -41,6 +42,9 @@ declare module 'next-auth' {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  pages: {
+    verifyRequest: '/auth/verify-request'
+  },
   callbacks: {
     session: async ({ session, user }) => {
       if (session.user) {
@@ -52,6 +56,13 @@ export const authOptions: NextAuthOptions = {
       }
 
       return session;
+    },
+    async signIn({ account, credentials }) {
+      if (account?.provider === 'email' && credentials?.error) {
+        return `/auth?error=${credentials.error}`;
+      }
+
+      return true;
     }
   },
   adapter: PrismaAdapter(prisma),
@@ -63,6 +74,17 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET
+    }),
+    EmailProvider({
+      server: {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: process.env.EMAIL_SERVER_PORT,
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD
+        }
+      },
+      from: process.env.EMAIL_FROM
     })
 
     /**

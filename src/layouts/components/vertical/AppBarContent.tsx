@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import { Button, Stack } from '@mui/material';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 // ** Type Import
@@ -71,14 +71,14 @@ const AppBarContent = (props: Props) => {
         <Stack direction='row'>
           <Button
             variant='outlined'
-            onClick={() => void signIn()}
+            onClick={() => router.push('/auth')}
             sx={{
               mr: '1rem'
             }}
           >
             Log in
           </Button>
-          <Button variant='contained' onClick={() => void signIn()}>
+          <Button variant='contained' onClick={() => router.push('/auth')}>
             Sign Up
           </Button>
         </Stack>

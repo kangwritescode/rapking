@@ -1,5 +1,4 @@
 import { Box, Button, Divider, Stack, Theme, Typography, useMediaQuery } from '@mui/material';
-import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import BoxOutlineButton from 'src/components/BoxOutlinedButton';
 import BannerContainer from 'src/components/LandingPage/BannerContainer';
@@ -77,7 +76,7 @@ const LandingPage = () => {
             Write. Judge. Discuss.
           </Typography>
           <BoxOutlineButton
-            onClick={() => void signIn()}
+            onClick={() => router.push('/auth')}
             sx={{
               fontSize: {
                 xs: '1rem',

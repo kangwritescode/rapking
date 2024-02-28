@@ -137,7 +137,7 @@ const LandingNav = () => {
       <Stack direction='row'>
         <Button
           variant='outlined'
-          onClick={() => void signIn()}
+          onClick={() => router.push('/auth')}
           ref={signInButtonRef}
           sx={{
             mr: '1rem'
@@ -145,7 +145,7 @@ const LandingNav = () => {
         >
           Log in
         </Button>
-        <Button variant='contained' onClick={() => void signIn()} ref={signInButtonRef}>
+        <Button variant='contained' onClick={() => router.push('/auth')} ref={signInButtonRef}>
           Sign Up
         </Button>
       </Stack>
