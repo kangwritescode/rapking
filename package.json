@@ -57,6 +57,7 @@
     "i18next": "22.4.10",
     "next": "13.5.4",
     "next-auth": "4.20.1",
+    "nodemailer": "^6.9.10",
     "nprogress": "0.2.0",
     "prismjs": "1.29.0",
     "prosemirror-model": "^1.19.4",
