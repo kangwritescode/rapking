@@ -43,76 +43,80 @@ const UserProfile = ({ userId }: { userId?: string }) => {
   };
 
   return (
-    <Stack
-      direction={{ sm: 'column', md: 'row' }}
-      gap={4}
-      sx={{
-        padding: {
-          xs: `1.5rem`,
-          md: `1.5rem 1.5rem 0`
-        },
-        transition: 'padding .25s ease-in-out',
-        [theme.breakpoints.down('sm')]: {
-          paddingLeft: theme.spacing(4),
-          paddingRight: theme.spacing(4)
-        },
-        height: `100%`
-      }}
-    >
+    <>
       <Stack
-        width={{
-          xs: '100%',
-          md: '24rem'
-        }}
-        maxWidth={'24rem'}
-        minWidth={{
-          xs: '100%',
-          md: '24rem'
-        }}
+        direction={{ sm: 'column', md: 'row' }}
+        gap={4}
         sx={{
-          transition: 'width .25s ease-in-out'
+          padding: {
+            xs: `1.5rem`,
+            md: `1.5rem 1.5rem 0`
+          },
+          transition: 'padding .25s ease-in-out',
+          [theme.breakpoints.down('sm')]: {
+            paddingLeft: theme.spacing(4),
+            paddingRight: theme.spacing(4)
+          },
+          height: `100%`
         }}
       >
-        <ProfileCard userData={userData} isCurrentUser={isCurrentUser} />
-      </Stack>
-      <Stack flexGrow={1} gap='.5rem' height='100%'>
-        <Card
+        <Stack
+          width={{
+            xs: '100%',
+            md: '24rem'
+          }}
+          maxWidth={'24rem'}
+          minWidth={{
+            xs: '100%',
+            md: '24rem'
+          }}
           sx={{
-            border: `1px solid ${theme.palette.divider}`
+            transition: 'width .25s ease-in-out'
           }}
         >
-          <CardContent>
-            <ProfileCardStats userData={userData} />
-          </CardContent>
-        </Card>
-        <Stack p='.5rem' position='relative' height={{ xs: '36rem', md: 'calc(100% - 6.75rem)' }}>
-          <Tabs
-            value={value}
-            onChange={handleTabsChange}
-            textColor='primary'
-            indicatorColor='primary'
-          >
-            <Tab value='raps' label='Raps' />
-            <Tab value='wall' label='Wall' />
-          </Tabs>
-          <Divider
+          <ProfileCard userData={userData} isCurrentUser={isCurrentUser} />
+        </Stack>
+        <Stack flexGrow={1} gap='.5rem' height='100%'>
+          <Card
             sx={{
-              borderBottom: `2px solid ${theme.palette.divider}`,
-              position: 'relative',
-              top: '-2px'
+              border: `1px solid ${theme.palette.divider}`
             }}
-          />
-          {value === 'raps' && <RapsTab sx={{}} raps={rapsData} isCurrentUser={isCurrentUser} />}
-          {value === 'wall' && <Wall threadId={userData?.wall?.threadId} />}
+          >
+            <CardContent>
+              <ProfileCardStats userData={userData} />
+            </CardContent>
+          </Card>
+          <Stack p='.5rem' position='relative' height={{ xs: '36rem', md: 'calc(100% - 6.75rem)' }}>
+            <Tabs
+              value={value}
+              onChange={handleTabsChange}
+              textColor='primary'
+              indicatorColor='primary'
+            >
+              <Tab value='raps' label='Raps' />
+              <Tab value='wall' label='Wall' />
+            </Tabs>
+            <Divider
+              sx={{
+                borderBottom: `2px solid ${theme.palette.divider}`,
+                position: 'relative',
+                top: '-2px'
+              }}
+            />
+            {value === 'raps' && <RapsTab sx={{}} raps={rapsData} isCurrentUser={isCurrentUser} />}
+            {value === 'wall' && <Wall threadId={userData?.wall?.threadId} />}
+          </Stack>
         </Stack>
       </Stack>
-    </Stack>
+      <Footer />
+    </>
   );
 };
 
 export default UserProfile;
 
 import { createServerSideHelpers } from '@trpc/react-query/server';
+import Footer from 'src/components/Footer';
 import ProfileCardStats from 'src/components/UserPage/ProfileCardStats';
 import Wall from 'src/components/Wall/Wall';
 import { appRouter } from 'src/server/api/root';

@@ -21,12 +21,12 @@ const LandingPage = () => {
 
   const checkOutButtonsData = [
     {
-      title: 'West Coast',
-      path: '/explore?us-country=WEST'
+      title: 'United States',
+      path: '/explore?country=US'
     },
     {
-      title: 'East Coast',
-      path: '/explore?us-country=EAST'
+      title: 'United Kingdom',
+      path: '/explore?country=UK'
     }
   ];
 

@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Stack } from '@mui/material';
+import { Box, CircularProgress, Stack, SxProps } from '@mui/material';
 import { useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import {
@@ -17,6 +17,7 @@ interface LeaderboardCardsProps {
   countryFilter: LeaderboardCountryFilter;
   timeFilter: LeaderboardTimeFilter;
   sexFilter: LeaderboardSexFilter;
+  sx?: SxProps;
 }
 
 export default function LeaderboardCards({
@@ -24,7 +25,8 @@ export default function LeaderboardCards({
   selectedUserId,
   countryFilter,
   timeFilter,
-  sexFilter
+  sexFilter,
+  sx
 }: LeaderboardCardsProps) {
   const {
     data,
@@ -56,7 +58,6 @@ export default function LeaderboardCards({
 
   return (
     <Box
-      height='100%'
       sx={{
         "& div[data-test-id='virtuoso-scroller']": {
           // Set the width of the scrollbar
@@ -80,7 +81,8 @@ export default function LeaderboardCards({
           // Firefox scrollbar styles
           scrollbarWidth: 'thin',
           scrollbarColor: 'darkgrey grey'
-        }
+        },
+        ...sx
       }}
     >
       <Virtuoso

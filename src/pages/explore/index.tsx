@@ -32,7 +32,7 @@ function ExplorePage() {
   const theme = useTheme();
   const { status } = useSession();
   const { query } = useRouter();
-  const queryCountryFilter = query['us-country'] as CountryFilter;
+  const queryCountryFilter = query['country'] as CountryFilter;
 
   // Tabs
   const [tab, setTab] = useState(0);

@@ -21,8 +21,6 @@ import VerticalNavHeader from './VerticalNavHeader';
 import VerticalNavItems from './VerticalNavItems';
 
 // ** Theme Options
-import { Divider, Typography } from '@mui/material';
-import Link from 'next/link';
 import themeOptions from 'src/@core/theme/ThemeOptions';
 
 // ** Util Import
@@ -123,7 +121,7 @@ const Navigation = (props: Props) => {
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <Drawer {...props} navHover={navHover} setNavHover={setNavHover}>
+      <Drawer {...props} navHover={navHover} setNavHover={setNavHover} navigationBorderWidth={1}>
         <VerticalNavHeader {...props} navHover={navHover} />
         {beforeNavMenuContent && beforeVerticalNavMenuContentPosition === 'fixed'
           ? beforeNavMenuContent(navMenuContentProps)
@@ -175,28 +173,6 @@ const Navigation = (props: Props) => {
         {afterNavMenuContent && afterVerticalNavMenuContentPosition === 'fixed'
           ? afterNavMenuContent(navMenuContentProps)
           : null}
-        {!navCollapsed && (
-          <Box mt='auto'>
-            <Divider
-              sx={{
-                width: '100%'
-              }}
-            />
-            <Box p='1rem'>
-              <Typography variant='caption'>
-                <Link
-                  style={{
-                    color: 'inherit',
-                    textDecoration: 'none'
-                  }}
-                  href='/rules'
-                >
-                  Rules
-                </Link>
-              </Typography>
-            </Box>
-          </Box>
-        )}
       </Drawer>
     </ThemeProvider>
   );

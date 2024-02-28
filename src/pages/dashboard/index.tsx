@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import DashboardRaps from 'src/components/DashboardPage/DashboardRaps';
 import ReviewRequestAlert from 'src/components/DashboardPage/ReviewRequestAlert';
+import Footer from 'src/components/Footer';
 import { api } from 'src/utils/api';
 
 const greetings = ['Welcome back', `What's good`, `What's up`];
@@ -75,67 +76,74 @@ function DashboardPage() {
   };
 
   return (
-    <Stack
-      sx={{
-        padding: `2rem ${theme.spacing(6)} 2rem`,
-        transition: 'padding .25s ease-in-out',
-        [theme.breakpoints.down('sm')]: {
-          paddingLeft: theme.spacing(4),
-          paddingRight: theme.spacing(4)
-        }
-      }}
-    >
+    <>
       <Stack
         sx={{
-          width: {
-            xs: '100%',
-            md: '50rem',
-            lg: '60rem'
-          },
-          m: 'auto'
+          padding: `2rem ${theme.spacing(6)} 2rem`,
+          transition: 'padding .25s ease-in-out',
+          [theme.breakpoints.down('sm')]: {
+            paddingLeft: theme.spacing(4),
+            paddingRight: theme.spacing(4)
+          }
         }}
       >
-        <Typography variant='h6'>
-          {greeting}, <strong>{userData?.username}</strong>
-        </Typography>
-        <Stack direction='row' alignItems='center' flexWrap='wrap' sx={{ mt: '1rem' }}>
-          {shortcuts.map(shortcut => {
-            if (shortcut.label === 'Review Inbox' && reviewRequestsCount) {
-              return (
-                <Badge key={shortcut.label} badgeContent={reviewRequestsCount} color='error'>
-                  {renderShortcut(shortcut)}
-                </Badge>
-              );
-            }
-
-            return renderShortcut({
-              label: shortcut.label,
-              icon: shortcut.icon,
-              link: shortcut.link,
-              sx: { mr: '.5rem' }
-            });
-          })}
-        </Stack>
-        <Divider />
-        <ReviewRequestAlert />
-        <Tabs
-          value={tab}
-          onChange={handleChange}
+        <Stack
           sx={{
-            ['& .Mui-selected']: {
-              color: theme.palette.grey[100] + ' !important'
+            width: {
+              xs: '100%',
+              md: '50rem',
+              lg: '60rem'
             },
-            ['& .MuiTabs-indicator']: {
-              backgroundColor: theme.palette.grey[100]
-            }
+            m: 'auto'
           }}
         >
-          <Tab label='Raps' />
-        </Tabs>
-        <Divider />
-        {tab === 0 && <DashboardRaps />}
+          <Typography variant='h6'>
+            {greeting}, <strong>{userData?.username}</strong>
+          </Typography>
+          <Stack direction='row' alignItems='center' flexWrap='wrap' sx={{ mt: '1rem' }}>
+            {shortcuts.map(shortcut => {
+              if (shortcut.label === 'Review Inbox' && reviewRequestsCount) {
+                return (
+                  <Badge key={shortcut.label} badgeContent={reviewRequestsCount} color='error'>
+                    {renderShortcut(shortcut)}
+                  </Badge>
+                );
+              }
+
+              return renderShortcut({
+                label: shortcut.label,
+                icon: shortcut.icon,
+                link: shortcut.link,
+                sx: { mr: '.5rem' }
+              });
+            })}
+          </Stack>
+          <Divider />
+          <ReviewRequestAlert />
+          <Tabs
+            value={tab}
+            onChange={handleChange}
+            sx={{
+              ['& .Mui-selected']: {
+                color: theme.palette.grey[100] + ' !important'
+              },
+              ['& .MuiTabs-indicator']: {
+                backgroundColor: theme.palette.grey[100]
+              }
+            }}
+          >
+            <Tab label='Raps' />
+          </Tabs>
+          <Divider />
+          {tab === 0 && <DashboardRaps />}
+        </Stack>
       </Stack>
-    </Stack>
+      <Footer
+        sx={{
+          mt: '5rem'
+        }}
+      />
+    </>
   );
 }
 

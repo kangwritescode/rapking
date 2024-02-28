@@ -21,7 +21,7 @@ interface FeedBarProps {
 
 function FeedBar({ sx, onSortAndFilterChange }: FeedBarProps) {
   const { query } = useRouter();
-  const queryCountryFilter = query['us-country'] as CountryFilter;
+  const queryCountryFilter = query['country'] as CountryFilter;
 
   const [sortBy, setSortBy] = useState<SortByValue>('NEWEST');
   const [countryFilter, setCountryFilter] = useState<CountryFilter>(queryCountryFilter || 'ALL');

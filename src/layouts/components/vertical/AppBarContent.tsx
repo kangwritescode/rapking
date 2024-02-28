@@ -12,7 +12,6 @@ import { Settings } from 'src/@core/context/settingsContext';
 // ** Components
 import NotificationDropdown from 'src/@core/layouts/components/shared-components/NotificationDropdown';
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown';
-import GlobalSearch from 'src/components/GlobalSearch';
 import { api } from 'src/utils/api';
 
 interface Props {
@@ -52,21 +51,6 @@ const AppBarContent = (props: Props) => {
           </IconButton>
         )}
       </Box>
-      {router.asPath !== '/create-profile/' && (
-        <GlobalSearch
-          sx={{
-            position: 'absolute',
-            left: {
-              md: '3.5rem',
-              lg: 'unset'
-            },
-            display: {
-              xs: 'none',
-              md: 'block'
-            }
-          }}
-        />
-      )}
       {status === 'unauthenticated' && (
         <Stack direction='row'>
           <Button
