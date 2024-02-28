@@ -1,8 +1,8 @@
 import { Box, Button, Divider, Stack, Theme, Typography, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
 import BoxOutlineButton from 'src/components/BoxOutlinedButton';
+import Footer from 'src/components/Footer';
 import BannerContainer from 'src/components/LandingPage/BannerContainer';
-import LandingFooter from 'src/components/LandingPage/LandingFooter';
 import LandingNav from 'src/components/LandingPage/LandingNav';
 import LatestRapsSection from 'src/components/LandingPage/LatestRapsSection';
 import { api } from 'src/utils/api';
@@ -139,7 +139,7 @@ const LandingPage = () => {
       </BannerContainer>
       <LatestRapsSection />
       <Divider />
-      <LandingFooter />
+      <Footer />
     </Box>
   );
 };
