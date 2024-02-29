@@ -106,12 +106,26 @@ export const threadComments = createTRPCRouter({
         });
       }
 
-      const threadComment = await ctx.prisma.threadComment.create({
-        data: {
-          content: sanitizedContent,
-          userId,
-          threadId: thread.id
-        }
+      const threadComment = await ctx.prisma.$transaction(async prisma => {
+        await prisma.thread.update({
+          where: {
+            id: threadId
+          },
+          data: {
+            commentsCount: {
+              increment: 1
+            }
+          }
+        });
+        const threadComment = await ctx.prisma.threadComment.create({
+          data: {
+            content: sanitizedContent,
+            userId,
+            threadId: thread.id
+          }
+        });
+
+        return threadComment;
       });
 
       if (thread.type === 'RAP' && thread.ownerId !== userId) {
@@ -161,10 +175,25 @@ export const threadComments = createTRPCRouter({
         });
       }
 
-      const deleteResponse = await ctx.prisma.threadComment.delete({
-        where: {
-          id
-        }
+      const deleteResponse = await ctx.prisma.$transaction(async prisma => {
+        await prisma.thread.update({
+          where: {
+            id: commentToDelete.threadId
+          },
+          data: {
+            commentsCount: {
+              decrement: 1
+            }
+          }
+        });
+
+        const deleteResponse = await ctx.prisma.threadComment.delete({
+          where: {
+            id
+          }
+        });
+
+        return deleteResponse;
       });
 
       return deleteResponse;

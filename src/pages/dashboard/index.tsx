@@ -79,12 +79,14 @@ function DashboardPage() {
     <>
       <Stack
         sx={{
-          padding: `2rem ${theme.spacing(6)} 2rem`,
+          padding: `2rem ${theme.spacing(6)} 0`,
           transition: 'padding .25s ease-in-out',
           [theme.breakpoints.down('sm')]: {
             paddingLeft: theme.spacing(4),
             paddingRight: theme.spacing(4)
-          }
+          },
+          height: '100%',
+          justifyContent: 'space-between'
         }}
       >
         <Stack
@@ -94,7 +96,8 @@ function DashboardPage() {
               md: '50rem',
               lg: '60rem'
             },
-            m: 'auto'
+            m: 'auto',
+            height: '100%'
           }}
         >
           <Typography variant='h6'>
@@ -137,12 +140,12 @@ function DashboardPage() {
           <Divider />
           {tab === 0 && <DashboardRaps />}
         </Stack>
+        <Footer
+          sx={{
+            mt: '5rem'
+          }}
+        />
       </Stack>
-      <Footer
-        sx={{
-          mt: '5rem'
-        }}
-      />
     </>
   );
 }

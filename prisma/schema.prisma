@@ -75,6 +75,7 @@ model User {
   collaboratedRaps       Rap[]               @relation("RapCollaborators")
   reviewRequestsSent     ReviewRequest[]     @relation("RequesterRelation")
   reviewRequestsReceived ReviewRequest[]     @relation("ReviewerRelation")
+  forumThread            ForumThread[]
 }
 
 model UserFollows {
@@ -120,11 +121,13 @@ model Thread {
   rapId          String?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+  commentsCount  Int             @default(0)
   owner          User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   rap            Rap?            @relation(fields: [rapId], references: [id], onDelete: Cascade)
   threadComments ThreadComment[]
   wall           Wall?
   rapThread      RapThread?
+  forumThread    ForumThread?
 }
 
 // Extends Thread
@@ -145,6 +148,18 @@ model RapThread {
   rap      Rap    @relation(fields: [rapId], references: [id], onDelete: Cascade)
   ownerId  String
   owner    User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+}
+
+// Extends Thread
+model ForumThread {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  threadId  String   @unique
+  thread    Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  title     String
 }
 
 model ThreadComment {
@@ -294,6 +309,7 @@ enum ThreadType {
   RAP
   WALL
   ARTICLE
+  FORUM
 }
 
 enum RapVoteType {

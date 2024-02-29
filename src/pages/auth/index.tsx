@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import { LoadingButton } from '@mui/lab';
-import { Alert, Button, Divider, Stack, TextField, Typography, useTheme } from '@mui/material';
+import { Alert, Box, Button, Divider, Stack, TextField, Typography, useTheme } from '@mui/material';
 import { getProviders, signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -126,11 +126,17 @@ function AuthPage() {
           >
             Continue
           </LoadingButton>
-          <Divider sx={{ mb: '1.5rem' }}>
-            <Typography variant='caption' fontSize='.75rem' textTransform='uppercase'>
-              or
-            </Typography>
-          </Divider>
+          <Box>
+            <Divider
+              sx={{
+                mb: '1.5rem'
+              }}
+            >
+              <Typography px='.25rem' variant='caption' fontSize='.75rem' textTransform='uppercase'>
+                or
+              </Typography>
+            </Divider>
+          </Box>
           {providers &&
             Object.values(providers).map((provider: any) => {
               const { bgcolor, color, icon } = buttonInfo(provider.name);

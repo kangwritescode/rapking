@@ -4,9 +4,10 @@ import { Editor } from '@tiptap/react';
 
 interface GenericTipTapEditorProps {
   editor: Editor | null;
+  contentStyles?: any;
 }
 
-export default function GenericTipTapEditor({ editor }: GenericTipTapEditorProps) {
+export default function GenericTipTapEditor({ editor, contentStyles }: GenericTipTapEditorProps) {
   const theme = useTheme();
 
   return (
@@ -24,7 +25,8 @@ export default function GenericTipTapEditor({ editor }: GenericTipTapEditorProps
           color: theme.palette.text.primary,
           width: '100%',
           minHeight: '4rem',
-          fontSize: '10pt'
+          fontSize: '10pt',
+          ...contentStyles
         },
         toolbar: {
           background: theme.palette.grey[900]
