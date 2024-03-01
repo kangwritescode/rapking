@@ -70,7 +70,11 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       path: '/rapkings',
       icon: 'ph:crown-bold'
     },
-
+    {
+      title: 'Forum',
+      path: '/forum',
+      icon: 'ic:sharp-forum'
+    },
     {
       title: 'Pulse',
       path: '/pulse',
@@ -82,7 +86,7 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       icon: 'ph:brain-duotone'
     },
     {
-      title: 'Community',
+      title: 'Discord',
       path: '/community',
       icon: 'ic:baseline-discord'
     }

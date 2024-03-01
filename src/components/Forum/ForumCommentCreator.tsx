@@ -1,42 +1,43 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButton } from '@mui/lab';
-import { Button, Stack, TextField, useTheme } from '@mui/material';
+import { Stack, SxProps, useTheme } from '@mui/material';
 import CharacterCount from '@tiptap/extension-character-count';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useSession } from 'next-auth/react';
+import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
 import { z } from 'zod';
 import GenericTipTapEditor from '../GenericTipTapEditor';
 
-interface ForumThreadForm {
-  title: string;
+interface ForumCommentCreator {
   content: string;
 }
 
 const usernameSchema = z.object({
-  title: z.string().min(3).max(30),
-  content: z.string().min(3).max(1000)
+  content: z.string().min(1).max(1000)
 });
 
-interface ForumThreadFormProps {
-  cancelButtonOnClick?: () => void;
-  onSuccess?: () => void;
+interface ForumCommentCreatorProps {
+  sx?: SxProps;
+  threadId?: string;
 }
 
-function ForumThreadForm({ cancelButtonOnClick, onSuccess }: ForumThreadFormProps) {
+function ForumCommentCreator({ sx, threadId }: ForumCommentCreatorProps) {
   const session = useSession();
+  const ref = useRef<HTMLFormElement>(null);
+
+  const { invalidate: invalidateGetForumThread } = api.useUtils().thread.getForumThread;
 
   const {
-    register,
     handleSubmit: formSubmit,
     setValue,
     formState: { isValid }
   } = useForm({
-    defaultValues: { title: '', content: '' },
+    defaultValues: { content: '' },
     resolver: zodResolver(usernameSchema),
     mode: 'all'
   });
@@ -45,7 +46,7 @@ function ForumThreadForm({ cancelButtonOnClick, onSuccess }: ForumThreadFormProp
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder: 'Write your post here...'
+        placeholder: 'Write your comment here...'
       }),
       CharacterCount.configure({
         limit: 300
@@ -58,36 +59,36 @@ function ForumThreadForm({ cancelButtonOnClick, onSuccess }: ForumThreadFormProp
 
   const theme = useTheme();
 
-  const { mutate: createForumThread, isLoading: forumThreadIsLoading } =
-    api.thread.createForumThread.useMutation({
+  const { mutate: postThreadComment, isLoading: forumThreadIsLoading } =
+    api.threadComments.postThreadComment.useMutation({
       onSuccess: () => {
-        toast.success('Thread created successfully!');
-        if (onSuccess) onSuccess();
+        invalidateGetForumThread();
+        if (editor) {
+          editor.commands.clearContent();
+        }
       },
-      onError: error => {
-        toast.error(error.message);
+      onError: err => {
+        toast.error(err.message);
       }
     });
 
-  const handleSubmit = async ({ title }: { title: string }) => {
+  const handleSubmit = async () => {
     if (!editor || !session?.data?.user.id) return;
     const content = editor.getHTML();
-    createForumThread({ title, content, userId: session?.data?.user.id });
+    postThreadComment({ content, threadId: threadId || '' });
   };
 
   return (
-    <form onSubmit={formSubmit(formValues => handleSubmit({ title: formValues.title }))}>
-      <Stack>
-        <TextField
-          label='Title'
-          variant='outlined'
-          size='small'
-          {...register('title')}
-          sx={{
-            mb: '1rem',
-            mt: '.5rem'
-          }}
-        />
+    <form onSubmit={formSubmit(handleSubmit)} ref={ref}>
+      <Stack
+        sx={{
+          p: '1.5rem 1rem 1rem',
+          background: theme.palette.background.paper,
+          border: `1px solid ${theme.palette.divider}`,
+          borderRadius: 1,
+          ...sx
+        }}
+      >
         <GenericTipTapEditor
           contentStyles={{
             background: 'unset',
@@ -95,22 +96,16 @@ function ForumThreadForm({ cancelButtonOnClick, onSuccess }: ForumThreadFormProp
           }}
           editor={editor}
         />
-        <Stack direction='row' justifyContent='flex-end' mt='2rem' gap={4}>
-          <Button
-            color='secondary'
-            variant='outlined'
-            onClick={() => cancelButtonOnClick && cancelButtonOnClick()}
-          >
-            Cancel
-          </Button>
+        <Stack direction='row' justifyContent='flex-end' mt='1rem' gap={4}>
           <LoadingButton
             type='submit'
             variant='contained'
             color='primary'
             disabled={!isValid}
             loading={forumThreadIsLoading}
+            size='small'
           >
-            Submit
+            Add a Comment
           </LoadingButton>
         </Stack>
       </Stack>
@@ -118,4 +113,4 @@ function ForumThreadForm({ cancelButtonOnClick, onSuccess }: ForumThreadFormProp
   );
 }
 
-export default ForumThreadForm;
+export default ForumCommentCreator;

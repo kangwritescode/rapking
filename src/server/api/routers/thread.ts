@@ -7,18 +7,25 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/serve
 import { bannedWords } from 'src/shared/bannedWords';
 
 export type ThreadCommentWithUserData = ThreadComment & {
-  user: User;
+  user: Partial<User>;
 };
 
-export type GetForumThreadPage = ForumThread & {
+export type GetForumThreadPageResponse = ForumThread & {
   thread: {
-    threadComments: (ThreadComment & { user: Partial<User> })[];
+    threadComments: ThreadCommentWithUserData[];
     commentsCount: number;
   };
   owner: User;
 };
 
-export type GetForumThreadPages = GetForumThreadPage[];
+export type GetForumThreadPagesResponse = GetForumThreadPageResponse[];
+
+export type GetForumThreadResponse = ForumThread & {
+  thread: {
+    threadComments: ThreadCommentWithUserData[];
+  };
+  owner: Partial<User>;
+};
 
 export const threadRouter = createTRPCRouter({
   getThread: publicProcedure
@@ -54,7 +61,7 @@ export const threadRouter = createTRPCRouter({
     )
     .mutation(async ({ input, ctx }) => {
       const rateLimitResult = await rateLimit({
-        maxRequests: 100,
+        maxRequests: 2,
         window: 60 * 60 * 24, // 24 hours
         keyString: `create-forum-thread-${ctx.session.user.id}`
       });
@@ -120,7 +127,7 @@ export const threadRouter = createTRPCRouter({
         take: limit,
         skip,
         orderBy: {
-          createdAt: 'asc'
+          createdAt: 'desc'
         },
         include: {
           thread: {
@@ -159,5 +166,46 @@ export const threadRouter = createTRPCRouter({
       const forumThreadsCount = await ctx.prisma.forumThread.count();
 
       return Math.ceil(forumThreadsCount / pageSize);
+    }),
+  getForumThread: publicProcedure
+    .input(
+      z.object({
+        threadId: z.string()
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { threadId } = input;
+
+      const thread = await ctx.prisma.forumThread.findUnique({
+        where: {
+          id: threadId
+        },
+        include: {
+          thread: {
+            include: {
+              threadComments: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      username: true,
+                      profileImageUrl: true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          owner: {
+            select: {
+              id: true,
+              username: true,
+              profileImageUrl: true
+            }
+          }
+        }
+      });
+
+      return thread;
     })
 });

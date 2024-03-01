@@ -1,11 +1,11 @@
 import { Stack, Typography, useTheme } from '@mui/material';
 import Link from 'next/link';
 import { getFormattedDate } from 'src/@core/utils/get-formatted-date';
-import { GetForumThreadPage } from 'src/server/api/routers/thread';
+import { GetForumThreadPageResponse } from 'src/server/api/routers/thread';
 import UserAvatar from '../UserAvatar';
 
 interface DiscussionCardProps {
-  forumThread: GetForumThreadPage;
+  forumThread: GetForumThreadPageResponse;
 }
 
 function DiscussionCard({ forumThread }: DiscussionCardProps) {

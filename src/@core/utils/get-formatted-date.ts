@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
 import isToday from 'dayjs/plugin/isToday';
 import isYesterday from 'dayjs/plugin/isYesterday';
-import isBetween from 'dayjs/plugin/isBetween';
 
 dayjs.extend(isToday);
 dayjs.extend(isYesterday);
@@ -25,4 +25,10 @@ export function getFormattedDate(inputDate: Date) {
   }
 
   return date.format('DD MMM');
+}
+
+export function getFormattedTime(inputDate: Date) {
+  const date = dayjs(inputDate);
+
+  return date.format('hh:mm A');
 }

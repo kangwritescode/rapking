@@ -1,4 +1,5 @@
 import { Box, Pagination, Stack, SxProps, Typography, useTheme } from '@mui/material';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { api } from 'src/utils/api';
 import DiscussionCard from './DiscussionCard';
@@ -11,8 +12,9 @@ const pageSize = 8;
 
 function Discussions({ sx }: DiscussionsProps) {
   const theme = useTheme();
+  const router = useRouter();
 
-  const [page, setPage] = React.useState(1);
+  const page = router.query.page ? parseInt(router.query.page as string) : 1;
 
   const { data } = api.thread.getDiscussionsPage.useQuery({
     limit: pageSize,
@@ -20,11 +22,11 @@ function Discussions({ sx }: DiscussionsProps) {
   });
 
   const { data: pages } = api.thread.getForumThreadPages.useQuery({
-    pageSize: 5
+    pageSize
   });
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
+    router.push(`/forum?page=${value}`);
   };
 
   return (

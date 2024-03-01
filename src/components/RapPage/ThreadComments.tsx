@@ -51,7 +51,7 @@ function ThreadComments({ sortBy, threadId, style }: ThreadCommentsProps) {
   }, [queryClient, threadId, sortBy]);
 
   useEffect(() => {
-    return clearQueryCache;
+    return () => clearQueryCache();
   }, [clearQueryCache]);
 
   const threadCommentsData = data?.pages.flatMap(page => page.threadComments) ?? [];
