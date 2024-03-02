@@ -1,17 +1,15 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-import { useRouter } from 'next/router';
+import { GetServerSidePropsContext } from 'next';
 import ForumCommentCreator from 'src/components/Forum/ForumCommentCreator';
 import ForumThreadComment from 'src/components/Forum/ForumThreadComment';
 import { api } from 'src/utils/api';
 import { ForumViewWrapper } from '..';
 
-function ForumThreadPage() {
+function ForumThreadPage({ id }: { id: string }) {
   const theme = useTheme();
-  const router = useRouter();
-  const { id } = router.query;
 
   const { data: forumThread } = api.thread.getForumThread.useQuery({
-    threadId: id as string
+    id: id as string
   });
 
   return (
@@ -60,3 +58,11 @@ function ForumThreadPage() {
 }
 
 export default ForumThreadPage;
+
+export async function getServerSideProps({ params }: GetServerSidePropsContext) {
+  return {
+    props: {
+      id: params.id
+    }
+  };
+}

@@ -170,15 +170,15 @@ export const threadRouter = createTRPCRouter({
   getForumThread: publicProcedure
     .input(
       z.object({
-        threadId: z.string()
+        id: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { threadId } = input;
+      const { id } = input;
 
       const thread = await ctx.prisma.forumThread.findUnique({
         where: {
-          id: threadId
+          id
         },
         include: {
           thread: {

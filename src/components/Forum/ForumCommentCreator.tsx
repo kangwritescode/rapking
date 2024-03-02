@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButton } from '@mui/lab';
 import { Stack, SxProps, useTheme } from '@mui/material';
 import CharacterCount from '@tiptap/extension-character-count';
+import Mention from '@tiptap/extension-mention';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -12,6 +13,7 @@ import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
 import { z } from 'zod';
 import GenericTipTapEditor from '../GenericTipTapEditor';
+import useSuggestionExtension from './suggestion';
 
 interface ForumCommentCreator {
   content: string;
@@ -42,6 +44,10 @@ function ForumCommentCreator({ sx, threadId }: ForumCommentCreatorProps) {
     mode: 'all'
   });
 
+  const suggestion = useSuggestionExtension({
+    threadId: threadId || ''
+  });
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -50,6 +56,12 @@ function ForumCommentCreator({ sx, threadId }: ForumCommentCreatorProps) {
       }),
       CharacterCount.configure({
         limit: 300
+      }),
+      Mention.configure({
+        HTMLAttributes: {
+          class: 'mention'
+        },
+        suggestion
       })
     ],
     onUpdate({ editor }) {
@@ -86,7 +98,13 @@ function ForumCommentCreator({ sx, threadId }: ForumCommentCreatorProps) {
           background: theme.palette.background.paper,
           border: `1px solid ${theme.palette.divider}`,
           borderRadius: 1,
-          ...sx
+          ...sx,
+          '.mention': {
+            border: `2px solid ${theme.palette.divider}`,
+            borderRadius: '0.4rem',
+            boxDecorationBreak: 'clone',
+            padding: '0.125rem 0.25rem'
+          }
         }}
       >
         <GenericTipTapEditor

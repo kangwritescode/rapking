@@ -21,15 +21,17 @@ function ForumThreadComment({ comment }: ForumThreadCommentProps) {
       <Stack direction='row' alignItems='top'>
         <UserAvatar
           url={comment.user.profileImageUrl}
-          size={38}
+          size={40}
           sx={{
             mr: 3
           }}
-          borderRadius={1}
         />
-        <Typography fontSize='1rem' fontWeight='600'>
-          {comment.user.username}
-        </Typography>
+        <Stack>
+          <Typography fontSize='.875rem' fontWeight='600'>
+            {comment.user.username}
+          </Typography>
+          <Typography variant='caption'>{displayedDate}</Typography>
+        </Stack>
       </Stack>
       <TipTapContent
         content={comment.content}
@@ -37,9 +39,6 @@ function ForumThreadComment({ comment }: ForumThreadCommentProps) {
           fontSize: '.875rem'
         }}
       />
-      <Typography mt='.5rem' fontSize='.75rem' color='text.secondary'>
-        {displayedDate}
-      </Typography>
     </Stack>
   );
 }

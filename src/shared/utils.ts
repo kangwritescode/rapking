@@ -38,6 +38,27 @@ export function debounce<T extends (...args: any[]) => any>(
   };
 }
 
+export function debouncePromise<T extends any[], R>(
+  fn: (...args: T) => Promise<R>,
+  delay: number
+): (...args: T) => Promise<R> {
+  let timeoutID: ReturnType<typeof setTimeout>;
+
+  return function (...args: T): Promise<R> {
+    return new Promise((resolve, reject) => {
+      if (timeoutID !== undefined) {
+        clearTimeout(timeoutID);
+      }
+
+      timeoutID = setTimeout(() => {
+        fn(...args)
+          .then(resolve)
+          .catch(reject);
+      }, delay);
+    });
+  };
+}
+
 export function isValidUrl(url: string) {
   try {
     new URL(url);
