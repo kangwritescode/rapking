@@ -1,8 +1,12 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { createServerSideHelpers } from '@trpc/react-query/server';
 import { GetServerSidePropsContext } from 'next';
 import ForumCommentCreator from 'src/components/Forum/ForumCommentCreator';
 import ForumThreadComment from 'src/components/Forum/ForumThreadComment';
+import { appRouter } from 'src/server/api/root';
+import { createTRPCContext } from 'src/server/api/trpc';
 import { api } from 'src/utils/api';
+import superjson from 'superjson';
 import { ForumViewWrapper } from '..';
 
 function ForumThreadPage({ id }: { id: string }) {
@@ -59,10 +63,20 @@ function ForumThreadPage({ id }: { id: string }) {
 
 export default ForumThreadPage;
 
-export async function getServerSideProps({ params }: GetServerSidePropsContext) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const id = context.params?.id as string;
+
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    ctx: await createTRPCContext(context),
+    transformer: superjson
+  });
+  await helpers.thread.getForumThread.prefetch({ id });
+
   return {
     props: {
-      id: params.id
+      id: context.params.id,
+      trpcState: helpers.dehydrate()
     }
   };
 }

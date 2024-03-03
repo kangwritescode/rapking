@@ -4,6 +4,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
@@ -18,6 +19,8 @@ interface WallCommentComposerProps {
 
 const WallCommentComposer = ({ sx, threadId }: WallCommentComposerProps) => {
   const session = useSession();
+  const router = useRouter();
+
   const {
     setValue,
     formState: { isValid, isSubmitting },
@@ -44,7 +47,7 @@ const WallCommentComposer = ({ sx, threadId }: WallCommentComposerProps) => {
 
   const submitFormHandler = (formValues: { threadComment: string }) => {
     if (session.status === 'unauthenticated') {
-      toast.error('You must be logged in to comment.');
+      router.push('/auth');
     } else if (userData && formValues.threadComment && threadId) {
       const editedContent = removeTrailingAndLeadingPElements(formValues.threadComment);
 

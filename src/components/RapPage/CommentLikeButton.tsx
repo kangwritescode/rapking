@@ -1,5 +1,6 @@
 import { Box, SxProps } from '@mui/material';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import ColoredIconButton from 'src/components/ColoredIconButton';
@@ -13,6 +14,7 @@ interface CommentLikeButtonProps {
 function CommentLikeButton({ threadCommentId, sx }: CommentLikeButtonProps) {
   const { data, status } = useSession();
   const currentUserId = data?.user?.id;
+  const router = useRouter();
 
   // State
   const [currentUserLikedThreadComment, setCurrentUserLikedThreadComment] =
@@ -70,7 +72,7 @@ function CommentLikeButton({ threadCommentId, sx }: CommentLikeButtonProps) {
 
   const handleLike = () => {
     if (status === 'unauthenticated') {
-      return toast.error('You must be logged in to like a comment.');
+      return router.push('/auth');
     }
     if (!currentUserId || !threadCommentId) return;
 
@@ -93,7 +95,7 @@ function CommentLikeButton({ threadCommentId, sx }: CommentLikeButtonProps) {
 
   const handleUnlike = () => {
     if (status === 'unauthenticated') {
-      return toast.error('You must be logged in to like a comment.');
+      return router.push('/auth');
     }
     if (!threadCommentId || !currentUserId) return;
 

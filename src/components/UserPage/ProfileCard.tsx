@@ -12,6 +12,7 @@ import { Icon } from '@iconify/react';
 import { CircularProgress, useTheme } from '@mui/material';
 import { User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
@@ -29,6 +30,7 @@ interface ProfileCardProps {
 
 const ProfileCard = ({ userData, isCurrentUser }: ProfileCardProps) => {
   const session = useSession();
+  const router = useRouter();
 
   // State
   const [modalIsOpen, setIsModalIsOpen] = useState<boolean>(false);
@@ -66,7 +68,7 @@ const ProfileCard = ({ userData, isCurrentUser }: ProfileCardProps) => {
         },
         onError: error => {
           if (error.data?.code === 'UNAUTHORIZED') {
-            toast.error('You must be logged in to follow a user.');
+            router.push('/auth');
           } else {
             toast.error(error.message);
           }

@@ -7,6 +7,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -30,6 +31,7 @@ interface ForumCommentCreatorProps {
 
 function ForumCommentCreator({ sx, threadId }: ForumCommentCreatorProps) {
   const session = useSession();
+  const router = useRouter();
   const ref = useRef<HTMLFormElement>(null);
 
   const { invalidate: invalidateGetForumThread } = api.useUtils().thread.getForumThread;
@@ -120,7 +122,12 @@ function ForumCommentCreator({ sx, threadId }: ForumCommentCreatorProps) {
         />
         <Stack direction='row' justifyContent='flex-end' mt='1rem' gap={4}>
           <LoadingButton
-            type='submit'
+            type={session.status === 'authenticated' ? 'submit' : 'button'}
+            onClick={() => {
+              if (session.status === 'unauthenticated') {
+                router.push('/auth');
+              }
+            }}
             variant='contained'
             color='primary'
             disabled={!isValid}

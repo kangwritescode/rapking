@@ -24,7 +24,9 @@ function WritePage() {
 
   const createRap = (rap: CreateRapPayload) => {
     if (status === 'unauthenticated') {
-      return toast.error('You must be logged in to create a rap.');
+      router.push('/auth/');
+
+      return;
     }
     if (rap) {
       const editedContent = removeTrailingAndLeadingPElements(rap.content);

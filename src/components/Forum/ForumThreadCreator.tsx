@@ -1,17 +1,28 @@
 import { Icon } from '@iconify/react';
 import { Box, Button, Divider, Typography, useTheme } from '@mui/material';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import ForumThreadForm from './ForumThreadForm';
 
 function ForumThreadCreator() {
   const theme = useTheme();
 
+  const session = useSession();
+  const isAuthenticated = session.status === 'authenticated';
+
+  const router = useRouter();
+
   const [view, setView] = useState<'button' | 'creator'>('button');
 
   return view === 'button' ? (
     <Button
       onClick={() => {
-        setView('creator');
+        if (isAuthenticated) {
+          setView('creator');
+        } else {
+          router.push('/auth');
+        }
       }}
       startIcon={<Icon icon='mdi:forum' />}
       variant='outlined'

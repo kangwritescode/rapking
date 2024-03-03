@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import ColoredIconButton from 'src/components/ColoredIconButton';
@@ -10,6 +11,8 @@ interface RapLikeButtonProps {
 }
 
 function RapLikeButton({ rapId }: RapLikeButtonProps) {
+  const router = useRouter();
+
   // Auth state
   const { data, status } = useSession();
   const currentUserId = data?.user?.id;
@@ -131,7 +134,7 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
 
   const buttonClickHandler =
     status === 'unauthenticated'
-      ? () => void toast.error('You must be logged in to vote.')
+      ? () => router.push('/auth')
       : currentUserLikedRap
       ? handleUnlike
       : handleLike;
