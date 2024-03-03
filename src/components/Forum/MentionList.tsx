@@ -7,8 +7,8 @@ export type MentionListRef = {
 };
 
 interface MentionListProps {
-  items: string[];
-  command: (params: { id: string }) => void;
+  items: { username: string; id: string }[];
+  command: (params: { id: string; label: string }) => void;
 }
 
 const MentionList = forwardRef((props: MentionListProps, ref) => {
@@ -18,7 +18,10 @@ const MentionList = forwardRef((props: MentionListProps, ref) => {
     const item = props.items[index];
 
     if (item) {
-      props.command({ id: item });
+      props.command({
+        id: item.id,
+        label: item.username
+      });
     }
   };
 
@@ -95,10 +98,10 @@ const MentionList = forwardRef((props: MentionListProps, ref) => {
                 border: `1px solid ${theme.palette.divider}`
               }
             }}
-            key={index}
+            key={item.id}
             onClick={() => selectItem(index)}
           >
-            {item}
+            {item.username}
           </Box>
         ))
       ) : (
@@ -115,7 +118,7 @@ const MentionList = forwardRef((props: MentionListProps, ref) => {
             color: theme.palette.text.primary
           }}
         >
-          No result
+          No user found
         </Box>
       )}
     </Box>

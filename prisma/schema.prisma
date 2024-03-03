@@ -152,14 +152,15 @@ model RapThread {
 
 // Extends Thread
 model ForumThread {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  threadId  String   @unique
-  thread    Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  ownerId   String
-  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  title     String
+  id            String         @id @default(cuid())
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  threadId      String         @unique
+  thread        Thread         @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  ownerId       String
+  owner         User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  title         String
+  notifications Notification[]
 }
 
 model ThreadComment {
@@ -255,6 +256,7 @@ model Notification {
   threadCommentId     String?
   threadCommentVoteId String?
   rapReviewId         Int?
+  forumThreadId       String?
   commentVote         CommentVote?       @relation(fields: [commentVoteId], references: [id], onDelete: Cascade)
   notifierUser        User               @relation("NotifierRelation", fields: [notifierId], references: [id], onDelete: Cascade)
   rap                 Rap?               @relation(fields: [rapId], references: [id], onDelete: Cascade)
@@ -263,6 +265,7 @@ model Notification {
   threadComment       ThreadComment?     @relation(fields: [threadCommentId], references: [id])
   threadCommentVote   ThreadCommentVote? @relation(fields: [threadCommentVoteId], references: [id])
   rapReview           RapReview?         @relation(fields: [rapReviewId], references: [id], onDelete: Cascade)
+  forumThread         ForumThread?       @relation(fields: [forumThreadId], references: [id], onDelete: Cascade)
 
   @@index([recipientId, createdAt(sort: Desc)])
 }
@@ -330,6 +333,7 @@ enum NotificationType {
   RAP_REVIEW
   COLLABORATOR_ADDED
   REVIEW_REQUEST_CREATED
+  FORUM_MENTION
 }
 
 enum RapStatus {

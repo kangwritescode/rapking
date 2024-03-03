@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
 import { z } from 'zod';
 import GenericTipTapEditor from '../GenericTipTapEditor';
-import useSuggestionExtension from './suggestion';
+import useSuggestionExtension from './useSuggestionExtension';
 
 interface ForumCommentCreator {
   content: string;
@@ -58,10 +58,14 @@ function ForumCommentCreator({ sx, threadId }: ForumCommentCreatorProps) {
         limit: 300
       }),
       Mention.configure({
-        HTMLAttributes: {
-          class: 'mention'
-        },
-        suggestion
+        suggestion,
+        renderHTML({ options, node }) {
+          return [
+            'span',
+            { 'data-mention-user-id': node.attrs.id, class: 'mention' },
+            `${options.suggestion.char}${node.attrs.label ?? ''}`
+          ];
+        }
       })
     ],
     onUpdate({ editor }) {

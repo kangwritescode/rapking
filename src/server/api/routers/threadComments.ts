@@ -3,9 +3,11 @@ import { z } from 'zod';
 
 import { NotificationType, ThreadComment, User } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import { JSDOM } from 'jsdom';
 import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 import { containsBannedWords } from 'src/shared/bannedWords';
+import { removeTrailingAndLeadingPElements } from 'src/shared/editorHelpers';
 
 export type ThreadCommentWithUserData = ThreadComment & {
   user: User;
@@ -77,12 +79,15 @@ export const threadComments = createTRPCRouter({
       const thread = await ctx.prisma.thread.findFirstOrThrow({
         where: {
           id: threadId
+        },
+        include: {
+          forumThread: true
         }
       });
 
       const rateLimitResult = await rateLimit({
-        maxRequests: 3,
-        window: 60 * 60,
+        maxRequests: 2,
+        window: 60 * 30, // 30 minutes
         keyString: `threadComment-${threadId}-${userId}`
       });
 
@@ -94,15 +99,40 @@ export const threadComments = createTRPCRouter({
         });
       }
 
-      const sanitizedContent = sanitize(content, {
-        allowedTags: ['br', 'b', 'strong', 'i'],
-        allowedAttributes: {}
+      // Remove trailing and leading <p> elements
+      const contentWithRemovedPElements = removeTrailingAndLeadingPElements(content);
+
+      const sanitizedContent = sanitize(contentWithRemovedPElements, {
+        allowedTags: ['br', 'b', 'strong', 'i', 'p', 'span'],
+        allowedAttributes: {
+          span: ['class', 'data-mention-user-id']
+        }
       });
 
       if (containsBannedWords(sanitizedContent)) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Something went wrong. Please try again later'
+        });
+      }
+
+      // Parse the HTML with JSDOM
+      const dom = new JSDOM(sanitizedContent);
+      const document = dom.window.document;
+
+      // Use standard DOM query methods to extract user IDs
+      const mentionSpans = document.querySelectorAll('span.mention');
+      const mentionedUserIds = Array.from(mentionSpans).map(span =>
+        span.getAttribute('data-mention-user-id')
+      ) as Array<string>;
+
+      // Filter out duplicates if necessary
+      const uniqueMentionedUserIds = [...new Set(mentionedUserIds)];
+
+      if (uniqueMentionedUserIds.length > 3) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'You can only mention up to 3 users in a comment.'
         });
       }
 
@@ -149,6 +179,22 @@ export const threadComments = createTRPCRouter({
             threadCommentId: threadComment.id
           }
         });
+      }
+
+      if (thread.type === 'FORUM' && thread.forumThread?.id) {
+        await Promise.all(
+          uniqueMentionedUserIds.map(async mentionedUserId => {
+            await ctx.prisma.notification.create({
+              data: {
+                type: NotificationType.FORUM_MENTION,
+                recipientId: mentionedUserId,
+                notifierId: userId,
+                threadCommentId: threadComment.id,
+                forumThreadId: thread.forumThread!.id
+              }
+            });
+          })
+        );
       }
 
       return threadComment;

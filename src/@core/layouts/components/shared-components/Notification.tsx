@@ -79,9 +79,15 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
     title = `${notification.notifierUser?.username} added you as a collaborator on '${notification.rap?.title}'`;
   } else if (notification.type === 'REVIEW_REQUEST_CREATED') {
     title = `${notification.notifierUser?.username} requested a review for '${notification.rap?.title}'`;
+  } else if (notification.type === 'FORUM_MENTION') {
+    title = `${notification.notifierUser?.username} mentioned you in a comment`;
   }
   let subtitle = '';
-  if (notification.type === 'RAP_COMMENT' || notification.type === 'WALL_COMMENT') {
+  if (
+    notification.type === 'RAP_COMMENT' ||
+    notification.type === 'WALL_COMMENT' ||
+    notification.type === 'FORUM_MENTION'
+  ) {
     subtitle = notification.threadComment ? htmlToText(notification.threadComment.content) : '';
   }
 
@@ -101,6 +107,8 @@ function Notification({ notification, closeDropdown }: NotificationProps) {
       router.push(`/rap/${notification.rap?.id}`);
     } else if (notification.type === 'REVIEW_REQUEST_CREATED') {
       router.push('/review-inbox');
+    } else if (notification.type === 'FORUM_MENTION') {
+      router.push(`/forum/${notification.forumThreadId}`);
     }
   };
 

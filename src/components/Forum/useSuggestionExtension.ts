@@ -21,7 +21,10 @@ const useSuggestionExtension = ({ threadId }: UseSuggestionExtensionProps) => {
 
     const data: Array<Partial<User>> = await response.json();
 
-    return data.map(item => item.username);
+    return data.map(item => ({
+      username: item.username,
+      id: item.id
+    }));
   };
 
   const debouncedFetchItems = debouncePromise(fetchItems, 200);
