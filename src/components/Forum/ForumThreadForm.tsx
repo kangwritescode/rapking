@@ -30,6 +30,9 @@ interface ForumThreadFormProps {
 function ForumThreadForm({ cancelButtonOnClick, onSuccess }: ForumThreadFormProps) {
   const session = useSession();
 
+  // Invalidators
+  const { invalidate: invalidateGetDiscussionsPage } = api.useUtils().thread.getDiscussionsPage;
+
   const {
     register,
     handleSubmit: formSubmit,
@@ -62,6 +65,7 @@ function ForumThreadForm({ cancelButtonOnClick, onSuccess }: ForumThreadFormProp
     api.thread.createForumThread.useMutation({
       onSuccess: () => {
         toast.success('Thread created successfully!');
+        invalidateGetDiscussionsPage();
         if (onSuccess) onSuccess();
       },
       onError: error => {

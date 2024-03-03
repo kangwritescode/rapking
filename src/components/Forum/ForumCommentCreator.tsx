@@ -54,7 +54,8 @@ function ForumCommentCreator({ sx, threadId }: ForumCommentCreatorProps) {
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder: 'Write your comment here...'
+        placeholder:
+          session.status === 'authenticated' ? 'Write your comment here...' : 'Log in to comment...'
       }),
       CharacterCount.configure({
         limit: 300
@@ -72,6 +73,11 @@ function ForumCommentCreator({ sx, threadId }: ForumCommentCreatorProps) {
     ],
     onUpdate({ editor }) {
       setValue('content', editor.getText(), { shouldDirty: true, shouldValidate: true });
+    },
+    onFocus() {
+      if (session.status === 'unauthenticated') {
+        router.push('/auth');
+      }
     }
   });
 
