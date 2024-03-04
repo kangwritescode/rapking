@@ -34,6 +34,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 
 // ** Global css styles
 import CreateProfileGuard from 'src/components/CreateProfileGuard';
+import UnderConstructionGuard from 'src/components/UnderConstructionGuard';
 import { api } from 'src/utils/api';
 import '../../styles/globals.css';
 
@@ -116,7 +117,9 @@ const App: any = (props: ExtendedAppProps) => {
                 <ThemeComponent settings={settings}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <CreateProfileGuard>
-                      {getLayout(<Component {...pageProps} />)}
+                      <UnderConstructionGuard>
+                        {getLayout(<Component {...pageProps} />)}
+                      </UnderConstructionGuard>
                     </CreateProfileGuard>
                     {/* <ReactQueryDevtools initialIsOpen={false} /> */}
                   </LocalizationProvider>
