@@ -1,15 +1,12 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-import { createServerSideHelpers } from '@trpc/react-query/server';
 import { GetServerSidePropsContext } from 'next';
 import ForumCommentCreator from 'src/components/Forum/ForumCommentCreator';
 import ForumThreadComment from 'src/components/Forum/ForumThreadComment';
-import { appRouter } from 'src/server/api/root';
-import { createTRPCContext } from 'src/server/api/trpc';
+import { prisma } from 'src/server/db';
 import { api } from 'src/utils/api';
-import superjson from 'superjson';
 import { ForumViewWrapper } from '..';
 
-function ForumThreadPage({ id }: { id: string }) {
+function ForumThreadPage({ id, defaultThreadId }: { id: string; defaultThreadId: string }) {
   const theme = useTheme();
 
   const { data: forumThread } = api.thread.getForumThread.useQuery({
@@ -51,7 +48,7 @@ function ForumThreadPage({ id }: { id: string }) {
         />
       </Stack>
       <ForumCommentCreator
-        threadId={forumThread?.thread.id}
+        threadId={defaultThreadId || forumThread?.thread.id}
         sx={{
           mt: '1.5rem',
           mb: '2rem'
@@ -66,17 +63,27 @@ export default ForumThreadPage;
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const id = context.params?.id as string;
 
-  const helpers = createServerSideHelpers({
-    router: appRouter,
-    ctx: await createTRPCContext(context),
-    transformer: superjson
+  const forumThread = await prisma.forumThread.findUnique({
+    where: {
+      id
+    },
+    include: {
+      thread: true
+    }
   });
-  await helpers.thread.getForumThread.prefetch({ id });
+
+  if (!forumThread) {
+    return {
+      notFound: true
+    };
+  }
+
+  const threadId = forumThread.threadId;
 
   return {
     props: {
       id: context.params.id,
-      trpcState: helpers.dehydrate()
+      defaultThreadId: threadId
     }
   };
 }
