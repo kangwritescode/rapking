@@ -131,6 +131,7 @@ function Rap({ rapData, sx }: RapProps) {
         rapData={rapData}
         threadId={rapData?.rapThread?.threadId}
         defaultCommentDrawerIsOpen={Boolean(commentId)}
+        showMoreButton
       />
       <Divider />
       {rapData?.soundcloudUrl ? (

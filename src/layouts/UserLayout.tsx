@@ -113,6 +113,15 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
     });
   }
 
+  // Reports
+  if (userData && userData.isAdmin) {
+    navItems.push({
+      title: 'Reports',
+      path: '/reports',
+      icon: 'ic:sharp-report'
+    });
+  }
+
   return (
     <Layout
       hidden={hidden}

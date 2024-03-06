@@ -76,6 +76,8 @@ model User {
   reviewRequestsSent     ReviewRequest[]     @relation("RequesterRelation")
   reviewRequestsReceived ReviewRequest[]     @relation("ReviewerRelation")
   forumThread            ForumThread[]
+  reports                Report[]            @relation("ReporterRelation")
+  reportsReceived        Report[]            @relation("ReportedRelation")
 }
 
 model UserFollows {
@@ -110,6 +112,7 @@ model Rap {
   rapThread       RapThread?
   rapReviews      RapReview[]
   reviewRequests  ReviewRequest[]
+  reports         Report[]
 
   @@index([userId, dateCreated(sort: Desc)])
 }
@@ -128,6 +131,7 @@ model Thread {
   wall           Wall?
   rapThread      RapThread?
   forumThread    ForumThread?
+  reports        Report[]
 }
 
 // Extends Thread
@@ -178,6 +182,7 @@ model ThreadComment {
   thread             Thread              @relation(fields: [threadId], references: [id], onDelete: Cascade)
   user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   threadCommentVotes ThreadCommentVote[]
+  reports            Report[]
 }
 
 model RapVote {
@@ -399,4 +404,38 @@ model ReviewRequest {
 enum ReviewRequestStatus {
   PENDING
   DECLINED
+}
+
+enum ReportType {
+  HARASSMENT
+  SPAM
+  RULES_VIOLATION
+  OTHER
+}
+
+enum ReportedEntity {
+  RAP
+  THREAD
+  THREAD_COMMENT
+  RAP_REVIEW
+  REVIEW_REQUEST
+  FORUM_THREAD
+}
+
+model Report {
+  id             String         @id @default(cuid())
+  type           ReportType
+  reportedEntity ReportedEntity
+  reporterId     String
+  reportedId     String?
+  rapId          String?
+  threadId       String?
+  commentId      String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  reporter       User           @relation("ReporterRelation", fields: [reporterId], references: [id], onDelete: Cascade)
+  reported       User?          @relation("ReportedRelation", fields: [reportedId], references: [id], onDelete: Cascade)
+  rap            Rap?           @relation(fields: [rapId], references: [id], onDelete: Cascade)
+  thread         Thread?        @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadComment  ThreadComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 }

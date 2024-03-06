@@ -3,6 +3,7 @@ import { Box, IconButton, SxProps, useTheme } from '@mui/material';
 import { Rap, User } from '@prisma/client';
 import { useState } from 'react';
 import { api } from 'src/utils/api';
+import RapBarMoreButton from './RapBarMoreButton';
 import RapLikeButton from './RapLikeButton';
 import ReviewDrawer from './ReviewDrawer';
 import ReviewWithRatingButton from './ReviewWithRatingButton';
@@ -19,6 +20,7 @@ interface RapBarProps {
   sx?: SxProps;
   defaultCommentDrawerIsOpen?: boolean;
   threadId?: string | null;
+  showMoreButton?: boolean;
 }
 
 function RapBar({
@@ -27,7 +29,8 @@ function RapBar({
   sx,
   defaultCommentDrawerIsOpen,
   threadId,
-  reviewClickHandler
+  reviewClickHandler,
+  showMoreButton
 }: RapBarProps) {
   const theme = useTheme();
 
@@ -59,7 +62,6 @@ function RapBar({
         onCloseHandler={() => setReviewDrawerIsOpen(false)}
         rapData={rapData}
       />
-
       <Box display='flex' sx={sx}>
         <RapLikeButton rapId={rapData?.id} />
         <ReviewWithRatingButton
@@ -89,6 +91,14 @@ function RapBar({
           </IconButton>
           {rapCommentsCount || 0}
         </Box>
+        {showMoreButton && (
+          <RapBarMoreButton
+            sx={{
+              ml: 'auto'
+            }}
+            rapData={rapData}
+          />
+        )}
       </Box>
     </>
   );
