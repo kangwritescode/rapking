@@ -1,13 +1,17 @@
 import { Box, Button, Stack } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
 
 function ReportsPage() {
+  const router = useRouter();
+
   // Queries
   const { data: reports, isLoading } = api.reports.getAllReports.useQuery();
+  const { data: currentUser } = api.user.getCurrentUser.useQuery();
 
   // Invalidators
   const { invalidate: invalidateReports } = api.useUtils().reports.getAllReports;
@@ -22,6 +26,12 @@ function ReportsPage() {
       invalidateReports();
     }
   });
+
+  useEffect(() => {
+    if (!currentUser?.isAdmin) {
+      router.push('/');
+    }
+  }, [currentUser, router]);
 
   // Define columns for the DataGrid
   const columns = [
