@@ -1,5 +1,6 @@
 import { ReportType, ReportedEntity } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure } from 'src/server/api/trpc';
 import { z } from 'zod';
 
@@ -19,6 +20,21 @@ export const reportRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { type, threadId, threadCommentId, reportedId, reportedEntity, forumThreadId } = input;
 
+      // * Rate limiting
+      const rateLimitResult = await rateLimit({
+        maxRequests: 3,
+        window: 60 * 60 * 24,
+        keyString: `report-${ctx.session.user.id}`
+      });
+
+      if (typeof rateLimitResult === 'number') {
+        const resetTime = Math.ceil(rateLimitResult / (60 * 60));
+        throw new TRPCError({
+          code: 'TOO_MANY_REQUESTS',
+          message: `You have reached the maximum number of reports for today. Please try again in ${resetTime} hours.`
+        });
+      }
+
       let reportedUserId = reportedId;
       let rapId: string | null | undefined = input.rapId;
 
@@ -29,7 +45,7 @@ export const reportRouter = createTRPCRouter({
             id: rapId
           }
         });
-        reportedUserId = rap?.userId;
+        reportedUserId = rap?.userId || reportedUserId;
       }
 
       // Reported entity is a Wall Comment
@@ -39,7 +55,7 @@ export const reportRouter = createTRPCRouter({
             id: threadCommentId
           }
         });
-        reportedUserId = wallComment?.userId;
+        reportedUserId = wallComment?.userId || reportedUserId;
       }
 
       // Reported entity is a Forum Thread or Forum Comment
@@ -60,8 +76,8 @@ export const reportRouter = createTRPCRouter({
           }
         });
 
-        reportedUserId = threadComment?.userId;
-        rapId = rapThread?.rapId;
+        reportedUserId = threadComment?.userId || reportedUserId;
+        rapId = rapThread?.rapId || rapId;
       }
 
       const report = await ctx.prisma.report.create({

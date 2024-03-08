@@ -27,6 +27,9 @@ function ReportMaker({
     onSuccess: () => {
       onSuccessfulReport();
       toast.success('Reported successfully');
+    },
+    onError: error => {
+      toast.error(error.message);
     }
   });
 
