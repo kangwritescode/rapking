@@ -44,6 +44,15 @@ export const reportRouter = createTRPCRouter({
         reportedUserId = rap?.userId;
       }
 
+      if (reportedEntity === ReportedEntity.WALL_COMMENT && threadCommentId) {
+        const wallComment = await ctx.prisma.threadComment.findUnique({
+          where: {
+            id: threadCommentId
+          }
+        });
+        reportedUserId = wallComment?.userId;
+      }
+
       if (
         (reportedEntity === ReportedEntity.RAP_COMMENT ||
           reportedEntity === ReportedEntity.FORUM_COMMENT) &&

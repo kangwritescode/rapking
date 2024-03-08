@@ -115,7 +115,11 @@ function ThreadCommentMenu({
       />
       <ReportDialog
         reportedEntity={
-          threadType === 'FORUM' ? ReportedEntity.FORUM_COMMENT : ReportedEntity.RAP_COMMENT
+          threadType === 'FORUM'
+            ? ReportedEntity.FORUM_COMMENT
+            : threadType === 'WALL'
+            ? ReportedEntity.WALL_COMMENT
+            : ReportedEntity.RAP_COMMENT
         }
         isOpen={reportDialogIsOpen}
         handleClose={() => setReportDialogIsOpen(false)}

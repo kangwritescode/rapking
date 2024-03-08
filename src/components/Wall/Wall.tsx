@@ -1,4 +1,5 @@
 import { Stack } from '@mui/material';
+import { ThreadType } from '@prisma/client';
 import ThreadComments from '../RapPage/ThreadComments';
 import WallCommentComposer from './WallCommentComposer';
 
@@ -23,6 +24,7 @@ function Wall({ threadId }: WallProps): JSX.Element {
         }}
         threadId={threadId}
         sortBy='RECENT'
+        threadType={ThreadType.WALL}
       />
     </Stack>
   );

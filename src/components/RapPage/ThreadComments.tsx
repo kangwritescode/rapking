@@ -1,4 +1,5 @@
 import { CircularProgress, Divider, Stack } from '@mui/material';
+import { ThreadType } from '@prisma/client';
 import { useQueryClient } from '@tanstack/react-query';
 import { getQueryKey } from '@trpc/react-query';
 import React, { Fragment, useCallback, useEffect } from 'react';
@@ -11,9 +12,10 @@ interface ThreadCommentsProps {
   sortBy: 'POPULAR' | 'RECENT';
   threadId?: string | null;
   style?: React.CSSProperties;
+  threadType?: ThreadType;
 }
 
-function ThreadComments({ sortBy, threadId, style }: ThreadCommentsProps) {
+function ThreadComments({ sortBy, threadId, style, threadType }: ThreadCommentsProps) {
   const {
     data,
     fetchNextPage,
@@ -80,6 +82,7 @@ function ThreadComments({ sortBy, threadId, style }: ThreadCommentsProps) {
               }}
               key={threadComment.id}
               comment={threadComment}
+              threadType={threadType}
             />
             <Divider
               sx={{

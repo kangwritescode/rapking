@@ -30,6 +30,8 @@ function ReportDialog({
     dialogTitle = dialogTitle + 'Rap Comment';
   } else if (reportedEntity === ReportedEntity.FORUM_COMMENT) {
     dialogTitle = dialogTitle + 'Forum Comment';
+  } else if (reportedEntity === ReportedEntity.WALL_COMMENT) {
+    dialogTitle = dialogTitle + 'Wall Comment';
   }
 
   return (
