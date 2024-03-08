@@ -19,22 +19,10 @@ export const reportRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { type, threadId, threadCommentId, reportedId, reportedEntity, forumThreadId } = input;
 
-      const user = await ctx.prisma.user.findUnique({
-        where: {
-          id: ctx.session.user.id
-        }
-      });
-
-      if (!user?.isAdmin) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'You are not authorized to perform this action'
-        });
-      }
-
       let reportedUserId = reportedId;
       let rapId: string | null | undefined = input.rapId;
 
+      // Reported entity is a Rap
       if (reportedEntity === ReportedEntity.RAP && rapId) {
         const rap = await ctx.prisma.rap.findUnique({
           where: {
@@ -44,6 +32,7 @@ export const reportRouter = createTRPCRouter({
         reportedUserId = rap?.userId;
       }
 
+      // Reported entity is a Wall Comment
       if (reportedEntity === ReportedEntity.WALL_COMMENT && threadCommentId) {
         const wallComment = await ctx.prisma.threadComment.findUnique({
           where: {
@@ -53,6 +42,7 @@ export const reportRouter = createTRPCRouter({
         reportedUserId = wallComment?.userId;
       }
 
+      // Reported entity is a Forum Thread or Forum Comment
       if (
         (reportedEntity === ReportedEntity.RAP_COMMENT ||
           reportedEntity === ReportedEntity.FORUM_COMMENT) &&
