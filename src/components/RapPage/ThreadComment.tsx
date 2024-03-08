@@ -46,7 +46,10 @@ function ThreadComment({ comment, sx }: ThreadCommentProps) {
           <Typography variant='body2'>{createdAt.toLocaleDateString()}</Typography>
         </Stack>
         <Stack flexGrow={1} alignItems='flex-end'>
-          {session.data?.user?.id === user.id && <ThreadCommentMenu threadCommentId={comment.id} />}
+          <ThreadCommentMenu
+            isCurrentUsersComment={session.data?.user?.id === user.id}
+            commentData={comment}
+          />
         </Stack>
       </Stack>
       <TipTapContent

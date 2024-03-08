@@ -28,7 +28,7 @@ function EditBioDialog({ isOpen, onCloseHandler, userData }: EditBioDialogProps)
   const theme = useTheme();
 
   const { mutate, isLoading } = api.user.updateUser.useMutation();
-  const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
+  const { invalidate: invalidateUserQuery } = api.useUtils().user.findByUsername;
 
   const handleClose = (_: any, reason: string) => {
     if (reason === 'backdropClick') return;

@@ -33,10 +33,9 @@ function ThreadCommentComposer({ threadId }: ThreadCommentComposerProps) {
   const { mutate: postComment, isLoading } = api.threadComments.postThreadComment.useMutation();
 
   // Invalidaters
-  const { invalidate: invalidateThreadComments } =
-    api.useContext().threadComments.getThreadComments;
+  const { invalidate: invalidateThreadComments } = api.useUtils().threadComments.getThreadComments;
   const { invalidate: invalidateCommentsCount } =
-    api.useContext().threadComments.getThreadCommentsCount;
+    api.useUtils().threadComments.getThreadCommentsCount;
 
   const {
     setValue,

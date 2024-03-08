@@ -1,6 +1,6 @@
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button, Link, Stack } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import Link from 'next/link';
+import { ThreadComment } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -47,9 +47,19 @@ function ReportsPage() {
       width: 150,
       renderCell: (cellValues: any) => {
         return cellValues.value ? (
-          <Link href={`/rap/${cellValues.value.id}`} passHref>
-            {cellValues.value.title}
-          </Link>
+          <Link href={`/rap/${cellValues.value.id}`}>{cellValues.value.title}</Link>
+        ) : (
+          'N/A'
+        );
+      }
+    },
+    {
+      field: 'rapComment',
+      headerName: 'Rap Comment',
+      width: 150,
+      renderCell: (cellValues: { value: ThreadComment | null }) => {
+        return cellValues.value ? (
+          <Link href={`/rap/${cellValues.value.rapId}`}>{cellValues.value.content}</Link>
         ) : (
           'N/A'
         );
@@ -65,7 +75,8 @@ function ReportsPage() {
         reporter: report.reporter.username,
         reported: report.reported?.username || 'N/A',
         createdAt: report.createdAt,
-        rap: report.rap ?? null
+        rap: report.rap ?? null,
+        rapComment: report.reportedEntity === 'RAP_COMMENT' ? report.threadComment : null
       }))
     : [];
 

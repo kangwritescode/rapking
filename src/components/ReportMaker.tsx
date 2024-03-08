@@ -1,5 +1,5 @@
 import { Button, FormControlLabel, Radio, RadioGroup, Stack } from '@mui/material';
-import { Rap, ReportType, ReportedEntity, User } from '@prisma/client';
+import { Rap, ReportType, ReportedEntity, ThreadComment, User } from '@prisma/client';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
@@ -9,13 +9,15 @@ interface ReportMakerProps {
   onSuccessfulReport: () => void;
   reportedEntity: ReportedEntity;
   rapData?: (Rap & { user?: Partial<User> }) | null;
+  rapCommentData?: ThreadComment | null;
 }
 
 function ReportMaker({
   cancelButtonHandler,
   onSuccessfulReport,
   reportedEntity,
-  rapData
+  rapData,
+  rapCommentData
 }: ReportMakerProps) {
   const [value, setValue] = useState<ReportType>(ReportType.HARASSMENT);
 
@@ -32,7 +34,9 @@ function ReportMaker({
       type: value,
       reportedEntity,
       rapId: reportedEntity === ReportedEntity.RAP ? rapData?.id : undefined,
-      reportedId
+      reportedId,
+      threadCommentId:
+        reportedEntity === ReportedEntity.RAP_COMMENT ? rapCommentData?.id : undefined
     });
   };
 

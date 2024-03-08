@@ -12,7 +12,7 @@ function PulsePost({ pulsePost }: PulsePostProps) {
   const isAdmin = session?.data?.user?.isAdmin;
 
   const { mutateAsync: deletePost } = api.pulse.deletePost.useMutation();
-  const { invalidate: invalidateGetAllPosts } = api.useContext().pulse.getAllPosts;
+  const { invalidate: invalidateGetAllPosts } = api.useUtils().pulse.getAllPosts;
 
   const handleDelete = async () => {
     await deletePost({ id: pulsePost.id }).then(() => {

@@ -3,7 +3,7 @@ import { IconButton, Typography } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Rap, ReportedEntity, User } from '@prisma/client';
+import { Rap, ReportedEntity, ThreadComment, User } from '@prisma/client';
 import ReportMaker from './ReportMaker';
 
 interface ReportDialogProps {
@@ -11,9 +11,23 @@ interface ReportDialogProps {
   handleClose: () => void;
   reportedEntity: ReportedEntity;
   rapData?: (Rap & { user?: Partial<User> }) | null;
+  rapCommentData?: ThreadComment | null;
 }
 
-function ReportDialog({ isOpen, handleClose, reportedEntity, rapData }: ReportDialogProps) {
+function ReportDialog({
+  isOpen,
+  handleClose,
+  reportedEntity,
+  rapData,
+  rapCommentData
+}: ReportDialogProps) {
+  let dialogTitle = 'Report ';
+  if (reportedEntity === ReportedEntity.RAP) {
+    dialogTitle = dialogTitle + 'Rap';
+  } else if (reportedEntity === ReportedEntity.RAP_COMMENT) {
+    dialogTitle = dialogTitle + 'Rap Comment';
+  }
+
   return (
     <Dialog
       open={isOpen}
@@ -35,7 +49,7 @@ function ReportDialog({ isOpen, handleClose, reportedEntity, rapData }: ReportDi
       </IconButton>
       <DialogTitle>
         <Typography fontSize='1rem' variant='button'>
-          Report {reportedEntity}
+          {dialogTitle}
         </Typography>
       </DialogTitle>
       <DialogContent
@@ -52,6 +66,7 @@ function ReportDialog({ isOpen, handleClose, reportedEntity, rapData }: ReportDi
           onSuccessfulReport={handleClose}
           reportedEntity={reportedEntity}
           rapData={rapData}
+          rapCommentData={rapCommentData}
         />
       </DialogContent>
     </Dialog>

@@ -30,7 +30,7 @@ function RapCardMenu({ rapId }: RapCardMenuProps) {
   const [modalIsOopen, setModalIsOpen] = React.useState(false);
 
   const { mutate: deleteRap, isLoading } = api.rap.deleteRap.useMutation();
-  const { invalidate: invalidateRaps } = api.useContext().rap.getRapsByUser;
+  const { invalidate: invalidateRaps } = api.useUtils().rap.getRapsByUser;
 
   return (
     <Box>

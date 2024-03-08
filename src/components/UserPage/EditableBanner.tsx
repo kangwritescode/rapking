@@ -28,7 +28,7 @@ function EditableBanner({ isEditable, userData }: EditableBannerProps) {
   const { mutateAsync: updateUser } = api.user.updateUser.useMutation();
 
   // Invalidaters
-  const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
+  const { invalidate: invalidateUserQuery } = api.useUtils().user.findByUsername;
 
   const { deleteFile } = useGCloudDelete({
     url: bannerUrl || '',

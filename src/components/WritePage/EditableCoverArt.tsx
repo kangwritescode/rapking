@@ -25,7 +25,7 @@ function EditableCoverArt({ isEditable, rapData }: EditableCoverArtProps) {
   const { mutateAsync: updateRap } = api.rap.updateRap.useMutation();
 
   // Invalidaters
-  const { invalidate: invalidateRapQuery } = api.useContext().rap.getRap;
+  const { invalidate: invalidateRapQuery } = api.useUtils().rap.getRap;
 
   const { deleteFile } = useGCloudDelete({
     url: coverArtUrl || '',

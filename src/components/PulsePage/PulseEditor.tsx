@@ -11,7 +11,7 @@ function PulseEditor(): JSX.Element {
   const session = useSession();
 
   const { mutateAsync: createPost } = api.pulse.createPost.useMutation();
-  const { invalidate: invalidateGetAllPosts } = api.useContext().pulse.getAllPosts;
+  const { invalidate: invalidateGetAllPosts } = api.useUtils().pulse.getAllPosts;
 
   const editor = useEditor({
     extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],

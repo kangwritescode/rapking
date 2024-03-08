@@ -23,7 +23,7 @@ function DashboardRap({ rap }: DashboardRapProps) {
   const [rapToRequestReview, setRapToRequestReview] = useState<Rap | null>(null);
 
   const { mutate: deleteRap, isLoading } = api.rap.deleteRap.useMutation();
-  const { invalidate: invalidateRaps } = api.useContext().rap.getRapsByUser;
+  const { invalidate: invalidateRaps } = api.useUtils().rap.getRapsByUser;
 
   return (
     <>

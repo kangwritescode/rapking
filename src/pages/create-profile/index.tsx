@@ -47,7 +47,7 @@ const steps = [
 ];
 
 const CompleteProfilePage = () => {
-  const { invalidate } = api.useContext().user.getProfileIsComplete;
+  const { invalidate } = api.useUtils().user.getProfileIsComplete;
   const router = useRouter();
 
   // ** States

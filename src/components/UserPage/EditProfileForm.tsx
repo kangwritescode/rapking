@@ -42,8 +42,8 @@ function EditProfileForm({ closeDialogHandler }: EditProfileFormProps) {
   const { mutate: updateUser } = api.user.updateUser.useMutation();
 
   // Invalidaters
-  const { invalidate: invalidateGetCurrentUser } = api.useContext().user.getCurrentUser;
-  const { invalidate: invalidateFindByUsername } = api.useContext().user.findByUsername;
+  const { invalidate: invalidateGetCurrentUser } = api.useUtils().user.getCurrentUser;
+  const { invalidate: invalidateFindByUsername } = api.useUtils().user.findByUsername;
 
   const theme = useTheme();
 

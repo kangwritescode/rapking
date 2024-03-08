@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { Box } from '@mui/material';
+import { Box, SxProps } from '@mui/material';
 import Link from 'next/link';
 
 interface IconLinkProps {
@@ -10,6 +10,7 @@ interface IconLinkProps {
   gap?: string | number;
   fontSize?: string;
   onClick?: () => void;
+  sx?: SxProps;
 }
 
 function IconLink({
@@ -19,7 +20,8 @@ function IconLink({
   color,
   gap = '0',
   fontSize = '.75rem',
-  onClick
+  onClick,
+  sx
 }: IconLinkProps) {
   return (
     <Box
@@ -38,7 +40,8 @@ function IconLink({
         '&:hover': {
           borderBottomColor: color
         },
-        height: '1rem'
+        height: '1rem',
+        ...sx
       }}
     >
       <Icon icon={icon} style={{ marginRight: gap }} />

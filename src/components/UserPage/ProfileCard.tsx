@@ -56,7 +56,7 @@ const ProfileCard = ({ userData, isCurrentUser }: ProfileCardProps) => {
     api.userFollows.deleteFollow.useMutation();
 
   // Invalidators
-  const { invalidate: invalidateFollowsQuery } = api.useContext().userFollows;
+  const { invalidate: invalidateFollowsQuery } = api.useUtils().userFollows;
 
   // Handlers
   const followButtonClickHandler = () => {

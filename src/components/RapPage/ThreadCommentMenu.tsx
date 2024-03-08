@@ -1,15 +1,18 @@
 import { Icon } from '@iconify/react';
 import { Box, IconButton, Menu, MenuItem, Typography } from '@mui/material';
-import React from 'react';
+import { ReportedEntity, ThreadComment } from '@prisma/client';
+import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
 import AlertDialog from '../AlertDialog';
+import ReportDialog from '../ReportDialog';
 
 interface ThreadCommentMenuProps {
-  threadCommentId: string;
+  commentData: ThreadComment | null;
+  isCurrentUsersComment: boolean;
 }
 
-function ThreadCommentMenu({ threadCommentId }: ThreadCommentMenuProps) {
+function ThreadCommentMenu({ isCurrentUsersComment, commentData }: ThreadCommentMenuProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -20,14 +23,19 @@ function ThreadCommentMenu({ threadCommentId }: ThreadCommentMenuProps) {
     setAnchorEl(null);
   };
 
-  const [modalIsOopen, setModalIsOpen] = React.useState(false);
+  const [modalIsOopen, setModalIsOpen] = useState(false);
+  const [reportDialogIsOpen, setReportDialogIsOpen] = useState<boolean>(false);
+
+  const handleReport = () => {
+    setReportDialogIsOpen(true);
+    handleClose();
+  };
 
   const { mutate: deleteThreadComment, isLoading } =
     api.threadComments.deleteThreadComment.useMutation();
   const { invalidate: invalidateThreadCommentsCount } =
-    api.useContext().threadComments.getThreadCommentsCount;
-  const { invalidate: invalidateThreadComments } =
-    api.useContext().threadComments.getThreadComments;
+    api.useUtils().threadComments.getThreadCommentsCount;
+  const { invalidate: invalidateThreadComments } = api.useUtils().threadComments.getThreadComments;
 
   return (
     <Box>
@@ -45,11 +53,26 @@ function ThreadCommentMenu({ threadCommentId }: ThreadCommentMenuProps) {
           }
         }}
       >
-        <MenuItem onClick={handleClose}>
-          <Typography onClick={() => setModalIsOpen(true)} color='error'>
-            Delete
-          </Typography>
-        </MenuItem>
+        {isCurrentUsersComment && (
+          <MenuItem
+            onClick={() => {
+              handleClose();
+              setModalIsOpen(true);
+            }}
+          >
+            <Typography color='error'>Delete</Typography>
+          </MenuItem>
+        )}
+        {!isCurrentUsersComment && (
+          <MenuItem
+            onClick={() => {
+              handleClose();
+              handleReport();
+            }}
+          >
+            <Typography color='error'>Report</Typography>
+          </MenuItem>
+        )}
       </Menu>
       <AlertDialog
         isOpen={modalIsOopen}
@@ -61,7 +84,7 @@ function ThreadCommentMenu({ threadCommentId }: ThreadCommentMenuProps) {
         }}
         onSubmitHandler={() =>
           deleteThreadComment(
-            { id: threadCommentId },
+            { id: commentData?.id || '' },
             {
               onSuccess: () => {
                 invalidateThreadCommentsCount();
@@ -76,6 +99,12 @@ function ThreadCommentMenu({ threadCommentId }: ThreadCommentMenuProps) {
         }
         actionButtonText='Delete Comment'
         isLoading={isLoading}
+      />
+      <ReportDialog
+        reportedEntity={ReportedEntity.RAP_COMMENT}
+        isOpen={reportDialogIsOpen}
+        handleClose={() => setReportDialogIsOpen(false)}
+        rapCommentData={commentData}
       />
     </Box>
   );

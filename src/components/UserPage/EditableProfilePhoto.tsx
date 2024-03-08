@@ -26,7 +26,7 @@ function EditableProfilePhoto({ userData, isEditable }: EditableProfilePhotoProp
   const { mutateAsync: updateUser } = api.user.updateUser.useMutation();
 
   // Invalidaters
-  const { invalidate: invalidateUserQuery } = api.useContext().user.findByUsername;
+  const { invalidate: invalidateUserQuery } = api.useUtils().user.findByUsername;
 
   const { deleteFile } = useGCloudDelete({
     url: profileImageUrl || '',

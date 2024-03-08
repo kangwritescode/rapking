@@ -125,8 +125,7 @@ const NotificationDropdown = (props: Props) => {
     api.notifications.deleteAllUserNotifications.useMutation();
 
   // ** Invalidators
-  const { invalidate: invalidateNotifications } =
-    api.useContext().notifications.getUserNotifications;
+  const { invalidate: invalidateNotifications } = api.useUtils().notifications.getUserNotifications;
 
   const handleDropdownOpen = (event: SyntheticEvent) => {
     setAnchorEl(event.currentTarget);

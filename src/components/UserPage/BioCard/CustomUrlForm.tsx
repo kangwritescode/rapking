@@ -31,7 +31,7 @@ function CustomUrlForm({
 
   const { mutate } = api.socialLink.postSocialLink.useMutation();
 
-  const { invalidate: invalidateSocialLinks } = api.useContext().socialLink.getSocialLinkByUserId;
+  const { invalidate: invalidateSocialLinks } = api.useUtils().socialLink.getSocialLinkByUserId;
 
   const createSocialLink = (values: CustomLinkForm) => {
     setIsLoading(true);

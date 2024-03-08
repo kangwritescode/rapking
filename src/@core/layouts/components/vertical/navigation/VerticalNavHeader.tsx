@@ -2,10 +2,10 @@
 import Link from 'next/link';
 
 // ** MUI Imports
-import IconButton from '@mui/material/IconButton';
 import Box, { BoxProps } from '@mui/material/Box';
-import { styled, useTheme } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
 import Typography, { TypographyProps } from '@mui/material/Typography';
+import { styled, useTheme } from '@mui/material/styles';
 
 // ** Type Import
 import { LayoutProps } from 'src/@core/layouts/types';
@@ -96,7 +96,14 @@ const VerticalNavHeader = (props: Props) => {
         userNavMenuBranding(props)
       ) : (
         <LinkStyled href='/'>
-          <Icon icon='tabler:crown' color={theme.palette.secondary.main} />
+          <Icon
+            icon='tabler:crown'
+            color={theme.palette.secondary.main}
+            style={{
+              marginLeft: navCollapsed && !navHover ? 3 : 0
+            }}
+            {...(navCollapsed && !navHover ? { fontSize: 28 } : undefined)}
+          />
           <HeaderTitle
             variant='h6'
             sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 3 }) }}

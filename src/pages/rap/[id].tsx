@@ -37,11 +37,10 @@ function RapPage() {
   const router = useRouter();
   const session = useSession();
 
-  const setRapContext = useRapStore(state => state.setContext);
+  const [setRapContext] = useRapStore(state => [state.setContext]);
 
   useEffect(() => {
     setRapContext('rap-page');
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

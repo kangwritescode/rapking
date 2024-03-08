@@ -21,7 +21,7 @@ function InviteCodeStep({ handleNext }: InviteCodeStepProps) {
   const { mutateAsync: verifyCode, isLoading } = api.inviteToken.verifyCode.useMutation();
 
   // ** Invalidators
-  const { invalidate: invalidateUserIsInWhitelist } = api.useContext().user.userIsWhitelisted;
+  const { invalidate: invalidateUserIsInWhitelist } = api.useUtils().user.userIsWhitelisted;
   const {
     register,
     handleSubmit,

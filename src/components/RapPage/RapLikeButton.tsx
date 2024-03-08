@@ -53,8 +53,8 @@ function RapLikeButton({ rapId }: RapLikeButtonProps) {
   const { mutate: deleteLike } = api.rapVote.deleteLike.useMutation();
 
   // Invalidators
-  const { invalidate: invalidateRapLikesCount } = api.useContext().rapVote.getRapLikesCount;
-  const { invalidate: invalidateLikeExists } = api.useContext().rapVote.likeExists;
+  const { invalidate: invalidateRapLikesCount } = api.useUtils().rapVote.getRapLikesCount;
+  const { invalidate: invalidateLikeExists } = api.useUtils().rapVote.likeExists;
 
   const invalidateCache = () => {
     invalidateRapLikesCount();

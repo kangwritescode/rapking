@@ -22,7 +22,7 @@ function SocialLinks({
   const theme = useTheme();
 
   const { mutate: deleteSocialLink } = api.socialLink.deleteSocialLink.useMutation();
-  const { invalidate } = api.useContext().socialLink.getSocialLinkByUserId;
+  const { invalidate } = api.useUtils().socialLink.getSocialLinkByUserId;
 
   const removeButtonClickHandler = (id: string) => {
     deleteSocialLink(
