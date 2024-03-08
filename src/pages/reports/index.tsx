@@ -1,6 +1,5 @@
-import { Box, Button, Link, Stack } from '@mui/material';
+import { Box, Button, Link, Stack, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { ThreadComment } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -28,7 +27,7 @@ function ReportsPage() {
   });
 
   useEffect(() => {
-    if (!currentUser?.isAdmin) {
+    if (currentUser && !currentUser.isAdmin) {
       router.push('/');
     }
   }, [currentUser, router]);
@@ -38,8 +37,30 @@ function ReportsPage() {
     { field: 'id', headerName: 'ID', width: 80 },
     { field: 'type', headerName: 'Type', width: 150 },
     { field: 'reportedEntity', headerName: 'Entity', width: 80 },
-    { field: 'reporter', headerName: 'Reporter', width: 100 },
-    { field: 'reported', headerName: 'Offender', width: 100 },
+    {
+      field: 'reporter',
+      headerName: 'Reporter',
+      width: 100,
+      renderCell: (cellValues: any) => {
+        return cellValues.value ? (
+          <Link href={`/u/${cellValues.value}`}>{cellValues.value}</Link>
+        ) : (
+          'N/A'
+        );
+      }
+    },
+    {
+      field: 'reported',
+      headerName: 'Offender',
+      width: 100,
+      renderCell: (cellValues: any) => {
+        return cellValues.value ? (
+          <Link href={`/u/${cellValues.value}`}>{cellValues.value}</Link>
+        ) : (
+          'N/A'
+        );
+      }
+    },
     { field: 'createdAt', headerName: 'Created At', width: 120, type: 'dateTime' },
     {
       field: 'rap',
@@ -54,12 +75,20 @@ function ReportsPage() {
       }
     },
     {
-      field: 'rapComment',
-      headerName: 'Rap Comment',
+      field: 'comment',
+      headerName: 'comment',
       width: 150,
-      renderCell: (cellValues: { value: ThreadComment | null }) => {
+      renderCell: (cellValues: any) => {
+        return cellValues.value ? <Typography>{cellValues.value.content}</Typography> : 'N/A';
+      }
+    },
+    {
+      field: 'forumThreadId',
+      headerName: 'Forum Thread',
+      width: 150,
+      renderCell: (cellValues: any) => {
         return cellValues.value ? (
-          <Link href={`/rap/${cellValues.value.rapId}`}>{cellValues.value.content}</Link>
+          <Link href={`/forum/${cellValues.value}`}>{cellValues.value}</Link>
         ) : (
           'N/A'
         );
@@ -76,7 +105,8 @@ function ReportsPage() {
         reported: report.reported?.username || 'N/A',
         createdAt: report.createdAt,
         rap: report.rap ?? null,
-        rapComment: report.reportedEntity === 'RAP_COMMENT' ? report.threadComment : null
+        comment: report.threadComment ?? null,
+        forumThreadId: report.forumThreadId
       }))
     : [];
 

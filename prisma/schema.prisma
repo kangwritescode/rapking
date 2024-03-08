@@ -165,6 +165,7 @@ model ForumThread {
   owner         User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   title         String
   notifications Notification[]
+  reports       Report[]
 }
 
 model ThreadComment {
@@ -176,6 +177,7 @@ model ThreadComment {
   updatedAt          DateTime            @updatedAt
   likesCount         Int                 @default(0)
   threadId           String
+  isDeletable        Boolean             @default(true)
   CommentVote        CommentVote[]
   notifications      Notification[]
   rap                Rap?                @relation(fields: [rapId], references: [id], onDelete: Cascade)
@@ -420,7 +422,7 @@ enum ReportedEntity {
   WALL_COMMENT
   RAP_REVIEW
   REVIEW_REQUEST
-  FORUM_THREAD
+  FORUM_COMMENT
 }
 
 model Report {
@@ -432,6 +434,7 @@ model Report {
   rapId          String?
   threadId       String?
   commentId      String?
+  forumThreadId  String?
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   reporter       User           @relation("ReporterRelation", fields: [reporterId], references: [id], onDelete: Cascade)
@@ -439,4 +442,5 @@ model Report {
   rap            Rap?           @relation(fields: [rapId], references: [id], onDelete: Cascade)
   thread         Thread?        @relation(fields: [threadId], references: [id], onDelete: Cascade)
   threadComment  ThreadComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  forumThread    ForumThread?   @relation(fields: [forumThreadId], references: [id], onDelete: Cascade)
 }

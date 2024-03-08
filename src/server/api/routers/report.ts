@@ -12,11 +12,12 @@ export const reportRouter = createTRPCRouter({
         rapId: z.string().optional(),
         threadId: z.string().optional(),
         threadCommentId: z.string().optional(),
-        reportedId: z.string().optional()
+        reportedId: z.string().optional(),
+        forumThreadId: z.string().optional()
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { type, rapId, threadId, threadCommentId, reportedId, reportedEntity } = input;
+      const { type, threadId, threadCommentId, reportedId, reportedEntity, forumThreadId } = input;
 
       const user = await ctx.prisma.user.findUnique({
         where: {
@@ -32,6 +33,7 @@ export const reportRouter = createTRPCRouter({
       }
 
       let reportedUserId = reportedId;
+      let rapId: string | null | undefined = input.rapId;
 
       if (reportedEntity === ReportedEntity.RAP && rapId) {
         const rap = await ctx.prisma.rap.findUnique({
@@ -42,13 +44,25 @@ export const reportRouter = createTRPCRouter({
         reportedUserId = rap?.userId;
       }
 
-      if (reportedEntity === ReportedEntity.RAP_COMMENT && threadCommentId) {
+      if (
+        (reportedEntity === ReportedEntity.RAP_COMMENT ||
+          reportedEntity === ReportedEntity.FORUM_COMMENT) &&
+        threadCommentId
+      ) {
         const threadComment = await ctx.prisma.threadComment.findUnique({
           where: {
             id: threadCommentId
           }
         });
+
+        const rapThread = await ctx.prisma.rapThread.findUnique({
+          where: {
+            threadId: threadComment?.threadId
+          }
+        });
+
         reportedUserId = threadComment?.userId;
+        rapId = rapThread?.rapId;
       }
 
       const report = await ctx.prisma.report.create({
@@ -59,7 +73,8 @@ export const reportRouter = createTRPCRouter({
           commentId: threadCommentId,
           reportedId: reportedUserId,
           reporterId: ctx.session.user.id,
-          reportedEntity: reportedEntity
+          reportedEntity: reportedEntity,
+          forumThreadId
         }
       });
 

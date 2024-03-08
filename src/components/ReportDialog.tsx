@@ -11,7 +11,8 @@ interface ReportDialogProps {
   handleClose: () => void;
   reportedEntity: ReportedEntity;
   rapData?: (Rap & { user?: Partial<User> }) | null;
-  rapCommentData?: ThreadComment | null;
+  commentData?: ThreadComment | null;
+  forumThreadId?: string;
 }
 
 function ReportDialog({
@@ -19,13 +20,16 @@ function ReportDialog({
   handleClose,
   reportedEntity,
   rapData,
-  rapCommentData
+  commentData,
+  forumThreadId
 }: ReportDialogProps) {
   let dialogTitle = 'Report ';
   if (reportedEntity === ReportedEntity.RAP) {
     dialogTitle = dialogTitle + 'Rap';
   } else if (reportedEntity === ReportedEntity.RAP_COMMENT) {
     dialogTitle = dialogTitle + 'Rap Comment';
+  } else if (reportedEntity === ReportedEntity.FORUM_COMMENT) {
+    dialogTitle = dialogTitle + 'Forum Comment';
   }
 
   return (
@@ -66,7 +70,8 @@ function ReportDialog({
           onSuccessfulReport={handleClose}
           reportedEntity={reportedEntity}
           rapData={rapData}
-          rapCommentData={rapCommentData}
+          commentData={commentData}
+          forumThreadId={forumThreadId}
         />
       </DialogContent>
     </Dialog>

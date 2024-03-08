@@ -1,10 +1,11 @@
+import { ThreadType } from '@prisma/client';
 import { prisma } from 'src/server/db';
 
 export async function createWall(ownerId: string) {
   const result = await prisma.$transaction(async prisma => {
     const thread = await prisma.thread.create({
       data: {
-        type: 'WALL',
+        type: ThreadType.WALL,
         ownerId: ownerId
       }
     });

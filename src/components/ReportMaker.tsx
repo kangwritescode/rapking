@@ -9,7 +9,8 @@ interface ReportMakerProps {
   onSuccessfulReport: () => void;
   reportedEntity: ReportedEntity;
   rapData?: (Rap & { user?: Partial<User> }) | null;
-  rapCommentData?: ThreadComment | null;
+  commentData?: ThreadComment | null;
+  forumThreadId?: string;
 }
 
 function ReportMaker({
@@ -17,7 +18,8 @@ function ReportMaker({
   onSuccessfulReport,
   reportedEntity,
   rapData,
-  rapCommentData
+  commentData,
+  forumThreadId
 }: ReportMakerProps) {
   const [value, setValue] = useState<ReportType>(ReportType.HARASSMENT);
 
@@ -35,8 +37,8 @@ function ReportMaker({
       reportedEntity,
       rapId: reportedEntity === ReportedEntity.RAP ? rapData?.id : undefined,
       reportedId,
-      threadCommentId:
-        reportedEntity === ReportedEntity.RAP_COMMENT ? rapCommentData?.id : undefined
+      threadCommentId: commentData?.id || undefined,
+      forumThreadId: forumThreadId || undefined
     });
   };
 

@@ -92,7 +92,8 @@ export const threadRouter = createTRPCRouter({
             threadComments: {
               create: {
                 content: content,
-                userId: userId
+                userId: userId,
+                isDeletable: false
               }
             }
           }

@@ -1,7 +1,8 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { ThreadType } from '@prisma/client';
 import { GetServerSidePropsContext } from 'next';
 import ForumCommentCreator from 'src/components/Forum/ForumCommentCreator';
-import ForumThreadComment from 'src/components/Forum/ForumThreadComment';
+import ThreadComment from 'src/components/RapPage/ThreadComment';
 import { prisma } from 'src/server/db';
 import { api } from 'src/utils/api';
 import { ForumViewWrapper } from '..';
@@ -38,7 +39,11 @@ function ForumThreadPage({ id, defaultThreadId }: { id: string; defaultThreadId:
               borderBottom: `1px solid ${theme.palette.divider}`
             }}
           >
-            <ForumThreadComment comment={comment} />
+            <ThreadComment
+              comment={comment}
+              threadType={ThreadType.FORUM}
+              forumThreadId={forumThread?.id}
+            />
           </Box>
         ))}
         <Box

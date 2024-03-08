@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Box, IconButton, Menu, MenuItem, Typography } from '@mui/material';
-import { ReportedEntity, ThreadComment } from '@prisma/client';
+import { ReportedEntity, ThreadComment, ThreadType } from '@prisma/client';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
@@ -10,9 +10,16 @@ import ReportDialog from '../ReportDialog';
 interface ThreadCommentMenuProps {
   commentData: ThreadComment | null;
   isCurrentUsersComment: boolean;
+  threadType?: ThreadType;
+  forumThreadId?: string;
 }
 
-function ThreadCommentMenu({ isCurrentUsersComment, commentData }: ThreadCommentMenuProps) {
+function ThreadCommentMenu({
+  isCurrentUsersComment,
+  commentData,
+  threadType,
+  forumThreadId
+}: ThreadCommentMenuProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -36,12 +43,17 @@ function ThreadCommentMenu({ isCurrentUsersComment, commentData }: ThreadComment
   const { invalidate: invalidateThreadCommentsCount } =
     api.useUtils().threadComments.getThreadCommentsCount;
   const { invalidate: invalidateThreadComments } = api.useUtils().threadComments.getThreadComments;
+  const { invalidate: invalidateForumThread } = api.useUtils().thread.getForumThread;
+
+  const hideButton = isCurrentUsersComment && !commentData?.isDeletable;
 
   return (
     <Box>
-      <IconButton onClick={handleClick}>
-        <Icon icon='tdesign:ellipsis' />
-      </IconButton>
+      {!hideButton && (
+        <IconButton onClick={handleClick}>
+          <Icon icon='tdesign:ellipsis' />
+        </IconButton>
+      )}
       <Menu
         anchorEl={anchorEl}
         keepMounted
@@ -89,6 +101,7 @@ function ThreadCommentMenu({ isCurrentUsersComment, commentData }: ThreadComment
               onSuccess: () => {
                 invalidateThreadCommentsCount();
                 invalidateThreadComments();
+                invalidateForumThread();
                 handleClose();
               },
               onError: () => {
@@ -101,10 +114,13 @@ function ThreadCommentMenu({ isCurrentUsersComment, commentData }: ThreadComment
         isLoading={isLoading}
       />
       <ReportDialog
-        reportedEntity={ReportedEntity.RAP_COMMENT}
+        reportedEntity={
+          threadType === 'FORUM' ? ReportedEntity.FORUM_COMMENT : ReportedEntity.RAP_COMMENT
+        }
         isOpen={reportDialogIsOpen}
         handleClose={() => setReportDialogIsOpen(false)}
-        rapCommentData={commentData}
+        commentData={commentData}
+        forumThreadId={forumThreadId}
       />
     </Box>
   );
