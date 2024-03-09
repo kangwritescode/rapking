@@ -1,6 +1,8 @@
 import { Icon } from '@iconify/react';
 import { Box, IconButton, Menu, MenuItem, Typography } from '@mui/material';
 import { ReportedEntity, ThreadComment, ThreadType } from '@prisma/client';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
@@ -20,7 +22,12 @@ function ThreadCommentMenu({
   threadType,
   forumThreadId
 }: ThreadCommentMenuProps) {
+  const { status } = useSession();
+  const router = useRouter();
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [modalIsOopen, setModalIsOpen] = useState(false);
+  const [reportDialogIsOpen, setReportDialogIsOpen] = useState<boolean>(false);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setAnchorEl(event.currentTarget);
@@ -29,9 +36,6 @@ function ThreadCommentMenu({
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const [modalIsOopen, setModalIsOpen] = useState(false);
-  const [reportDialogIsOpen, setReportDialogIsOpen] = useState<boolean>(false);
 
   const handleReport = () => {
     setReportDialogIsOpen(true);
@@ -78,6 +82,11 @@ function ThreadCommentMenu({
         {!isCurrentUsersComment && (
           <MenuItem
             onClick={() => {
+              if (status === 'unauthenticated') {
+                router.push('/auth');
+
+                return;
+              }
               handleClose();
               handleReport();
             }}

@@ -6,6 +6,7 @@ import { getFormattedDate, getFormattedTime } from 'src/@core/utils/get-formatte
 import CommentLikeButton from 'src/components/RapPage/CommentLikeButton';
 import TipTapContent from 'src/components/TipTapContent';
 import { BUCKET_URL } from 'src/shared/constants';
+import TextButton from '../TextButton';
 import ThreadCommentMenu from './ThreadCommentMenu';
 
 interface ThreadCommentProps {
@@ -15,11 +16,14 @@ interface ThreadCommentProps {
   sx?: SxProps;
   threadType?: ThreadType;
   forumThreadId?: string;
+  onReply?: (userData: Partial<User>) => void;
 }
 
-function ThreadComment({ comment, sx, threadType, forumThreadId }: ThreadCommentProps) {
+function ThreadComment({ comment, sx, threadType, forumThreadId, onReply }: ThreadCommentProps) {
   const session = useSession();
   const { content, user } = comment;
+
+  const isCurrentUsersComment = session.data?.user?.id === user.id;
 
   const formattedDate = getFormattedDate(comment.createdAt || new Date());
   let displayedDate = formattedDate;
@@ -55,9 +59,9 @@ function ThreadComment({ comment, sx, threadType, forumThreadId }: ThreadComment
           </Link>
           <Typography variant='body2'>{displayedDate}</Typography>
         </Stack>
-        <Stack flexGrow={1} alignItems='flex-end'>
+        <Stack justifyContent='flex-end' direction='row' flexGrow='1'>
           <ThreadCommentMenu
-            isCurrentUsersComment={session.data?.user?.id === user.id}
+            isCurrentUsersComment={isCurrentUsersComment}
             commentData={comment}
             threadType={threadType}
             forumThreadId={forumThreadId}
@@ -70,12 +74,22 @@ function ThreadComment({ comment, sx, threadType, forumThreadId }: ThreadComment
           fontSize: 14
         }}
       />
-      <CommentLikeButton
-        sx={{
-          mt: 4
-        }}
-        threadCommentId={comment.id}
-      />
+      <Stack direction='row' alignItems='center' justifyContent='space-between' mt={4}>
+        <Stack direction='row' alignItems='center'>
+          {onReply && !isCurrentUsersComment ? (
+            <TextButton
+              sx={{
+                mr: 4
+              }}
+              onClick={() => onReply?.({ username: user.username, id: user.id })}
+              disabled={isCurrentUsersComment}
+            >
+              Reply
+            </TextButton>
+          ) : null}
+          <CommentLikeButton threadCommentId={comment.id} />
+        </Stack>
+      </Stack>
     </Box>
   );
 }

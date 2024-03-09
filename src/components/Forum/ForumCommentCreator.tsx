@@ -1,14 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButton } from '@mui/lab';
 import { Stack, SxProps, useTheme } from '@mui/material';
+import { User } from '@prisma/client';
 import CharacterCount from '@tiptap/extension-character-count';
 import Mention from '@tiptap/extension-mention';
 import Placeholder from '@tiptap/extension-placeholder';
-import { useEditor } from '@tiptap/react';
+import { Editor, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { api } from 'src/utils/api';
@@ -27,9 +28,16 @@ const usernameSchema = z.object({
 interface ForumCommentCreatorProps {
   sx?: SxProps;
   threadId?: string;
+  userToMention?: Partial<User> | null;
+  addReplyMentionSuccessHandler?: () => void;
 }
 
-function ForumCommentCreator({ sx, threadId }: ForumCommentCreatorProps) {
+function ForumCommentCreator({
+  sx,
+  threadId,
+  userToMention,
+  addReplyMentionSuccessHandler
+}: ForumCommentCreatorProps) {
   const session = useSession();
   const router = useRouter();
   const ref = useRef<HTMLFormElement>(null);
@@ -80,6 +88,40 @@ function ForumCommentCreator({ sx, threadId }: ForumCommentCreatorProps) {
       }
     }
   });
+
+  const addMention = ({
+    editor,
+    userToMention
+  }: {
+    editor: Editor | null;
+    userToMention: Partial<User> | null | undefined;
+  }) => {
+    if (editor && userToMention) {
+      const mentionNode = editor.schema.nodes.mention.create({
+        id: userToMention.id,
+        label: userToMention.username
+      });
+
+      const spaceNode = editor.schema.text(' ');
+
+      const { from, to } = editor.state.selection;
+      const transaction = editor.state.tr;
+
+      transaction.replaceWith(from, to, mentionNode);
+      transaction.insert(from + 1, spaceNode);
+
+      editor.view.dispatch(transaction);
+
+      editor.view.focus();
+    }
+  };
+
+  useEffect(() => {
+    if (userToMention && editor) {
+      addMention({ editor, userToMention });
+      addReplyMentionSuccessHandler?.();
+    }
+  }, [userToMention, editor, addReplyMentionSuccessHandler]);
 
   const theme = useTheme();
 
