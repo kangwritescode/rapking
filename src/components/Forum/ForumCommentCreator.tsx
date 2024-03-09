@@ -117,7 +117,7 @@ function ForumCommentCreator({
   };
 
   useEffect(() => {
-    if (userToMention && editor) {
+    if (userToMention && editor && addReplyMentionSuccessHandler) {
       addMention({ editor, userToMention });
       addReplyMentionSuccessHandler?.();
     }

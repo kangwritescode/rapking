@@ -74,9 +74,9 @@ function ThreadComment({ comment, sx, threadType, forumThreadId, onReply }: Thre
           fontSize: 14
         }}
       />
-      <Stack direction='row' alignItems='center' justifyContent='space-between' mt={4}>
+      <Stack direction='row' alignItems='center' justifyContent='space-between' mt={8}>
         <Stack direction='row' alignItems='center'>
-          {onReply && !isCurrentUsersComment ? (
+          {onReply ? (
             <TextButton
               sx={{
                 mr: 4
