@@ -7,6 +7,20 @@ import rateLimit from 'src/redis/rateLimit';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 import { containsBannedWords } from 'src/shared/bannedWords';
 
+// Schemas
+const updateUserInputSchema = z.object({
+  username: z.string().optional(),
+  sex: z.string().optional(),
+  dob: z.date().optional(),
+  country: z.nativeEnum(Country).optional(),
+  bannerUrl: z.string().optional(),
+  profileImageUrl: z.string().optional(),
+  bio: z.string().max(200).optional()
+});
+
+// Types
+export type UpdateUserInput = z.infer<typeof updateUserInputSchema>;
+
 export const userRouter = createTRPCRouter({
   findByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
@@ -115,72 +129,60 @@ export const userRouter = createTRPCRouter({
           hasBannedWords || userWithUsername === null || userWithUsername.id === ctx.session.user.id
       };
     }),
-  updateUser: protectedProcedure
-    .input(
-      z.object({
-        username: z.string().optional(),
-        sex: z.string().optional(),
-        dob: z.date().optional(),
-        country: z.nativeEnum(Country).optional(),
-        bannerUrl: z.string().optional(),
-        profileImageUrl: z.string().optional(),
-        bio: z.string().max(200).optional()
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      // Ensures user that is updating is the same as the one in the session
-      const userToUpdate = await ctx.prisma.user.findUniqueOrThrow({
-        where: { id: ctx.session.user.id }
+  updateUser: protectedProcedure.input(updateUserInputSchema).mutation(async ({ input, ctx }) => {
+    // Ensures user that is updating is the same as the one in the session
+    const userToUpdate = await ctx.prisma.user.findUniqueOrThrow({
+      where: { id: ctx.session.user.id }
+    });
+
+    // Checks if username is already taken
+    if (input.username) {
+      const userWithUsername = await ctx.prisma.user.findUnique({
+        where: { username: input.username }
       });
-
-      // Checks if username is already taken
-      if (input.username) {
-        const userWithUsername = await ctx.prisma.user.findUnique({
-          where: { username: input.username }
-        });
-        if (userWithUsername && userWithUsername.id !== ctx.session.user.id) {
-          throw new TRPCError({
-            code: 'UNPROCESSABLE_CONTENT',
-            message: 'Username already taken'
-          });
-        }
-      }
-
-      // Sanitizes bio
-      const sanitizedBio = sanitize(input.bio ?? '', {
-        allowedTags: [],
-        allowedAttributes: {}
-      });
-
-      // checks if bio or username contains banned words
-      if (containsBannedWords(sanitizedBio) || containsBannedWords(input.username ?? '')) {
+      if (userWithUsername && userWithUsername.id !== ctx.session.user.id) {
         throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Something went wrong. Please try again later'
+          code: 'UNPROCESSABLE_CONTENT',
+          message: 'Username already taken'
         });
       }
+    }
 
-      // Updates user
-      const updatedUser = await ctx.prisma.user.update({
-        where: {
-          id: ctx.session.user.id
-        },
-        data: {
-          ...(input.username ? { username: input.username } : {}),
-          ...(input.sex ? { sex: input.sex } : {}),
-          ...(input.dob ? { dob: input.dob } : {}),
-          ...(input.country ? { country: input.country } : {}),
-          ...(input.bannerUrl ? { bannerUrl: input.bannerUrl } : {}),
-          ...(input.profileImageUrl ? { profileImageUrl: input.profileImageUrl } : {}),
-          ...(input.bio ? { bio: sanitizedBio } : {}),
-          ...(input.country && userToUpdate.username && userToUpdate.sex && userToUpdate.dob
-            ? { profileIsComplete: true }
-            : {})
-        }
+    // Sanitizes bio
+    const sanitizedBio = sanitize(input.bio ?? '', {
+      allowedTags: [],
+      allowedAttributes: {}
+    });
+
+    // checks if bio or username contains banned words
+    if (containsBannedWords(sanitizedBio) || containsBannedWords(input.username ?? '')) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Something went wrong. Please try again later'
       });
+    }
 
-      return updatedUser;
-    }),
+    // Updates user
+    const updatedUser = await ctx.prisma.user.update({
+      where: {
+        id: ctx.session.user.id
+      },
+      data: {
+        ...(input.username ? { username: input.username } : {}),
+        ...(input.sex ? { sex: input.sex } : {}),
+        ...(input.dob ? { dob: input.dob } : {}),
+        ...(input.country ? { country: input.country } : {}),
+        ...(input.bannerUrl ? { bannerUrl: input.bannerUrl } : {}),
+        ...(input.profileImageUrl ? { profileImageUrl: input.profileImageUrl } : {}),
+        ...(input.bio ? { bio: sanitizedBio } : {}),
+        ...(input.country && userToUpdate.username && userToUpdate.sex && userToUpdate.dob
+          ? { profileIsComplete: true }
+          : {})
+      }
+    });
+
+    return updatedUser;
+  }),
   deleteUser: protectedProcedure.mutation(async ({ ctx }) => {
     if (!ctx.session.user.id) {
       throw new TRPCError({
@@ -188,13 +190,13 @@ export const userRouter = createTRPCRouter({
         message: 'User not found'
       });
     }
-    await ctx.prisma.user.delete({
+    const deletedUser = await ctx.prisma.user.delete({
       where: {
         id: ctx.session.user.id
       }
     });
 
-    return true;
+    return deletedUser;
   }),
   getProfileIsComplete: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findUniqueOrThrow({
