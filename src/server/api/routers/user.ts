@@ -69,7 +69,6 @@ export const userRouter = createTRPCRouter({
             mode: 'insensitive'
           },
           profileIsComplete: true,
-          isWhitelisted: true,
           id: {
             not: input.excludeSelf && ctx?.session?.user.id ? ctx.session.user.id : undefined
           }
@@ -213,14 +212,5 @@ export const userRouter = createTRPCRouter({
       user.sex !== null;
 
     return profileIsComplete;
-  }),
-  userIsWhitelisted: protectedProcedure.query(async ({ ctx }) => {
-    const user = await ctx.prisma.user.findUniqueOrThrow({
-      where: {
-        id: ctx.session.user.id
-      }
-    });
-
-    return user.isWhitelisted;
   })
 });

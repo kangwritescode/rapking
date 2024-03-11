@@ -21,17 +21,12 @@ import StepperCustomDot from '../../components/CreateProfilePage/StepperCustomDo
 import { Box, Stack, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import StepperWrapper from 'src/@core/styles/mui/stepper';
-import InviteCodeStep from 'src/components/CreateProfilePage/InviteCodeStep';
 import { api } from 'src/utils/api';
 import LocationStep from '../../components/CreateProfilePage/LocationStep';
 import PersonalStep from '../../components/CreateProfilePage/SexAgeStep';
 import UsernameStep from '../../components/CreateProfilePage/UsernameStep';
 
 const steps = [
-  {
-    title: 'Invite Code',
-    subtitle: 'RapKing is currently an exclusive community. You need an invite code to join.'
-  },
   {
     title: 'Choose a username',
     subtitle: 'Pick a username for your new account. You can always change it later.'
@@ -117,14 +112,13 @@ const CompleteProfilePage = () => {
                         </div>
                       </div>
                     </StepLabel>
-                    {activeStep === 0 && <InviteCodeStep handleNext={handleNext} />}
-                    {activeStep === 1 && (
+                    {activeStep === 0 && (
                       <UsernameStep handleNext={handleNext} handleBack={handleBack} />
                     )}
-                    {activeStep === 2 && (
+                    {activeStep === 1 && (
                       <PersonalStep handleBack={handleBack} handleNext={handleNext} />
                     )}
-                    {activeStep === 3 && (
+                    {activeStep === 2 && (
                       <LocationStep
                         handleBack={handleBack}
                         handleCreateProfile={handleCreateProfile}

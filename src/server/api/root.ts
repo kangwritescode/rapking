@@ -3,7 +3,6 @@ import { createTRPCRouter } from 'src/server/api/trpc';
 import { articlesRouter } from './routers/articles';
 import { feedRouter } from './routers/feed';
 import { gcloudRouter } from './routers/gcloud';
-import { inviteTokenRouter } from './routers/inviteToken';
 import { leaderboardRouter } from './routers/leaderboard';
 import { notificationsRouter } from './routers/notifications';
 import { pulseRouter } from './routers/pulse';
@@ -36,7 +35,6 @@ export const appRouter = createTRPCRouter({
   feed: feedRouter,
   notifications: notificationsRouter,
   articles: articlesRouter,
-  inviteToken: inviteTokenRouter,
   pulse: pulseRouter,
   thread: threadRouter,
   reviews: reviewsRouter,

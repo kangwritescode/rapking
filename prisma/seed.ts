@@ -18,7 +18,6 @@ async function clearDatabase() {
   await prisma.article.deleteMany({});
   await prisma.notification.deleteMany({});
   await prisma.pulsePost.deleteMany({});
-  await prisma.whiteList.deleteMany({});
 }
 
 async function seedDatabase() {
@@ -39,8 +38,7 @@ async function seedDatabase() {
         sex: faker.helpers.arrayElement(genders),
         dob: faker.date.past(),
         country: 'US',
-        profileIsComplete: true, // Set to true for simplicity,
-        isWhitelisted: true
+        profileIsComplete: true // Set to true for simplicity,
       }
     });
     users.push(user);
@@ -141,12 +139,6 @@ async function seedDatabase() {
       }
     });
   }
-
-  await prisma.inviteToken.create({
-    data: {
-      id: '123'
-    }
-  });
 }
 
 async function main() {

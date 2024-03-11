@@ -51,7 +51,6 @@ model User {
   points                 Int                 @default(0)
   country                Country?
   profileIsComplete      Boolean             @default(false)
-  isWhitelisted          Boolean             @default(false)
   isAdmin                Boolean             @default(false)
   reviewRequestTokens    Int                 @default(0)
   accounts               Account[]
@@ -68,7 +67,6 @@ model User {
   threadCommmentVotes    ThreadCommentVote[]
   followed               UserFollows[]       @relation("FollowedRelation")
   followers              UserFollows[]       @relation("FollowerRelation")
-  WhiteList              WhiteList?
   wall                   Wall?
   rapThread              RapThread[]
   rapReviews             RapReview[]
@@ -301,18 +299,6 @@ model ArticleTag {
   id       Int       @id @default(autoincrement())
   name     String    @unique
   articles Article[] @relation("ArticleToArticleTag")
-}
-
-model WhiteList {
-  id        Int      @id @default(autoincrement())
-  userId    String   @unique
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model InviteToken {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
 }
 
 enum ThreadType {

@@ -26,7 +26,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         mode: 'insensitive'
       },
       profileIsComplete: true,
-      isWhitelisted: true,
       id: {
         not: session.user.id
       },

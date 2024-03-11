@@ -20,7 +20,6 @@ declare module 'next-auth' {
       id: string;
       username: string | null;
       profileIsComplete: boolean;
-      isWhitelisted: boolean;
       isAdmin: boolean;
 
       // ...other properties
@@ -31,7 +30,6 @@ declare module 'next-auth' {
   interface User {
     username: string | null;
     profileIsComplete: boolean;
-    isWhitelisted: boolean;
     isAdmin: boolean;
   }
 }
@@ -51,7 +49,6 @@ export const authOptions: NextAuthOptions = {
         session.user.id = user.id;
         session.user.username = user.username;
         session.user.profileIsComplete = user.profileIsComplete;
-        session.user.isWhitelisted = user.isWhitelisted;
         session.user.isAdmin = user.isAdmin;
       }
 

@@ -58,8 +58,7 @@ export const leaderboardRouter = createTRPCRouter({
 
       // Filter logic
       const where: any = {
-        profileIsComplete: true,
-        isWhitelisted: true
+        profileIsComplete: true
       };
 
       if (countryFilter !== 'ALL') {

@@ -1,4 +1,5 @@
 import { LoadingButton } from '@mui/lab';
+import { TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -30,6 +31,10 @@ export default function AlertDialog({
   actionButtonText,
   isLoading
 }: AlertDialogProps) {
+  const [value, setValue] = React.useState('');
+
+  const disabled = value.toLowerCase() !== 'delete';
+
   return (
     <Dialog
       open={isOpen}
@@ -40,6 +45,16 @@ export default function AlertDialog({
       <DialogTitle id='alert-dialog-title'>{dialogTitle}</DialogTitle>
       <DialogContent>
         <DialogContentText id='alert-dialog-description'>{dialogText}</DialogContentText>
+        <TextField
+          sx={{
+            mt: '1rem'
+          }}
+          placeholder="Type 'DELETE' to confirm"
+          variant='outlined'
+          value={value}
+          onChange={e => setValue(e.target.value)}
+          fullWidth
+        />
       </DialogContent>
       <DialogActions>
         <Button color='inherit' onClick={handleClose} {...cancelButtonProps}>
@@ -50,6 +65,7 @@ export default function AlertDialog({
           {...(onSubmitHandler && { onClick: onSubmitHandler })}
           autoFocus
           {...submitButtonProps}
+          disabled={disabled}
         >
           {actionButtonText}
         </LoadingButton>

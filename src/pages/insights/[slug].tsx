@@ -100,8 +100,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }: GetStaticPropsContext) {
   const session = await getSession(params);
-  const redirectToCreateProfilePage =
-    session && (!session?.user.profileIsComplete || !session?.user.isWhitelisted);
+  const redirectToCreateProfilePage = session && !session?.user.profileIsComplete;
 
   if (redirectToCreateProfilePage) {
     return {

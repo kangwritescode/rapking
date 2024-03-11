@@ -10,7 +10,6 @@ describe('userRouter.updateUser', () => {
       id: '1',
       username: 'user_a',
       profileIsComplete: true,
-      isWhitelisted: true,
       isAdmin: true
     };
     const userB = {
@@ -36,7 +35,6 @@ describe('userRouter.updateUser', () => {
       id: '1',
       username: 'user_test',
       profileIsComplete: true,
-      isWhitelisted: true,
       isAdmin: true,
       bio: 'Safe bio'
     };
