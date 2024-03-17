@@ -13,7 +13,7 @@ export async function generateSignedUrl(
     ...(contentType && { contentType })
   } as GetSignedUrlConfig;
 
-  const [url] = await gcloudStorage.bucket('rapking').file(fileName).getSignedUrl(options);
+  const [url] = await gcloudStorage.bucket('rapking_secure').file(fileName).getSignedUrl(options);
 
   return url;
 }

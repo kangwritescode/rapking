@@ -133,7 +133,7 @@ export const rapRouter = createTRPCRouter({
     if (input.coverArtUrl) {
       const extension = path.extname(input.coverArtUrl);
       const newCoverArtUrl = `rap/${rap.id}/cover-art-${Date.now()}${extension}`;
-      const response = await moveGCloudFile('rapking', input.coverArtUrl, newCoverArtUrl);
+      const response = await moveGCloudFile('rapking_secure', input.coverArtUrl, newCoverArtUrl);
       if (response) {
         rap = await ctx.prisma.rap.update({
           where: {
@@ -464,7 +464,7 @@ async function updateCoverArtUrl(input: UpdateRapPayload, existingRap: Rap) {
   // If user is deleting or changing the cover art, delete the existing file
   if (isDeleting || isChanging) {
     try {
-      await deleteGloudFile('rapking', existingRap.coverArtUrl!);
+      await deleteGloudFile('rapking_secure', existingRap.coverArtUrl!);
     } catch (err) {
       console.error(err);
     }
@@ -475,7 +475,7 @@ async function updateCoverArtUrl(input: UpdateRapPayload, existingRap: Rap) {
     const extension = path.extname(input.coverArtUrl!);
     const newCoverArtUrl = `rap/${existingRap.id}/cover-art-${Date.now()}${extension}`;
 
-    await moveGCloudFile('rapking', input.coverArtUrl!, newCoverArtUrl);
+    await moveGCloudFile('rapking_secure', input.coverArtUrl!, newCoverArtUrl);
 
     return newCoverArtUrl;
   }
