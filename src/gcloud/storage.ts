@@ -9,7 +9,7 @@ export const gcloudStorage = new Storage({
   }
 });
 
-gcloudStorage.bucket('rapking').setCorsConfiguration([
+gcloudStorage.bucket('rapking_secure').setCorsConfiguration([
   {
     maxAgeSeconds: 3600,
     method: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
