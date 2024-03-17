@@ -1,1 +1,1 @@
-export const BUCKET_URL = 'https://storage.googleapis.com/rapking_secure';
+export const BUCKET_URL = 'https://storage.cloud.google.com/rapking_secure';

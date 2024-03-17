@@ -28,11 +28,11 @@ class CustomDocument extends Document {
             content={`
               default-src 'self';
               style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-              img-src 'self' data: https://storage.googleapis.com;
+              img-src 'self' data: https://storage.googleapis.com https://storage.cloud.google.com *.googleusercontent.com;
               object-src 'none';
               base-uri 'self';
               font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
-              connect-src 'self' https://api.iconify.design https://storage.googleapis.com;
+              connect-src 'self' https://api.iconify.design https://storage.googleapis.com https://storage.cloud.google.com *.googleusercontent.com;
               frame-src 'self' https://www.youtube.com https://www.soundcloud.com https://w.soundcloud.com https://giphy.com/;
               ${
                 env.NODE_ENV === 'development'
