@@ -45,7 +45,7 @@ const LandingPage = ({ raps }: LandingPageProps) => {
         sx={{
           height: {
             xs: '20rem',
-            md: '30rem'
+            md: '36rem'
           }
         }}
       >
