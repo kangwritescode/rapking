@@ -1,13 +1,20 @@
 import { Box, Button, Divider, Stack, Theme, Typography, useMediaQuery } from '@mui/material';
+import { Rap, User } from '@prisma/client';
 import { useRouter } from 'next/router';
 import BoxOutlineButton from 'src/components/BoxOutlinedButton';
 import Footer from 'src/components/Footer';
 import BannerContainer from 'src/components/LandingPage/BannerContainer';
 import LandingNav from 'src/components/LandingPage/LandingNav';
 import LatestRapsSection from 'src/components/LandingPage/LatestRapsSection';
+import { Collaborator } from 'src/components/WritePage/RapEditor';
+import { prisma } from 'src/server/db';
 import { api } from 'src/utils/api';
 
-const LandingPage = () => {
+interface LandingPageProps {
+  raps: (Rap & { user: Partial<User>; collaborators: Array<Collaborator> })[];
+}
+
+const LandingPage = ({ raps }: LandingPageProps) => {
   const isTablet = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const router = useRouter();
 
@@ -33,11 +40,12 @@ const LandingPage = () => {
   return (
     <Box>
       <LandingNav />
+      <Divider />
       <BannerContainer
         sx={{
           height: {
-            xs: '26rem',
-            md: '40rem'
+            xs: '20rem',
+            md: '30rem'
           }
         }}
       >
@@ -137,7 +145,7 @@ const LandingPage = () => {
           </Stack>
         </Stack>
       </BannerContainer>
-      <LatestRapsSection />
+      <LatestRapsSection raps={raps} />
       <Divider />
       <Footer />
     </Box>
@@ -147,3 +155,24 @@ const LandingPage = () => {
 export default LandingPage;
 
 LandingPage.getLayout = (page: React.ReactNode) => page;
+
+export async function getStaticProps() {
+  const raps = await prisma.rap.findMany({
+    orderBy: {
+      dateCreated: 'desc'
+    },
+    take: 2,
+    include: {
+      user: true,
+      collaborators: true
+    }
+  });
+
+  const serializableRaps = JSON.parse(JSON.stringify(raps));
+
+  return {
+    props: {
+      raps: serializableRaps
+    }
+  };
+}

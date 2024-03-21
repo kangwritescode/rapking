@@ -8,7 +8,6 @@ interface BannerContainerProps {
 function BannerContainer({ children, sx }: BannerContainerProps) {
   return (
     <>
-      <Divider />
       <Stack
         sx={{
           position: 'relative',

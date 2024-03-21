@@ -1,32 +1,13 @@
 import { Box, Card, Stack, Typography } from '@mui/material';
-import { useEffect } from 'react';
-import { api } from 'src/utils/api';
+import { Rap, User } from '@prisma/client';
 import RapCard from '../RapCard';
+import { Collaborator } from '../WritePage/RapEditor';
 
-function LatestRapsSection() {
-  const { data, refetch } = api.feed.queryRaps.useInfiniteQuery(
-    {
-      sortBy: 'NEWEST',
-      countryFilter: 'ALL',
-      timeFilter: 'ALL',
-      followingFilter: false,
-      sexFilter: 'ANY',
-      limit: 3
-    },
-    {
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-      refetchIntervalInBackground: false,
-      refetchOnReconnect: false
-    }
-  );
+interface LatestRapsSectionProps {
+  raps?: (Rap & { user: Partial<User>; collaborators: Array<Collaborator> })[];
+}
 
-  const rapData = data?.pages.flatMap(page => page.raps) ?? [];
-
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
-
+function LatestRapsSection({ raps }: LatestRapsSectionProps) {
   return (
     <Box component='section' p='2rem 2rem 6rem'>
       <Typography component='h2' sx={{ mb: '2rem', fontSize: '2rem' }} fontFamily='impact'>
@@ -41,7 +22,7 @@ function LatestRapsSection() {
           }
         }}
       >
-        {rapData.map(rap => {
+        {raps?.map(rap => {
           return (
             <Card
               key={rap.id}

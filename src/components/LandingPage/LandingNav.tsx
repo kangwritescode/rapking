@@ -21,7 +21,7 @@ const navButtons = [
   },
   {
     title: 'Forum',
-    path: '/forum'
+    path: '/auth'
   }
 ];
 
@@ -124,8 +124,7 @@ const LandingNav = () => {
                 mr: {
                   sm: 0,
                   md: '.5rem'
-                },
-                fontFamily: 'impact'
+                }
               }}
               onClick={onClick}
             >
