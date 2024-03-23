@@ -53,6 +53,7 @@ model User {
   profileIsComplete      Boolean             @default(false)
   isAdmin                Boolean             @default(false)
   reviewRequestTokens    Int                 @default(0)
+  promotionTokens        Int                 @default(0)
   accounts               Account[]
   Article                Article[]
   commentVotes           CommentVote[]
@@ -111,6 +112,7 @@ model Rap {
   rapReviews      RapReview[]
   reviewRequests  ReviewRequest[]
   reports         Report[]
+  promotions      Promotion[]
 
   @@index([userId, dateCreated(sort: Desc)])
 }
@@ -429,4 +431,14 @@ model Report {
   thread         Thread?        @relation(fields: [threadId], references: [id], onDelete: Cascade)
   threadComment  ThreadComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
   forumThread    ForumThread?   @relation(fields: [forumThreadId], references: [id], onDelete: Cascade)
+}
+
+model Promotion {
+  id        String   @id @default(cuid())
+  rapId     String
+  startedAt DateTime @default(now())
+  endsAt    DateTime
+  rap       Rap      @relation(fields: [rapId], references: [id], onDelete: Cascade)
+
+  @@index([rapId])
 }

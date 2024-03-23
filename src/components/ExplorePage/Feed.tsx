@@ -73,7 +73,7 @@ function Feed({ sortBy, countryFilter, timeFilter, followingFilter, sexFilter }:
           <Box
             sx={{
               width: ['100%', '90%', '80%'],
-              maxWidth: '45rem',
+              maxWidth: '56rem',
               mx: 'auto'
             }}
           >

@@ -8,6 +8,7 @@ import { formatRapCardDate } from 'src/shared/utils';
 import { api } from 'src/utils/api';
 import AlertDialog from '../AlertDialog';
 import IconLink from '../IconLink';
+import PromoteRapDialog from './PromoteRapDialog';
 import RequestReviewDialog from './RequestReviewDialog';
 
 interface DashboardRapProps {
@@ -21,6 +22,7 @@ function DashboardRap({ rap }: DashboardRapProps) {
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [rapToRequestReview, setRapToRequestReview] = useState<Rap | null>(null);
+  const [rapToPromote, setRapToPromote] = useState<Rap | null>(null);
 
   const { mutate: deleteRap, isLoading } = api.rap.deleteRap.useMutation();
   const { invalidate: invalidateRaps } = api.useUtils().rap.getRapsByUser;
@@ -55,6 +57,11 @@ function DashboardRap({ rap }: DashboardRapProps) {
         isOpen={!!rapToRequestReview}
         handleClose={() => setRapToRequestReview(null)}
         rap={rapToRequestReview}
+      />
+      <PromoteRapDialog
+        isOpen={!!rapToPromote}
+        handleClose={() => setRapToPromote(null)}
+        rap={rapToPromote}
       />
       <Stack direction='row' px='.5rem' pt='1rem' pb='.75rem'>
         <Link href={`/rap/${id}`} passHref>
@@ -124,6 +131,16 @@ function DashboardRap({ rap }: DashboardRapProps) {
               onClick={() => setRapToRequestReview(rap)}
               icon='mdi:fire'
               text='Request Review'
+              color={theme.palette.secondary.main}
+              gap={theme.spacing(1)}
+              fontSize='.875rem'
+            />
+            &nbsp;
+            {`·`}
+            <IconLink
+              onClick={() => setRapToPromote(rap)}
+              icon='material-symbols:rocket'
+              text='Promote'
               color={theme.palette.secondary.main}
               gap={theme.spacing(1)}
               fontSize='.875rem'

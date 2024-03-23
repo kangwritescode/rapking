@@ -5,6 +5,7 @@ import { feedRouter } from './routers/feed';
 import { gcloudRouter } from './routers/gcloud';
 import { leaderboardRouter } from './routers/leaderboard';
 import { notificationsRouter } from './routers/notifications';
+import { promotionsRouter } from './routers/promotions';
 import { pulseRouter } from './routers/pulse';
 import { rapRouter } from './routers/rap';
 import { rapVote } from './routers/rapVote';
@@ -39,7 +40,8 @@ export const appRouter = createTRPCRouter({
   thread: threadRouter,
   reviews: reviewsRouter,
   reviewRequests: reviewRequestsRouter,
-  reports: reportRouter
+  reports: reportRouter,
+  promotions: promotionsRouter
 });
 
 // export type definition of API

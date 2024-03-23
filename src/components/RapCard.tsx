@@ -1,5 +1,5 @@
 import { Avatar, Box, Stack, SxProps, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { Rap, User } from '@prisma/client';
+import { Promotion, Rap, User } from '@prisma/client';
 import { convert } from 'html-to-text';
 import { useRouter } from 'next/router';
 import sanitize from 'sanitize-html';
@@ -11,7 +11,11 @@ import RapCardMenu from './UserPage/RapCardMenu';
 import { Collaborator } from './WritePage/RapEditor';
 
 interface RapCardProps {
-  rap: Rap & { user: Partial<User>; collaborators: Array<Collaborator> };
+  rap: Rap & {
+    user: Partial<User>;
+    collaborators: Array<Collaborator>;
+    promotions: [Partial<Promotion>] | null;
+  };
   sx?: SxProps;
   hideAvatar?: boolean;
   hideUsername?: boolean;
@@ -29,7 +33,19 @@ function RapCard({
   showChips,
   contentMaxLength
 }: RapCardProps) {
-  const { id, title, dateCreated, coverArtUrl, content, user: userData, collaborators } = rap;
+  const {
+    id,
+    title,
+    dateCreated,
+    coverArtUrl,
+    content,
+    user: userData,
+    collaborators,
+    promotions
+  } = rap;
+
+  const isPromoted =
+    promotions && promotions.some(p => p.endsAt && new Date(p.endsAt) > new Date());
 
   const theme = useTheme();
   const router = useRouter();
@@ -68,7 +84,7 @@ function RapCard({
   ));
 
   return (
-    <Box position='relative' sx={sx}>
+    <Box position='relative' sx={{ ...sx }}>
       <Stack direction='row' alignItems='center' pb={theme.spacing(2)}>
         {!hideAvatar && (
           <Avatar
@@ -129,7 +145,20 @@ function RapCard({
             {formattedContent}
           </Typography>
           <Stack direction='row' justifyContent='space-between' height='2rem' mt='2rem'>
-            <Box>{showChips && <RapCardChip label={userData.country || ''} />}</Box>
+            {showChips && (
+              <Box>
+                {isPromoted && (
+                  <RapCardChip
+                    label='Promoted'
+                    sx={{
+                      mr: theme.spacing(2),
+                      color: theme.palette.info.light
+                    }}
+                  />
+                )}
+                <RapCardChip label={userData.country || ''} />
+              </Box>
+            )}
             <Box>{showMenu && <RapCardMenu rapId={rap.id} />}</Box>
           </Stack>
         </Box>

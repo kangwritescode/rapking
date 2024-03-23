@@ -28,7 +28,9 @@ function LatestRapsSection({ raps }: LatestRapsSectionProps) {
               key={rap.id}
               sx={{
                 p: '2rem 2rem',
-                borderRadius: '1rem'
+                borderRadius: '1rem',
+                flexGrow: 1,
+                maxWidth: '50%'
               }}
             >
               <RapCard rap={rap} showChips contentMaxLength={100} />
