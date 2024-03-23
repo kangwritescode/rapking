@@ -90,7 +90,12 @@ function RapPromoter({ rap, cancelClickHandler }: RapPromoterProps) {
         <Button variant='outlined' color='error' onClick={cancelClickHandler}>
           Cancel
         </Button>
-        <Button disabled={!rap?.id} variant='contained' color='primary' onClick={handlePromoteRap}>
+        <Button
+          disabled={!rap?.id || !currentUserData?.promotionTokens}
+          variant='contained'
+          color='primary'
+          onClick={handlePromoteRap}
+        >
           Promote '{rap?.title}'
         </Button>
       </Stack>
