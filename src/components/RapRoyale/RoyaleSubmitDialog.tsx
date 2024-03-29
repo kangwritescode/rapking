@@ -1,0 +1,44 @@
+import { Icon } from '@iconify/react';
+import { IconButton, Typography } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { RapRoyale } from '@prisma/client';
+import RoyaleRapSubmitter from './RoyaleRapSubmitter';
+
+interface RoyaleSubmitDialogProps {
+  isOpen: boolean;
+  handleClose: () => void;
+  royale?: RapRoyale | null;
+}
+
+function RoyaleSubmitDialog({ isOpen, handleClose, royale }: RoyaleSubmitDialogProps) {
+  return (
+    <Dialog open={isOpen} onClose={handleClose} maxWidth={false}>
+      <IconButton
+        onClick={handleClose}
+        sx={theme => ({
+          position: 'absolute',
+          right: theme.spacing(2),
+          top: theme.spacing(2)
+        })}
+      >
+        <Icon icon='ph:x' />
+      </IconButton>
+      <DialogTitle>
+        <Typography fontSize='1rem' variant='button'>
+          {royale?.title ? <b>'{royale.title}'</b> : ''} Royale Submission
+        </Typography>
+      </DialogTitle>
+      <DialogContent
+        sx={{
+          width: '40rem'
+        }}
+      >
+        <RoyaleRapSubmitter royale={royale} onSubmitSuccess={handleClose} />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export default RoyaleSubmitDialog;

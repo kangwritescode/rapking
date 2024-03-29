@@ -452,6 +452,23 @@ export const rapRouter = createTRPCRouter({
       });
 
       return raps;
+    }),
+  getAllRapsSimple: publicProcedure
+    .input(
+      z.object({
+        userId: z.string()
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.rap.findMany({
+        where: {
+          userId: input.userId
+        },
+        select: {
+          id: true,
+          title: true
+        }
+      });
     })
 });
 

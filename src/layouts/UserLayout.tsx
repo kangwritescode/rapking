@@ -66,8 +66,8 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       icon: 'ic:twotone-leaderboard'
     },
     {
-      title: 'RapKings',
-      path: '/rapkings',
+      title: 'Competitions',
+      path: '/royale',
       icon: 'ph:crown-bold'
     },
     {

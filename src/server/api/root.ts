@@ -11,6 +11,7 @@ import { rapVote } from './routers/rapVote';
 import { reportRouter } from './routers/report';
 import { reviewRequestsRouter } from './routers/reviewRequests';
 import { reviewsRouter } from './routers/reviews';
+import { royalesRouter } from './routers/royales';
 import { socialLinkRouter } from './routers/socialLink';
 import { threadRouter } from './routers/thread';
 import { threadCommentVoteRouter } from './routers/threadCommentVote';
@@ -37,6 +38,7 @@ export const appRouter = createTRPCRouter({
   articles: articlesRouter,
   pulse: pulseRouter,
   thread: threadRouter,
+  royales: royalesRouter,
   reviews: reviewsRouter,
   reviewRequests: reviewRequestsRouter,
   reports: reportRouter

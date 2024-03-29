@@ -32,3 +32,9 @@ export function getFormattedTime(inputDate: Date) {
 
   return date.format('hh:mm A');
 }
+
+export function getDayMonthYear(inputDate: Date) {
+  const date = dayjs(inputDate);
+
+  return date.format('DD MMM YYYY');
+}
