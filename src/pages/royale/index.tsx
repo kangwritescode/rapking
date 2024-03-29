@@ -25,7 +25,7 @@ function RapRoyalePage() {
           <CardMedia component='img' image='/images/royale.jpeg' />
         </Stack>
         <Typography variant='h5' align='center' mt='1.5rem' mb='1rem' fontWeight='bold'>
-          Rap Royale is a bi-weekly rap competition.
+          Rap Royale is a monthly rap competition.
         </Typography>
         <Stack direction='row' alignItems='center' justifyContent='center' mb='1.5rem'>
           <Button
