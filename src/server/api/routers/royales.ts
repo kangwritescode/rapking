@@ -80,6 +80,10 @@ export const royalesRouter = createTRPCRouter({
         throw new Error('This royale is not open for submissions');
       }
 
+      if (rap.dateCreated < royale.startDate) {
+        throw new Error('This rap was created before the royale start date');
+      }
+
       await ctx.prisma.rapRoyale.update({
         where: { id: royaleId },
         data: {
