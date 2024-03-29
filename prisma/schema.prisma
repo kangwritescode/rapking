@@ -54,6 +54,7 @@ model User {
   isAdmin                Boolean             @default(false)
   reviewRequestTokens    Int                 @default(0)
   rapRoyales             RapRoyale[]         @relation("CompetitionEntrants")
+  promotionTokens        Int                 @default(0)
   accounts               Account[]
   Article                Article[]
   commentVotes           CommentVote[]
@@ -115,6 +116,7 @@ model Rap {
   rapReviews      RapReview[]
   reviewRequests  ReviewRequest[]
   reports         Report[]
+  promotions      Promotion[]
 
   @@index([userId, dateCreated(sort: Desc)])
 }
@@ -453,4 +455,14 @@ enum RapRoyaleStatus {
   NOT_STARTED
   OPEN
   ENDED
+}
+
+model Promotion {
+  id        String   @id @default(cuid())
+  rapId     String
+  startedAt DateTime @default(now())
+  endsAt    DateTime
+  rap       Rap      @relation(fields: [rapId], references: [id], onDelete: Cascade)
+
+  @@index([rapId])
 }

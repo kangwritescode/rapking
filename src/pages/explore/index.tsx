@@ -69,8 +69,8 @@ function ExplorePage() {
               sm: '90%',
               md: '80%'
             },
-
-            maxWidth: '45rem',
+            transition: 'width .25s ease-in-out',
+            maxWidth: '56rem',
             mx: 'auto',
             mt: '.5rem'
           }}
@@ -91,34 +91,38 @@ function ExplorePage() {
             {status === 'authenticated' && <Tab label='Following' />}
           </Tabs>
         </Box>
-        <FeedBar
-          sx={{
-            width: {
-              xs: '100%',
-              sm: '90%',
-              md: '80%'
-            },
-            maxWidth: '45rem',
-            mx: 'auto',
-            px: {
-              xs: 4,
-              sm: 0
-            }
-          }}
-          onSortAndFilterChange={({ sortBy, countryFilter, timeFilter, sexFilter }) => {
-            setSortByValue(sortBy);
-            setCountryFilter(countryFilter);
-            setTimeFilter(timeFilter);
-            setSexFilter(sexFilter);
-          }}
-        />
-        <Feed
-          sortBy={sortByValue}
-          countryFilter={countryFilter}
-          timeFilter={timeFilter}
-          followingFilter={followingFilter}
-          sexFilter={sexFilter}
-        />
+        {tab !== 2 && (
+          <>
+            <FeedBar
+              sx={{
+                width: {
+                  xs: '100%',
+                  sm: '90%',
+                  md: '80%'
+                },
+                maxWidth: '45rem',
+                mx: 'auto',
+                px: {
+                  xs: 4,
+                  sm: 0
+                }
+              }}
+              onSortAndFilterChange={({ sortBy, countryFilter, timeFilter, sexFilter }) => {
+                setSortByValue(sortBy);
+                setCountryFilter(countryFilter);
+                setTimeFilter(timeFilter);
+                setSexFilter(sexFilter);
+              }}
+            />
+            <Feed
+              sortBy={sortByValue}
+              countryFilter={countryFilter}
+              timeFilter={timeFilter}
+              followingFilter={followingFilter}
+              sexFilter={sexFilter}
+            />
+          </>
+        )}
       </Stack>
     </>
   );

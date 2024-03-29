@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
-import { Country, RapStatus } from '@prisma/client';
+import { Country, Rap, RapStatus } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { createTRPCRouter, publicProcedure } from 'src/server/api/trpc';
+import { shuffleArray } from 'src/shared/utils';
 
 // Schemas
 const createRapPayloadSchema = z.object({
@@ -143,11 +144,39 @@ export const feedRouter = createTRPCRouter({
               id: true,
               username: true
             }
+          },
+          promotions: {
+            select: {
+              endsAt: true,
+              startedAt: true
+            }
           }
         },
         cursor: cursor ? { id: cursor } : undefined,
         take: limit + 1
       });
+
+      const now = new Date();
+      const promotedRaps: Array<Rap> = [];
+      const nonPromotedRaps: Array<Rap> = [];
+
+      // Separate raps into promoted and non-promoted
+      raps.forEach(rap => {
+        const isPromoActive = rap.promotions.some(
+          promo => promo.startedAt <= now && promo.endsAt >= now
+        );
+        if (isPromoActive) {
+          promotedRaps.push(rap);
+        } else {
+          nonPromotedRaps.push(rap);
+        }
+      });
+
+      // Shuffle only the promoted raps
+      shuffleArray(promotedRaps);
+
+      // Concatenate the shuffled promoted raps with the non-promoted raps
+      const sortedAndShuffledRaps = [...promotedRaps, ...nonPromotedRaps];
 
       let nextCursor: typeof cursor | undefined = undefined;
       if (raps.length > limit) {
@@ -155,6 +184,6 @@ export const feedRouter = createTRPCRouter({
         nextCursor = nextItem!.id;
       }
 
-      return { raps, nextCursor };
+      return { raps: sortedAndShuffledRaps, nextCursor };
     })
 });
