@@ -1,9 +1,11 @@
 import { Box, Button, CardMedia, Stack, Typography, useTheme } from '@mui/material';
+import { useRouter } from 'next/router';
 import Footer from 'src/components/Footer';
 import RapRoyaleDataGrid from 'src/components/RapRoyale/RapRoyaleDataGrid';
 
 function RapRoyalePage() {
   const theme = useTheme();
+  const router = useRouter();
 
   return (
     <>
@@ -26,7 +28,11 @@ function RapRoyalePage() {
           Rap Royale is a bi-weekly rap competition.
         </Typography>
         <Stack direction='row' alignItems='center' justifyContent='center' mb='1.5rem'>
-          <Button variant='outlined' color='secondary'>
+          <Button
+            variant='outlined'
+            color='secondary'
+            onClick={() => router.push(`/royale/clud70ke000000itm7g69v684`)}
+          >
             View Current Rap Royale
           </Button>
         </Stack>
@@ -47,7 +53,7 @@ function RapRoyalePage() {
               Only accepts original raps created during the competition period. No pre-written raps
             </li>
             <li>Submissions with the most votes (likes) win</li>
-            <li>Top three entrants will be awarded a prize (prizes will vary month-to-month)</li>
+            <li>Top 2 entrants will be awarded a prize (prizes will vary month-to-month)</li>
           </ul>
         </Box>
         <Typography mt='1.5rem' mb='1.5rem' align='center'>
