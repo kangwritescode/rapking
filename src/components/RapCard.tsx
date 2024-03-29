@@ -14,7 +14,7 @@ interface RapCardProps {
   rap: Rap & {
     user: Partial<User>;
     collaborators: Array<Collaborator>;
-    promotions: [Partial<Promotion>] | null;
+    promotions?: Array<Partial<Promotion>> | null;
   };
   sx?: SxProps;
   hideAvatar?: boolean;

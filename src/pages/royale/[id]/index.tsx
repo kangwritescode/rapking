@@ -84,9 +84,13 @@ function RoyalePage() {
                 my: '1rem'
               }}
               onClick={() => setDialogIsOpen(true)}
-              disabled={userHasSubmitted}
+              disabled={userHasSubmitted || royaleData?.status !== 'OPEN'}
             >
-              {userHasSubmitted ? 'Submission Accepted' : 'Submit a Rap'}
+              {userHasSubmitted
+                ? 'Submission Accepted'
+                : royaleData?.status === 'NOT_STARTED'
+                ? 'Royale Not Started'
+                : 'Submit a Rap'}
             </Button>
           </Stack>
         </Box>

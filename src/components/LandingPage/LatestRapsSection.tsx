@@ -1,10 +1,14 @@
 import { Box, Card, Stack, Typography } from '@mui/material';
-import { Rap, User } from '@prisma/client';
+import { Promotion, Rap, User } from '@prisma/client';
 import RapCard from '../RapCard';
 import { Collaborator } from '../WritePage/RapEditor';
 
 interface LatestRapsSectionProps {
-  raps?: (Rap & { user: Partial<User>; collaborators: Array<Collaborator> })[];
+  raps?: (Rap & {
+    user: Partial<User>;
+    collaborators: Array<Collaborator>;
+    promotions?: Array<Partial<Promotion>>;
+  })[];
 }
 
 function LatestRapsSection({ raps }: LatestRapsSectionProps) {

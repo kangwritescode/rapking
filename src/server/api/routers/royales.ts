@@ -1,3 +1,4 @@
+import { RapRoyaleStatus } from '@prisma/client';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from 'src/server/api/trpc';
 import { z } from 'zod';
 
@@ -73,6 +74,10 @@ export const royalesRouter = createTRPCRouter({
 
       if (royale.submissions.some(submission => submission.userId === rap.userId)) {
         throw new Error('You have already submitted a rap for this royale');
+      }
+
+      if (royale.status !== RapRoyaleStatus.OPEN) {
+        throw new Error('This royale is not open for submissions');
       }
 
       await ctx.prisma.rapRoyale.update({

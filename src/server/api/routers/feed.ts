@@ -176,7 +176,7 @@ export const feedRouter = createTRPCRouter({
       shuffleArray(promotedRaps);
 
       // Concatenate the shuffled promoted raps with the non-promoted raps
-      const sortedAndShuffledRaps = [...promotedRaps, ...nonPromotedRaps];
+      const sortedAndShuffledRaps = [...promotedRaps, ...nonPromotedRaps] as typeof raps;
 
       let nextCursor: typeof cursor | undefined = undefined;
       if (raps.length > limit) {

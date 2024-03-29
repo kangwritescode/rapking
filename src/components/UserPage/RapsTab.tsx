@@ -1,11 +1,17 @@
 import { Box, Divider, SxProps, Typography } from '@mui/material';
-import { Rap, User } from '@prisma/client';
+import { Promotion, Rap, User } from '@prisma/client';
 import { Fragment } from 'react';
 import RapCard from '../RapCard';
 import { Collaborator } from '../WritePage/RapEditor';
 
 interface RapsTabProps {
-  raps?: (Rap & { user: Partial<User>; collaborators: Array<Collaborator> })[] | null;
+  raps?:
+    | (Rap & {
+        user: Partial<User>;
+        collaborators: Array<Collaborator>;
+        promotions?: Array<Partial<Promotion>>;
+      })[]
+    | null;
   isCurrentUser?: boolean;
   sx?: SxProps;
 }
