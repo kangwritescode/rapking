@@ -34,7 +34,10 @@ function LatestRapsSection({ raps }: LatestRapsSectionProps) {
                 p: '2rem 2rem',
                 borderRadius: '1rem',
                 flexGrow: 1,
-                maxWidth: '50%'
+                maxWidth: {
+                  xs: '100%',
+                  md: '50%'
+                }
               }}
             >
               <RapCard rap={rap} showChips contentMaxLength={100} />
