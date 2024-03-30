@@ -38,3 +38,9 @@ export function getDayMonthYear(inputDate: Date) {
 
   return date.format('DD MMM YYYY');
 }
+
+export function getMonthAndYear(inputDate: Date) {
+  const date = dayjs(inputDate);
+
+  return date.format('MMMM YYYY');
+}
