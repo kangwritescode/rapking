@@ -59,7 +59,19 @@ function RoyalePage() {
             </Typography>
           </Stack>
           <Divider sx={{ mt: '1rem', mb: '1rem' }} />
-          <Stack direction='row' alignItems='center' justifyContent='flex-end'>
+          <Stack
+            direction='row'
+            alignItems='center'
+            justifyContent='space-between'
+            sx={{
+              mb: '1rem'
+            }}
+          >
+            <span>
+              <strong>Competition Period:</strong>{' '}
+              {royaleData?.startDate.toLocaleDateString() || new Date().toLocaleDateString()} -{' '}
+              {royaleData?.endDate.toLocaleDateString() || new Date().toLocaleDateString()}
+            </span>
             <span>
               Status:{' '}
               <Chip
@@ -75,6 +87,7 @@ function RoyalePage() {
               />
             </span>
           </Stack>
+          <Divider sx={{ mt: '1rem', mb: '1rem' }} />
           <div dangerouslySetInnerHTML={{ __html: royaleData?.details || '' }} />
           <Stack direction='row' alignItems='center' justifyContent='center'>
             <Button
