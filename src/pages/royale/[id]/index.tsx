@@ -2,7 +2,6 @@ import { Box, Button, CardMedia, Chip, Divider, Stack, Typography, useTheme } fr
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { getMonthAndYear } from 'src/@core/utils/get-formatted-date';
 import Footer from 'src/components/Footer';
 import RoyaleSubmitDialog from 'src/components/RapRoyale/RoyaleSubmitDialog';
 import SubmissionsDataGrid from 'src/components/RapRoyale/SubmissionsDataGrid';
@@ -70,7 +69,8 @@ function RoyalePage() {
           >
             <span>
               <strong>Competition Period:</strong>{' '}
-              {getMonthAndYear(royaleData?.endDate || new Date())}
+              {royaleData?.startDate.toLocaleDateString() || new Date().toLocaleDateString()} -{' '}
+              {royaleData?.endDate.toLocaleDateString() || new Date().toLocaleDateString()} (PST)
             </span>
             <span>
               Status:{' '}
