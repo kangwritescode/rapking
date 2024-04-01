@@ -1,7 +1,7 @@
 {
     "crons": [
         {
-            "path": "/api/cron/royale-status.ts",
+            "path": "/api/cron/cron",
             "schedule": "0 * * * *"
         }
     ]
