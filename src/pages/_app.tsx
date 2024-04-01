@@ -38,6 +38,9 @@ import UnderConstructionGuard from 'src/components/UnderConstructionGuard';
 import { api } from 'src/utils/api';
 import '../../styles/globals.css';
 
+// Vercel Analytics
+import { Analytics } from '@vercel/analytics/react';
+
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
   Component: NextPage;
@@ -119,6 +122,7 @@ const App: any = (props: ExtendedAppProps) => {
                     <CreateProfileGuard>
                       <UnderConstructionGuard>
                         {getLayout(<Component {...pageProps} />)}
+                        <Analytics />
                       </UnderConstructionGuard>
                     </CreateProfileGuard>
                     {/* <ReactQueryDevtools initialIsOpen={false} /> */}
