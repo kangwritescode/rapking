@@ -33,6 +33,8 @@ export default async function handler(request: NextApiRequest, response: NextApi
       }
     });
 
+    console.log('Rap royales status updated');
+
     return response.status(200).json({ message: 'Rap royales status updated' });
   } catch (error) {
     console.error('Failed to update rap royales status:', error);
