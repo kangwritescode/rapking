@@ -2,6 +2,7 @@ import { RapRoyaleStatus } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next/types';
 import { prisma } from 'src/server/db';
 
+export const revalidate = 0;
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
   try {
     // Update the status of all rap royales that should be open
