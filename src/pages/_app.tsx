@@ -41,6 +41,9 @@ import '../../styles/globals.css';
 // Vercel Analytics
 import { Analytics } from '@vercel/analytics/react';
 
+// Speed Insights
+import { SpeedInsights } from '@vercel/speed-insights/next';
+
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
   Component: NextPage;
@@ -123,6 +126,7 @@ const App: any = (props: ExtendedAppProps) => {
                       <UnderConstructionGuard>
                         {getLayout(<Component {...pageProps} />)}
                         <Analytics />
+                        <SpeedInsights />
                       </UnderConstructionGuard>
                     </CreateProfileGuard>
                     {/* <ReactQueryDevtools initialIsOpen={false} /> */}
