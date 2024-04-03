@@ -185,6 +185,9 @@ export const threadRouter = createTRPCRouter({
           thread: {
             include: {
               threadComments: {
+                orderBy: {
+                  createdAt: 'asc'
+                },
                 include: {
                   user: {
                     select: {

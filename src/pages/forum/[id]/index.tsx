@@ -16,6 +16,8 @@ function ForumThreadPage({ id, defaultThreadId }: { id: string; defaultThreadId:
     id: id as string
   });
 
+  console.log(forumThread?.thread);
+
   return (
     <ForumViewWrapper>
       <Stack
