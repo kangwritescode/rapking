@@ -3,7 +3,10 @@ import type { NextApiRequest, NextApiResponse } from 'next/types';
 import { prisma } from 'src/server/db';
 
 export const revalidate = 0;
-export default async function POST(request: NextApiRequest, response: NextApiResponse) {
+export default async function updateRapRoyaleStatuses(
+  request: NextApiRequest,
+  response: NextApiResponse
+) {
   try {
     // Update the status of all rap royales that should be open
     await prisma.rapRoyale.updateMany({
@@ -33,8 +36,6 @@ export default async function POST(request: NextApiRequest, response: NextApiRes
         status: RapRoyaleStatus.ENDED
       }
     });
-
-    console.log('Rap royales status updated');
 
     return response.status(200).json({ message: 'Rap royales status updated' });
   } catch (error) {
