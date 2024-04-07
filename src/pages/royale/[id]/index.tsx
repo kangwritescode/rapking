@@ -1,7 +1,7 @@
 import { Box, Button, CardMedia, Chip, Divider, Stack, Typography, useTheme } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Footer from 'src/components/Footer';
 import RoyaleSubmitDialog from 'src/components/RapRoyale/RoyaleSubmitDialog';
 import SubmissionsDataGrid from 'src/components/RapRoyale/SubmissionsDataGrid';
@@ -23,6 +23,18 @@ function RoyalePage() {
   const submissions = royaleData?.submissions || [];
 
   const userHasSubmitted = submissions.some(sub => sub.userId === userId);
+
+  useEffect(() => {
+    const updateStatuses = async () => {
+      await fetch('/api/royale-status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    };
+    updateStatuses();
+  }, []);
 
   return (
     <>

@@ -1,11 +1,24 @@
 import { Box, Button, CardMedia, Stack, Typography, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import Footer from 'src/components/Footer';
 import RapRoyaleDataGrid from 'src/components/RapRoyale/RapRoyaleDataGrid';
 
 function RapRoyalePage() {
   const theme = useTheme();
   const router = useRouter();
+
+  useEffect(() => {
+    const updateStatuses = async () => {
+      await fetch('/api/royale-status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    };
+    updateStatuses();
+  }, []);
 
   return (
     <>
