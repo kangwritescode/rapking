@@ -9,14 +9,20 @@ export default async function updateRapRoyaleStatuses(
   response: NextApiResponse
 ) {
   try {
+    // Current date for comparison
+    const now = new Date();
+
     // Update the status of all rap royales that should be open
     await prisma.rapRoyale.updateMany({
       where: {
         startDate: {
-          gte: new Date()
+          lte: now // Start date is in the past or now
         },
         endDate: {
-          lt: new Date()
+          gt: now // End date is in the future
+        },
+        status: {
+          not: RapRoyaleStatus.OPEN // Ensure we're not updating already open royales
         }
       },
       data: {
@@ -28,7 +34,10 @@ export default async function updateRapRoyaleStatuses(
     await prisma.rapRoyale.updateMany({
       where: {
         endDate: {
-          lt: new Date()
+          lt: now // End date is in the past
+        },
+        status: {
+          not: RapRoyaleStatus.ENDED // Ensure we're not updating already ended royales
         }
       },
       data: {
