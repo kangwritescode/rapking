@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next/types';
 import { prisma } from 'src/server/db';
 
 export const revalidate = 0;
+
 export default async function updateRapRoyaleStatuses(
   request: NextApiRequest,
   response: NextApiResponse
@@ -13,10 +14,10 @@ export default async function updateRapRoyaleStatuses(
       where: {
         status: RapRoyaleStatus.NOT_STARTED,
         startDate: {
-          lte: new Date()
+          gte: new Date()
         },
         endDate: {
-          gte: new Date()
+          lt: new Date()
         }
       },
       data: {
