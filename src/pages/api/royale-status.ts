@@ -12,7 +12,6 @@ export default async function updateRapRoyaleStatuses(
     // Update the status of all rap royales that should be open
     await prisma.rapRoyale.updateMany({
       where: {
-        status: RapRoyaleStatus.NOT_STARTED,
         startDate: {
           gte: new Date()
         },
@@ -28,7 +27,6 @@ export default async function updateRapRoyaleStatuses(
     // Update the status of all rap royales that should be closed
     await prisma.rapRoyale.updateMany({
       where: {
-        status: RapRoyaleStatus.OPEN,
         endDate: {
           lt: new Date()
         }
