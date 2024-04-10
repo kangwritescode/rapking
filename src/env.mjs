@@ -29,9 +29,7 @@ const server = z.object({
   GCLOUD_CLIENT_EMAIL: z.string(),
   GCLOUD_CLIENT_ID: z.string(),
 
-  REDIS_CONNECTION_STRING: z.string().url(),
-
-  PULSE_BOT_WEBHOOK_URL: z.string().url()
+  REDIS_CONNECTION_STRING: z.string().url()
 });
 
 /**
@@ -67,9 +65,7 @@ const processEnv = {
   MUUT_API_KEY: process.env.MUUT_API_KEY,
   MUUT_SECRET_KEY: process.env.MUUT_SECRET_KEY,
 
-  REDIS_CONNECTION_STRING: process.env.REDIS_CONNECTION_STRING,
-
-  PULSE_BOT_WEBHOOK_URL: process.env.PULSE_BOT_WEBHOOK_URL
+  REDIS_CONNECTION_STRING: process.env.REDIS_CONNECTION_STRING
 
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };

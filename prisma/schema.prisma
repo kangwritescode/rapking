@@ -295,12 +295,6 @@ model Article {
   tags        ArticleTag[] @relation("ArticleToArticleTag")
 }
 
-model PulsePost {
-  id        Int      @id @default(autoincrement())
-  content   String
-  createdAt DateTime @default(now())
-}
-
 model ArticleTag {
   id       Int       @id @default(autoincrement())
   name     String    @unique

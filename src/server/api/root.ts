@@ -6,7 +6,6 @@ import { gcloudRouter } from './routers/gcloud';
 import { leaderboardRouter } from './routers/leaderboard';
 import { notificationsRouter } from './routers/notifications';
 import { promotionsRouter } from './routers/promotions';
-import { pulseRouter } from './routers/pulse';
 import { rapRouter } from './routers/rap';
 import { rapVote } from './routers/rapVote';
 import { reportRouter } from './routers/report';
@@ -37,7 +36,6 @@ export const appRouter = createTRPCRouter({
   feed: feedRouter,
   notifications: notificationsRouter,
   articles: articlesRouter,
-  pulse: pulseRouter,
   thread: threadRouter,
   royales: royalesRouter,
   reviews: reviewsRouter,

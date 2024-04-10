@@ -76,11 +76,6 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       icon: 'ic:sharp-forum'
     },
     {
-      title: 'Pulse',
-      path: '/pulse',
-      icon: 'grommet-icons:blog'
-    },
-    {
       title: 'Insights',
       path: '/insights',
       icon: 'ph:brain-duotone'

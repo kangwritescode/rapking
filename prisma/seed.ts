@@ -17,7 +17,6 @@ async function clearDatabase() {
   await prisma.user.deleteMany({});
   await prisma.article.deleteMany({});
   await prisma.notification.deleteMany({});
-  await prisma.pulsePost.deleteMany({});
 }
 
 async function seedDatabase() {
