@@ -86,7 +86,7 @@ const UserProfile = ({ userId }: { userId?: string }) => {
               <ProfileCardStats userData={userData} />
             </CardContent>
           </Card>
-          <Stack p='.5rem' position='relative' height={{ xs: '36rem', md: 'calc(100% - 6.75rem)' }}>
+          <Stack p='.5rem' position='relative' height='calc(100% - 6.75rem)'>
             <Tabs
               value={value}
               onChange={handleTabsChange}
