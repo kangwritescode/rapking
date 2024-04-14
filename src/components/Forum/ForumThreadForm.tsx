@@ -17,8 +17,8 @@ interface ForumThreadForm {
   content: string;
 }
 
-const usernameSchema = z.object({
-  title: z.string().min(3).max(30),
+const forumThreadSchema = z.object({
+  title: z.string().min(3).max(50),
   content: z.string().min(3).max(1000)
 });
 
@@ -40,7 +40,7 @@ function ForumThreadForm({ cancelButtonOnClick, onSuccess }: ForumThreadFormProp
     formState: { isValid }
   } = useForm({
     defaultValues: { title: '', content: '' },
-    resolver: zodResolver(usernameSchema),
+    resolver: zodResolver(forumThreadSchema),
     mode: 'all'
   });
 

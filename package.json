@@ -13,7 +13,7 @@
     "build:icons": "tsc -b src/iconify-bundle && node src/iconify-bundle/bundle-icons-react.js",
     "seed": "ts-node prisma/seed.ts",
     "postinstall": "prisma generate",
-    "migrate": "ts-node prisma/temp.ts",
+    "tokens": "ts-node prisma/temp.ts",
     "test": "vitest"
   },
   "dependencies": {
