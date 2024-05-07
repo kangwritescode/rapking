@@ -6,7 +6,6 @@ import { z } from 'zod';
  */
 const server = z.object({
   DATABASE_URL: z.string().url(),
-  ZIPCODE_API_KEY: z.string(),
 
   NODE_ENV: z.enum(['development', 'test', 'production']),
   NEXTAUTH_SECRET:
@@ -38,6 +37,8 @@ const server = z.object({
  */
 const client = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
+  NEXT_PUBLIC_BUCKET_NAME: z.string(),
+  NEXT_PUBLIC_BUCKET_URL: z.string()
 });
 
 /**
@@ -53,7 +54,6 @@ const processEnv = {
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
   DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
-  ZIPCODE_API_KEY: process.env.ZIPCODE_API_KEY,
 
   GCLOUD_PRIVATE_KEY: process.env.GCLOUD_PRIVATE_KEY,
   GCLOUD_CLIENT_EMAIL: process.env.GCLOUD_CLIENT_EMAIL,
@@ -65,7 +65,9 @@ const processEnv = {
   MUUT_API_KEY: process.env.MUUT_API_KEY,
   MUUT_SECRET_KEY: process.env.MUUT_SECRET_KEY,
 
-  REDIS_CONNECTION_STRING: process.env.REDIS_CONNECTION_STRING
+  REDIS_CONNECTION_STRING: process.env.REDIS_CONNECTION_STRING,
+  NEXT_PUBLIC_BUCKET_URL: process.env.NEXT_PUBLIC_BUCKET_URL,
+  NEXT_PUBLIC_BUCKET_NAME: process.env.NEXT_PUBLIC_BUCKET_NAME
 
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };

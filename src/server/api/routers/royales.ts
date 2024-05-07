@@ -16,7 +16,8 @@ export const royalesRouter = createTRPCRouter({
             },
             collaborators: true
           }
-        }
+        },
+        winner: true
       }
     });
   }),

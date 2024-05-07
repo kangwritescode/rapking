@@ -1,5 +1,6 @@
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, Button, Typography, useTheme } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { User } from '@prisma/client';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { getDayMonthYear } from 'src/@core/utils/get-formatted-date';
@@ -72,6 +73,25 @@ const RapRoyaleDataGrid: React.FC = () => {
           {getDayMonthYear(params.value as Date)}
         </Box>
       )
+    },
+    {
+      field: 'winner',
+      headerName: 'Winner',
+      width: 150,
+      renderCell: params => {
+        if (!params.value) return <Typography>N/A</Typography>;
+
+        function onClickHandler(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+          e.stopPropagation();
+          router.push(`/u/${(params.value as User).username}`);
+        }
+
+        return (
+          <Button color='secondary' onClick={onClickHandler}>
+            {(params.value as User).username}
+          </Button>
+        );
+      }
     }
   ];
   const theme = useTheme();
