@@ -15,6 +15,8 @@ type UseGCloudUploadReturn = {
   isUploading: boolean;
 };
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 export const useGCloudUpload = ({
   path,
   file,
@@ -45,6 +47,10 @@ export const useGCloudUpload = ({
   );
 
   useEffect(() => {
+    if (isDevelopment) {
+      return;
+    }
+
     if (presignedWriteUrl && file && newFileUrl) {
       const upload = async () => {
         setIsUploading(true);
