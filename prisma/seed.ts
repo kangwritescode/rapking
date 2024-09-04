@@ -23,6 +23,21 @@ async function seedDatabase() {
   if (env.NODE_ENV === 'production') {
     return;
   }
+
+  await prisma.user.create({
+    data: {
+      email: 'joeshmoe@email.com',
+      name: 'Joe Shmoe',
+      username: 'joeshmoe',
+      isAdmin: true,
+      profileIsComplete: true,
+      sex: 'male',
+      country: 'US',
+      createdAt: new Date(),
+      dob: new Date()
+    }
+  });
+
   const genders = ['male', 'female'];
 
   // Generate 30 users

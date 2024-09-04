@@ -37,8 +37,6 @@ const server = z.object({
  */
 const client = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
-  NEXT_PUBLIC_BUCKET_NAME: z.string(),
-  NEXT_PUBLIC_BUCKET_URL: z.string()
 });
 
 /**
@@ -65,9 +63,7 @@ const processEnv = {
   MUUT_API_KEY: process.env.MUUT_API_KEY,
   MUUT_SECRET_KEY: process.env.MUUT_SECRET_KEY,
 
-  REDIS_CONNECTION_STRING: process.env.REDIS_CONNECTION_STRING,
-  NEXT_PUBLIC_BUCKET_URL: process.env.NEXT_PUBLIC_BUCKET_URL,
-  NEXT_PUBLIC_BUCKET_NAME: process.env.NEXT_PUBLIC_BUCKET_NAME
+  REDIS_CONNECTION_STRING: process.env.REDIS_CONNECTION_STRING
 
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
