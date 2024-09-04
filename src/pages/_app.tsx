@@ -43,6 +43,7 @@ import { Analytics } from '@vercel/analytics/react';
 
 // Speed Insights
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import useActivityTracker from 'src/shared/useActivityTracker';
 
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
@@ -100,6 +101,7 @@ const NextJsHead = () => {
 
 // ** Configure JSS & ClassName
 const App: any = (props: ExtendedAppProps) => {
+  useActivityTracker();
   const {
     Component,
     pageProps: { session, ...pageProps }

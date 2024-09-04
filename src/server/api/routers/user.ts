@@ -15,7 +15,8 @@ const updateUserInputSchema = z.object({
   country: z.nativeEnum(Country).optional(),
   bannerUrl: z.string().optional(),
   profileImageUrl: z.string().optional(),
-  bio: z.string().max(200).optional()
+  bio: z.string().max(200).optional(),
+  lastOnline: z.date().optional()
 });
 
 // Types
@@ -176,7 +177,8 @@ export const userRouter = createTRPCRouter({
         ...(input.bio ? { bio: sanitizedBio } : {}),
         ...(input.country && userToUpdate.username && userToUpdate.sex && userToUpdate.dob
           ? { profileIsComplete: true }
-          : {})
+          : {}),
+        ...(input.lastOnline ? { lastOnline: input.lastOnline } : {})
       }
     });
 
