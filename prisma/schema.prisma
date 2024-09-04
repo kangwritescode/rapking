@@ -55,6 +55,7 @@ model User {
   reviewRequestTokens    Int                 @default(0)
   rapRoyales             RapRoyale[]         @relation("CompetitionEntrants")
   promotionTokens        Int                 @default(0)
+  lastOnline             DateTime            @default(now())
   accounts               Account[]
   Article                Article[]
   commentVotes           CommentVote[]
