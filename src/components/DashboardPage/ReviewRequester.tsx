@@ -1,6 +1,6 @@
-import { Alert, CircularProgress, Stack, TextField, Typography } from '@mui/material';
+import { Alert, CircularProgress, Stack, Typography } from '@mui/material';
 import { Rap } from '@prisma/client';
-import { useState } from 'react';
+import { getFormattedDate } from 'src/@core/utils/get-formatted-date';
 import { api } from 'src/utils/api';
 import UserAvatar from '../UserAvatar';
 import SendRequestButton from './SendRequestButton';
@@ -10,12 +10,8 @@ interface ReviewRequesterProps {
 }
 
 function ReviewRequester({ rap }: ReviewRequesterProps) {
-  const [value, setValue] = useState<string | undefined>();
-
-  const { data: usersData, isLoading } = api.user.searchUserByUsername.useQuery({
-    text: value || '',
-    limit: 3,
-    excludeSelf: true
+  const { data: usersData, isLoading } = api.reviewRequests.getPotentialReviewers.useQuery({
+    rapId: rap?.id || ''
   });
 
   const { data: currentUserData } = api.user.getCurrentUser.useQuery();
@@ -35,23 +31,7 @@ function ReviewRequester({ rap }: ReviewRequesterProps) {
       >
         Credits Available: <b>{currentUserData?.reviewRequestTokens}</b>
       </Typography>
-      <TextField
-        sx={{
-          mb: '1.5rem'
-        }}
-        value={value}
-        size='small'
-        placeholder='Search RapKing User'
-        fullWidth
-        onChange={e => setValue(e.target.value)}
-      />
-      <Stack
-        sx={{
-          height: '14rem'
-        }}
-        alignItems='center'
-        justifyContent='top'
-      >
+      <Stack alignItems='center' justifyContent='top'>
         {usersData?.map(user => (
           <Stack
             key={user.id}
@@ -65,9 +45,12 @@ function ReviewRequester({ rap }: ReviewRequesterProps) {
           >
             <Stack direction='row' alignItems='center'>
               <UserAvatar url={user?.profileImageUrl} size={40} />
-              <Typography ml='1rem' fontWeight='600'>
-                {user.username}
-              </Typography>
+              <Stack ml='1rem' direction='column' alignItems='flex-start'>
+                <Typography fontWeight='600'>{user.username}</Typography>
+                <Typography variant='caption' color='text.secondary'>
+                  {`Active ${getFormattedDate(user.lastOnline)}`}
+                </Typography>
+              </Stack>
             </Stack>
             <SendRequestButton rapId={rap?.id} requestedUserId={user.id} />
           </Stack>

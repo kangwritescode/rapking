@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { NotificationType, ReviewRequestStatus } from '@prisma/client';
+import { NotificationType, ReviewRequestStatus, User } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { createTRPCRouter, protectedProcedure } from 'src/server/api/trpc';
 
@@ -167,5 +167,48 @@ export const reviewRequestsRouter = createTRPCRouter({
       });
 
       return null;
+    }),
+  getPotentialReviewers: protectedProcedure
+    .input(
+      z.object({
+        rapId: z.string()
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const { rapId } = input;
+
+      const potentialReviewers = await ctx.prisma.$queryRaw`
+        SELECT u.*
+        -- do not select users who have a full inbox
+        FROM "User" u
+        WHERE u."id" NOT IN (
+          SELECT "reviewerId"
+          FROM "ReviewRequest"
+          GROUP BY "reviewerId"
+          HAVING COUNT("reviewerId") >= 10
+        )
+        AND u."lastOnline" >= NOW() - INTERVAL '30 days' -- only select users who have been online in the last 30 days
+        AND u."id" != ${ctx.session.user.id} -- do not select the current user
+        AND u."profileIsComplete" = true -- only select users who have completed their profile
+        AND NOT EXISTS (
+          SELECT 1
+          FROM "ReviewRequest" rr
+          WHERE rr."reviewerId" = u."id" AND rr."rapId" = ${rapId} -- do not select users who have already been requested to review this rap
+        )
+        AND NOT EXISTS (
+          SELECT 1
+          FROM "RapReview" r
+          WHERE r."reviewerId" = u."id" AND r."rapId" = ${rapId} -- do not select users who have already reviewed this rap
+        )
+        ORDER BY u."lastOnline" DESC
+        LIMIT 3
+     `;
+
+      return potentialReviewers as (Partial<User> & {
+        id: string;
+        username: string;
+        profileImageUrl: string;
+        lastOnline: Date;
+      })[];
     })
 });

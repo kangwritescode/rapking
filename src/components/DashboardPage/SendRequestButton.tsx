@@ -23,6 +23,8 @@ function SendRequestButton({ requestedUserId, rapId }: SendRequestButtonProps) {
   // Invalidators
   const { invalidate: invalidateReviewExists } = api.useUtils().reviewRequests.reviewRequestExists;
   const { invalidate: invalidateCurrentUser } = api.useUtils().user.getCurrentUser;
+  const { invalidate: invalidatePotentialReviewers } =
+    api.useUtils().reviewRequests.getPotentialReviewers;
 
   const handleSendRequest = () => {
     if (requestExists) return;
@@ -33,6 +35,7 @@ function SendRequestButton({ requestedUserId, rapId }: SendRequestButtonProps) {
           toast.success('Request Sent');
           invalidateReviewExists();
           invalidateCurrentUser();
+          invalidatePotentialReviewers();
         },
         onError: err => {
           toast.error(err.message);
